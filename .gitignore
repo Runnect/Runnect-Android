@@ -123,7 +123,7 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
-
+.idea/Runnect-Android.iml
 # Legacy Eclipse project files
 .classpath
 .project
