@@ -41,4 +41,13 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    def lifecycle_version = "2.5.1"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData - 데이터의 변경 사항을 알 수 있다.
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    //DataBinding
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    //Timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 }
