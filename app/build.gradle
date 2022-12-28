@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    //plugin for databinding
+    //plugin for databinding & hilt
     id 'kotlin-kapt'
     //serialization
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20'
