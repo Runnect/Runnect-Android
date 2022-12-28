@@ -13,6 +13,8 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingTop="23.62dp"
+        android:paddingHorizontal="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:context=".presentation.mypage.MyRewardActivity">
