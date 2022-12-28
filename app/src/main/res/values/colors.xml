@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black_1C1B1F">#1C1B1F</color>
+    <color name="black_232323">#232323</color>
+    <color name="black_363636">#363636</color>
+    <color name="transparent_00">#00000000</color>
+    <color name="grey_717171">#717171</color>
+    <color name="grey_D9D9D9">#D9D9D9</color>
+    <color name="grey_8D8D8D">#8D8D8D</color>
+    <color name="grey_7B7B7B">#7B7B7B</color>
+    <color name="grey_9A9A9A">#9A9A9A</color>
+    <color name="grey_BCBCBC">#BCBCBC</color>
+    <color name="grey_C0C0C0">#C0C0C0</color>
+    <color name="grey_595959">#595959</color>
+    <color name="grey_B1B1B1">#B1B1B1</color>
+    <color name="grey_C4C4C6">#C4C4C6</color>
+    <color name="grey_6E6E6E">#6E6E6E</color>
+    <color name="grey_626262">#626262</color>
+    <color name="grey_6D6D6D">#6D6D6D</color>
+    <color name="grey_B3B3B3">#B3B3B3</color>
+    <color name="grey_CCCCCC">#CCCCCC</color>
+    <color name="grey_B0B0B0">#B0B0B0</color>
+    <color name="grey_494949">#494949</color>
+    <color name="grey_6F6F6F">#6F6F6F</color>
+    <color name="grey_757575">#757575</color>
+    <color name="grey_DFDFDF">#DFDFDF</color>
+    <color name="grey_4A4A4A">#4A4A4A</color>
+    <color name="grey_565656">#565656</color>
+    <color name="grey_8B8B8B">#8B8B8B</color>
+    <color name="grey_999999">#999999</color>
+    <color name="grey_646464">#646464</color>
+    <color name="grey_E0E0E0">#E0E0E0</color>
+    <color name="grey_F2F2F2">#F2F2F2</color>
+    <color name="grey_C3C3C3">#C3C3C3</color>
+    <color name="grey_8F8F8F">#8F8F8F</color>
+    <color name="grey_CDCDCD">#CDCDCD</color>
+    <color name="grey_A0A0A0">#A0A0A0</color>
+    <color name="grey_525252">#525252</color>
+    <color name="grey_D1D1D1">#D1D1D1</color>
+    <color name="grey_ADAFB4">#ADAFB4</color>
+    <color name="red_FF4141">#FF4141</color>
+    <color name="purple_6846F5">#6846F5</color>
+
+
+
+
+</resources>
