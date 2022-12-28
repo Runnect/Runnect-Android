@@ -13,10 +13,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingTop="23.62dp"
-        android:paddingHorizontal="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="23.62dp"
         tools:context=".presentation.mypage.MyRewardActivity">
 
         <View
@@ -40,19 +40,19 @@
             android:id="@+id/iv_reward_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:rewardImage="@{reward.imgUrl}"
             app:layout_constraintBottom_toBottomOf="@id/view_reward_circleframe"
             app:layout_constraintEnd_toEndOf="@id/view_reward_circleframe"
             app:layout_constraintStart_toStartOf="@id/view_reward_circleframe"
             app:layout_constraintTop_toTopOf="@id/view_reward_circleframe"
+            app:rewardImage="@{reward.imgUrl}"
             tools:src="@drawable/reward_sample" />
 
         <TextView
-            android:text="@{reward.name}"
             android:id="@+id/tv_reward_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7.38dp"
+            android:text="@{reward.name}"
             app:layout_constraintEnd_toEndOf="@id/view_reward_circleframe"
             app:layout_constraintStart_toStartOf="@id/view_reward_circleframe"
             app:layout_constraintTop_toBottomOf="@id/view_reward_circleframe"

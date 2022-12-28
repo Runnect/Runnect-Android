@@ -50,8 +50,10 @@
 
 
     <!--unam add-->
+    <color name="M1">#593EEC</color>
     <color name="M3">#F2F3FF</color>
     <color name="M5">#D5D4FF</color>
+    <color name="G5">#F9F9F9</color>
 
 
 

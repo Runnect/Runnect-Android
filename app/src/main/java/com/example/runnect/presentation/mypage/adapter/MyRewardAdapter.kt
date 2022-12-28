@@ -36,7 +36,7 @@ class MyRewardAdapter :
     }
 
 
-    class Differ() : DiffUtil.ItemCallback<GetRewardDto.Item>() {
+    class Differ : DiffUtil.ItemCallback<GetRewardDto.Item>() {
         override fun areItemsTheSame(
             oldItem: GetRewardDto.Item,
             newItem: GetRewardDto.Item

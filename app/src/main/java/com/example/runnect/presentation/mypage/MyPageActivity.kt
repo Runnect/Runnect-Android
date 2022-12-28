@@ -1,6 +1,5 @@
 package com.example.runnect.presentation.mypage
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
@@ -10,4 +9,5 @@ class MyPageActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-}}
+    }
+}
