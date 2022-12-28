@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.example.runnect.presentation.mypage.MyPageViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.mypage.MyPageActivity">
+
+        <TextView
+            android:id="@+id/tv_myPage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="39dp"
+            android:text="마이페이지"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view_myPage_banner_frame"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_marginTop="29dp"
+            android:background="@color/M3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_myPage_title" />
+
+        <ImageView
+            android:id="@+id/iv_myPage_profile"
+            android:layout_width="63dp"
+            android:layout_height="63dp"
+            android:layout_marginStart="23dp"
+            android:elevation="1dp"
+            android:outlineProvider="none"
+            android:src="@drawable/myPage_profile"
+            app:layout_constraintBottom_toBottomOf="@id/view_myPage_banner_frame"
+            app:layout_constraintStart_toStartOf="@id/view_myPage_banner_frame"
+            app:layout_constraintTop_toTopOf="@id/view_myPage_banner_frame" />
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="말랑콩떡"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_myPage_profile"
+            app:layout_constraintStart_toEndOf="@id/iv_myPage_profile"
+            app:layout_constraintTop_toTopOf="@id/iv_myPage_profile" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_editUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@color/transparent_00"
+            android:src="@drawable/editUserName"
+            app:layout_constraintBottom_toBottomOf="@id/tv_user_name"
+            app:layout_constraintStart_toEndOf="@id/tv_user_name"
+            app:layout_constraintTop_toTopOf="@id/tv_user_name" />
+        
+        <TextView
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_myPage_banner_frame"
+            android:layout_marginTop="23dp"
+            android:textSize="15dp"
+            android:text="LV 3"
+            android:id="@+id/tv_userLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+        <com.google.android.material.divider.MaterialDivider
+            app:layout_constraintTop_toBottomOf="@id/tv_userLevel"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
