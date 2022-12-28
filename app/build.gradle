@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     //plugin for databinding
     id 'kotlin-kapt'
+    //serialization
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20'
+    //hilt
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -55,4 +59,18 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.6.1"
     //Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
+    //Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0'
+    // define a BOM and its version
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+    //hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 }
