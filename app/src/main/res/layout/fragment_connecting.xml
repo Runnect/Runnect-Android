@@ -88,7 +88,7 @@
             android:layout_marginBottom="12dp"
             android:backgroundTint="@color/grey_A0A0A0"
             android:contentDescription="@string/connecting_upload"
-            android:src="@drawable/connecting_upload_floatingbtn"
+            android:src="@drawable/connecting_upload_floating_btn"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
