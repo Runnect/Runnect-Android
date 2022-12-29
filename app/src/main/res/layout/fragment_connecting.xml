@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/connecting_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="59dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/connecting_title1"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/connecting_search_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="63dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/connecting_search"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/connecting_promotion_vp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="96dp"
+            android:background="@color/grey_D9D9D9"
+            android:orientation="horizontal"
+            app:layout_constraintDimensionRatio="390:191"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:id="@+id/connecting_promotion_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            app:ci_animator="@anim/connecting_promotion_indicator_anim"
+            app:ci_drawable="@drawable/connecting_promotion_indicator_selected"
+            app:ci_drawable_unselected="@drawable/connecting_promotion_indicator_unselected"
+            app:layout_constraintBottom_toBottomOf="@id/connecting_promotion_vp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/connecting_recommend_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="17dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/connecting_title2"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/connecting_promotion_vp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/connecting_recommend_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="14dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/connecting_recommend_tv"
+            tools:listitem="@layout/item_connecting_recommend" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/grey_A0A0A0"
+            android:src="@drawable/connecting_upload_floatingbtn"
+            app:borderWidth="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@null" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
