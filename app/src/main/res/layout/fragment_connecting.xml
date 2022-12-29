@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/connecting_title_tv"
+            android:id="@+id/tv_connecting_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"
@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/connecting_search_iv"
+            android:id="@+id/iv_connecting_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="63dp"
@@ -35,7 +35,7 @@
             app:srcCompat="@drawable/connecting_search" />
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/connecting_promotion_vp"
+            android:id="@+id/vp_connecting_promotion"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="96dp"
@@ -45,17 +45,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <me.relex.circleindicator.CircleIndicator3
-            android:id="@+id/connecting_promotion_indicator"
+            android:id="@+id/indicator_connecting_promotion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="9dp"
             app:ci_animator="@anim/connecting_promotion_indicator_anim"
             app:ci_drawable="@drawable/connecting_promotion_indicator_selected"
             app:ci_drawable_unselected="@drawable/connecting_promotion_indicator_unselected"
-            app:layout_constraintBottom_toBottomOf="@id/connecting_promotion_vp" />
+            app:layout_constraintBottom_toBottomOf="@id/vp_connecting_promotion" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/connecting_recommend_tv"
+            android:id="@+id/tv_connecting_recommend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
@@ -65,10 +65,10 @@
             android:textColor="@color/black"
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/connecting_promotion_vp" />
+            app:layout_constraintTop_toBottomOf="@id/vp_connecting_promotion" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/connecting_recommend_rv"
+            android:id="@+id/rv_connecting_recommend"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
@@ -78,7 +78,7 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/connecting_recommend_tv"
+            app:layout_constraintTop_toBottomOf="@id/tv_connecting_recommend"
             tools:listitem="@layout/item_connecting_recommend" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

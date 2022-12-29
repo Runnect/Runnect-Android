@@ -2,10 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/item_connecting_recommend_iv"
+        android:id="@+id/iv_item_connecting_recommend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -13,7 +14,7 @@
         app:srcCompat="@drawable/connecting_recommend_img_dummy" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/item_connecting_recommend_favorite_iv"
+        android:id="@+id/iv_item_connecting_recommend_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
@@ -23,27 +24,27 @@
         app:srcCompat="@drawable/connecting_recommend_favorite_selector" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_connecting_recommend_title_tv"
+        android:id="@+id/tv_item_connecting_recommend_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/pretendard_semibold"
-        android:text="제목"
+        tools:text="제목"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@id/item_connecting_recommend_iv"
-        app:layout_constraintTop_toBottomOf="@id/item_connecting_recommend_iv" />
+        app:layout_constraintStart_toStartOf="@id/iv_item_connecting_recommend"
+        app:layout_constraintTop_toBottomOf="@id/iv_item_connecting_recommend" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_connecting_recommend_location_tv"
+        android:id="@+id/tv_item_connecting_recommend_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:fontFamily="@font/pretendard_regular"
-        android:text="장소"
+        tools:text="장소"
         android:textColor="@color/black"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/item_connecting_recommend_title_tv"
-        app:layout_constraintTop_toBottomOf="@id/item_connecting_recommend_title_tv" />
+        app:layout_constraintStart_toStartOf="@id/tv_item_connecting_recommend_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_connecting_recommend_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
