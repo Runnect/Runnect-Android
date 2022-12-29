@@ -22,7 +22,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/connecting_search_iv"
@@ -32,7 +32,7 @@
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/connecting_search"/>
+            app:srcCompat="@drawable/connecting_search" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/connecting_promotion_vp"
@@ -87,11 +87,11 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="12dp"
             android:backgroundTint="@color/grey_A0A0A0"
+            android:contentDescription="@string/connecting_upload"
             android:src="@drawable/connecting_upload_floatingbtn"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/connecting_upload"
             app:tint="@null" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
