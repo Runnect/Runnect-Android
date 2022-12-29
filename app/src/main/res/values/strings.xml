@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Runnect</string>
-    <string name="connecting_title1">Run Connecting</string>
+    <string name="connecting_title1">코스 발견</string>
     <string name="connecting_title2">이런 코스는 어때요?</string>
+    <string name="connecting_upload">내가 그린 코스 업로드</string>
 </resources>

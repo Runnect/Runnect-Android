@@ -15,8 +15,8 @@
             android:id="@+id/connecting_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="59dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="61dp"
             android:fontFamily="@font/pretendard_semibold"
             android:text="@string/connecting_title1"
             android:textColor="@color/black"
@@ -91,6 +91,7 @@
             app:borderWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/connecting_upload"
             app:tint="@null" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
