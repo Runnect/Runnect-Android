@@ -82,6 +82,7 @@
             tools:listitem="@layout/item_connecting_recommend" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_connecting_recommend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
