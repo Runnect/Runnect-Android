@@ -74,8 +74,4 @@ dependencies {
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    //viewpager
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation 'me.relex:circleindicator:2.1.6'
-
 }
