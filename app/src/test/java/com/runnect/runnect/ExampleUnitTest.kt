@@ -1,4 +1,4 @@
-package com.example.runnect
+package com.runnect.runnect
 
 import org.junit.Test
 

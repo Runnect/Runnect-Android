@@ -1,6 +1,6 @@
-package com.example.runnect.data.api
+package com.runnect.runnect.data.api
 
-import com.example.runnect.data.model.GetRewardDto
+import com.runnect.runnect.data.model.GetRewardDto
 import retrofit2.Response
 import retrofit2.http.GET
 

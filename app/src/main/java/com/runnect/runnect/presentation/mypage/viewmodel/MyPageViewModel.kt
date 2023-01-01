@@ -1,4 +1,4 @@
-package com.example.runnect.presentation.mypage
+package com.runnect.runnect.presentation.mypage.viewmodel
 
 import androidx.lifecycle.ViewModel
 

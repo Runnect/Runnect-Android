@@ -1,12 +1,12 @@
-package com.example.runnect.presentation.mypage
+package com.runnect.runnect.presentation.mypage.view
 
 import android.content.ContentValues
 import android.os.Bundle
-import com.example.runnect.R
-import com.example.runnect.binding.BindingActivity
-import com.example.runnect.data.api.ApiClient
-import com.example.runnect.databinding.ActivityMyRewardBinding
-import com.example.runnect.presentation.mypage.adapter.MyRewardAdapter
+import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
+import com.runnect.runnect.data.api.ApiClient
+import com.runnect.runnect.databinding.ActivityMyRewardBinding
+import com.runnect.runnect.presentation.mypage.adapter.MyRewardAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

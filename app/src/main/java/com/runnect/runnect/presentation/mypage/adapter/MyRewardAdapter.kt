@@ -1,12 +1,12 @@
-package com.example.runnect.presentation.mypage.adapter
+package com.runnect.runnect.presentation.mypage.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.runnect.data.model.GetRewardDto
-import com.example.runnect.databinding.ItemMypageRewardBinding
+import com.runnect.runnect.data.model.GetRewardDto
+import com.runnect.runnect.databinding.ItemMypageRewardBinding
 
 class MyRewardAdapter :
     ListAdapter<GetRewardDto.Item, MyRewardAdapter.ItemViewHolder>(Differ()) {

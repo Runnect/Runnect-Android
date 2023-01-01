@@ -1,4 +1,4 @@
-package com.example.runnect.data.api
+package com.runnect.runnect.data.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi

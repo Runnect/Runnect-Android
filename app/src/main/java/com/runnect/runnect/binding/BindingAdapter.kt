@@ -1,4 +1,4 @@
-package com.example.runnect.binding
+package com.runnect.runnect.binding
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
