@@ -20,9 +20,9 @@
         android:title="@string/main_menu_discover"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_main_my"
+        android:id="@+id/menu_main_my_page"
         android:enabled="true"
-        android:icon="@drawable/main_menu_my"
+        android:icon="@drawable/main_menu_my_page"
         android:title="@string/main_menu_my_page"
         app:showAsAction="ifRoom" />
 

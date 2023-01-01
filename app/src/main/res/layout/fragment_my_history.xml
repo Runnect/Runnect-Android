@@ -15,7 +15,7 @@
         tools:context=".presentation.mypage.history.MyHistoryFragment">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/myHistory_toolbar"
+            android:id="@+id/toolbar_my_page_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -26,7 +26,7 @@
             tools:ignore="MissingConstraints">
 
             <TextView
-                android:id="@+id/toolbar_title"
+                android:id="@+id/tv_my_page_history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -39,15 +39,17 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_history"
-            android:layout_width="match_parent"
+            android:id="@+id/rv_my_page_history"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/myHistory_toolbar"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_my_page_history"
             tools:listitem="@layout/item_mypage_history" />
 
 

@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <ImageView
-            android:id="@+id/iv_my_page_history"
+            android:id="@+id/iv_my_page_history_course"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="13.83dp"
@@ -34,15 +34,15 @@
             tools:src="@drawable/radius_9_22dp" />
 
         <TextView
-            android:id="@+id/tv_my_page_history_title"
+            android:id="@+id/tv_my_page_history_course_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12.9dp"
             android:layout_marginTop="18.51dp"
             android:text="석촌호수 한 바퀴"
             android:textSize="15.67sp"
-            app:layout_constraintStart_toEndOf="@id/iv_my_page_history"
-            app:layout_constraintTop_toTopOf="@id/iv_my_page_history" />
+            app:layout_constraintStart_toEndOf="@id/iv_my_page_history_course"
+            app:layout_constraintTop_toTopOf="@id/iv_my_page_history_course" />
 
         <TextView
             android:id="@+id/tv_my_page_history_place"
@@ -50,12 +50,12 @@
             android:layout_height="wrap_content"
             android:text="서울시 강동구"
             android:textSize="11.06sp"
-            app:layout_constraintStart_toStartOf="@id/tv_my_page_history_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_title" />
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_history_course_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_course_name" />
 
 
         <View
-            android:id="@+id/divider_my_page_vertical1"
+            android:id="@+id/divider_my_page_history_vertical1"
             android:layout_width="0.92dp"
             android:layout_height="10.61dp"
             android:layout_marginStart="4.99dp"
@@ -71,11 +71,11 @@
             android:layout_marginStart="4.99dp"
             android:text="2022.12.28"
             android:textSize="11.06sp"
-            app:layout_constraintStart_toEndOf="@id/divider_my_page_vertical1"
+            app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical1"
             app:layout_constraintTop_toTopOf="@id/tv_my_page_history_place" />
 
         <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/divider_my_page_horizontal1"
+            android:id="@+id/divider_my_page_history_horizontal1"
             android:layout_width="0dp"
             android:layout_height="0.92dp"
             android:layout_marginHorizontal="10dp"
@@ -84,11 +84,11 @@
             android:layout_marginEnd="8.2dp"
             app:layout_constraintEnd_toEndOf="@id/view_my_page_history_frame"
             app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
-            app:layout_constraintTop_toBottomOf="@id/iv_my_page_history" />
+            app:layout_constraintTop_toBottomOf="@id/iv_my_page_history_course" />
 
 
         <View
-            android:id="@+id/divider_my_page_vertical2"
+            android:id="@+id/divider_my_page_history_vertical2"
             android:layout_width="0.92dp"
             android:layout_height="36.16dp"
             android:layout_marginStart="111.54dp"
@@ -98,10 +98,10 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_my_page_horizontal1" />
+            app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
 
         <View
-            android:id="@+id/divider_my_page_vertical3"
+            android:id="@+id/divider_my_page_history_vertical3"
             android:layout_width="0.92dp"
             android:layout_height="36.16dp"
             android:layout_marginTop="11.81dp"
@@ -109,22 +109,22 @@
             android:background="@color/G4"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_my_page_horizontal1" />
+            app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
 
         <!--총 거리-->
         <TextView
-            android:id="@+id/tv_my_page_distance"
+            android:id="@+id/tv_my_page_history_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="13.39dp"
             android:layout_marginEnd="35.82dp"
             android:text="총 거리"
             android:textColor="@color/G2"
-            app:layout_constraintEnd_toEndOf="@id/divider_my_page_vertical2"
-            app:layout_constraintTop_toBottomOf="@id/divider_my_page_horizontal1" />
+            app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical2"
+            app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
 
         <TextView
-            android:id="@+id/tv_my_page_distance_data"
+            android:id="@+id/tv_my_page_history_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -133,10 +133,10 @@
             android:textColor="@color/G1"
             android:textSize="15.67sp"
             android:fontFamily="@font/pretendard_semibold"
-            app:layout_constraintEnd_toStartOf="@id/tv_my_page_distance_km"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_distance" />
+            app:layout_constraintEnd_toStartOf="@id/tv_my_page_history_distance_km"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance" />
         <TextView
-            android:id="@+id/tv_my_page_distance_km"
+            android:id="@+id/tv_my_page_history_distance_km"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
@@ -144,11 +144,11 @@
             android:text="km"
             android:textSize="15.67sp"
             android:textColor="@color/G1"
-            app:layout_constraintEnd_toEndOf="@id/divider_my_page_vertical2"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_distance" />
+            app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical2"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance" />
         <!--이동시간-->
         <TextView
-            android:id="@+id/tv_my_page_time"
+            android:id="@+id/tv_my_page_history_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="13.39dp"
@@ -156,11 +156,11 @@
             android:layout_marginEnd="27.62dp"
             android:textColor="@color/G2"
             android:text="이동 시간"
-            app:layout_constraintStart_toEndOf="@id/divider_my_page_vertical2"
-            app:layout_constraintEnd_toEndOf="@id/divider_my_page_vertical3"
-            app:layout_constraintTop_toBottomOf="@id/divider_my_page_horizontal1" />
+            app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical2"
+            app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical3"
+            app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
         <TextView
-            android:id="@+id/tv_my_page_time_data"
+            android:id="@+id/tv_my_page_history_time_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -169,22 +169,22 @@
             android:textSize="15.67sp"
             android:text="0:27:36"
             android:textColor="@color/G1"
-            app:layout_constraintEnd_toStartOf="@id/divider_my_page_vertical3"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_time" />
+            app:layout_constraintEnd_toStartOf="@id/divider_my_page_history_vertical3"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_time" />
         <!--평균 페이스-->
         <TextView
-            android:id="@+id/tv_my_page_pace"
+            android:id="@+id/tv_my_page_history_pace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="13.39dp"
             android:layout_marginStart="27.38dp"
             android:textColor="@color/G2"
             tools:text="평균 페이스"
-            app:layout_constraintStart_toEndOf="@id/divider_my_page_vertical3"
-            app:layout_constraintTop_toTopOf="@id/divider_my_page_horizontal1" />
+            app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical3"
+            app:layout_constraintTop_toTopOf="@id/divider_my_page_history_horizontal1" />
 
         <TextView
-            android:id="@+id/tv_my_page_page_data"
+            android:id="@+id/tv_my_page_history_pace_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -194,39 +194,7 @@
             tools:text="6'45''"
             android:textColor="@color/G1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_time" />
-
-
-
-        <!--        <View-->
-        <!--            android:id="@+id/divider_vertical_rightOfTime"-->
-        <!--            android:layout_width="0.92dp"-->
-        <!--            android:layout_height="36.16dp"-->
-        <!--            android:background="@color/G4"-->
-        <!--            app:layout_constraintBottom_toBottomOf="@id/view_myPage_time_frame"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/view_myPage_time_frame"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/view_myPage_time_frame" />-->
-
-        <!--        &lt;!&ndash;평균 페이스&ndash;&gt;-->
-
-        <!--        <View-->
-        <!--            android:id="@+id/view_myPage_pace_frame"-->
-        <!--            android:layout_width="112dp"-->
-        <!--            android:layout_height="66dp"-->
-        <!--            app:layout_constraintBottom_toBottomOf="@id/view_myPage_time_frame"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toEndOf="@+id/view_myPage_time_frame"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/view_myPage_time_frame" />-->
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/tv_pace"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="12.39dp"-->
-        <!--            android:text="평균 페이스"-->
-        <!--            app:layout_constraintEnd_toEndOf="@id/view_myPage_pace_frame"-->
-        <!--            app:layout_constraintStart_toStartOf="@id/view_myPage_pace_frame"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/view_myPage_pace_frame" />-->
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_time" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
