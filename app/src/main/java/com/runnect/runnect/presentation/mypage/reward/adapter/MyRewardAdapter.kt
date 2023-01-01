@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.mypage.adapter
+package com.runnect.runnect.presentation.mypage.reward.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
