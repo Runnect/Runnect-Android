@@ -12,13 +12,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.mypage.MyHistoryActivity">
+        tools:context=".presentation.mypage.history.MyHistoryFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/myHistory_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:layout_marginTop="47dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,29 +29,27 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:text="활동 기록"
-                android:textSize="20sp" />
+                android:textSize="17sp"
+                android:textColor="@color/G1"
+                android:fontFamily="@font/pretendard_bold"/>
         </androidx.appcompat.widget.Toolbar>
 
-        <ScrollView
-            android:id="@+id/scrollView_mypage_history"
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/myHistory_toolbar">
+            android:layout_marginTop="3dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/myHistory_toolbar"
+            tools:listitem="@layout/item_mypage_history" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/item_mypage_history" />
-        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

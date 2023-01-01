@@ -7,13 +7,13 @@
 
         <variable
             name="viewmodel"
-            type="com.example.runnect.presentation.mypage.MyPageViewModel" />
+            type="com.runnect.runnect.presentation.mypage.MyPageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.mypage.MyPageActivity">
+        tools:context=".presentation.mypage.MyPageFragment">
 
         <TextView
             android:id="@+id/tv_myPage_title"

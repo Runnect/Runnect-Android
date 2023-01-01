@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.runnect.presentation.mypage.MyRewardViewModel" />
+            type="com.runnect.runnect.presentation.mypage.reward.MyRewardViewModel" />
     </data>
 
 
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".presentation.mypage.MyRewardActivity">
+        tools:context=".presentation.mypage.reward.MyRewardFragment">
 
 
         <androidx.appcompat.widget.Toolbar

@@ -1,18 +1,18 @@
-package com.runnect.runnect.presentation.mypage.view
+package com.runnect.runnect.presentation.mypage.reward
 
 import android.content.ContentValues
 import android.os.Bundle
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.api.ApiClient
-import com.runnect.runnect.databinding.ActivityMyRewardBinding
-import com.runnect.runnect.presentation.mypage.adapter.MyRewardAdapter
+import com.runnect.runnect.databinding.FragmentMyRewardBinding
+import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activity_my_reward) {
+class MyRewardFragment : BindingActivity<FragmentMyRewardBinding>(R.layout.fragment_my_reward) {
 
     private val getBookService = ApiClient.ServicePool.getRewardService
     private val myRewardAdapter = MyRewardAdapter()
