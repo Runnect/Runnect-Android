@@ -1,13 +1,14 @@
 package com.runnect.runnect.presentation.mypage.history
 
 import android.os.Bundle
+import android.view.View
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingActivity
+import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyHistoryBinding
 
-class MyHistoryFragment : BindingActivity<FragmentMyHistoryBinding>(R.layout.fragment_my_history) {
+class MyHistoryFragment : BindingFragment<FragmentMyHistoryBinding>(R.layout.fragment_my_history) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 }
