@@ -3,49 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <!--        <variable-->
-        <!--            name=""-->
-        <!--            type="" />-->
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        tools:context=".presentation.mypage.MyUploadActivity">
+        tools:context=".presentation.mypage.upload.MyUploadFragment">
 
 
-        <ImageView
-            android:id="@+id/iv_upload"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_my_page_upload_course"
             android:layout_width="162dp"
             android:layout_height="114dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/radius_5dp" />
+            android:background="@drawable/radius_5dp" />
 
-        <TextView
-            android:id="@+id/tv_upload_title"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_upload_course_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="제목제목제목"
+            android:fontFamily="@font/pretendard_medium"
+            tools:text="제목제목제목"
+            android:textColor="@color/black"
             android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="@id/iv_upload"
-            app:layout_constraintTop_toBottomOf="@id/iv_upload" />
+            app:layout_constraintStart_toStartOf="@id/iv_my_page_upload_course"
+            app:layout_constraintTop_toBottomOf="@id/iv_my_page_upload_course" />
 
-        <TextView
-            android:id="@+id/tv_upload_subtitle"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_upload_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="20dp"
-            android:text="장소/여의도한강공원"
+            android:fontFamily="@font/pretendard_regular"
+            tools:text="OO시 OO구"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_upload_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_upload_title" />
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_upload_course_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_upload_course_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
