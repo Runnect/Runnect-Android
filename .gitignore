@@ -3,6 +3,9 @@
 .gradle/
 build/
 
+# naver map key
+api_key.xml
+
 # Local configuration file (sdk path, etc)
 local.properties
 
