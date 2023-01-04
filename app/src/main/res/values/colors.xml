@@ -8,11 +8,22 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent_00">#00000000</color>
-    <color name="g1">#171717</color>
-    <color name="g2">#8B8B8B</color>
-    <color name="g3">#C1C1C1</color>
-    <color name="g4">#ECECEC</color>
-    <color name="m1">#593EEC</color>
-    <color name="m2">#7E71FF</color>
-    <color name="m3">#F2F3FF</color>
+
+    <color name="M1">#593EEC</color>
+    <color name="M2">#7E71FF</color>
+    <color name="M3">#F2F3FF</color>
+    <color name="M4">#FFFFFF</color>
+    <color name="M5">#D5D4FF</color>
+
+    <color name="W1">#FFFFFF</color>
+
+    <color name="G1">#171717</color>
+    <color name="G2">#8B8B8B</color>
+    <color name="G3">#C1C1C1</color>
+    <color name="G4">#ECECEC</color>
+    <color name="G5">#F9F9F9</color>
+
+    <color name="Y1">#F7D198</color>
+
+
 </resources>

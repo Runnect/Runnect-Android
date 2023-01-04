@@ -1,4 +1,4 @@
-package com.example.runnect
+package com.runnect.runnect
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

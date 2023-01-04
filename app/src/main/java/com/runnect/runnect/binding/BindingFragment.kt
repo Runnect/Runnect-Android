@@ -1,4 +1,4 @@
-package com.example.runnect.binding
+package com.runnect.runnect.binding
 
 import android.os.Bundle
 import android.view.LayoutInflater

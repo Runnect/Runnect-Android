@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.runnect'
+    namespace 'com.runnect.runnect'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.runnect"
+        applicationId "com.runnect.runnect"
         minSdk 28
         targetSdk 33
         versionCode 1
@@ -52,9 +52,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     def lifecycle_version = "2.5.1"
-    // ViewModel
+    //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    // LiveData - 데이터의 변경 사항을 알 수 있다.
+    //LiveData - 데이터의 변경 사항을 알 수 있다.
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     //DataBinding
     implementation "androidx.activity:activity-ktx:1.6.1"
@@ -66,12 +66,17 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
     implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0'
-    // define a BOM and its version
+    //define a BOM and its version
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
-    // define any required OkHttp artifacts without version
+    //define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    // Glide
+    implementation "com.github.bumptech.glide:glide:4.12.0"
+    kapt "com.github.bumptech.glide:compiler:4.12.0"
+    //fragment change
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
 }

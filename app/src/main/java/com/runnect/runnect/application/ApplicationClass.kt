@@ -1,7 +1,7 @@
-package com.example.runnect.application
+package com.runnect.runnect.application
 
 import android.app.Application
-import com.example.runnect.BuildConfig
+import com.runnect.runnect.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
