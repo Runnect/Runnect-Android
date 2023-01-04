@@ -23,8 +23,23 @@ Runnect는 Run과 connect의 합성어로 직접 코스를 그리고 공유하�
 <br/>
 
 # GitHub Convention
-[Git Branch 전략](https://www.notion.so/Git-branch-b91d5935c6744108a2ddf7ef6dc2c494)
+[Git Branch 전략](https://www.notion.so/Git-branch-b91d5935c6744108a2ddf7ef6dc2c494)  
 [Commit Convention](https://www.notion.so/Commit-Convention-560391655f4f4669bdd589ec7fe9fc20)
+<br/>
+<br/>
+  
+- Issue Template
+<br/>
+  
+![image](https://user-images.githubusercontent.com/70442964/210562158-b3030f89-d972-4141-b703-13813483df2b.png)
+<br/>
+<br/>
+  
+- PR Template
+<br/>
+  
+![image](https://user-images.githubusercontent.com/70442964/210562502-146d5e1f-517c-4e37-9a0d-8acbaa326944.png)
+
 <br/>
 <br/>
 
