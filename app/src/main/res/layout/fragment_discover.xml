@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-            <variable
-                name="vm"
-                type="com.runnect.runnect.presentation.discover.DiscoverViewModel" />
+
+        <variable
+            name="vm"
+            type="com.runnect.runnect.presentation.discover.DiscoverViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,8 +18,8 @@
             android:id="@+id/toolbar_discover"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             android:layout_marginTop="@dimen/toolbar_top_margin"
+            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -31,90 +32,109 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_discover_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="14.75dp"
-                android:layout_marginBottom="15.25dp"
                 android:layout_marginEnd="18.25dp"
+                android:layout_marginBottom="15.25dp"
                 app:srcCompat="@drawable/discover_search" />
         </androidx.appcompat.widget.Toolbar>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_discover_promotion"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/M2"
-            android:orientation="horizontal"
-            app:srcCompat="@drawable/discover_ad_img"
-            app:layout_constraintDimensionRatio="360:169"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_discover" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_discover_recommend_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/pretendard_bold"
-            android:text="@string/discover_recommend_title"
-            android:textColor="@color/G1"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_discover_promotion" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_discover_recommend_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/pretendard_regular"
-            android:text="@string/discover_recommend_subtitle"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="@id/tv_discover_recommend_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_title" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_discover_recommend"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="14dp"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
-            tools:listitem="@layout/item_discover_recommend" />
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_discover">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/const_discover_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_discover_promotion"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/M2"
+                    android:orientation="horizontal"
+                    app:layout_constraintDimensionRatio="360:169"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/discover_ad_img" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_discover_recommend_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:text="@string/discover_recommend_title"
+                    android:textColor="@color/G1"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_discover_promotion" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_discover_recommend_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:text="@string/discover_recommend_subtitle"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="@id/tv_discover_recommend_title"
+                    app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_title" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_discover_recommend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="14dp"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
+                    tools:listitem="@layout/item_course_info" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/btn_discover_upload"
             android:layout_width="52dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
             android:layout_marginEnd="14dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/M1"
             android:contentDescription="@string/connecting_upload"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/btn_discover_upload"
-            app:layout_constraintTop_toTopOf="@id/btn_discover_upload"
-            app:layout_constraintStart_toStartOf="@id/btn_discover_upload"
-            app:layout_constraintEnd_toEndOf="@id/btn_discover_upload"
-            android:text="@string/discover_plus"
-            android:textSize="32sp"
+            android:elevation="10dp"
             android:fontFamily="@font/pretendard_semibold"
-            android:textColor="@color/W1"
             android:paddingBottom="5dp"
-            android:elevation="10dp"/>
+            android:text="@string/discover_plus"
+            android:textColor="@color/W1"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_discover_upload"
+            app:layout_constraintEnd_toEndOf="@id/btn_discover_upload"
+            app:layout_constraintStart_toStartOf="@id/btn_discover_upload"
+            app:layout_constraintTop_toTopOf="@id/btn_discover_upload" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
