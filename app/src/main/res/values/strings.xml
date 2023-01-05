@@ -9,5 +9,8 @@
     <string name="main_menu_storage">보관함</string>
     <string name="main_menu_discover">코스 발견</string>
     <string name="main_menu_my_page">마이페이지</string>
+    <string name="discover_plus">+</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
