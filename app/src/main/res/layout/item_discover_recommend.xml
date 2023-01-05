@@ -6,14 +6,13 @@
     xmlns:tools="http://schemas.android.com/tools">
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_item_connecting_recommend"
-        android:layout_width="174dp"
-        android:layout_height="124dp"
+        android:layout_width="162dp"
+        android:layout_height="0dp"
         app:cardCornerRadius="5dp"
-        app:strokeColor=""
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="160:114"
-        android:backgroundTint="@color/g4">
+        app:layout_constraintDimensionRatio="162:114"
+        android:backgroundTint="@color/G4">
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_item_connecting_recommend"
         android:layout_width="wrap_content"
@@ -24,21 +23,21 @@
         android:id="@+id/iv_item_connecting_recommend_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/all_course_favorite_selector" />
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toEndOf="@id/cv_item_connecting_recommend"
+        app:layout_constraintTop_toBottomOf="@id/cv_item_connecting_recommend"
+        app:srcCompat="@drawable/discover_course_favorite_selector" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_item_connecting_recommend_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="22dp"
+        android:gravity="center"
         android:layout_marginTop="2dp"
-        android:fontFamily="@font/pretendard_semibold"
+        android:fontFamily="@font/pretendard_medium"
         tools:text="제목"
-        android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textColor="@color/G1"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/cv_item_connecting_recommend"
         app:layout_constraintTop_toBottomOf="@id/cv_item_connecting_recommend" />
 
@@ -46,10 +45,11 @@
         android:id="@+id/tv_item_connecting_recommend_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:fontFamily="@font/pretendard_regular"
-        tools:text="OO시 OO구"
-        android:textSize="12sp"
+        android:gravity="center"
+        tools:text="서울시 강동구"
+        android:textSize="13sp"
+        android:textColor="@color/G2"
         app:layout_constraintStart_toStartOf="@id/tv_item_connecting_recommend_title"
         app:layout_constraintTop_toBottomOf="@id/tv_item_connecting_recommend_title" />
 
