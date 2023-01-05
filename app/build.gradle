@@ -79,4 +79,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:4.12.0"
     //fragment change
     implementation("androidx.fragment:fragment-ktx:1.5.5")
+    //coil
+    implementation("io.coil-kt:coil:2.2.2")
+
 }
