@@ -22,30 +22,68 @@
             android:id="@+id/btn_draw"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="23.74dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="56dp"
-            android:background="@drawable/top_radius_white_background"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/radius_10_m1_button"
             android:text="코스 그리기"
-            android:textColor="@color/black"
-            android:textSize="14dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/current_button"
+        <View
+            android:id="@+id/frame_course_distance"
+            android:layout_width="82dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/radius_50_white_button"
+            android:elevation="10dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_draw"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_course_distance_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:elevation="11dp"
+            android:outlineProvider="none"
+            android:text="1.6"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/frame_course_distance"
+            app:layout_constraintEnd_toStartOf="@id/tv_course_distance_km"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/frame_course_distance"
+            app:layout_constraintTop_toTopOf="@id/frame_course_distance" />
+
+        <TextView
+            android:id="@+id/tv_course_distance_km"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="11dp"
+            android:outlineProvider="none"
+            android:text="km"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/tv_course_distance_record"
+            app:layout_constraintEnd_toEndOf="@id/frame_course_distance"
+
+            app:layout_constraintStart_toEndOf="@id/tv_course_distance_record" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_markerBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="18dp"
             android:backgroundTint="@color/white"
-            android:contentDescription="추적"
+            android:src="@drawable/backcourse"
             app:backgroundTint="@color/white"
+            app:fabCustomSize="48dp"
             app:layout_constraintBottom_toTopOf="@id/btn_draw"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@null" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

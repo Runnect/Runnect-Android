@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".SearchActivity"
+            android:name=".presentation.draw.SearchActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
