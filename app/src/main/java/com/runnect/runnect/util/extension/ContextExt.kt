@@ -1,6 +1,8 @@
 package com.runnect.runnect.util.extension
 
+import android.app.Activity
 import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 
 //확장할 클래스 - Context 클래스
