@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".presentation.mypage.reward.MyRewardFragment">
+        tools:context=".presentation.mypage.reward.MyRewardActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_my_page_reward"

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintDimensionRatio="330:166"
         android:background="@drawable/radius_9_22dp"
-        tools:context=".presentation.mypage.history.MyHistoryFragment">
+        tools:context=".presentation.mypage.history.MyHistoryActivity">
         <View
             android:id="@+id/view_my_page_history_frame"
             android:layout_width="330dp"

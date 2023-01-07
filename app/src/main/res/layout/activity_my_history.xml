@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.mypage.history.MyHistoryFragment">
+        tools:context=".presentation.mypage.history.MyHistoryActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_my_page_history"
