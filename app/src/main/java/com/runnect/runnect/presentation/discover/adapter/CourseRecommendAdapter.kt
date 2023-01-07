@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.Coil
 import coil.load
 import com.runnect.runnect.data.model.CourseInfoDTO
-import com.runnect.runnect.databinding.ItemCourseInfoBinding
+import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.DiffUtilItemCallback
 
 class CourseRecommendAdapter(context: Context) :
@@ -16,7 +15,7 @@ class CourseRecommendAdapter(context: Context) :
     private val inflater by lazy { LayoutInflater.from(context) }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
-            ItemCourseInfoBinding.inflate(inflater, parent, false)
+            ItemDiscoverCourseInfoBinding.inflate(inflater, parent, false)
         )
     }
 
@@ -24,13 +23,16 @@ class CourseRecommendAdapter(context: Context) :
         holder.onBind(currentList[position])
     }
 
-    inner class CourseInfoViewHolder(private val binding: ItemCourseInfoBinding) :
+    inner class CourseInfoViewHolder(private val binding: ItemDiscoverCourseInfoBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data:CourseInfoDTO) {
-            binding.ivItemCourseInfoMap.load(data.img)
-            binding.tvItemCourseInfoTitle.text = data.title
-            binding.tvItemCourseInfoLocation.text = data.location
-            binding.ivItemCourseInfoFavorite.isSelected = data.isFavorite
+        fun onBind(data: CourseInfoDTO) {
+            binding.ivItemDiscoverCourseInfoMap.load(data.img)
+            binding.tvItemDiscoverCourseInfoTitle.text = data.title
+            binding.tvItemDiscoverCourseInfoLocation.text = data.location
+            binding.ivItemDiscoverCourseInfoFavorite.isSelected = data.isFavorite
+            binding.ivItemDiscoverCourseInfoFavorite.setOnClickListener {
+                it.isSelected = !it.isSelected
+            }
         }
     }
 
