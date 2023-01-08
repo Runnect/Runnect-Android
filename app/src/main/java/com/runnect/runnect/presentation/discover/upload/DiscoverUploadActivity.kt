@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
@@ -15,11 +16,14 @@ import timber.log.Timber
 
 class DiscoverUploadActivity :
     BindingActivity<ActivityDiscoverUploadBinding>(R.layout.activity_discover_upload) {
+    private val viewModel:DiscoverUploadViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.vm = viewModel
+        binding.lifecycleOwner = this
         initLayout()
         addListener()
-
+        addObserver()
     }
 
     private fun initLayout() {
@@ -48,6 +52,11 @@ class DiscoverUploadActivity :
                 binding.ivDiscoverUploadFinish.visibility = View.VISIBLE
                 binding.tvDiscoverUploadFinish.visibility = View.VISIBLE
             }
+        }
+    }
+    private fun addObserver(){
+        viewModel.isUploadEnable.observe(this){
+            binding.ivDiscoverUploadFinish.isActivated = it
         }
     }
 
