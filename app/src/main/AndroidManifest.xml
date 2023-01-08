@@ -27,13 +27,19 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".presentation.discover.search.DiscoverSearchActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateAlwaysVisible" />
+        <activity
             android:name=".presentation.discover.load.DiscoverLoadActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.discover.upload.DiscoverUploadActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" >
-
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".presentation.detail.CourseDetailActivity"
+            android:exported="false">
         </activity>
     </application>
 
