@@ -23,13 +23,13 @@
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_item_discover_course_info_favorite"
+        android:id="@+id/iv_item_discover_course_info_scrap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         app:layout_constraintEnd_toEndOf="@id/cv_item_discover_course_info"
         app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info"
-        app:srcCompat="@drawable/discover_course_favorite_selector" />
+        app:srcCompat="@drawable/discover_course_scrap_selector" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_item_discover_course_info_title"

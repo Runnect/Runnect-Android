@@ -11,6 +11,7 @@ import com.runnect.runnect.data.model.CourseInfoDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
+import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.util.ItemOffsetDecoration
 
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
@@ -125,8 +126,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
+        binding.ivDiscoverSearch.setOnClickListener {
+            startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
+        }
         binding.btnDiscoverUpload.setOnClickListener {
-            startActivity(Intent(requireContext(),DiscoverLoadActivity::class.java))
+            startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
         }
     }
 }

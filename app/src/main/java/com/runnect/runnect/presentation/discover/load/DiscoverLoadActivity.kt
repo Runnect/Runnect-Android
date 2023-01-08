@@ -4,20 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ActivityDiscoverLoadSelectBinding
 import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapter
-import com.runnect.runnect.presentation.discover.load.callback.OnItemClick
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.util.ItemOffsetDecoration
+import com.runnect.runnect.util.callback.OnItemClick
 import timber.log.Timber
 
 class DiscoverLoadActivity :
-    BindingActivity<ActivityDiscoverLoadSelectBinding>(R.layout.activity_discover_load_select),OnItemClick {
-    private val viewModel:DiscoverLoadViewModel by viewModels()
+    BindingActivity<ActivityDiscoverLoadSelectBinding>(R.layout.activity_discover_load_select),
+    OnItemClick {
+    private val viewModel: DiscoverLoadViewModel by viewModels()
     private val courseLoadInfoList by lazy {
         listOf(
             CourseLoadInfoDTO(
@@ -73,7 +73,7 @@ class DiscoverLoadActivity :
         )
     }
     private val adapter by lazy {
-        DiscoverLoadAdapter(this,this).apply {
+        DiscoverLoadAdapter(this, this).apply {
             submitList(
                 courseLoadInfoList
             )
@@ -92,7 +92,7 @@ class DiscoverLoadActivity :
 
     private fun initLayout() {
         binding.rvDiscoverLoadSelect.apply {
-            layoutManager = GridLayoutManager(this@DiscoverLoadActivity,2)
+            layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
             adapter = this@DiscoverLoadActivity.adapter
             addItemDecoration(
                 ItemOffsetDecoration(
@@ -103,20 +103,22 @@ class DiscoverLoadActivity :
             )
         }
     }
-    private fun addObserver(){
-        viewModel.idSelectedItem.observe(this){
+
+    private fun addObserver() {
+        viewModel.idSelectedItem.observe(this) {
             Timber.d("4. ViewModel에서 변경된 라이브데이터 관찰")
             binding.ivDiscoverLoadSelectFinish.isActivated = it != 0
         }
     }
-    private fun addListener(){
-        binding.ivDiscoverLoadSelectBack.setOnClickListener{
+
+    private fun addListener() {
+        binding.ivDiscoverLoadSelectBack.setOnClickListener {
             finish()
         }
         binding.ivDiscoverLoadSelectFinish.setOnClickListener {
-            if(it.isActivated){
-                val intent = Intent(this,DiscoverUploadActivity::class.java)
-                intent.putExtra("courseId",viewModel.idSelectedItem.value)
+            if (it.isActivated) {
+                val intent = Intent(this, DiscoverUploadActivity::class.java)
+                intent.putExtra("courseId", viewModel.idSelectedItem.value)
                 startActivity(intent)
             }
         }

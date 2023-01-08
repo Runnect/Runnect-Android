@@ -5,5 +5,5 @@ data class CourseInfoDTO(
     val img:String,
     val title:String,
     val location:String,
-    val isFavorite:Boolean
+    val isScraped:Boolean
 )

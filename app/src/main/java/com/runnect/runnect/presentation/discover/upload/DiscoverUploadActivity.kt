@@ -5,22 +5,22 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
 import com.runnect.runnect.presentation.MainActivity
-import timber.log.Timber
+import com.runnect.runnect.util.extension.clearFocus
 
 
 class DiscoverUploadActivity :
     BindingActivity<ActivityDiscoverUploadBinding>(R.layout.activity_discover_upload) {
-    private val viewModel:DiscoverUploadViewModel by viewModels()
+    private val viewModel: DiscoverUploadViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        intent.getIntExtra("courseId", 0).toString() //선택한 코스의 id로 API 호출 예정
         initLayout()
         addListener()
         addObserver()
@@ -29,12 +29,13 @@ class DiscoverUploadActivity :
     private fun initLayout() {
         binding.etDiscoverUploadDesc.movementMethod = null //내용 초과시 스크롤 되지 않도록 함
     }
+
     private fun addListener() {
         binding.ivDiscoverUploadBack.setOnClickListener {
             finish()
         }
         binding.ivDiscoverUploadFinish.setOnClickListener {
-            if(it.isActivated){
+            if (it.isActivated) {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
@@ -57,8 +58,9 @@ class DiscoverUploadActivity :
             }
         }
     }
-    private fun addObserver(){
-        viewModel.isUploadEnable.observe(this){
+
+    private fun addObserver() {
+        viewModel.isUploadEnable.observe(this) {
             binding.ivDiscoverUploadFinish.isActivated = it
         }
     }
@@ -66,15 +68,13 @@ class DiscoverUploadActivity :
     //키보드 밖 터치 시, 키보드 내림
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val focusView = currentFocus
-        if(focusView != null){
+        if (focusView != null) {
             val rect = Rect()
             focusView.getGlobalVisibleRect(rect)
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
-            if(!rect.contains(x,y)){
-                val imm :InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(focusView.windowToken,0)
-                focusView.clearFocus()
+            if (!rect.contains(x, y)) {
+                clearFocus(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

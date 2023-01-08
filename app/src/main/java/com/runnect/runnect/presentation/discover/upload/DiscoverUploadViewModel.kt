@@ -10,10 +10,11 @@ class DiscoverUploadViewModel : ViewModel() {
     val desc = MutableLiveData<String>()
 
     val isUploadEnable = MediatorLiveData<Boolean>()
+
     init {
         isUploadEnable.value = false
         isUploadEnable.apply {
-            addSourceList(title,desc){checkIsUploadEnable()}
+            addSourceList(title, desc) { checkIsUploadEnable() }
         }
     }
 

@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.runnect.runnect.data.model.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ItemDiscoverLoadSelectBinding
-import com.runnect.runnect.presentation.discover.load.callback.OnItemClick
 import com.runnect.runnect.util.DiffUtilItemCallback
+import com.runnect.runnect.util.callback.OnItemClick
 import timber.log.Timber
 
 class DiscoverLoadAdapter(context: Context, listener: OnItemClick) :
@@ -27,6 +27,7 @@ class DiscoverLoadAdapter(context: Context, listener: OnItemClick) :
             )
         )
     }
+
     override fun onBindViewHolder(holder: DiscoverLoadViewHolder, position: Int) {
         holder.onBind(currentList[position])
 
@@ -44,12 +45,11 @@ class DiscoverLoadAdapter(context: Context, listener: OnItemClick) :
                 if (it.isSelected) {
                     mCallback.selectItem(0)
                     it.isSelected = false
-                    selectedCount-=1
-                }
-                else if(!it.isSelected && selectedCount<1){
-                    mCallback.selectItem(it.id)
+                    selectedCount -= 1
+                } else if (!it.isSelected && selectedCount < 1) {
+                    mCallback.selectItem(data.id)
                     it.isSelected = true
-                    selectedCount+=1
+                    selectedCount += 1
                 }
             }
         }

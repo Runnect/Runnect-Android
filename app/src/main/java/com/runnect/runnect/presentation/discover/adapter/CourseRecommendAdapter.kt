@@ -29,8 +29,8 @@ class CourseRecommendAdapter(context: Context) :
             binding.ivItemDiscoverCourseInfoMap.load(data.img)
             binding.tvItemDiscoverCourseInfoTitle.text = data.title
             binding.tvItemDiscoverCourseInfoLocation.text = data.location
-            binding.ivItemDiscoverCourseInfoFavorite.isSelected = data.isFavorite
-            binding.ivItemDiscoverCourseInfoFavorite.setOnClickListener {
+            binding.ivItemDiscoverCourseInfoScrap.isSelected = data.isScraped
+            binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
                 it.isSelected = !it.isSelected
             }
         }
