@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android-extensions'
     //plugin for databinding & hilt
     id 'kotlin-kapt'
     //serialization
@@ -81,5 +82,13 @@ dependencies {
 
     //naver map
     implementation 'com.naver.maps:map-sdk:3.16.1'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
+//    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    // Ted Permission - RxJava3
+    // Normal
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+    //Location 라이브러리(현재위치)
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
 }

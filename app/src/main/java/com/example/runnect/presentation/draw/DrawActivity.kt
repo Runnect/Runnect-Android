@@ -151,5 +151,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        const val SEARCH_RESULT_EXTRA_KEY = "SearchResult"
     }
 }

@@ -9,7 +9,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object ApiClient {
-    private const val BASE_URL = "https://run.mocky.io/v3/"
+//    private const val BASE_URL = "https://apis.openapi.sk.com"
     private var retrofit: Retrofit? = null
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -22,9 +22,11 @@ object ApiClient {
                 .addInterceptor(logger)
                 .build()
             retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Url.TMAP_URL)
                 .client(client)
-                .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+                .addConverterFactory(Json{
+                    ignoreUnknownKeys = true // Field 값이 없는 경우 무시
+                }.asConverterFactory("application/json".toMediaType()))
                 .build()
         }
         return retrofit!!
@@ -34,5 +36,7 @@ object ApiClient {
 
     object ServicePool {
         val getRewardService = create<GetRewardService>()
+        val getSearchService = create<SearchService>()
+
     }
 }

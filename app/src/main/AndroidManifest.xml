@@ -19,12 +19,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.draw.SearchActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".presentation.PreStart.PreStartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.search.SearchActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".presentation.draw.DrawActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -32,27 +36,15 @@
 
         <activity
             android:name=".presentation.mypage.MyRewardActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".presentation.mypage.MyHistoryActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".presentation.mypage.MyPageActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:exported="false" />
         <activity
-            android:name=".presentation.draw.DrawActivity"
+            android:name=".presentation.draw.PreDrawActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

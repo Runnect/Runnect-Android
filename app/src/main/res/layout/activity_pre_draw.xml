@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.location_enroll.LocationEnrollFragment">
+
+        <FrameLayout
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_draw"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="64dp"
+            android:layout_marginBottom="46dp"
+            android:background="@drawable/radius_10_m1_button"
+            android:text="코스 그리기"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/bnv_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_currentLocation"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="22dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/currentlocation"
+            app:backgroundTint="@color/white"
+            app:fabCustomSize="48dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_draw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@null" />
+
+
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:background="@drawable/top_radius_20_white_bottom_navi"
+            android:id="@+id/bnv_main"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:elevation="3dp"
+            app:menu="@menu/bottom_navigation_menu" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
