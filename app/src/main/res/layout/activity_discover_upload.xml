@@ -76,6 +76,7 @@
                     android:maxLength="20"
                     android:paddingVertical="0dp"
                     android:textColor="@color/G1"
+                    android:singleLine="true"
                     android:textColorHint="@color/G3"
                     android:textCursorDrawable="@color/M1"
                     android:textSize="18sp"
