@@ -34,9 +34,12 @@ class DiscoverUploadActivity :
             finish()
         }
         binding.ivDiscoverUploadFinish.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
+            if(it.isActivated){
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+            }
+
         }
         //키보드 이벤트에 따른 동작 정의
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
