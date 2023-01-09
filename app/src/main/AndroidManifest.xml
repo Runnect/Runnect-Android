@@ -39,8 +39,15 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.detail.CourseDetailActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.reward.MyRewardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.history.MyHistoryActivity"
+            android:exported="false" />
+        <activity android:name=".presentation.mypage.upload.MyUploadActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
