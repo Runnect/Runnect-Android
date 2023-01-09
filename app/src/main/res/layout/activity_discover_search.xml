@@ -15,6 +15,7 @@
             android:id="@+id/toolbar_discover_search"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:contentInsetStart="0dp"
             app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -22,13 +23,14 @@
                 android:id="@+id/iv_discover_search_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/start_margin_back_btn"
                 app:srcCompat="@drawable/all_back_arrow" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/et_discover_search_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
+                android:layout_marginStart="@dimen/start_margin_toolbar"
                 android:backgroundTint="@color/transparent_00"
                 android:fontFamily="@font/pretendard_medium"
                 android:hint="@string/discover_search_hint"
@@ -92,7 +94,8 @@
             android:layout_marginTop="16dp">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_discover_search"
                     android:layout_width="wrap_content"

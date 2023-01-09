@@ -19,6 +19,7 @@
             android:id="@+id/toolbar_discover_load_select"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:contentInsetStart="0dp"
             app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -26,13 +27,14 @@
                 android:id="@+id/iv_discover_load_select_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/start_margin_back_btn"
                 app:srcCompat="@drawable/all_back_arrow" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_discover_load_select_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
+                android:layout_marginStart="@dimen/start_margin_toolbar"
                 android:fontFamily="@font/pretendard_bold"
                 android:text="@string/discover_load_select_title"
                 android:textColor="@color/G1"
@@ -44,7 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:overScrollMode="never"
             android:scrollbars="none"
             android:layout_marginBottom="56dp"
             app:layout_constraintBottom_toBottomOf="parent"

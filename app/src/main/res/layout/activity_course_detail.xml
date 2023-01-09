@@ -16,6 +16,7 @@
             android:id="@+id/toolbar_course_detail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:contentInsetStart="0dp"
             app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -23,6 +24,7 @@
                 android:id="@+id/iv_course_detail_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/start_margin_back_btn"
                 app:srcCompat="@drawable/all_back_arrow" />
 
         </androidx.appcompat.widget.Toolbar>
