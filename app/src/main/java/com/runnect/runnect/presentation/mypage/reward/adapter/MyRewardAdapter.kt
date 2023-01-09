@@ -1,54 +1,40 @@
 package com.runnect.runnect.presentation.mypage.reward.adapter
-//
-//import android.view.LayoutInflater
-//import android.view.ViewGroup
-//import androidx.recyclerview.widget.DiffUtil
-//import androidx.recyclerview.widget.ListAdapter
-//import androidx.recyclerview.widget.RecyclerView
-//import com.runnect.runnect.databinding.ItemMypageRewardBinding
-//
-//class MyRewardAdapter :
-//    ListAdapter<GetRewardDto.Item, MyRewardAdapter.ItemViewHolder>(Differ()) {
-//
-//
-//    inner class ItemViewHolder(val binding: ItemMypageRewardBinding) :
-//        RecyclerView.ViewHolder(binding.root) {
-//
-//
-//        fun bind(rewardList: GetRewardDto.Item) {
-//
-//            binding.reward = rewardList
-//
-//
-//        }
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-//        val inflater = LayoutInflater.from(parent.context)
-//        val binding = ItemMypageRewardBinding.inflate(inflater)
-//
-//        return ItemViewHolder(binding)
-//    }
-//
-//    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-//        holder.bind(currentList[position])
-//    }
-//
-//
-//    class Differ : DiffUtil.ItemCallback<GetRewardDto.Item>() {
-//        override fun areItemsTheSame(
-//            oldItem: GetRewardDto.Item,
-//            newItem: GetRewardDto.Item
-//        ): Boolean {
-//            return oldItem.id == newItem.id
-//        }
-//
-//        override fun areContentsTheSame(
-//            oldItem: GetRewardDto.Item,
-//            newItem: GetRewardDto.Item
-//        ): Boolean {
-//            return oldItem == newItem
-//        }
-//
-//    }
-//}
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.runnect.runnect.R
+import com.runnect.runnect.data.model.RewardStampDTO
+import com.runnect.runnect.databinding.ItemMypageRewardBinding
+import com.runnect.runnect.util.RewardStampDiffUtilItemCallback
+import timber.log.Timber
+
+class MyRewardAdapter(context: Context) :
+    ListAdapter<RewardStampDTO, ItemViewHolder>(RewardStampDiffUtilItemCallback()) {
+    private val inflater by lazy { LayoutInflater.from(context) }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        return ItemViewHolder(ItemMypageRewardBinding.inflate(inflater, parent, false))
+    }
+
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        holder.onBind(currentList[position])
+    }
+
+}
+
+class ItemViewHolder(private val binding: ItemMypageRewardBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun onBind(data: RewardStampDTO) {
+        binding.tvItemMyPageRewardCondition.text = "코스 ${data.num} 개"
+        if (data.isLock) {
+            Timber.d("${data.id} false")
+            binding.ivItemMyPageRewardCircleFrame.setImageResource(R.drawable.mypage_img_stamp_lock)
+        } else {
+            Timber.d("${data.id} true")
+            binding.ivItemMyPageRewardCircleFrame.setImageResource(data.img)
+        }
+    }
+}
