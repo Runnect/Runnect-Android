@@ -13,7 +13,7 @@ import com.runnect.runnect.data.model.CourseInfoDTO
 import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
-import com.runnect.runnect.util.ItemOffsetDecoration
+import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
@@ -128,7 +128,7 @@ class DiscoverSearchActivity :
         binding.etDiscoverSearchTitle.setFocusAndShowKeyboard(this)
         binding.rvDiscoverSearch.apply {
             layoutManager = GridLayoutManager(this@DiscoverSearchActivity, 2)
-            addItemDecoration(ItemOffsetDecoration(this@DiscoverSearchActivity, 3, 16))
+            addItemDecoration(GridSpacingItemDecoration(this@DiscoverSearchActivity, 2, 6, 16))
             adapter = this@DiscoverSearchActivity.adapter
         }
     }

@@ -10,7 +10,7 @@ import com.runnect.runnect.data.model.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ActivityDiscoverLoadSelectBinding
 import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapter
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
-import com.runnect.runnect.util.ItemOffsetDecoration
+import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnItemClick
 import timber.log.Timber
 
@@ -87,7 +87,6 @@ class DiscoverLoadActivity :
         initLayout()
         addObserver()
         addListener()
-        Timber.d("DiscoverLoadActivity onCreate 호출됨!!")
     }
 
     private fun initLayout() {
@@ -95,9 +94,9 @@ class DiscoverLoadActivity :
             layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
             adapter = this@DiscoverLoadActivity.adapter
             addItemDecoration(
-                ItemOffsetDecoration(
-                    this@DiscoverLoadActivity,
-                    3,
+                GridSpacingItemDecoration(
+                    this@DiscoverLoadActivity, 2,
+                    6,
                     42
                 )
             )

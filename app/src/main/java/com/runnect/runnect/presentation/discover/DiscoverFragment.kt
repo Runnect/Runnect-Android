@@ -12,7 +12,7 @@ import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
-import com.runnect.runnect.util.ItemOffsetDecoration
+import com.runnect.runnect.util.GridSpacingItemDecoration
 
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
     private val viewModel: DiscoverViewModel by viewModels()
@@ -121,7 +121,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initLayout() {
         binding.rvDiscoverRecommend.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvDiscoverRecommend.addItemDecoration(ItemOffsetDecoration(requireContext(), 3, 16))
+        binding.rvDiscoverRecommend.addItemDecoration(
+            GridSpacingItemDecoration(
+                requireContext(),
+                2,
+                6,
+                16
+            )
+        )
         binding.rvDiscoverRecommend.adapter = adapter
     }
 
