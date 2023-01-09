@@ -30,7 +30,6 @@ class DiscoverLoadAdapter(context: Context, listener: OnItemClick) :
 
     override fun onBindViewHolder(holder: DiscoverLoadViewHolder, position: Int) {
         holder.onBind(currentList[position])
-
     }
 
     inner class DiscoverLoadViewHolder(private val binding: ItemDiscoverLoadSelectBinding) :

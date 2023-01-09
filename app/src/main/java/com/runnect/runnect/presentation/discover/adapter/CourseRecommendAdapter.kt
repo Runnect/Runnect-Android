@@ -11,7 +11,7 @@ import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.DiffUtilItemCallback
 
 class CourseRecommendAdapter(context: Context) :
-    ListAdapter<CourseInfoDTO, CourseRecommendAdapter.CourseInfoViewHolder>(DiffUtilItemCallback()) {
+    ListAdapter<CourseInfoDTO, CourseInfoViewHolder>(DiffUtilItemCallback()) {
     private val inflater by lazy { LayoutInflater.from(context) }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
@@ -22,18 +22,16 @@ class CourseRecommendAdapter(context: Context) :
     override fun onBindViewHolder(holder: CourseInfoViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
-
-    inner class CourseInfoViewHolder(private val binding: ItemDiscoverCourseInfoBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data: CourseInfoDTO) {
-            binding.ivItemDiscoverCourseInfoMap.load(data.img)
-            binding.tvItemDiscoverCourseInfoTitle.text = data.title
-            binding.tvItemDiscoverCourseInfoLocation.text = data.location
-            binding.ivItemDiscoverCourseInfoScrap.isSelected = data.isScraped
-            binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
-                it.isSelected = !it.isSelected
-            }
+}
+class CourseInfoViewHolder(private val binding: ItemDiscoverCourseInfoBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun onBind(data: CourseInfoDTO) {
+        binding.ivItemDiscoverCourseInfoMap.load(data.img)
+        binding.tvItemDiscoverCourseInfoTitle.text = data.title
+        binding.tvItemDiscoverCourseInfoLocation.text = data.location
+        binding.ivItemDiscoverCourseInfoScrap.isSelected = data.isScraped
+        binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
+            it.isSelected = !it.isSelected
         }
     }
-
 }
