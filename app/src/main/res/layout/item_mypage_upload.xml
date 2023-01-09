@@ -20,29 +20,18 @@
             android:background="@drawable/radius_5dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_my_page_upload_course_name"
+            android:id="@+id/tv_my_page_upload_course_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:fontFamily="@font/pretendard_medium"
-            tools:text="제목제목제목"
-            android:textColor="@color/black"
-            android:textSize="15sp"
+            tools:text="서울시 송파구 한강"
+            android:height="22dp"
+            android:gravity="center"
+            android:textColor="@color/G1"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/iv_my_page_upload_course"
             app:layout_constraintTop_toBottomOf="@id/iv_my_page_upload_course" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_my_page_upload_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="@font/pretendard_regular"
-            tools:text="OO시 OO구"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_my_page_upload_course_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_upload_course_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
