@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="model"
+            type="com.example.runnect.presentation.run.RunViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.location_enroll.LocationEnrollFragment">
+
+        <View
+            android:id="@+id/view_run_top_frame"
+            android:layout_width="match_parent"
+            android:layout_height="126dp"
+            android:background="@drawable/bottom_right_radius_40_white"
+            android:elevation="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/transparent_00"
+            android:elevation="11dp"
+            android:outlineProvider="none"
+            android:src="@drawable/backbutton"
+            app:layout_constraintStart_toStartOf="@id/view_run_top_frame"
+            app:layout_constraintTop_toTopOf="@id/view_run_top_frame" />
+
+        <ImageView
+            android:id="@+id/iv_total_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24.23dp"
+            android:layout_marginTop="15dp"
+            android:elevation="12dp"
+            android:outlineProvider="none"
+            android:src="@drawable/icn_distance"
+            app:layout_constraintStart_toEndOf="@id/imgBtn_back"
+            app:layout_constraintTop_toTopOf="@id/view_run_top_frame" />
+
+        <TextView
+            android:id="@+id/tv_total_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:elevation="12dp"
+            android:outlineProvider="none"
+            android:text="총 거리"
+            app:layout_constraintBottom_toBottomOf="@id/iv_total_distance"
+            app:layout_constraintStart_toEndOf="@id/iv_total_distance"
+            app:layout_constraintTop_toTopOf="@id/iv_total_distance" />
+        <TextView
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@id/tv_total_distance_unit"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@id/iv_total_distance"
+            app:layout_constraintStart_toStartOf="@id/iv_total_distance"
+            android:outlineProvider="none"
+            android:elevation="11dp"
+            tools:text="1.6"
+            android:text="@{model.distanceSum.toString()}"
+            android:id="@+id/tv_total_distance_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textSize="14sp"
+            android:layout_marginStart="4dp"
+            android:outlineProvider="none"
+            android:elevation="11dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_content"
+            app:layout_constraintStart_toEndOf="@id/tv_total_distance_content"
+            android:id="@+id/tv_total_distance_unit"
+            android:text="km"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
+            android:elevation="11dp"
+            android:outlineProvider="none"
+            android:src="@drawable/icn_time"
+            app:layout_constraintStart_toEndOf="@id/tv_total_distance"
+            app:layout_constraintTop_toTopOf="@id/view_run_top_frame" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:elevation="11dp"
+            android:outlineProvider="none"
+            android:text="시간"
+            app:layout_constraintBottom_toBottomOf="@id/iv_time"
+            app:layout_constraintStart_toEndOf="@id/iv_time"
+            app:layout_constraintTop_toTopOf="@id/iv_time" />
+
+        <TextView
+            android:text="@{model.distanceSum.toString()}"
+            android:textSize="24sp"
+            tools:text="50:24"
+            android:outlineProvider="none"
+            android:elevation="11dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_unit"
+            app:layout_constraintStart_toStartOf="@id/iv_time"
+            android:id="@+id/tv_time_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+        <ImageView
+            android:id="@+id/iv_top_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="11dp"
+            android:outlineProvider="none"
+            android:src="@drawable/star_top_radius"
+            app:layout_constraintBottom_toBottomOf="@id/view_run_top_frame"
+            app:layout_constraintEnd_toEndOf="@id/view_run_top_frame" />
+
+
+        <FrameLayout
+
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_run_finish"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/radius_10_m1_button"
+            android:text="러닝 종료"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_currentLocation"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="18dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/currentlocation"
+            app:backgroundTint="@color/white"
+            app:fabCustomSize="48dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_run_finish"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@null" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

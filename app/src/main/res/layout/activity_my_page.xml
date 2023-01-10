@@ -37,6 +37,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_myPage_title" />
 
         <ImageView
+            tools:src="@drawable/mypage_stamp"
             android:id="@+id/iv_myPage_profile"
             android:layout_width="63dp"
             android:layout_height="63dp"

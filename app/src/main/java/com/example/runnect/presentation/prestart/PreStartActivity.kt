@@ -63,6 +63,7 @@ class PreStartActivity : BindingActivity<ActivityPreStartBinding>(R.layout.activ
 
                 initView()
                 goToDraw()
+                backButton()
             }
         }
 
@@ -82,6 +83,11 @@ class PreStartActivity : BindingActivity<ActivityPreStartBinding>(R.layout.activ
     }
 
 
+    private fun backButton(){
+        binding.imgBtnBack.setOnClickListener {
+            finish()
+        }
+    }
     private fun makeMarker() {
 
         val startLatLng = searchResult.locationLatLng

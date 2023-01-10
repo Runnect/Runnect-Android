@@ -15,7 +15,19 @@
         android:layout_height="match_parent"
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
+        <View
+            android:background="@color/white"
+            android:elevation="1dp"
+            android:outlineProvider="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/view_top_frame"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
         <ImageButton
+            android:elevation="2dp"
+            android:outlineProvider="none"
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,10 +35,12 @@
             android:layout_marginTop="12dp"
             android:background="@color/transparent_00"
             android:src="@drawable/backbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/view_top_frame"
+            app:layout_constraintTop_toTopOf="@id/view_top_frame" />
 
         <TextView
+            android:elevation="2dp"
+            android:outlineProvider="none"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"

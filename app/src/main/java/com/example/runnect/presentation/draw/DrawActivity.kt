@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -32,10 +31,9 @@ import java.math.RoundingMode
 
 class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
-
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
-    private val touchList = mutableListOf<LatLng>()
+    private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
 
     private lateinit var searchResult: SearchResultEntity
@@ -68,6 +66,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 initView()
 //                addListeners()
                 courseFinish()
+                backButton()
 
             }
         }
@@ -127,7 +126,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             setView(myLayout)
         }
         val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
+//        dialog.setCancelable(false) // 외부 영역 터치 금지
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
 
@@ -138,22 +137,19 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         }
         myLayout.btn_run.setOnClickListener {
             val intent = Intent(this, CountDownActivity::class.java)
+            intent.putExtra("touchList",touchList)
+            intent.putExtra("startLatLng",startLatLngPublic)
+            intent.putExtra("totalDistance",viewModel.distanceSum.value)
             startActivity(intent)
             dialog.dismiss()
         }
 
-
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        // 다이얼로그 사이즈 조절
-//        context.dialogResize(this,0.8f,0.4f)
-//
-//        // 배경 투명하게 바꿔줌
-//        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//
-//        // 취소 불가능
-//        setCancelable(false)
     }
-
+    private fun backButton(){
+        binding.imgBtnBack.setOnClickListener {
+            finish()
+        }
+    }
 
 
     //카메라 위치 변경 함수
@@ -278,8 +274,8 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 distanceList.removeLast()
                 sumList.removeLast()
             }
-            val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR)
-            viewModel.distanceSum.value = test.toDouble() //거리 합을 뷰모델에 세팅
+            val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toDouble()
+            viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
         }
     }
 
@@ -311,8 +307,8 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
             if (!sumList.contains(distanceResult)) {
                 sumList.add(distanceResult)
-                val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR)
-                viewModel.distanceSum.value = test.toDouble() //거리 합을 뷰모델에 세팅
+                val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toDouble()
+                viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
             }
         } // 거리 계산 for문 종료
 
@@ -338,56 +334,17 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
         naverMap.addOnCameraIdleListener {
             Toast.makeText(context, "카메라 움직임 종료", Toast.LENGTH_SHORT).show()
-            captureMap()
+//            captureMap()
         }
 
     }
 
-    private fun captureMap() {
-        //캡쳐해서 이미지 뷰에 set하기~
-        naverMap.takeSnapshot {
-            binding.ivDrawingCaptured.setImageBitmap(it)
-        }
-    }
-
-//    private fun alertDialog() {
-//        val builder = AlertDialog.Builder(this, R.layout.custom_alert_dialog)
-//        builder
-//            .setTitle("Title")
-//            .setMessage("MessageMessageMessageMessageMessageMessage")
-//            .setPositiveButton("Start",
-//                DialogInterface.OnClickListener { dialog, id ->
-//                    // Start 버튼 선택 시 수행
-//                })
-//            .setNegativeButton("Cancel",
-//                DialogInterface.OnClickListener { dialog, id ->
-//                    // Cancel 버튼 선택 시 수행
-//                })
-//// Create the AlertDialog object and return it
-//        builder.create()
-//        builder.show()
+//    private fun captureMap() {
+//        //캡쳐해서 이미지 뷰에 set하기~
+//        naverMap.takeSnapshot {
+//            binding.ivDrawingCaptured.setImageBitmap(it)
+//        }
 //    }
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return
-        }
-
-        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (!locationSource.isActivated) { //권한 거부 시
-                naverMap.locationTrackingMode = LocationTrackingMode.None
-            }
-            return
-        }
-
-    }
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000

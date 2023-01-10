@@ -49,6 +49,7 @@ class PreDrawActivity : BindingActivity<ActivityPreDrawBinding>(R.layout.activit
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(this) //
         requestPermission()
+//        initView() //지도 뷰 표시
     }
 
     private fun requestPermission() {
@@ -120,7 +121,6 @@ class PreDrawActivity : BindingActivity<ActivityPreDrawBinding>(R.layout.activit
         naverMap.moveCamera(cameraUpdate)
 
     }
-
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
