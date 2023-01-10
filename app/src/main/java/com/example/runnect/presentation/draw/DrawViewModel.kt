@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 
 class DrawViewModel : ViewModel() {
 
-    var distanceSum = MutableLiveData<Double>()
+    var distanceSum = MutableLiveData<Double>(0.0)
 
     fun distance(lat1: Double, lon1: Double, lat2: Double, lon2: Double, unit: String): Double {
 

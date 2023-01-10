@@ -1,6 +1,8 @@
 package com.example.runnect.presentation.draw
 
+import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
@@ -38,8 +40,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     val distanceList = mutableListOf<LatLng>()//거리 계산용 list
     var sumList = mutableListOf<Double>()//Double
 
-    val testNumber = 33.2380283028392
-    val testNumberMade = BigDecimal(testNumber).setScale(1, RoundingMode.FLOOR)
 
     //지금 어디 코드 시점부터 넘어온 data를 받는 건지 정확한 파악이 안 됨. 그래서 받아온 data가 필요한 코드들을
     //draw()에다 싹 넣어줬는데 너무 길어짐. 그래서 일단 정리는 나중에 하기로 하고
@@ -49,26 +49,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     val viewModel: DrawViewModel by viewModels()
 
-    private fun countDown() {
-        binding.btnDraw.setOnClickListener {
-            startActivity(Intent(this, CountDownActivity::class.java))
-        }
-    }
-
-    private fun initView() {
-
-        //MapFragment 추가
-        val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.mapView, it).commit()
-            }
-        mapFragment.getMapAsync(this) //지도 객체 얻어오기
-        locationSource = FusedLocationSource(
-            this,
-            LOCATION_PERMISSION_REQUEST_CODE
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,12 +64,28 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
                 initView()
 //                addListeners()
-                countDown()
+                courseFinish()
 
             }
         }
 //        Timber.tag(ContentValues.TAG).d("searchResult@ : ${searchResult}")
 
+    }
+
+
+    private fun initView() {
+
+        //MapFragment 추가
+        val fm = supportFragmentManager
+        val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                fm.beginTransaction().add(R.id.mapView, it).commit()
+            }
+        mapFragment.getMapAsync(this) //지도 객체 얻어오기
+        locationSource = FusedLocationSource(
+            this,
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -114,12 +110,12 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     }
 
 
-//    private fun cameraUpdate(location: LatLng) {
-//        val cameraUpdate = CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude))
-//            .animate(CameraAnimation.Easing)
-//        naverMap.moveCamera(cameraUpdate)
-//
-//    }
+    private fun courseFinish() {
+        binding.btnDraw.setOnClickListener {
+            alertDialog()
+//            startActivity(Intent(this, CountDownActivity::class.java))
+        }
+    }
 
     //카메라 위치 변경 함수
     private fun cameraUpdate(location: Any) {
@@ -210,7 +206,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
             //터치가 될 때마다 거리 계산
             calculateDistance()
-            Timber.tag(ContentValues.TAG).d("testNumberMade : ${testNumberMade}")
             Timber.tag(ContentValues.TAG).d("distanceList : ${distanceList}")
             Timber.tag(ContentValues.TAG).d("sumList : ${sumList}")
             Timber.tag(ContentValues.TAG)
@@ -240,8 +235,10 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             }
 
             //백 버튼 눌렀을 때 거리 계산 다시
-            distanceList.removeLast()
-            sumList.removeLast()
+            if (distanceList.size > 0 && sumList.size > 0) {
+                distanceList.removeLast()
+                sumList.removeLast()
+            }
             val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR)
             viewModel.distanceSum.value = test.toDouble() //거리 합을 뷰모델에 세팅
         }
@@ -312,6 +309,24 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         naverMap.takeSnapshot {
             binding.ivDrawingCaptured.setImageBitmap(it)
         }
+    }
+
+    private fun alertDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder
+            .setTitle("Title")
+            .setMessage("MessageMessageMessageMessageMessageMessage")
+            .setPositiveButton("Start",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // Start 버튼 선택 시 수행
+                })
+            .setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // Cancel 버튼 선택 시 수행
+                })
+// Create the AlertDialog object and return it
+        builder.create()
+        builder.show()
     }
 
 
