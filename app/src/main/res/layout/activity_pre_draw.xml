@@ -52,7 +52,7 @@
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:background="@drawable/top_radius_20_white_bottom_navi"
+            android:background="@drawable/top_radius_20_white"
             android:id="@+id/bnv_main"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

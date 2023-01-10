@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="searchResultEntity"
-            type="com.example.runnect.presentation.search.entity.SearchResultEntity" />
+            name="model"
+            type="com.example.runnect.presentation.prestart.PreStartViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:imeOptions="actionDone"
+            android:imeOptions="actionSearch"
             android:inputType="text"
             android:id="@+id/et_search"
             android:layout_width="0dp"

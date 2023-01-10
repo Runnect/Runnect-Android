@@ -9,16 +9,18 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
+import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
 import com.example.runnect.data.api.ApiClient
 import com.example.runnect.databinding.ActivitySearchBinding
-import com.example.runnect.presentation.draw.DrawActivity
-import com.example.runnect.presentation.draw.DrawActivity.Companion.SEARCH_RESULT_EXTRA_KEY
+import com.example.runnect.presentation.prestart.PreStartActivity
+import com.example.runnect.presentation.prestart.PreStartActivity.Companion.SEARCH_RESULT_EXTRA_KEY
+import com.example.runnect.presentation.prestart.PreStartViewModel
 import com.example.runnect.presentation.search.Dto.Poi
 import com.example.runnect.presentation.search.Dto.Pois
 import com.example.runnect.presentation.search.adapter.SearchAdapter
@@ -30,12 +32,14 @@ import kotlinx.coroutines.launch
 
 class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
+    val viewModel: PreStartViewModel by viewModels()
 
     private val getSearchService = ApiClient.ServicePool.getSearchService
+
     private val searchAdapter by lazy {
         SearchAdapter(searchResultClickListener = {
             startActivity(
-                Intent(this, DrawActivity::class.java).apply {
+                Intent(this, PreStartActivity::class.java).apply {
                     putExtra(SEARCH_RESULT_EXTRA_KEY, it)
                 }
             )
@@ -44,6 +48,9 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding.model = viewModel
+        binding.lifecycleOwner = this
 
 
         val recyclerviewSearch = binding.recyclerViewSearch //xml에 짜놓은 리사이클러뷰 불러오고
@@ -129,7 +136,7 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
         binding.etSearch.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == IME_ACTION_DONE) {
+                if (actionId == IME_ACTION_SEARCH) {
                     searchKeyword(binding.etSearch.text.toString())
 
                     // 키패드 내리기

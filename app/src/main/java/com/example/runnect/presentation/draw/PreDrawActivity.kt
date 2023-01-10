@@ -26,6 +26,7 @@ class PreDrawActivity : BindingActivity<ActivityPreDrawBinding>(R.layout.activit
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
 
+
     private fun initView() {
 
         //MapFragment 추가
@@ -107,6 +108,9 @@ class PreDrawActivity : BindingActivity<ActivityPreDrawBinding>(R.layout.activit
                 position = LatLng(currentLocation.latitude, currentLocation.longitude)
             }
         }
+
+        val uiSettings = naverMap.uiSettings
+        uiSettings.isZoomControlEnabled = false
     }
 
 
