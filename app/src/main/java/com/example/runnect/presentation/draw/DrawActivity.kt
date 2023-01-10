@@ -39,7 +39,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     var sumList = mutableListOf<Double>()//Double
 
     val testNumber = 33.2380283028392
-    val testNumberMade = BigDecimal(testNumber).setScale(1,RoundingMode.FLOOR)
+    val testNumberMade = BigDecimal(testNumber).setScale(1, RoundingMode.FLOOR)
 
     //지금 어디 코드 시점부터 넘어온 data를 받는 건지 정확한 파악이 안 됨. 그래서 받아온 data가 필요한 코드들을
     //draw()에다 싹 넣어줬는데 너무 길어짐. 그래서 일단 정리는 나중에 하기로 하고
@@ -239,7 +239,11 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
             }
 
-
+            //백 버튼 눌렀을 때 거리 계산 다시
+            distanceList.removeLast()
+            sumList.removeLast()
+            val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR)
+            viewModel.distanceSum.value = test.toDouble() //거리 합을 뷰모델에 세팅
         }
     }
 
@@ -271,7 +275,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
             if (!sumList.contains(distanceResult)) {
                 sumList.add(distanceResult)
-                val test = BigDecimal(sumList.sum()).setScale(1,RoundingMode.FLOOR)
+                val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR)
                 viewModel.distanceSum.value = test.toDouble() //거리 합을 뷰모델에 세팅
             }
         } // 거리 계산 for문 종료
