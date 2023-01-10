@@ -12,8 +12,9 @@ import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapte
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnItemClick
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-
+@AndroidEntryPoint
 class DiscoverLoadActivity :
     BindingActivity<ActivityDiscoverLoadSelectBinding>(R.layout.activity_discover_load_select),
     OnItemClick {

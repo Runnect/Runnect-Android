@@ -14,7 +14,9 @@ import com.runnect.runnect.binding.BindingDialog
 import com.runnect.runnect.databinding.DialogMyPageEditNameBinding
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.showToast
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyPageEditNameDialog:BindingDialog<DialogMyPageEditNameBinding>(R.layout.dialog_my_page_edit_name) {
     private val viewModel:MyPageViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

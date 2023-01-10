@@ -11,8 +11,9 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.util.extension.clearFocus
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class DiscoverUploadActivity :
     BindingActivity<ActivityDiscoverUploadBinding>(R.layout.activity_discover_upload) {
     private val viewModel: DiscoverUploadViewModel by viewModels()

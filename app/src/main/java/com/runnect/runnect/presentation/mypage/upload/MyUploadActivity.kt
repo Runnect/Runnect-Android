@@ -8,7 +8,9 @@ import com.runnect.runnect.data.dto.UploadedCourseDTO
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload) {
 
     private val adapter by lazy {

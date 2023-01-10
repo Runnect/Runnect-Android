@@ -4,8 +4,11 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.runnect.runnect.util.extension.addSourceList
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DiscoverUploadViewModel : ViewModel() {
+@HiltViewModel
+class DiscoverUploadViewModel @Inject constructor(): ViewModel() {
     val title = MutableLiveData<String>()
     val desc = MutableLiveData<String>()
 

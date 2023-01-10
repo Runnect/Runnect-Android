@@ -8,7 +8,9 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryBinding
 import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.util.RecyclerOffsetDecorationHeight
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history) {
 
     private val historyList = listOf<HistoryInfoDTO>(

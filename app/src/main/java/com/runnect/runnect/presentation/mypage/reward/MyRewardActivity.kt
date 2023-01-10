@@ -8,24 +8,26 @@ import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ActivityMyRewardBinding
 import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activity_my_reward) {
     private val adapter by lazy {
         MyRewardAdapter(this).apply {
             submitList(
                 listOf(
-                    RewardStampDTO(1,5, R.drawable.mypage_img_stamp1,false),
-                    RewardStampDTO(2,10,R.drawable.mypage_img_stamp2,false),
-                    RewardStampDTO(3,15,R.drawable.mypage_img_stamp3,true),
-                    RewardStampDTO(4,5,R.drawable.mypage_img_stamp4,false),
-                    RewardStampDTO(5,10,R.drawable.mypage_img_stamp5,true),
-                    RewardStampDTO(6,15,R.drawable.mypage_img_stamp6,true),
-                    RewardStampDTO(7,5,R.drawable.mypage_img_stamp7,false),
-                    RewardStampDTO(8,10,R.drawable.mypage_img_stamp8,false),
-                    RewardStampDTO(9,15,R.drawable.mypage_img_stamp9,true),
-                    RewardStampDTO(10,5,R.drawable.mypage_img_stamp10,false),
-                    RewardStampDTO(11,10,R.drawable.mypage_img_stamp11,true),
-                    RewardStampDTO(12,15,R.drawable.mypage_img_stamp12,true)
+                    RewardStampDTO(1,5, R.drawable.mypage_img_stamp_c1,false),
+                    RewardStampDTO(2,10,R.drawable.mypage_img_stamp_c2,false),
+                    RewardStampDTO(3,15,R.drawable.mypage_img_stamp_c3,true),
+                    RewardStampDTO(4,5,R.drawable.mypage_img_stamp_s1,false),
+                    RewardStampDTO(5,10,R.drawable.mypage_img_stamp_s2,true),
+                    RewardStampDTO(6,15,R.drawable.mypage_img_stamp_s3,true),
+                    RewardStampDTO(7,5,R.drawable.mypage_img_stamp_u1,false),
+                    RewardStampDTO(8,10,R.drawable.mypage_img_stamp_u2,false),
+                    RewardStampDTO(9,15,R.drawable.mypage_img_stamp_u3,true),
+                    RewardStampDTO(10,5,R.drawable.mypage_img_stamp_r1,false),
+                    RewardStampDTO(11,10,R.drawable.mypage_img_stamp_r2,true),
+                    RewardStampDTO(12,15,R.drawable.mypage_img_stamp_r3,true)
                 )
             )
         }

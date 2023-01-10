@@ -3,9 +3,12 @@ package com.runnect.runnect.presentation.discover.load
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
-class DiscoverLoadViewModel : ViewModel() {
+@HiltViewModel
+class DiscoverLoadViewModel @Inject constructor(): ViewModel() {
     private var _idSelectedItem: MutableLiveData<Int> = MutableLiveData(0)
     val idSelectedItem: LiveData<Int>
         get() = _idSelectedItem

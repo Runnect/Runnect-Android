@@ -18,8 +18,9 @@ import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import com.runnect.runnect.util.extension.showToast
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class DiscoverSearchActivity :
     BindingActivity<ActivityDiscoverSearchBinding>(com.runnect.runnect.R.layout.activity_discover_search),
     OnItemClick {
