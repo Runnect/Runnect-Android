@@ -2,11 +2,13 @@ package com.example.runnect.presentation.draw
 
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.runnect.R
@@ -14,6 +16,7 @@ import com.example.runnect.binding.BindingActivity
 import com.example.runnect.databinding.ActivityDrawBinding
 import com.example.runnect.presentation.search.entity.LocationLatLngEntity
 import com.example.runnect.presentation.search.entity.SearchResultEntity
+import com.example.runnect.presentation.storage.StorageActivity
 import com.gun0912.tedpermission.provider.TedPermissionProvider.context
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -22,10 +25,10 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
+import kotlinx.android.synthetic.main.custom_dialog.view.*
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.math.roundToInt
 
 class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
@@ -112,10 +115,46 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
-            alertDialog()
+            cuDialog(binding.root)
 //            startActivity(Intent(this, CountDownActivity::class.java))
         }
     }
+
+    fun cuDialog(view: View) {
+        val myLayout = layoutInflater.inflate(R.layout.custom_dialog, null)
+
+        val build = AlertDialog.Builder(view.context).apply {
+            setView(myLayout)
+        }
+        val dialog = build.create()
+        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
+        dialog.show()
+
+        myLayout.btn_storage.setOnClickListener {
+            val intent = Intent(this, StorageActivity::class.java)
+            startActivity(intent)
+            dialog.dismiss()
+        }
+        myLayout.btn_run.setOnClickListener {
+            val intent = Intent(this, CountDownActivity::class.java)
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        // 다이얼로그 사이즈 조절
+//        context.dialogResize(this,0.8f,0.4f)
+//
+//        // 배경 투명하게 바꿔줌
+//        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        // 취소 불가능
+//        setCancelable(false)
+    }
+
+
 
     //카메라 위치 변경 함수
     private fun cameraUpdate(location: Any) {
@@ -311,23 +350,23 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         }
     }
 
-    private fun alertDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder
-            .setTitle("Title")
-            .setMessage("MessageMessageMessageMessageMessageMessage")
-            .setPositiveButton("Start",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // Start 버튼 선택 시 수행
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // Cancel 버튼 선택 시 수행
-                })
-// Create the AlertDialog object and return it
-        builder.create()
-        builder.show()
-    }
+//    private fun alertDialog() {
+//        val builder = AlertDialog.Builder(this, R.layout.custom_alert_dialog)
+//        builder
+//            .setTitle("Title")
+//            .setMessage("MessageMessageMessageMessageMessageMessage")
+//            .setPositiveButton("Start",
+//                DialogInterface.OnClickListener { dialog, id ->
+//                    // Start 버튼 선택 시 수행
+//                })
+//            .setNegativeButton("Cancel",
+//                DialogInterface.OnClickListener { dialog, id ->
+//                    // Cancel 버튼 선택 시 수행
+//                })
+//// Create the AlertDialog object and return it
+//        builder.create()
+//        builder.show()
+//    }
 
 
     override fun onRequestPermissionsResult(

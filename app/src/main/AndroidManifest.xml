@@ -19,10 +19,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.draw.CountDownActivity"
+            android:name=".StorageActivity"
             android:exported="false">
-
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
+        <activity
+            android:name=".presentation.draw.CountDownActivity"
+            android:exported="false"></activity>
         <activity
             android:name=".presentation.prestart.PreStartActivity"
             android:exported="false" />
