@@ -50,7 +50,7 @@
             android:layout_width="63dp"
             android:layout_height="0dp"
             android:layout_marginStart="23dp"
-            android:src="@color/G4"
+            app:imgRes="@{vm.stamp}"
             app:layout_constraintBottom_toBottomOf="@id/view_my_page_profile_frame"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="@id/view_my_page_profile_frame"
