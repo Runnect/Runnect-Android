@@ -9,7 +9,7 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.CourseInfoDTO
+import com.runnect.runnect.data.dto.CourseInfoDTO
 import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter

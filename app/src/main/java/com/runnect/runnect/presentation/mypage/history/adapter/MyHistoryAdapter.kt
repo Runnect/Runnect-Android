@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.model.HistoryInfoDTO
+import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ItemMypageHistoryBinding
 import com.runnect.runnect.util.HistoryInfoDiffUtilItemCallback
 

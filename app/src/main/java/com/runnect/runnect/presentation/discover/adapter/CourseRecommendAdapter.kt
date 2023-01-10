@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.runnect.runnect.data.model.CourseInfoDTO
+import com.runnect.runnect.data.dto.CourseInfoDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.DiffUtilItemCallback
 

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.model.UploadedCourseDTO
+import com.runnect.runnect.data.dto.UploadedCourseDTO
 import com.runnect.runnect.databinding.ItemMypageUploadBinding
 import com.runnect.runnect.util.CourseUploadedDiffUtilItemCallback
 

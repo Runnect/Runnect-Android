@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.RewardStampDTO
+import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ActivityMyRewardBinding
 import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration

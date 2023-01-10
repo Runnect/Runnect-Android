@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.RewardStampDTO
+import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ItemMypageRewardBinding
 import com.runnect.runnect.util.RewardStampDiffUtilItemCallback
 import timber.log.Timber

@@ -1,8 +1,7 @@
 package com.runnect.runnect.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.runnect.runnect.data.model.CourseInfoDTO
-import com.runnect.runnect.data.model.UploadedCourseDTO
+import com.runnect.runnect.data.dto.UploadedCourseDTO
 
 class CourseUploadedDiffUtilItemCallback :DiffUtil.ItemCallback<UploadedCourseDTO>() {
 
@@ -10,7 +9,7 @@ class CourseUploadedDiffUtilItemCallback :DiffUtil.ItemCallback<UploadedCourseDT
         return oldItem.id== newItem.id
     }
 
-    override fun areContentsTheSame(oldItem:UploadedCourseDTO, newItem: UploadedCourseDTO): Boolean {
+    override fun areContentsTheSame(oldItem: UploadedCourseDTO, newItem: UploadedCourseDTO): Boolean {
         return oldItem==newItem
     }
 }

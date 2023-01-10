@@ -6,7 +6,7 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.CourseLoadInfoDTO
+import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ActivityDiscoverLoadSelectBinding
 import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapter
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
