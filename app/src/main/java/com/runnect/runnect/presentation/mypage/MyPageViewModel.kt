@@ -32,6 +32,18 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
             }
         }
     }
+
+    fun updateNickName() {
+        viewModelScope.launch {
+            runCatching {
+                userRepository.updateNickName(RequestUpdateNickName(nickName.value.toString()))
+            }.onSuccess {
+            }.onFailure {
+                Timber.d("${it.message}")
+            }
+        }
+    }
+
     private fun getProfileStamp(stamp: String): Int {
         return when (stamp) {
             "c1" -> R.drawable.mypage_img_stamp_c1
