@@ -26,7 +26,7 @@ object PApiClient {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
-                .addHeader("machineId", "jihun-test")
+                .addHeader("machineId", "surin-test1")
                 .build()
             proceed(newRequest)
         }

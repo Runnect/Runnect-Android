@@ -20,18 +20,29 @@
             android:background="@drawable/radius_5dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_my_page_upload_course_location"
+            android:id="@+id/tv_my_page_upload_course_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/pretendard_medium"
-            tools:text="서울시 송파구 한강"
+            tools:text="럭셔리한 압구정 러닝"
             android:height="22dp"
-            android:gravity="center"
+            android:gravity="bottom"
             android:textColor="@color/G1"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/iv_my_page_upload_course"
             app:layout_constraintTop_toBottomOf="@id/iv_my_page_upload_course" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_upload_course_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/pretendard_regular"
+            tools:text="서울시 송파구 한강"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_upload_course_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_upload_course_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
