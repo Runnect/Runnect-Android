@@ -133,7 +133,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_user_lv_indicator"
             app:layout_constraintStart_toEndOf="@id/tv_my_page_user_lv_indicator"
             app:layout_constraintTop_toTopOf="@id/tv_my_page_user_lv_indicator"
-            android:text="@{vm.level.toString()}"
+            android:text="@{vm.level}"
             tools:text="3" />
 
         <ProgressBar

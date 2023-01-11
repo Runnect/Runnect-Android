@@ -10,7 +10,9 @@ import com.runnect.runnect.databinding.FragmentMyPageBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
+import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
@@ -18,13 +20,11 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        initView()
+        binding.lifecycleOwner = this.viewLifecycleOwner
+        viewModel.getUserInfo()
         addListener()
         addObserver()
-    }
 
-    private fun initView() {
-        viewModel.getUserInfo()
     }
 
     private fun addListener() {
