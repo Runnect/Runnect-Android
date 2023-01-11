@@ -8,4 +8,5 @@ interface UserRepository {
     suspend fun getUserInfo(): ResponseUser
     suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName
     suspend fun getMyStamp(): MutableList<String>
+    suspend fun getRecord(): MutableList<RecordInfoDTO>
 }

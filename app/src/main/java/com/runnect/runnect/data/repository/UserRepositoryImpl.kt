@@ -11,4 +11,11 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
     override suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
         userDataSource.updateNickName(requestUpdateNickName)
 
+    override suspend fun getRecord(): MutableList<RecordInfoDTO> {
+        val recordList = mutableListOf<RecordInfoDTO>()
+        for (i in userDataSource.getRecord().data.records) {
+            recordList.add(i.toData())
+        }
+        return recordList
+    }
 }

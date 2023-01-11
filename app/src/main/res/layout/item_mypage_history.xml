@@ -15,14 +15,17 @@
         app:layout_constraintDimensionRatio="330:166"
         android:background="@drawable/radius_10dp_history_item"
         tools:context=".presentation.mypage.history.MyHistoryActivity">
+
         <View
             android:id="@+id/view_my_page_history_frame"
             android:layout_width="330dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="330:177"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_my_page_history_course"
             android:layout_width="80dp"
@@ -142,6 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="2dp"
             tools:text="4.01"
             android:textColor="@color/G1"
             android:textSize="15sp"
@@ -180,12 +184,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="18.62dp"
+            android:layout_marginStart="27.46dp"
             android:fontFamily="@font/pretendard_semibold"
             android:textSize="15sp"
             tools:text="0:27:36"
             android:textColor="@color/G1"
-            app:layout_constraintEnd_toStartOf="@id/divider_my_page_history_vertical3"
+            app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical2"
             app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_time" />
         <!--평균 페이스-->
         <androidx.appcompat.widget.AppCompatTextView

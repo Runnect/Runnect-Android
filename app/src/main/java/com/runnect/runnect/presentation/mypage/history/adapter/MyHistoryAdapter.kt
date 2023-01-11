@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.dto.HistoryInfoDTO
+import coil.load
+import com.runnect.runnect.data.dto.RecordInfoDTO
 import com.runnect.runnect.databinding.ItemMypageHistoryBinding
 import com.runnect.runnect.util.HistoryInfoDiffUtilItemCallback
 
 class MyHistoryAdapter(context: Context) :
-    ListAdapter<HistoryInfoDTO, MyHistoryViewHolder>(
+    ListAdapter<RecordInfoDTO, MyHistoryViewHolder>(
         HistoryInfoDiffUtilItemCallback()
     ) {
     private val inflater by lazy { LayoutInflater.from(context) }
@@ -26,9 +27,15 @@ class MyHistoryAdapter(context: Context) :
 
 class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun onBind(data: HistoryInfoDTO) {
-        binding.ivMyPageHistoryCourse.setImageResource(data.img)
-        binding.tvMyPageHistoryDate.text = data.title
-        binding.tvMyPageHistoryPlace.text = data.location
+    fun onBind(data: RecordInfoDTO) {
+        with(binding){
+            ivMyPageHistoryCourse.load(data.img)
+            tvMyPageHistoryCourseName.text = data.title
+            tvMyPageHistoryPlace.text = data.location
+            tvMyPageHistoryDate.text = data.date
+            tvMyPageHistoryDistanceData.text = data.distance
+            tvMyPageHistoryTimeData.text = data.time
+            tvMyPageHistoryPaceData.text = data.pace
+        }
     }
 }
