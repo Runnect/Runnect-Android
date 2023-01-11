@@ -16,4 +16,9 @@ interface PUserService {
     suspend fun updateNickName(
         @Body requestUpdateNickName: RequestUpdateNickName
     ): ResponseUpdateNickName
+
+    @GET("api/stamp/user")
+    suspend fun getMyStamp(
+    ): ResponseMyStamp
+
 }

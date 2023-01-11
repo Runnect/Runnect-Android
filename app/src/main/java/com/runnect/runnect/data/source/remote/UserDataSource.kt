@@ -10,4 +10,5 @@ class UserDataSource(private val userService: PUserService) {
     suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
         userService.updateNickName(requestUpdateNickName)
 
+    suspend fun getMyStamp(): ResponseMyStamp = userService.getMyStamp()
 }
