@@ -228,6 +228,8 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
+//            val intent = Intent(this@RunActivity, StorageActivity::class.java)
+//            startActivity(intent)
             bottomSheetDialog.dismiss()
         }
         // bottomSheetDialog 뷰 생성

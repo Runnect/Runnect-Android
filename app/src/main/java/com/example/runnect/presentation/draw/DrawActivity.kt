@@ -1,14 +1,20 @@
 package com.example.runnect.presentation.draw
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
@@ -16,7 +22,7 @@ import com.example.runnect.databinding.ActivityDrawBinding
 import com.example.runnect.presentation.search.entity.LocationLatLngEntity
 import com.example.runnect.presentation.search.entity.SearchResultEntity
 import com.example.runnect.presentation.storage.StorageActivity
-import com.gun0912.tedpermission.provider.TedPermissionProvider.context
+import com.example.runnect.presentation.storage.api.ContentUriRequestBody
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -26,8 +32,11 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.util.*
+import kotlin.properties.Delegates
 
 class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
@@ -38,7 +47,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     private lateinit var searchResult: SearchResultEntity
 
-    val distanceList = mutableListOf<LatLng>()//거리 계산용 list
+    val distanceList = arrayListOf<LatLng>()//거리 계산용 list
+    val distanceListtoUpload =
+        arrayListOf<UploadLatLng>() //lat,lng을 묶어 보내야 해서 data class를 따로 만들었는데 이럴거면 그냥 LatLng써도 되지 않나?
     var sumList = mutableListOf<Double>()//Double
 
 
@@ -47,6 +58,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     //별도의 전역 변수를 만들어서 쓰기로 함. 거리계산
 
     lateinit var startLatLngPublic: LocationLatLngEntity
+    var distancePublic by Delegates.notNull<Double>()
 
     val viewModel: DrawViewModel by viewModels()
 
@@ -68,6 +80,13 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 courseFinish()
                 backButton()
 
+                viewModel.errorMessage.observe(this) {
+                    Timber.tag(ContentValues.TAG).d("fail")
+                }
+                viewModel.uploadResult.observe(this) {
+                    Timber.tag(ContentValues.TAG).d(it.message)
+
+                }
             }
         }
 //        Timber.tag(ContentValues.TAG).d("searchResult@ : ${searchResult}")
@@ -109,11 +128,45 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
 
+
     }
 
 
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
+            //여기에 courseUpload 서버 통신 코드 넣어야 함
+            createMbr()
+
+            //createMbr()이 분명 먼저 도는데 변환에서 속도가 걸리니까 늦게 찍혀 그래서 핸들러를 써줌
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    for (i in 1..distanceList.size) {
+                        distanceListtoUpload.add(UploadLatLng(distanceList[i - 1].latitude,
+                            distanceList[i - 1].longitude))
+                    }
+                    viewModel.path.value = distanceListtoUpload //타입이 Double이 아닌 건 조금 걸리네..
+                    //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
+                    viewModel.departureAddress.value = searchResult.fullAdress
+                    viewModel.departureName.value = searchResult.name
+                    Timber.tag(ContentValues.TAG).d("viewModel.path : ${viewModel.path.value}")
+                    Timber.tag(ContentValues.TAG)
+                        .d("viewModel.distance : ${viewModel.distanceSum.value}")
+                    Timber.tag(ContentValues.TAG)
+                        .d("viewModel.departureAddress : ${viewModel.departureAddress.value}")
+                    Timber.tag(ContentValues.TAG)
+                        .d("viewModel.departureName : ${viewModel.departureName.value}")
+                    Timber.tag(ContentValues.TAG).d("viewModel.image : ${viewModel.image.value}")
+                }, 500
+            )
+
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    viewModel.uploadCourse()
+
+                }, 600
+            )
+
+
             cuDialog(binding.root)
 //            startActivity(Intent(this, CountDownActivity::class.java))
         }
@@ -137,15 +190,16 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         }
         myLayout.btn_run.setOnClickListener {
             val intent = Intent(this, CountDownActivity::class.java)
-            intent.putExtra("touchList",touchList)
-            intent.putExtra("startLatLng",startLatLngPublic)
-            intent.putExtra("totalDistance",viewModel.distanceSum.value)
+            intent.putExtra("touchList", touchList)
+            intent.putExtra("startLatLng", startLatLngPublic)
+            intent.putExtra("totalDistance", viewModel.distanceSum.value)
             startActivity(intent)
             dialog.dismiss()
         }
 
     }
-    private fun backButton(){
+
+    private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
             finish()
         }
@@ -309,42 +363,55 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 sumList.add(distanceResult)
                 val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toDouble()
                 viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
+                distancePublic = test //전역 변수에 세팅
             }
         } // 거리 계산 for문 종료
 
     }
 
-
-    private fun addListeners() {
-        binding.btnDraw.setOnClickListener {
-            createMbr()
-        }
-    }
-
     //모든 마커를 포함할 수 있도록 하는 꼭지점 좌표 두개를 만들고
     //중간지점의 좌표값을 구해서 카메라 위치를 이동할 수 있게 함.
     private fun createMbr() {
-        val startLatLng = searchResult.locationLatLng
+        val startLatLng = startLatLngPublic
         val bounds = LatLngBounds.Builder()
             .include(LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble()))
             .include(touchList)
             .build()
         naverMap.setContentPadding(100, 100, 100, 100)
         cameraUpdate(bounds)
+        captureMap()
 
-        naverMap.addOnCameraIdleListener {
-            Toast.makeText(context, "카메라 움직임 종료", Toast.LENGTH_SHORT).show()
+//        naverMap.addOnCameraIdleListener {
+//            Toast.makeText(context, "카메라 움직임 종료", Toast.LENGTH_SHORT).show()
 //            captureMap()
-        }
+//            Timber.tag("캡쳐").d("${viewModel.image.value}")
+//        }
 
     }
 
-//    private fun captureMap() {
-//        //캡쳐해서 이미지 뷰에 set하기~
-//        naverMap.takeSnapshot {
-//            binding.ivDrawingCaptured.setImageBitmap(it)
-//        }
-//    }
+    private fun captureMap() {
+        //캡쳐해서 이미지 뷰에 set하기~
+        naverMap.takeSnapshot {
+            val captureUri = getImageUri(this@DrawActivity, it) //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
+            Timber.tag("캡쳐it").d("${it}")
+            Timber.tag("캡쳐uri").d("${captureUri}")
+
+            viewModel.setRequestBody(ContentUriRequestBody(this,
+                captureUri)) //Uri를 RequestBody로 바꾼 거
+            Timber.tag("캡쳐").d("${viewModel.image.value}")
+        }
+    }
+
+    //비트맵을 uri로 바꾸는 함수
+    @SuppressLint("SuspiciousIndentation")
+    fun getImageUri(inContext: Context?, inImage: Bitmap?): Uri {
+        val bytes = ByteArrayOutputStream()
+        inImage!!.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+
+        val path =
+            MediaStore.Images.Media.insertImage(inContext?.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
+    }
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000

@@ -12,3 +12,11 @@ fun loadRewardImage(view: ImageView, imageUrl: String) {
         .circleCrop()
         .into(view)
 }
+
+@BindingAdapter("app:storageImage")
+fun loadStorageImage(view: ImageView, imageUrl: String) {
+    Glide
+        .with(view.context)
+        .load(imageUrl)
+        .into(view)
+}
