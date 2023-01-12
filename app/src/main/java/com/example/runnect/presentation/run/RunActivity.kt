@@ -26,6 +26,9 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.timer
 
 class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
@@ -37,15 +40,27 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
 
-//    private lateinit var searchResult: SearchResultEntity
-    //뭘 넘겨받아야 하냐면, 출발 지점 좌표, 그리고 이 사람이 찍어놓은 좌표들을 모아놓은 TouchList
-    //마커리스트는 내 기억으로 마커를 지우기 위해서 따로 만들어준 리스트인데 여기선 지울 필요가 없으니까 안 받아도 됨
-    //받아야와야 될 것 3개 : 출발 지점, touchList, 총거리합
+    //타이머머
+    var time = 0
+    var timerTask: Timer? = null
 
+    private fun startTimer() {
+        timerTask = timer(period = 10) {
+            time++
 
-    //지금 어디 코드 시점부터 넘어온 data를 받는 건지 정확한 파악이 안 됨. 그래서 받아온 data가 필요한 코드들을
-    //draw()에다 싹 넣어줬는데 너무 길어짐. 그래서 일단 정리는 나중에 하기로 하고
-    //별도의 전역 변수를 만들어서 쓰기로 함. 거리계산
+            val sec = time / 100
+            val milli = time % 100
+
+            runOnUiThread{
+                binding.tvTimeRecord.text = "${sec} : ${milli}"
+            }
+
+        }
+    }
+
+    private fun stopTimer(){
+        timerTask?.cancel()
+    }
 
     lateinit var startLatLngPublic: LocationLatLngEntity
 
@@ -59,6 +74,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
         init()
         initView()
+        startTimer()
         getCurrentLocation()
         seeRecord()
 
@@ -199,6 +215,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
     private fun seeRecord() {
         binding.btnRunFinish.setOnClickListener {
+            stopTimer()
             bottomSheet()
 //            cuDialog(binding.root)
 //            startActivity(Intent(this, CountDownActivity::class.java))
