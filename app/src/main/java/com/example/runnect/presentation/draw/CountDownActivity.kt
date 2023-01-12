@@ -2,6 +2,7 @@ package com.example.runnect.presentation.draw
 
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.Animation
@@ -21,6 +22,7 @@ class CountDownActivity : BindingActivity<ActivityCountDownBinding>(R.layout.act
 
     private var touchList = arrayListOf<LatLng>()
     lateinit var startLatLngPublic: LocationLatLngEntity
+    lateinit var captureBitmap : Bitmap
 //    private lateinit var totalDistance :DrawViewModel
 
 
@@ -51,14 +53,18 @@ class CountDownActivity : BindingActivity<ActivityCountDownBinding>(R.layout.act
                     touchList = intent.getSerializableExtra("touchList") as ArrayList<LatLng>
                     startLatLngPublic = intent.getParcelableExtra("startLatLng")!!
                     val totalDistance = intent.getSerializableExtra("totalDistance")
+                    captureBitmap = intent.getParcelableExtra("bitmap")!!
+
                     Timber.tag(ContentValues.TAG).d("startLatLng : ${startLatLngPublic}")
                     Timber.tag(ContentValues.TAG).d("touchList : ${touchList}")
-                    Timber.tag(ContentValues.TAG).d("totalDistance : ${totalDistance}") //수신 완료
+                    Timber.tag(ContentValues.TAG).d("totalDistance : ${totalDistance}")
+                    Timber.tag(ContentValues.TAG).d("bitmap : ${captureBitmap}")//수신 완료
 
                     val intent = Intent(this@CountDownActivity, RunActivity::class.java).apply {
                         putExtra("touchList", touchList)
                         putExtra("startLatLng", startLatLngPublic)
                         putExtra("totalDistance", totalDistance)
+                        putExtra("bitmap", captureBitmap )
                     }
                     startActivity(intent)
                 }

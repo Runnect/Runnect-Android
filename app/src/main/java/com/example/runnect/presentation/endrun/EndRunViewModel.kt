@@ -7,5 +7,12 @@ import kotlinx.android.parcel.Parcelize
 
 class EndRunViewModel : ViewModel() {
 
+    val distance = MutableLiveData<Double>()
+    val timerSec = MutableLiveData<Int>() //string인가
+    val timerMilli = MutableLiveData<Int>()
+    val averagePace = MutableLiveData<Int>() //이거 타입 모르겠네
+
+
+
     val searchResult = MutableLiveData<SearchResultEntity>()
 }

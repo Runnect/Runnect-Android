@@ -3,19 +3,23 @@
     <item
         android:id="@+id/menu_home"
         android:icon="@drawable/menu_draw"
+        android:fontFamily="@font/pretendard_semibold"
         android:title="코스 그리기" />
 
     <item
+        android:fontFamily="@font/pretendard_semibold"
         android:id="@+id/menu_search"
         android:icon="@drawable/menu_storage"
         android:title="보관함" />
 
     <item
+        android:fontFamily="@font/pretendard_semibold"
         android:id="@+id/menu_shelf"
         android:icon="@drawable/menu_detect"
         android:title="코스 발견" />
 
     <item
+        android:fontFamily="@font/pretendard_semibold"
         android:id="@+id/menu_setting"
         android:icon="@drawable/menu_mypage"
         android:title="마이페이지" />

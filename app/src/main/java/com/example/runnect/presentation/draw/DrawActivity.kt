@@ -53,6 +53,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         arrayListOf<UploadLatLng>() //lat,lng을 묶어 보내야 해서 data class를 따로 만들었는데 이럴거면 그냥 LatLng써도 되지 않나?
     var sumList = mutableListOf<Double>()//Double
 
+    lateinit var captureBitmap : Bitmap
 
 
 lateinit var startLatLngPublic: LocationLatLngEntity
@@ -191,6 +192,8 @@ fun cuDialog(view: View) {
         intent.putExtra("touchList", touchList)
         intent.putExtra("startLatLng", startLatLngPublic)
         intent.putExtra("totalDistance", viewModel.distanceSum.value)
+        intent.putExtra("bitmap",captureBitmap)
+
         startActivity(intent)
         dialog.dismiss()
     }
@@ -390,6 +393,7 @@ private fun createMbr() {
 private fun captureMap() {
     //캡쳐해서 이미지 뷰에 set하기~
     naverMap.takeSnapshot {
+        captureBitmap = it // intent로 넘길 전역 변수에 비트맵 data 넣음
         val captureUri = getImageUri(this@DrawActivity, it) //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
         Timber.tag("캡쳐it").d("${it}")
         Timber.tag("캡쳐uri").d("${captureUri}")

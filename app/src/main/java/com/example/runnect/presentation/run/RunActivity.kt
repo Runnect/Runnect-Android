@@ -3,6 +3,7 @@ package com.example.runnect.presentation.run
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -29,6 +30,7 @@ import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.timer
+import kotlin.properties.Delegates
 
 class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
@@ -39,6 +41,10 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private var touchList = arrayListOf<LatLng>()
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
+
+    lateinit var captureBitmap : Bitmap
+    var secPublic by Delegates.notNull<Int>()
+    var milliPublic by Delegates.notNull<Int>()
 
     //타이머머
     var time = 0
@@ -51,15 +57,23 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
             val sec = time / 100
             val milli = time % 100
 
+            secPublic = sec
+            milliPublic = milli
+
             runOnUiThread{
                 binding.tvTimeRecord.text = "${sec} : ${milli}"
+                //이거 ui 갱신 코드 여기서 이렇게 안 쓰고 바인딩을 시켜주는 게 깔끔하긴 함
+                //걍 여기서 바로 이 값들을 intent에 넣고 EndRunActivity로 넘겨
+                //intent로 넘길 거 : 타이머 기록, 총 거리, 이미지 비트맵(?) 이미지는 걍 서버에 올린 거 받아와도 될듯 한데
             }
 
         }
     }
 
     private fun stopTimer(){
+        captureBitmap = intent.getParcelableExtra("bitmap")!! //여기에다 해주는 게 맞나,,
         timerTask?.cancel()
+        //캔슬이 됐을 때 이 값들을 뷰모델에 넣고
     }
 
     lateinit var startLatLngPublic: LocationLatLngEntity
@@ -235,7 +249,12 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
-            val intent = Intent(this@RunActivity, EndRunActivity::class.java)
+            val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
+                putExtra("distanceSum", viewModel.distanceSum.value)
+                putExtra("bitmap",captureBitmap)
+                putExtra("timerSec",secPublic)
+                putExtra("timerMilli",milliPublic)
+            }
             startActivity(intent)
             bottomSheetDialog.dismiss()
         }

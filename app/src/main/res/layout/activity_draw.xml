@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="com.example.runnect.presentation.draw.DrawViewModel" />
@@ -13,28 +14,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".views.location_enroll.LocationEnrollFragment">
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_drawing_captured"
             android:layout_width="300dp"
             android:layout_height="250dp"
             android:background="#00000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:elevation="1dp"/>
-        <ImageButton
             android:elevation="1dp"
-            android:outlineProvider="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             android:background="@color/transparent_00"
+            android:elevation="1dp"
+            android:outlineProvider="none"
             android:src="@drawable/backbutton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <FrameLayout
             android:id="@+id/mapView"
             android:layout_width="match_parent"
@@ -47,10 +51,11 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
+            android:fontFamily="@font/pretendard_semibold"
             android:text="완성하기"
+            android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="15dp"
-            android:textStyle="bold"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -71,25 +76,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
+            android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            tools:text="1.6"
             android:text="@{model.distanceSum.toString()}"
-            android:textColor="@color/black"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/frame_course_distance"
             app:layout_constraintEnd_toStartOf="@id/tv_course_distance_km"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/frame_course_distance"
-            app:layout_constraintTop_toTopOf="@id/frame_course_distance" />
+            app:layout_constraintTop_toTopOf="@id/frame_course_distance"
+            tools:text="1.6" />
 
 
         <TextView
             android:id="@+id/tv_course_distance_km"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:elevation="11dp"
             android:outlineProvider="none"
             android:text="km"
-            android:textColor="@color/black"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_course_distance_record"
             app:layout_constraintEnd_toEndOf="@id/frame_course_distance"
 
@@ -101,14 +110,13 @@
             android:layout_height="48dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="18dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/W1"
             android:src="@drawable/backcourse"
-            app:backgroundTint="@color/white"
+            app:backgroundTint="@color/W1"
             app:fabCustomSize="48dp"
             app:layout_constraintBottom_toTopOf="@id/btn_draw"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@null" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

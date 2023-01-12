@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="searchResultEntity"
             type="com.example.runnect.presentation.search.entity.SearchResultEntity" />
@@ -37,7 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="14dp"
+            android:fontFamily="@font/pretendard_medium"
             android:text="@{searchResultEntity.name}"
+            android:textColor="@color/G1"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@id/iv_search_location"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,7 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="14dp"
+            android:fontFamily="@font/pretendard_regular"
             android:text="@{searchResultEntity.fullAdress}"
+            android:textColor="@color/G2"
 
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"

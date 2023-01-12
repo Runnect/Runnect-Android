@@ -1,6 +1,7 @@
 package com.example.runnect.presentation.endrun
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
@@ -10,8 +11,15 @@ import androidx.activity.viewModels
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
 import com.example.runnect.databinding.ActivityEndRunBinding
+import kotlin.properties.Delegates
 
 class EndRunActivity : BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
+
+    //intent로 받아와야 할 거 : 비트맵, 출발지(Run에서 받아오면 될듯), 거리, 타이머
+    lateinit var captureBitmap : Bitmap
+    var secPublic by Delegates.notNull<Int>()
+    var milliPublic by Delegates.notNull<Int>()
+
 
     val viewModel: EndRunViewModel by viewModels()
 
