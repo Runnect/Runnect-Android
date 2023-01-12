@@ -1,32 +1,24 @@
 package com.example.runnect.presentation.run
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
 import com.example.runnect.databinding.ActivityRunBinding
-import com.example.runnect.presentation.draw.CountDownActivity
+import com.example.runnect.presentation.endrun.EndRunActivity
 import com.example.runnect.presentation.search.entity.LocationLatLngEntity
-import com.example.runnect.presentation.search.entity.SearchResultEntity
-import com.example.runnect.presentation.storage.StorageActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.gun0912.tedpermission.provider.TedPermissionProvider.context
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
@@ -34,8 +26,6 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.android.synthetic.main.custom_dialog.view.*
 import timber.log.Timber
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
@@ -228,8 +218,8 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
-//            val intent = Intent(this@RunActivity, StorageActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(this@RunActivity, EndRunActivity::class.java)
+            startActivity(intent)
             bottomSheetDialog.dismiss()
         }
         // bottomSheetDialog 뷰 생성

@@ -19,10 +19,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.storage.StorageActivity"
+            android:name=".presentation.endrun.EndRunActivity"
             android:exported="false">
-
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
+        <activity
+            android:name=".presentation.storage.StorageActivity"
+            android:exported="false"></activity>
         <activity
             android:name=".presentation.run.RunActivity"
             android:exported="false" />
