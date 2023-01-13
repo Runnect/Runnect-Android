@@ -24,5 +24,19 @@
     <string name="discover_search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
     <string name="course_detail_start">시작하기</string>
     <string name="course_detail_lv_indicator">Lv.</string>
+    <string name="my_page_title">마이페이지</string>
+    <string name="my_page_edit">수정하기</string>
+    <string name="my_page_lv_indicator">LV </string>
+    <string name="my_page_progress_max">/100</string>
+    <string name="my_page_reward_title">목표 보상</string>
+    <string name="my_page_history_title">활동 기록</string>
+    <string name="my_page_upload_title">업로드한 코스</string>
+    <string name="my_page_dialog_edit_name">닉네임 수정</string>
+    <string name="my_page_dialog_edit_name_hint">닉네임을 입력하세요</string>
+    <string name="my_page_reward_desc">다양한 코스를 달리며 러닝 스탬프를 모아봐요</string>
+    <string name="item_mypage_history_distance">총 거리</string>
+    <string name="item_mypage_history_distance_km">km</string>
+    <string name="item_mypage_history_time">이동 시간</string>
+    <string name="item_mypage_history_pace">평균 페이스</string>
 
 </resources>
