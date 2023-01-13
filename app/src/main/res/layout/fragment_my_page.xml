@@ -50,7 +50,7 @@
             android:layout_width="63dp"
             android:layout_height="0dp"
             android:layout_marginStart="23dp"
-            android:src="@color/G4"
+            app:imgRes="@{vm.stamp}"
             app:layout_constraintBottom_toBottomOf="@id/view_my_page_profile_frame"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="@id/view_my_page_profile_frame"
@@ -67,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_my_page_profile"
             app:layout_constraintStart_toEndOf="@id/iv_my_page_profile"
             app:layout_constraintTop_toTopOf="@id/iv_my_page_profile"
-            android:text="말랑콩떡" />
+            android:text="@{vm.nickName}"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_my_page_edit_frame"
@@ -133,6 +133,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_user_lv_indicator"
             app:layout_constraintStart_toEndOf="@id/tv_my_page_user_lv_indicator"
             app:layout_constraintTop_toTopOf="@id/tv_my_page_user_lv_indicator"
+            android:text="@{vm.level}"
             tools:text="3" />
 
         <ProgressBar
@@ -143,7 +144,7 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="6dp"
             android:max="100"
-            android:progress="50"
+            android:progress="@{vm.levelPercent}"
             android:progressDrawable="@drawable/progressbar_custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +161,8 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_progress_max"
             app:layout_constraintEnd_toStartOf="@id/tv_my_page_progress_max"
             app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max"
-            tools:text="50" />
+            tools:text="50"
+            android:text="@{vm.levelPercent.toString()}"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_progress_max"

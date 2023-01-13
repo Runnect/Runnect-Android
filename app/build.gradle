@@ -8,7 +8,8 @@ plugins {
     //plugin for databinding & hilt
     id 'kotlin-kapt'
 }
-
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 android {
     namespace 'com.runnect.runnect'
     compileSdk 33
@@ -21,6 +22,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "BASE_URL", properties["base.url"]
     }
 
     buildTypes {
@@ -50,8 +52,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.core:core:1.9.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
     def lifecycle_version = "2.5.1"
     //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -82,5 +85,4 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.5.5")
     //coil
     implementation("io.coil-kt:coil:2.2.2")
-
 }

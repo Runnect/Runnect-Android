@@ -37,6 +37,7 @@
             android:fontFamily="@font/pretendard_medium"
             android:textSize="12sp"
             android:textColor="@color/G1"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="@id/iv_item_my_page_reward_circle_frame"
             app:layout_constraintStart_toStartOf="@id/iv_item_my_page_reward_circle_frame"
             app:layout_constraintTop_toBottomOf="@id/iv_item_my_page_reward_circle_frame"
