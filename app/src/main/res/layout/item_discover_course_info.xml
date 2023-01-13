@@ -17,9 +17,9 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_item_discover_course_info_map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -40,6 +40,8 @@
         android:gravity="center"
         android:textColor="@color/G1"
         android:textSize="14sp"
+        android:maxLength="14"
+        android:ellipsize="end"
         app:layout_constraintStart_toStartOf="@id/cv_item_discover_course_info"
         app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info"
         tools:text="제목" />
