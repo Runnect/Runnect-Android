@@ -6,86 +6,28 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ActivityDiscoverLoadSelectBinding
 import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapter
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.callback.OnRecommendCourseClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+
 @AndroidEntryPoint
 class DiscoverLoadActivity :
     BindingActivity<ActivityDiscoverLoadSelectBinding>(R.layout.activity_discover_load_select),
-    OnItemClick {
+    OnRecommendCourseClick {
     private val viewModel: DiscoverLoadViewModel by viewModels()
-    private val courseLoadInfoList by lazy {
-        listOf(
-            CourseLoadInfoDTO(
-                1,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강",
-            ),
-            CourseLoadInfoDTO(
-                2,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강"
-            ),
-            CourseLoadInfoDTO(
-                3,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강"
-            ),
-            CourseLoadInfoDTO(
-                4,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강"
-            ),
-            CourseLoadInfoDTO(
-                5,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강"
-            ),
-            CourseLoadInfoDTO(
-                6,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강"
-            ),
-            CourseLoadInfoDTO(
-                7,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "서울시 송파구 한강"
-            ),
-            CourseLoadInfoDTO(
-                8,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "aa"
-            ),
-            CourseLoadInfoDTO(
-                9,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "aa"
-            ),
-            CourseLoadInfoDTO(
-                10,
-                "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png",
-                "aa"
-            )
-        )
-    }
-    private val adapter by lazy {
-        DiscoverLoadAdapter(this, this).apply {
-            submitList(
-                courseLoadInfoList
-            )
-        }
-    }
+    private lateinit var adapter: DiscoverLoadAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         initLayout()
+        viewModel.getMyCourseLoad()
         addObserver()
         addListener()
     }
@@ -93,12 +35,9 @@ class DiscoverLoadActivity :
     private fun initLayout() {
         binding.rvDiscoverLoadSelect.apply {
             layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
-            adapter = this@DiscoverLoadActivity.adapter
             addItemDecoration(
                 GridSpacingItemDecoration(
-                    this@DiscoverLoadActivity, 2,
-                    6,
-                    42
+                    this@DiscoverLoadActivity, 2, 6, 18
                 )
             )
         }
@@ -109,6 +48,12 @@ class DiscoverLoadActivity :
             Timber.d("4. ViewModel에서 변경된 라이브데이터 관찰")
             binding.ivDiscoverLoadSelectFinish.isActivated = it != 0
         }
+        viewModel.courseLoadState.observe(this) { state ->
+            if (state == UiState.Success) {
+                initAdapter()
+            }
+        }
+    }
 
     override fun onBackPressed() {
         finish()
@@ -123,15 +68,30 @@ class DiscoverLoadActivity :
         binding.ivDiscoverLoadSelectFinish.setOnClickListener {
             if (it.isActivated) {
                 val intent = Intent(this, DiscoverUploadActivity::class.java)
-                intent.putExtra("courseId", viewModel.idSelectedItem.value)
+                intent.apply {
+                    putExtra("courseId", viewModel.idSelectedItem.value)
+                    putExtra("img", viewModel.imgSelectedItem.value)
+                    putExtra("departure", viewModel.departureSelectedItem.value)
+                    putExtra("distance", viewModel.distanceSelectedItem.value)
+                }
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
         }
     }
 
-    override fun selectItem(id: Int) {
+    private fun initAdapter() {
+        adapter = DiscoverLoadAdapter(this, this).apply {
+            submitList(
+                viewModel.courseLoadList
+            )
+        }
+        binding.rvDiscoverLoadSelect.adapter = this@DiscoverLoadActivity.adapter
+    }
+
+
+    override fun selectCourse(id: Int, img: String, departure: String, distance: String) {
         Timber.d("2. Adapter로부터 호출되는 콜백함수 selectItem")
-        viewModel.checkSelectEnable(id)
+        viewModel.checkSelectEnable(id, img, departure, distance)
     }
 }

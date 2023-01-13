@@ -18,3 +18,7 @@ interface PCourseService {
         @Path("publicCourseId") publicCourseId: Int
     ): ResponseCourseDetail
 
+    @GET("/api/course/private/user")
+    suspend fun getMyCourseLoad(
+    ): ResponseMyCourseLoad
+

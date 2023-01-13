@@ -2,3 +2,4 @@
     suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap):ResponseCourseScrap
     suspend fun getCourseSearch(keyword:String): MutableList<CourseSearchDTO>
     suspend fun getCourseDetail(publicCourseId:Int):CourseDetailDTO
+    suspend fun getMyCourseLoad():MutableList<CourseLoadInfoDTO>

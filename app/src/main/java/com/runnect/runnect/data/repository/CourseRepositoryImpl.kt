@@ -22,3 +22,11 @@
         return courseDataSource.getCourseDetail(publicCourseId).data.toData()
     }
 
+    override suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO> {
+        val myCourseLoad = mutableListOf<CourseLoadInfoDTO>()
+        for(i in courseDataSource.getMyCourseLoad().data.privateCourses){
+            myCourseLoad.add(i.toData())
+        }
+        return myCourseLoad
+    }
+

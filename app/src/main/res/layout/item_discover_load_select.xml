@@ -12,6 +12,14 @@
         app:layout_constraintDimensionRatio="162:114"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_item_discover_load_select_background"
+        android:layout_width="162dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="162:114"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/discover_load_select_course_selector"/>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -23,6 +31,9 @@
         android:gravity="center"
         android:textColor="@color/G1"
         android:textSize="14sp"
+        android:maxLength="14"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintStart_toStartOf="@id/iv_item_discover_load_select_map"
         app:layout_constraintTop_toBottomOf="@id/iv_item_discover_load_select_map"
         tools:text="서울시 송파구 한강" />

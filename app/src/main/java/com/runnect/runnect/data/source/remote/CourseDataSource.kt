@@ -4,3 +4,4 @@
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
     suspend fun getCourseDetail(publicCourseId: Int) = courseService.getCourseDetail(publicCourseId)
+    suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()

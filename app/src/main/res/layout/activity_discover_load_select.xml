@@ -64,6 +64,8 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="15dp"
                     android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
