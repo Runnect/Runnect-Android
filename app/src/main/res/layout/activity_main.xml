@@ -6,7 +6,7 @@
     <data>
         <variable
             name="vm"
-            type="com.example.runnect.presentation.MainViewModel" />
+            type="com.runnect.runnect.presentation.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

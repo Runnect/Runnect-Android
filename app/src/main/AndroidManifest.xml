@@ -10,7 +10,7 @@
 
 
     <application
-        android:name=".application.ApplicationClass"
+        android:name="com.runnect.runnect.application.ApplicationClass"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -50,15 +50,6 @@
             android:value="@string/naver_map_client_id" />
 
         <activity
-            android:name=".presentation.mypage.MyRewardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.mypage.MyHistoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.mypage.MyPageActivity"
-            android:exported="false" />
-        <activity
             android:name=".presentation.coursemain.CourseMainActivity"
             android:exported="true">
             <intent-filter>
@@ -70,7 +61,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.runnect.fileprovider"
+            android:authorities="com.runnect.runnect.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

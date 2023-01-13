@@ -13,7 +13,7 @@
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
         <androidx.fragment.app.FragmentContainerView
-            android:name="com.example.runnect.presentation.coursemain.CourseMainFragment"
+            android:name="com.runnect.runnect.presentation.coursemain.CourseMainFragment"
             android:id="@+id/fcv_pre_draw"
             android:layout_width="0dp"
             android:layout_height="0dp"

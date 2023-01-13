@@ -6,7 +6,7 @@
     <data>
         <variable
             name="storage"
-            type="com.example.runnect.data.model.ResponseGetCourseDto.Data.Course" />
+            type="com.runnect.runnect.data.model.ResponseGetCourseDto.Data.Course" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

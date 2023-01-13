@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.example.runnect.presentation.run.RunViewModel" />
+            type="com.runnect.runnect.presentation.run.RunViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

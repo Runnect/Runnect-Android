@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.runnect'
+    namespace 'com.runnect.runnect'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.runnect"
+        applicationId "com.runnect.runnect"
         minSdk 28
         targetSdk 33
         versionCode 1

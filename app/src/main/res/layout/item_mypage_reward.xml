@@ -9,7 +9,7 @@
 
         <variable
             name="reward"
-            type="com.example.runnect.data.model.GetRewardDto.Item" />
+            type="com.runnect.runnect.data.model.GetRewardDto.Item" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
