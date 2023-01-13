@@ -7,12 +7,11 @@ import com.example.runnect.binding.BindingActivity
 import com.example.runnect.data.api.ApiClient
 import com.example.runnect.databinding.ActivityMyRewardBinding
 import com.example.runnect.presentation.mypage.adapter.MyRewardAdapter
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-@AndroidEntryPoint
+
 class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activity_my_reward) {
 
     private val getBookService = ApiClient.ServicePool.getRewardService

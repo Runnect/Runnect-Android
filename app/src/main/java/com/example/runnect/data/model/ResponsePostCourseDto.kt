@@ -19,13 +19,13 @@ data class ResponsePostCourseDto(
     data class Data(
         @SerialName("course")
         val course: Course,
-    ) {
-        @Serializable
-        data class Course(
-            @SerialName("createdAt")
-            val createdAt: String,
-            @SerialName("id")
-            val id: Int,
-        )
-    }
+    )
+
+    @Serializable
+    data class Course(
+        @SerialName("createdAt")
+        val createdAt: String,
+        @SerialName("id")
+        val id: Int,
+    )
 }

@@ -15,9 +15,7 @@ import com.gun0912.tedpermission.normal.TedPermission
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.util.FusedLocationSource
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class CourseMainFragment :
     BindingFragment<FragmentCourseMainBinding>(R.layout.fragment_course_main),
     OnMapReadyCallback {

@@ -3,9 +3,7 @@ package com.example.runnect.presentation.endrun
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.runnect.data.model.entity.SearchResultEntity
-import dagger.hilt.android.lifecycle.HiltViewModel
 
-@HiltViewModel
 class EndRunViewModel : ViewModel() {
 
     val distance = MutableLiveData<Double>()

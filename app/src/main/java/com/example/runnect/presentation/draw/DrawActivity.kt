@@ -1,21 +1,22 @@
 package com.example.runnect.presentation.draw
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ImageDecoder
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.content.FileProvider
+import com.example.runnect.BuildConfig
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
 import com.example.runnect.data.model.UploadLatLng
@@ -27,20 +28,23 @@ import com.example.runnect.presentation.storage.StorageActivity
 import com.example.runnect.util.ContentUriRequestBody
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
-import com.naver.maps.map.*
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
 import kotlin.properties.Delegates
-@AndroidEntryPoint
+
 class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
@@ -54,6 +58,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     val distanceListtoUpload =
         arrayListOf<UploadLatLng>()
     var sumList = mutableListOf<Double>()//Double
+
 
 //    lateinit var captureBitmap : Uri
 
@@ -82,10 +87,8 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 backButton()
 
                 viewModel.errorMessage.observe(this) {
-                    Timber.tag(ContentValues.TAG).d("fail")
                 }
                 viewModel.uploadResult.observe(this) {
-                    Timber.tag(ContentValues.TAG).d(it.message)
 
                 }
             }
@@ -130,7 +133,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
-            //여기에 courseUpload 서버 통신 코드 넣어야 함
             createMbr()
 
             //createMbr()이 분명 먼저 도는데 변환에서 속도가 걸리니까 늦게 찍혀 그래서 핸들러를 써줌
@@ -139,6 +141,12 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                     for (i in 1..distanceList.size) {
                         distanceListtoUpload.add(UploadLatLng(distanceList[i - 1].latitude,
                             distanceList[i - 1].longitude))
+                    }
+                    var lat : Double
+                    var lng : Double
+                    for (i in 1 ..distanceList.size){
+
+
                     }
                     viewModel.path.value = distanceListtoUpload //타입이 Double이 아닌 건 조금 걸리네..
                     //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
@@ -152,14 +160,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                     Timber.tag(ContentValues.TAG)
                         .d("viewModel.departureName : ${viewModel.departureName.value}")
                     Timber.tag(ContentValues.TAG).d("viewModel.image : ${viewModel.image.value}")
-                }, 500
+                }, 600
             )
 
             Handler(Looper.getMainLooper()).postDelayed(
                 {
                     viewModel.uploadCourse()
 
-                }, 600
+                }, 800
             )
 
 
@@ -375,7 +383,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     private fun captureMap() {
         //캡쳐해서 이미지 뷰에 set하기~
         naverMap.takeSnapshot { // intent로 넘길 전역 변수에 비트맵 data 넣음
-            val captureUri = getImageUri(this@DrawActivity, it) //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
+            val captureUri = getImageUri(this@DrawActivity, it)
+
+                //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
             Timber.tag("캡쳐it").d("${it}")
             Timber.tag("캡쳐uri").d("${captureUri}")
 
@@ -385,20 +395,24 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         }
     }
 
-    //비트맵을 uri로 바꾸는 함수
-    @SuppressLint("SuspiciousIndentation")
-    fun getImageUri(inContext: Context?, inImage: Bitmap?): Uri {
+    // Get uri of images from camera function
+    private fun getImageUri(inContext: Context?, inImage: Bitmap): Uri {
+
+        val tempFile = File.createTempFile("temprentpk", ".png")
         val bytes = ByteArrayOutputStream()
-        inImage!!.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
+        val bitmapData = bytes.toByteArray()
 
-        val path =
-            MediaStore.Images.Media.insertImage(inContext?.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
+        val fileOutPut = FileOutputStream(tempFile)
+        fileOutPut.write(bitmapData)
+        fileOutPut.flush()
+        fileOutPut.close()
+        val uri = FileProvider.getUriForFile(this,
+            BuildConfig.APPLICATION_ID + ".fileprovider", tempFile)
+        return uri
     }
-
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        const val SEARCH_RESULT_BEFORE_RUN = "SearchResultBeforeRun"
 
     }
 }

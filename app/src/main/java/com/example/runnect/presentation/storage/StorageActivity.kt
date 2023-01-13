@@ -9,9 +9,8 @@ import com.example.runnect.binding.BindingActivity
 import com.example.runnect.databinding.ActivityStorageBinding
 import com.example.runnect.presentation.search.SearchActivity
 import com.example.runnect.presentation.storage.adapter.StorageAdapter
-import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-@AndroidEntryPoint
+
 class StorageActivity : BindingActivity<ActivityStorageBinding>(R.layout.activity_storage) {
 
     val viewModel: StorageViewModel by viewModels()

@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runnect.data.api.KApiCourse
 import com.example.runnect.data.model.ResponseGetCourseDto
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-@HiltViewModel
+
 class StorageViewModel : ViewModel() {
 
     val service = KApiCourse.ServicePool.courseService //객체 생성

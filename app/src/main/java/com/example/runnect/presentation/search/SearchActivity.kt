@@ -26,11 +26,10 @@ import com.example.runnect.presentation.departure.DepartureActivity
 import com.example.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
 import com.example.runnect.presentation.departure.DepartureViewModel
 import com.example.runnect.presentation.search.adapter.SearchAdapter
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-@AndroidEntryPoint
+
 class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
     val viewModel: DepartureViewModel by viewModels()

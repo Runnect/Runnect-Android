@@ -24,13 +24,12 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.properties.Delegates
-@AndroidEntryPoint
+
 class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
 

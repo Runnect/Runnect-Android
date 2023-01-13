@@ -8,16 +8,14 @@ import com.example.runnect.data.api.KApiCourse
 import com.example.runnect.data.model.ResponsePostCourseDto
 import com.example.runnect.data.model.UploadLatLng
 import com.example.runnect.util.ContentUriRequestBody
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.google.gson.JsonParser
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONObject
 
-@HiltViewModel
 class DrawViewModel : ViewModel() {
 
     val service = KApiCourse.ServicePool.courseService //객체 생성
@@ -93,14 +91,21 @@ class DrawViewModel : ViewModel() {
         distance: Double,
         departureAddress: String,
         departureName: String,
-    ) = buildJsonObject {
-        putJsonArray("path") {
-            for (i in 1..path.size) add(i) //이게 뭔지 잘 모르겠네. 인덱스 1부터 하나씩 넣는다는 건가
-        }
-        put("distance", distance)
-        put("departureAddress", departureAddress)
-        put("departureName", departureName)
-    }.toString().toRequestBody("application/json".toMediaType())
-
+    ) =
+        buildJsonObject {
+            val jsonElement = Json.encodeToJsonElement(path)
+            put("path", jsonElement)
+            put("distance", distance)
+            put("departureAddress", departureAddress)
+            put("departureName", departureName)
+        }.toString().toRequestBody("application/json".toMediaType())
 
 }
+
+//
+//
+//for (i in 1..path.size) add(i)
+
+
+
+

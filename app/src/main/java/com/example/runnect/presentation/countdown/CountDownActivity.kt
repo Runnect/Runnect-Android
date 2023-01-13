@@ -14,10 +14,8 @@ import com.example.runnect.data.model.entity.LocationLatLngEntity
 import com.example.runnect.databinding.ActivityCountDownBinding
 import com.example.runnect.presentation.run.RunActivity
 import com.naver.maps.geometry.LatLng
-import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-@AndroidEntryPoint
 class CountDownActivity : BindingActivity<ActivityCountDownBinding>(R.layout.activity_count_down) {
 
     private var touchList = arrayListOf<LatLng>()

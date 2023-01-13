@@ -11,9 +11,8 @@ import androidx.activity.viewModels
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
 import com.example.runnect.databinding.ActivityEndRunBinding
-import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
-@AndroidEntryPoint
+
 class EndRunActivity : BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
 
     //intent로 받아와야 할 거 : 비트맵, 출발지(Run에서 받아오면 될듯), 거리, 타이머
