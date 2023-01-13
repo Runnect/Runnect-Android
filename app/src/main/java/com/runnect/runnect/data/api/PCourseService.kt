@@ -8,3 +8,8 @@ interface PCourseService {
         @Body requestCourseScrap: RequestCourseScrap
     ): ResponseCourseScrap
 
+    @GET("/api/public-course/search?")
+    suspend fun getCourseSearch(
+        @Query("keyword") keyword: String
+    ): ResponseCourseSearch
+
