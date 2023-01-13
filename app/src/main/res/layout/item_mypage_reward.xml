@@ -7,48 +7,41 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="23.62dp"
-        tools:context=".presentation.mypage.reward.MyRewardFragment">
+        tools:context=".presentation.mypage.reward.MyRewardActivity">
 
         <View
-            android:id="@+id/view_my_page_reward_frame"
-            android:layout_width="83dp"
+            android:id="@+id/view_item_my_page_reward_frame"
+            android:layout_width="80dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="83:103"
+            app:layout_constraintDimensionRatio="80:98"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/view_my_page_reward_circle_frame"
-            android:layout_width="83dp"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_item_my_page_reward_circle_frame"
+            android:layout_width="80dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"
-            android:background="@drawable/reward_circle_frame"
-            app:layout_constraintEnd_toEndOf="@id/view_my_page_reward_frame"
-            app:layout_constraintStart_toStartOf="@id/view_my_page_reward_frame"
-            app:layout_constraintTop_toTopOf="@id/view_my_page_reward_frame" />
+            android:src="@drawable/reward_circle_frame"
+            app:layout_constraintEnd_toEndOf="@id/view_item_my_page_reward_frame"
+            app:layout_constraintStart_toStartOf="@id/view_item_my_page_reward_frame"
+            app:layout_constraintTop_toTopOf="@id/view_item_my_page_reward_frame" />
 
-        <ImageView
-            android:id="@+id/iv_my_page_reward_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:layout_constraintBottom_toBottomOf="@id/view_my_page_reward_circle_frame"
-            app:layout_constraintEnd_toEndOf="@id/view_my_page_reward_circle_frame"
-            app:layout_constraintStart_toStartOf="@id/view_my_page_reward_circle_frame"
-            app:layout_constraintTop_toTopOf="@id/view_my_page_reward_circle_frame"
-            tools:src="@drawable/mypage_stamp_lock" />
-
-        <TextView
-            android:id="@+id/tv_my_page_reward_condition"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_my_page_reward_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7.38dp"
-            app:layout_constraintEnd_toEndOf="@id/view_my_page_reward_circle_frame"
-            app:layout_constraintStart_toStartOf="@id/view_my_page_reward_circle_frame"
-            app:layout_constraintTop_toBottomOf="@id/view_my_page_reward_circle_frame"
-            tools:text="코스 10개" />
+            android:layout_marginTop="4dp"
+            android:paddingBottom="5dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:textSize="12sp"
+            android:textColor="@color/G1"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="@id/iv_item_my_page_reward_circle_frame"
+            app:layout_constraintStart_toStartOf="@id/iv_item_my_page_reward_circle_frame"
+            app:layout_constraintTop_toBottomOf="@id/iv_item_my_page_reward_circle_frame"
+            android:text="코스 10개" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

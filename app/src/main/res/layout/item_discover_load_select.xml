@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_item_discover_load_select_map"
+        android:layout_width="162dp"
+        android:layout_height="0dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintDimensionRatio="162:114"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_item_discover_load_select_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_item_discover_load_select_background"
+        android:layout_width="162dp"
+        android:layout_height="0dp"
+        android:elevation="15dp"
+        app:layout_constraintDimensionRatio="162:114"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/discover_load_select_course_selector"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_item_discover_load_select_location"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="center"
+        android:textColor="@color/G1"
+        android:textSize="14sp"
+        android:maxLength="14"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="@id/cv_item_discover_load_select_map"
+        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_load_select_map"
+        tools:text="서울시 송파구 한강" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

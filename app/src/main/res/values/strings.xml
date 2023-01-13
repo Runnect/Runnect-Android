@@ -3,11 +3,40 @@
 
     <string name="discover_title">코스발견</string>
     <string name="discover_recommend_title">코스 추천</string>
-    <string name="connecting_upload">내가 그린 코스 업로드</string>
+
     <string name="discover_recommend_subtitle">새로운 코스를 발견해나가요</string>
     <string name="main_menu_drawing">코스 그리기</string>
     <string name="main_menu_storage">보관함</string>
     <string name="main_menu_discover">코스 발견</string>
     <string name="main_menu_my_page">마이페이지</string>
+    <string name="discover_plus">+</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="discover_load_select_title">불러오기</string>
+    <string name="discover_load_select_finish">선택하기</string>
+    <string name="discover_upload">코스 업로드</string>
+    <string name="discover_upload_title">글 제목</string>
+    <string name="discover_upload_distance">거리</string>
+    <string name="discover_upload_distance_km">km</string>
+    <string name="discover_upload_departure_title">출발지</string>
+    <string name="discover_upload_desc_hint">코스에 대한 소개를 적어주세요.(난이도/풍경/지형)</string>
+    <string name="discover_upload_finish">업로드하기</string>
+    <string name="discover_search_hint">지역과 키워드 위주로 검색해보세요</string>
+    <string name="discover_search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
+    <string name="course_detail_start">시작하기</string>
+    <string name="course_detail_lv_indicator">Lv.</string>
+    <string name="my_page_title">마이페이지</string>
+    <string name="my_page_edit">수정하기</string>
+    <string name="my_page_lv_indicator">LV </string>
+    <string name="my_page_progress_max">/100</string>
+    <string name="my_page_reward_title">목표 보상</string>
+    <string name="my_page_history_title">활동 기록</string>
+    <string name="my_page_upload_title">업로드한 코스</string>
+    <string name="my_page_dialog_edit_name">닉네임 수정</string>
+    <string name="my_page_dialog_edit_name_hint">닉네임을 입력하세요</string>
+    <string name="my_page_reward_desc">다양한 코스를 달리며 러닝 스탬프를 모아봐요</string>
+    <string name="item_mypage_history_distance">총 거리</string>
+    <string name="item_mypage_history_distance_km">km</string>
+    <string name="item_mypage_history_time">이동 시간</string>
+    <string name="item_mypage_history_pace">평균 페이스</string>
 
 </resources>
