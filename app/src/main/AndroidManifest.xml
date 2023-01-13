@@ -17,6 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
@@ -48,8 +49,9 @@
         <activity
             android:name=".presentation.mypage.history.MyHistoryActivity"
             android:exported="false" />
-        <activity android:name=".presentation.mypage.upload.MyUploadActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".presentation.mypage.upload.MyUploadActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -62,7 +62,8 @@
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     app:layout_constraintDimensionRatio="360:304"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:scaleType="centerCrop"/>
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_discover_upload_title"

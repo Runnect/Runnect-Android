@@ -1,3 +1,10 @@
+package com.runnect.runnect.data.api
+
+import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
+import com.runnect.runnect.data.dto.response.*
+import retrofit2.http.*
+
 interface PCourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
@@ -22,3 +29,8 @@ interface PCourseService {
     suspend fun getMyCourseLoad(
     ): ResponseMyCourseLoad
 
+    @POST("/api/public-course")
+    suspend fun postUploadMyCourse(
+        @Body requestUploadMyCourse: RequestUploadMyCourse
+    ):ResponseUploadMyCourse
+}
