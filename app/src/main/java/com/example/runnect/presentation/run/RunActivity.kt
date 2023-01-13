@@ -3,7 +3,6 @@ package com.example.runnect.presentation.run
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -13,9 +12,9 @@ import android.widget.LinearLayout
 import androidx.activity.viewModels
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
+import com.example.runnect.data.model.entity.LocationLatLngEntity
 import com.example.runnect.databinding.ActivityRunBinding
 import com.example.runnect.presentation.endrun.EndRunActivity
-import com.example.runnect.presentation.search.entity.LocationLatLngEntity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -25,13 +24,13 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import kotlinx.android.synthetic.main.custom_dialog.view.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.timer
 import kotlin.properties.Delegates
-
+@AndroidEntryPoint
 class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
 
@@ -42,11 +41,10 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
 
-    lateinit var captureBitmap : Bitmap
     var secPublic by Delegates.notNull<Int>()
     var milliPublic by Delegates.notNull<Int>()
 
-    //타이머머
+    //타이머
     var time = 0
     var timerTask: Timer? = null
 
@@ -62,18 +60,13 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
             runOnUiThread{
                 binding.tvTimeRecord.text = "${sec} : ${milli}"
-                //이거 ui 갱신 코드 여기서 이렇게 안 쓰고 바인딩을 시켜주는 게 깔끔하긴 함
-                //걍 여기서 바로 이 값들을 intent에 넣고 EndRunActivity로 넘겨
-                //intent로 넘길 거 : 타이머 기록, 총 거리, 이미지 비트맵(?) 이미지는 걍 서버에 올린 거 받아와도 될듯 한데
             }
 
         }
     }
 
     private fun stopTimer(){
-        captureBitmap = intent.getParcelableExtra("bitmap")!! //여기에다 해주는 게 맞나,,
         timerTask?.cancel()
-        //캔슬이 됐을 때 이 값들을 뷰모델에 넣고
     }
 
     lateinit var startLatLngPublic: LocationLatLngEntity
@@ -92,8 +85,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         getCurrentLocation()
         seeRecord()
 
-
-//        Timber.tag(ContentValues.TAG).d("searchResult@ : ${searchResult}")
 
     }
 
@@ -121,9 +112,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
 
-//        // 시작 지점 설정
-//        val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.497885, 127.027512))
-//        naverMap.moveCamera(cameraUpdate)
 
         map.locationSource = locationSource
         map.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
@@ -221,7 +209,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
             path.map = naverMap
         }
 
-
         //lineMarker-end
 
 
@@ -231,8 +218,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         binding.btnRunFinish.setOnClickListener {
             stopTimer()
             bottomSheet()
-//            cuDialog(binding.root)
-//            startActivity(Intent(this, CountDownActivity::class.java))
+
         }
     }
 
@@ -250,10 +236,9 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
-                putExtra("distanceSum", viewModel.distanceSum.value)
-                putExtra("bitmap",captureBitmap)
-                putExtra("timerSec",secPublic)
-                putExtra("timerMilli",milliPublic)
+//                putExtra("distanceSum", viewModel.distanceSum.value)
+//                putExtra("timerSec",secPublic)
+//                putExtra("timerMilli",milliPublic)
             }
             startActivity(intent)
             bottomSheetDialog.dismiss()
@@ -264,39 +249,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         bottomSheetDialog.show()
     }
 
-//
-//    }
-//
-//    private fun addListeners() {
-//        binding.btnDraw.setOnClickListener {
-//            createMbr()
-//        }
-//    }
-//
-//    //모든 마커를 포함할 수 있도록 하는 꼭지점 좌표 두개를 만들고
-//    //중간지점의 좌표값을 구해서 카메라 위치를 이동할 수 있게 함.
-//    private fun createMbr() {
-//        val startLatLng = searchResult.locationLatLng
-//        val bounds = LatLngBounds.Builder()
-//            .include(LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble()))
-//            .include(touchList)
-//            .build()
-//        naverMap.setContentPadding(100, 100, 100, 100)
-//        cameraUpdate(bounds)
-//
-//        naverMap.addOnCameraIdleListener {
-//            Toast.makeText(context, "카메라 움직임 종료", Toast.LENGTH_SHORT).show()
-//            captureMap()
-//        }
-//
-//    }
-//
-//    private fun captureMap() {
-//        //캡쳐해서 이미지 뷰에 set하기~
-//        naverMap.takeSnapshot {
-//            binding.ivDrawingCaptured.setImageBitmap(it)
-//        }
-//    }
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000

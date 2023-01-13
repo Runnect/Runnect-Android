@@ -4,15 +4,14 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
 import com.example.runnect.databinding.ActivityStorageBinding
-import com.example.runnect.presentation.mypage.adapter.MyRewardAdapter
 import com.example.runnect.presentation.search.SearchActivity
 import com.example.runnect.presentation.storage.adapter.StorageAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-
+@AndroidEntryPoint
 class StorageActivity : BindingActivity<ActivityStorageBinding>(R.layout.activity_storage) {
 
     val viewModel: StorageViewModel by viewModels()
@@ -34,7 +33,7 @@ class StorageActivity : BindingActivity<ActivityStorageBinding>(R.layout.activit
 
     }
 
-    private fun issueHandling(){
+    private fun issueHandling() {
         viewModel.errorMessage.observe(this) {
             Timber.tag(ContentValues.TAG).d("fail")
 //            binding.recyclerviewCourseList.isVisible = false
@@ -59,7 +58,7 @@ class StorageActivity : BindingActivity<ActivityStorageBinding>(R.layout.activit
         }
     }
 
-    private fun getCourse(){
+    private fun getCourse() {
         viewModel.getCourseList()
     }
 }

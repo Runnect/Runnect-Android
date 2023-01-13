@@ -1,8 +1,8 @@
-package com.example.runnect.presentation.mypage
+package com.example.runnect.presentation
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel
-class MyPageViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
 }

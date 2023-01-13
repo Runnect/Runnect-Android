@@ -1,18 +1,15 @@
 package com.example.runnect.presentation.search.adapter
 
-import android.content.ContentValues
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.runnect.R
+import com.example.runnect.data.model.entity.SearchResultEntity
 import com.example.runnect.databinding.ItemSearchBinding
-import com.example.runnect.presentation.search.entity.SearchResultEntity
-import timber.log.Timber
 
-class SearchAdapter(searchResultClickListener : (SearchResultEntity) -> Unit) : ListAdapter<SearchResultEntity, SearchAdapter.SearchResultItemViewHolder>(Differ()) {
+class SearchAdapter(searchResultClickListener: (SearchResultEntity) -> Unit) :
+    ListAdapter<SearchResultEntity, SearchAdapter.SearchResultItemViewHolder>(Differ()) {
 
     private val listener = searchResultClickListener
 
@@ -46,14 +43,14 @@ class SearchAdapter(searchResultClickListener : (SearchResultEntity) -> Unit) : 
     class Differ : DiffUtil.ItemCallback<SearchResultEntity>() {
         override fun areItemsTheSame(
             oldItem: SearchResultEntity,
-            newItem: SearchResultEntity
+            newItem: SearchResultEntity,
         ): Boolean {
             return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(
             oldItem: SearchResultEntity,
-            newItem: SearchResultEntity
+            newItem: SearchResultEntity,
         ): Boolean {
             return oldItem == newItem
         }

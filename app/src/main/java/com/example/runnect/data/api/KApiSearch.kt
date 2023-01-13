@@ -9,8 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-object ApiClient {
-    //    private const val BASE_URL = "https://apis.openapi.sk.com"
+object KApiSearch {
     private var retrofit: Retrofit? = null
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -36,7 +35,7 @@ object ApiClient {
     inline fun <reified T> create(): T = getRetrofit().create<T>(T::class.java)
 
     object ServicePool {
-        val getRewardService = create<GetRewardService>()
+        val searchService = create<KSearchService>()
 
     }
 }

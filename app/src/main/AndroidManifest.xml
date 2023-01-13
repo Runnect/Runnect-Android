@@ -21,9 +21,7 @@
         <activity
             android:name=".presentation.endrun.EndRunActivity"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+
         </activity>
         <activity
             android:name=".presentation.storage.StorageActivity"
@@ -32,10 +30,10 @@
             android:name=".presentation.run.RunActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.draw.CountDownActivity"
+            android:name=".presentation.countdown.CountDownActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.prestart.PreStartActivity"
+            android:name=".presentation.departure.DepartureActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.search.SearchActivity"
@@ -58,7 +56,7 @@
             android:name=".presentation.mypage.MyPageActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.draw.PreDrawActivity"
+            android:name=".presentation.coursemain.CourseMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.runnect.data.model.ResponseGetCourseDto
 import com.example.runnect.databinding.ItemStorageBinding
-import com.example.runnect.presentation.storage.api.dto.ResponseGetCourseDto
 
 class StorageAdapter :
     ListAdapter<ResponseGetCourseDto.Data.Course, StorageAdapter.ItemViewHolder>(Differ()) {
@@ -38,14 +38,14 @@ class StorageAdapter :
     class Differ : DiffUtil.ItemCallback<ResponseGetCourseDto.Data.Course>() {
         override fun areItemsTheSame(
             oldItem: ResponseGetCourseDto.Data.Course,
-            newItem: ResponseGetCourseDto.Data.Course
+            newItem: ResponseGetCourseDto.Data.Course,
         ): Boolean {
             return oldItem.createdAt == newItem.createdAt
         }
 
         override fun areContentsTheSame(
             oldItem: ResponseGetCourseDto.Data.Course,
-            newItem: ResponseGetCourseDto.Data.Course
+            newItem: ResponseGetCourseDto.Data.Course,
         ): Boolean {
             return oldItem == newItem
         }

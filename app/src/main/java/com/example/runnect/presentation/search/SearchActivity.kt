@@ -16,30 +16,31 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.example.runnect.R
 import com.example.runnect.binding.BindingActivity
-import com.example.runnect.data.api.ApiClient
+import com.example.runnect.data.api.KApiSearch
+import com.example.runnect.data.model.entity.LocationLatLngEntity
+import com.example.runnect.data.model.entity.SearchResultEntity
+import com.example.runnect.data.model.tmap.Poi
+import com.example.runnect.data.model.tmap.Pois
 import com.example.runnect.databinding.ActivitySearchBinding
-import com.example.runnect.presentation.prestart.PreStartActivity
-import com.example.runnect.presentation.prestart.PreStartActivity.Companion.SEARCH_RESULT_EXTRA_KEY
-import com.example.runnect.presentation.prestart.PreStartViewModel
-import com.example.runnect.presentation.search.Dto.Poi
-import com.example.runnect.presentation.search.Dto.Pois
+import com.example.runnect.presentation.departure.DepartureActivity
+import com.example.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
+import com.example.runnect.presentation.departure.DepartureViewModel
 import com.example.runnect.presentation.search.adapter.SearchAdapter
-import com.example.runnect.presentation.search.entity.LocationLatLngEntity
-import com.example.runnect.presentation.search.entity.SearchResultEntity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
-    val viewModel: PreStartViewModel by viewModels()
+    val viewModel: DepartureViewModel by viewModels()
 
-    private val getSearchService = ApiClient.ServicePool.getSearchService
+    private val getSearchService = KApiSearch.ServicePool.searchService
 
     private val searchAdapter by lazy {
         SearchAdapter(searchResultClickListener = {
             startActivity(
-                Intent(this, PreStartActivity::class.java).apply {
+                Intent(this, DepartureActivity::class.java).apply {
                     putExtra(SEARCH_RESULT_EXTRA_KEY, it)
                 }
             )

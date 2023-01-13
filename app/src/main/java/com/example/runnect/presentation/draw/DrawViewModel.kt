@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.runnect.presentation.storage.api.ApiCourse
-import com.example.runnect.presentation.storage.api.ContentUriRequestBody
-import com.example.runnect.presentation.storage.api.dto.response.upload.ResponseCourse
+import com.example.runnect.data.api.KApiCourse
+import com.example.runnect.data.model.ResponsePostCourseDto
+import com.example.runnect.data.model.UploadLatLng
+import com.example.runnect.util.ContentUriRequestBody
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonObject
@@ -15,9 +17,10 @@ import kotlinx.serialization.json.putJsonArray
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
+@HiltViewModel
 class DrawViewModel : ViewModel() {
 
-    val service = ApiCourse.ServicePool.courseService //객체 생성
+    val service = KApiCourse.ServicePool.courseService //객체 생성
 
 
     val path = MutableLiveData<List<UploadLatLng>>()
@@ -34,9 +37,8 @@ class DrawViewModel : ViewModel() {
         _image.value = requestBody
     }
 
-    val uploadResult = MutableLiveData<ResponseCourse>()
+    val uploadResult = MutableLiveData<ResponsePostCourseDto>()
     val errorMessage = MutableLiveData<String>()
-
 
 
     fun distance(lat1: Double, lon1: Double, lat2: Double, lon2: Double, unit: String): Double {
@@ -72,8 +74,11 @@ class DrawViewModel : ViewModel() {
     fun uploadCourse() {
         viewModelScope.launch {
             kotlin.runCatching {
-                service.uploadCourse(_image.value!!.toFormData(),RequestBody(
-                    path.value!!, distanceSum.value!!, departureAddress.value!!, departureName.value!!
+                service.uploadCourse(_image.value!!.toFormData(), RequestBody(
+                    path.value!!,
+                    distanceSum.value!!,
+                    departureAddress.value!!,
+                    departureName.value!!
                 ))
             }.onSuccess {
                 uploadResult.value = it.body()
@@ -82,7 +87,13 @@ class DrawViewModel : ViewModel() {
             }
         }
     }
-    private fun RequestBody(path : List<UploadLatLng>, distance : Double, departureAddress :String, departureName :String) = buildJsonObject {
+
+    private fun RequestBody(
+        path: List<UploadLatLng>,
+        distance: Double,
+        departureAddress: String,
+        departureName: String,
+    ) = buildJsonObject {
         putJsonArray("path") {
             for (i in 1..path.size) add(i) //이게 뭔지 잘 모르겠네. 인덱스 1부터 하나씩 넣는다는 건가
         }
@@ -92,6 +103,4 @@ class DrawViewModel : ViewModel() {
     }.toString().toRequestBody("application/json".toMediaType())
 
 
-
-
- }
+}
