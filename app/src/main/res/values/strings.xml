@@ -20,7 +20,7 @@
     <string name="discover_upload_departure_title">출발지</string>
     <string name="discover_upload_desc_hint">코스에 대한 소개를 적어주세요.(난이도/풍경/지형)</string>
     <string name="discover_upload_finish">업로드하기</string>
-    <string name="discover_search_hint">지역과 키워드 위주로 검색해보세요</string>
+    <string name="discover_search_hint">출발지를 설정해주세요</string>
     <string name="discover_search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
     <string name="course_detail_start">시작하기</string>
     <string name="course_detail_lv_indicator">Lv.</string>
