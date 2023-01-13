@@ -5,3 +5,7 @@
         }
         return recommendCourse
     }
+
+    override suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap {
+        return courseDataSource.postCourseScrap(requestCourseScrap)
+    }
