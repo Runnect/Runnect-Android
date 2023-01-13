@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="searchResultEntity"
+            type="com.runnect.runnect.data.model.entity.SearchResultEntity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view_search_frame"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_search_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/location"
+            app:layout_constraintBottom_toBottomOf="@id/view_search_frame"
+            app:layout_constraintStart_toStartOf="@id/view_search_frame"
+            app:layout_constraintTop_toTopOf="@id/view_search_frame" />
+
+        <TextView
+            android:id="@+id/tv_place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@{searchResultEntity.name}"
+            android:textColor="@color/G1"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/iv_search_location"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="암사역 8호선" />
+
+        <TextView
+            android:id="@+id/tv_place_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="14dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="@{searchResultEntity.fullAdress}"
+            android:textColor="@color/G2"
+
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_place_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_place_name"
+            tools:text="서울특별시 강동구 올림픽로 776 암사역" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

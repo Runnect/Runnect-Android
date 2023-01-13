@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.runnect.runnect.presentation.endrun.EndRunViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.endrun.EndRunActivity">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/storage_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <ImageButton
+                android:id="@+id/imgBtn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/transparent_00"
+                android:src="@drawable/backbutton"
+                app:layout_constraintStart_toStartOf="@id/storage_toolbar"
+                app:layout_constraintTop_toTopOf="@id/storage_toolbar" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="러닝기록"
+                android:textColor="@color/G1"
+                android:textSize="17sp" />
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <ImageView
+            android:id="@+id/iv_endRun_capture"
+            android:layout_width="match_parent"
+            android:layout_height="370dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/storage_toolbar"
+            tools:background="@color/G3" />
+
+        <EditText
+            android:id="@+id/et_title_course"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/G5"
+            android:fontFamily="@font/pretendard_semibold"
+            android:hint="글 제목"
+            android:textColor="@color/G1"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_endRun_capture" />
+
+
+        <ImageView
+            android:id="@+id/iv_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/star"
+            app:layout_constraintStart_toStartOf="@id/et_title_course"
+            app:layout_constraintTop_toBottomOf="@id/et_title_course" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="날짜"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_start_date"
+            app:layout_constraintStart_toEndOf="@id/iv_start_date" />
+
+        <TextView
+            android:id="@+id/tv_date_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="2023.01.14"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_date"
+            app:layout_constraintStart_toEndOf="@id/tv_date" />
+
+
+        <ImageView
+            android:id="@+id/iv_start_departure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/star"
+            app:layout_constraintStart_toStartOf="@id/iv_start_date"
+            app:layout_constraintTop_toBottomOf="@id/iv_start_date" />
+
+        <TextView
+            android:id="@+id/tv_departure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="출발지"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_start_departure"
+            app:layout_constraintStart_toEndOf="@id/iv_start_departure" />
+
+        <TextView
+            android:id="@+id/tv_departure_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="잠실"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_departure"
+            app:layout_constraintStart_toStartOf="@id/tv_date_record" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_endRun"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/G5"
+            app:layout_constraintTop_toBottomOf="@id/iv_start_departure" />
+
+        <!--총 거리-->
+
+        <View
+            android:id="@+id/view_endRun_distance_frame"
+            android:layout_width="75dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toStartOf="@id/view_endRun_time_frame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_endRun" />
+
+        <TextView
+            android:id="@+id/tv_total_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="거리"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/view_endRun_distance_frame"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_distance_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_distance_frame" />
+
+        <TextView
+            android:id="@+id/tv_distance_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="1.8"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_distance_frame"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_distance" />
+
+        <TextView
+            android:id="@+id/tv_distance_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="km"
+            android:textColor="@color/G1"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/view_endRun_distance_frame"
+            app:layout_constraintStart_toEndOf="@id/tv_distance_data" />
+
+        <View
+            android:id="@+id/divider_vertical_rightOfDistance"
+            android:layout_width="1dp"
+            android:layout_height="44dp"
+            android:background="@color/G2"
+            app:layout_constraintBottom_toBottomOf="@id/view_endRun_time_frame"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_time_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_time_frame" />
+
+
+        <!--이동시간-->
+
+        <View
+
+            android:id="@+id/view_endRun_time_frame"
+            android:layout_width="130dp"
+            android:layout_height="44dp"
+            app:layout_constraintBottom_toBottomOf="@id/view_endRun_distance_frame"
+            app:layout_constraintEnd_toStartOf="@id/view_endRun_pace_frame"
+            app:layout_constraintStart_toEndOf="@id/view_endRun_distance_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_distance_frame" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="이동 시간"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/view_endRun_time_frame"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_time_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_time_frame" />
+
+        <TextView
+            android:id="@+id/tv_time_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="0:27:36"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/view_endRun_time_frame"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_time_frame"
+            app:layout_constraintTop_toBottomOf="@id/tv_time" />
+
+        <View
+            android:id="@+id/divider_vertical_rightOfTime"
+            android:layout_width="1dp"
+            android:layout_height="44dp"
+            android:background="@color/G2"
+            app:layout_constraintBottom_toBottomOf="@id/view_endRun_time_frame"
+            app:layout_constraintStart_toEndOf="@id/view_endRun_time_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_time_frame" />
+
+        <!--평균 페이스-->
+
+        <View
+            android:id="@+id/view_endRun_pace_frame"
+            android:layout_width="112dp"
+            android:layout_height="66dp"
+            app:layout_constraintBottom_toBottomOf="@id/view_endRun_time_frame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view_endRun_time_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_time_frame" />
+
+        <TextView
+            android:id="@+id/tv_pace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12.39dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="평균 페이스"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/view_endRun_pace_frame"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_pace_frame"
+            app:layout_constraintTop_toTopOf="@id/view_endRun_pace_frame" />
+
+        <TextView
+            android:id="@+id/tv_pace_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="1'22''"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/view_endRun_pace_frame"
+            app:layout_constraintStart_toStartOf="@id/view_endRun_pace_frame"
+            app:layout_constraintTop_toBottomOf="@id/tv_pace" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:enabled="false"
+            android:id="@+id/btn_endRun_save"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/radius_10_g3_button"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="저장하기"
+            android:textAlignment="center"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

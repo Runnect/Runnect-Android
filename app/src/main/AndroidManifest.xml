@@ -3,9 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
-        android:name=".application.ApplicationClass"
+        android:name="com.runnect.runnect.application.ApplicationClass"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,6 +25,38 @@
             android:name=".presentation.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
+
+            android:name=".presentation.endrun.EndRunActivity"
+            android:exported="false">
+
+        </activity>
+        <activity
+            android:name=".presentation.storage.StorageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.run.RunActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.countdown.CountDownActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.departure.DepartureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.search.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.draw.DrawActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="@string/naver_map_client_id" />
+
+        <activity
+            android:name=".presentation.coursemain.CourseMainActivity"
+            android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,6 +91,17 @@
         <activity
             android:name=".presentation.mypage.upload.MyUploadActivity"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.runnect.runnect.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
     </application>
 
 </manifest>

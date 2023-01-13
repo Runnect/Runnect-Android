@@ -1,8 +1,10 @@
 package com.runnect.runnect.util.extension
 
 import android.content.Context
+
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+
 import android.widget.Toast
 
 //확장할 클래스 - Context 클래스
@@ -19,4 +21,3 @@ fun Context.clearFocus(view: View) {
         getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(view.windowToken, 0)
     view.clearFocus()
-}

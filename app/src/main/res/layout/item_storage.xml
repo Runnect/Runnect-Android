@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="storage"
+            type="com.runnect.runnect.data.model.ResponseGetCourseDto.Data.Course" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="15dp"
+        tools:context=".presentation.storage.StorageActivity">
+
+
+        <ImageView
+            app:storageImage="@{storage.image}"
+            android:id="@+id/iv_storage"
+            android:layout_width="162dp"
+            android:layout_height="114dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/radius_5dp" />
+
+        <TextView
+            tools:text="서울시 광진구"
+            android:lineSpacingExtra="5sp"
+            android:id="@+id/tv_storage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{storage.departure.city + storage.departure.region}"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/iv_storage"
+            app:layout_constraintTop_toBottomOf="@id/iv_storage" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

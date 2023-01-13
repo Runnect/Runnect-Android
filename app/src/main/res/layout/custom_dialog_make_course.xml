@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/radius_20_custom_alert_dialog"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/iv_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="74dp"
+            android:layout_marginTop="49dp"
+            android:layout_marginEnd="61.79dp"
+            android:src="@drawable/alertdialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+
+            android:id="@+id/tv_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="코스를 만들었어요!"
+            android:textColor="@color/G2"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_dialog" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:textSize="13.31sp"
+            android:id="@+id/btn_storage"
+            android:layout_width="147dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/radius_10_m3_button"
+            android:fontFamily="@font/pretendard_semibold"
+            android:stateListAnimator="@null"
+            android:text="보관함 가기"
+            android:textAlignment="center"
+            android:textColor="@color/M1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_run"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_dialog" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:textColor="@color/W1"
+            android:textSize="13.31sp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:id="@+id/btn_run"
+            android:layout_width="147dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="13dp"
+            android:background="@drawable/radius_10_m1_button"
+            android:stateListAnimator="@null"
+            android:text="바로 달리기"
+            app:layout_constraintBottom_toBottomOf="@id/btn_storage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_storage"
+            app:layout_constraintTop_toTopOf="@id/btn_storage" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
+
+

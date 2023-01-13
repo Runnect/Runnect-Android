@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Runnect</string>
 
+
     <string name="discover_title">코스발견</string>
     <string name="discover_recommend_title">코스 추천</string>
 
@@ -38,5 +39,6 @@
     <string name="item_mypage_history_distance_km">km</string>
     <string name="item_mypage_history_time">이동 시간</string>
     <string name="item_mypage_history_pace">평균 페이스</string>
+
 
 </resources>
