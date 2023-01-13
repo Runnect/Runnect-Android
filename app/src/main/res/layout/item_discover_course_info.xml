@@ -40,7 +40,7 @@
         android:gravity="center"
         android:textColor="@color/G1"
         android:textSize="14sp"
-        android:maxLength="14"
+        android:maxLength="13"
         android:ellipsize="end"
         app:layout_constraintStart_toStartOf="@id/cv_item_discover_course_info"
         app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info"
