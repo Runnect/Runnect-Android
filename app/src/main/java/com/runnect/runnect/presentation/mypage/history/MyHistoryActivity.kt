@@ -40,7 +40,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private fun addListener(){
         binding.ivMyPageHistoryBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
         }
+    }
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
     }
     private fun addObserver(){
         viewModel.recordState.observe(this){

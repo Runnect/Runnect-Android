@@ -36,9 +36,13 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun addListener() {
         binding.ivMyPageUploadBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
         }
     }
-
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
     private fun initAdapter() {
         adapter = MyUploadAdapter(this).apply {
             submitList(

@@ -34,6 +34,7 @@ class DiscoverUploadActivity :
     private fun addListener() {
         binding.ivDiscoverUploadBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         binding.ivDiscoverUploadFinish.setOnClickListener {
             if (it.isActivated) {
@@ -64,6 +65,7 @@ class DiscoverUploadActivity :
         viewModel.isUploadEnable.observe(this) {
             binding.ivDiscoverUploadFinish.isActivated = it
         }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     //키보드 밖 터치 시, 키보드 내림

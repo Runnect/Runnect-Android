@@ -138,9 +138,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addListener() {
         binding.ivDiscoverSearch.setOnClickListener {
             startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
         binding.btnDiscoverUpload.setOnClickListener {
             startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
     }
 }

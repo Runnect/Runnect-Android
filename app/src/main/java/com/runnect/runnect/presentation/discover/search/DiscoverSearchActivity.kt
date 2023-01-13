@@ -134,9 +134,15 @@ class DiscoverSearchActivity :
         }
     }
 
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
+
     private fun addListener() {
         binding.ivDiscoverSearchBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
         }
         //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
         //추후 showToast -> API 호출 대체 예정
@@ -180,5 +186,9 @@ class DiscoverSearchActivity :
         val intent = Intent(this, CourseDetailActivity::class.java)
         intent.putExtra("courseId", id)
         startActivity(intent)
+        overridePendingTransition(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
     }
 }

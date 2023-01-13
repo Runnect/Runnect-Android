@@ -109,17 +109,23 @@ class DiscoverLoadActivity :
             Timber.d("4. ViewModel에서 변경된 라이브데이터 관찰")
             binding.ivDiscoverLoadSelectFinish.isActivated = it != 0
         }
+
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addListener() {
         binding.ivDiscoverLoadSelectBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         binding.ivDiscoverLoadSelectFinish.setOnClickListener {
             if (it.isActivated) {
                 val intent = Intent(this, DiscoverUploadActivity::class.java)
                 intent.putExtra("courseId", viewModel.idSelectedItem.value)
                 startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
         }
     }

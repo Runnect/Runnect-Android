@@ -13,6 +13,9 @@ class CourseDetailActivity :
         super.onCreate(savedInstanceState)
         addListener()
         intent.getIntExtra("courseId", 0).toString()//선택한 코스의 id로 API 호출 예정
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
     }
 
     private fun addListener() {
