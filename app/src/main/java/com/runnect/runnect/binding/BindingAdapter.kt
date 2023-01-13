@@ -18,5 +18,6 @@ fun loadStorageImage(view: ImageView, imageUrl: String) {
     Glide
         .with(view.context)
         .load(imageUrl)
+        .centerCrop()
         .into(view)
 }

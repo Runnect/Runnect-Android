@@ -3,7 +3,10 @@ package com.runnect.runnect.presentation.storage
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ActivityStorageBinding
 import com.runnect.runnect.presentation.search.SearchActivity
@@ -34,17 +37,17 @@ class StorageActivity : com.runnect.runnect.binding.BindingActivity<ActivityStor
     private fun issueHandling() {
         viewModel.errorMessage.observe(this) {
             Timber.tag(ContentValues.TAG).d("fail")
-//            binding.recyclerviewCourseList.isVisible = false
-//            binding.ivStorage.isVisible = true
-//            binding.tvIntroToDraw.isVisible = true
-//            binding.btnStorageDraw.isVisible = false
+            binding.recyclerviewCourseList.visibility = View.INVISIBLE
+            binding.ivStorage.visibility = View.VISIBLE
+            binding.tvIntroToDraw.visibility = View.VISIBLE
+            binding.btnStorageDraw.visibility = View.INVISIBLE
         }
         viewModel.getResult.observe(this) {
             Timber.tag(ContentValues.TAG).d(it.message)
-//            binding.ivStorage.isVisible = false
-//            binding.tvIntroToDraw.isVisible = false
-//            binding.btnStorageDraw.isVisible = false
-//            binding.recyclerviewCourseList.isVisible = true
+            binding.ivStorage.visibility = View.INVISIBLE
+            binding.tvIntroToDraw.visibility = View.INVISIBLE
+            binding.btnStorageDraw.visibility = View.INVISIBLE
+            binding.recyclerviewCourseList.visibility = View.VISIBLE
 
         }
     }

@@ -39,8 +39,11 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
 
-    var secPublic by Delegates.notNull<Int>()
-    var milliPublic by Delegates.notNull<Int>()
+    lateinit var secPublic :String
+    lateinit var milliPublic :String
+
+    lateinit var departure : String
+    lateinit var captureUri : String
 
     //타이머
     var time = 0
@@ -53,8 +56,8 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
             val sec = time / 100
             val milli = time % 100
 
-            secPublic = sec
-            milliPublic = milli
+            secPublic = sec.toString() //intent로 넘길 값 전역변수에 세팅
+            milliPublic = milli.toString()
 
             runOnUiThread{
                 binding.tvTimeRecord.text = "${sec} : ${milli}"
@@ -150,8 +153,11 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
     private fun drawCourse() {
         touchList = intent.getSerializableExtra("touchList") as ArrayList<LatLng>
         startLatLngPublic = intent.getParcelableExtra("startLatLng")!!
-        val totalDistance = intent.getSerializableExtra("totalDistance")
+        val totalDistance = intent.getSerializableExtra("totalDistance") //총거리
         viewModel.distanceSum.value = totalDistance as Double?
+
+        departure = intent.getStringExtra("departure")!! //출발지
+        captureUri = intent.getStringExtra("captureUri")!! //이미지 url
 
         Timber.tag(ContentValues.TAG).d("startLatLng : ${startLatLngPublic}")
         Timber.tag(ContentValues.TAG).d("touchList : ${touchList}")
@@ -234,9 +240,12 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
-//                putExtra("distanceSum", viewModel.distanceSum.value)
-//                putExtra("timerSec",secPublic)
-//                putExtra("timerMilli",milliPublic)
+                putExtra("totalDistance", viewModel.distanceSum.value) //총거리
+                putExtra("timerSec",secPublic) //타이머
+                putExtra("timerMilli",milliPublic) //타이머
+                putExtra("captureUri",captureUri) //이미지Uri
+                putExtra("departure",departure) //출발지
+
             }
             startActivity(intent)
             bottomSheetDialog.dismiss()

@@ -18,7 +18,6 @@
 
 
         <ImageView
-            android:scaleType="fitCenter"
             app:storageImage="@{storage.image}"
             android:id="@+id/iv_storage"
             android:layout_width="162dp"

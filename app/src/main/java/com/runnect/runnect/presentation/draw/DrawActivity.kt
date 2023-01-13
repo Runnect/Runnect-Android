@@ -58,7 +58,7 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
     var sumList = mutableListOf<Double>()//Double
 
 
-//    lateinit var captureBitmap : Uri
+    lateinit var captureUri : Uri
 
 
     lateinit var startLatLngPublic: LocationLatLngEntity
@@ -140,12 +140,7 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
                         distanceListtoUpload.add(UploadLatLng(distanceList[i - 1].latitude,
                             distanceList[i - 1].longitude))
                     }
-                    var lat : Double
-                    var lng : Double
-                    for (i in 1 ..distanceList.size){
 
-
-                    }
                     viewModel.path.value = distanceListtoUpload //타입이 Double이 아닌 건 조금 걸리네..
                     //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
                     viewModel.departureAddress.value = searchResult.fullAdress
@@ -194,6 +189,11 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
             intent.putExtra("touchList", touchList)
             intent.putExtra("startLatLng", startLatLngPublic)
             intent.putExtra("totalDistance", viewModel.distanceSum.value)
+            intent.putExtra("departure",searchResult.name)
+            intent.putExtra("captureUri",captureUri.toString())
+
+            Timber.tag(ContentValues.TAG).d("departure 로그 : ${searchResult.name}")
+            Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")
 
             startActivity(intent)
             dialog.dismiss()
@@ -407,6 +407,7 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
         fileOutPut.close()
         val uri = FileProvider.getUriForFile(this,
             BuildConfig.APPLICATION_ID + ".fileprovider", tempFile)
+        captureUri = uri // intent로 넘길 전역변수에 uri 세팅
         return uri
     }
     companion object {

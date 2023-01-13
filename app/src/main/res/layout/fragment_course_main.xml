@@ -12,15 +12,6 @@
         android:layout_height="match_parent"
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:name="com.runnect.runnect.presentation.coursemain.CourseMainFragment"
-            android:id="@+id/fcv_pre_draw"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/bnv_main"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/mapView"
