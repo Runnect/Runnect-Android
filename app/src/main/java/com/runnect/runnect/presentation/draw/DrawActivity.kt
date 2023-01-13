@@ -43,7 +43,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.properties.Delegates
 
-class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
+class DrawActivity :
+    com.runnect.runnect.binding.BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
@@ -58,7 +59,7 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
     var sumList = mutableListOf<Double>()//Double
 
 
-    lateinit var captureUri : Uri
+    lateinit var captureUri: Uri
 
 
     lateinit var startLatLngPublic: LocationLatLngEntity
@@ -189,8 +190,8 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
             intent.putExtra("touchList", touchList)
             intent.putExtra("startLatLng", startLatLngPublic)
             intent.putExtra("totalDistance", viewModel.distanceSum.value)
-            intent.putExtra("departure",searchResult.name)
-            intent.putExtra("captureUri",captureUri.toString())
+            intent.putExtra("departure", searchResult.name)
+            intent.putExtra("captureUri", captureUri.toString())
 
             Timber.tag(ContentValues.TAG).d("departure 로그 : ${searchResult.name}")
             Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")
@@ -383,7 +384,7 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
         naverMap.takeSnapshot { // intent로 넘길 전역 변수에 비트맵 data 넣음
             val captureUri = getImageUri(this@DrawActivity, it)
 
-                //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
+            //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
             Timber.tag("캡쳐it").d("${it}")
             Timber.tag("캡쳐uri").d("${captureUri}")
 
@@ -410,6 +411,7 @@ class DrawActivity : com.runnect.runnect.binding.BindingActivity<ActivityDrawBin
         captureUri = uri // intent로 넘길 전역변수에 uri 세팅
         return uri
     }
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
 

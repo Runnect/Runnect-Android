@@ -25,11 +25,10 @@
             android:name=".presentation.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
-
-            android:name=".presentation.endrun.EndRunActivity"
-            android:exported="false">
-
         </activity>
+        <activity
+            android:name=".presentation.endrun.EndRunActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.storage.StorageActivity"
             android:exported="false" />
@@ -66,8 +65,7 @@
         <activity
             android:name=".presentation.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".presentation.discover.search.DiscoverSearchActivity"
             android:exported="false"
