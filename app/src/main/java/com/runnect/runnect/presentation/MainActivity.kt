@@ -15,8 +15,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main) {
     private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_Runnect)
         super.onCreate(savedInstanceState)
+
+
         binding.vm = viewModel
         binding.lifecycleOwner = this
         addListener()

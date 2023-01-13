@@ -85,5 +85,4 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.5.5")
     //coil
     implementation("io.coil-kt:coil:2.2.2")
-
 }
