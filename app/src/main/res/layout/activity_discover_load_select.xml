@@ -47,6 +47,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             android:scrollbars="none"
+            android:overScrollMode="never"
             android:layout_marginBottom="56dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_discover_load_select">
@@ -64,6 +65,8 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="15dp"
                     android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"

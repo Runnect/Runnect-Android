@@ -10,9 +10,8 @@ import com.runnect.runnect.databinding.FragmentMyPageBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+
 
 @AndroidEntryPoint
 class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
@@ -32,14 +31,28 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             val dialog = MyPageEditNameDialog()
             dialog.show(activity?.supportFragmentManager!!, "MyPageEditNameDialog")
         }
+
+
         binding.viewMyPageMainRewardFrame.setOnClickListener {
             startActivity(Intent(requireContext(), MyRewardActivity::class.java))
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
         binding.viewMyPageMainHistoryFrame.setOnClickListener {
             startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
         binding.viewMyPageMainUploadFrame.setOnClickListener {
             startActivity(Intent(requireContext(), MyUploadActivity::class.java))
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
     }
 

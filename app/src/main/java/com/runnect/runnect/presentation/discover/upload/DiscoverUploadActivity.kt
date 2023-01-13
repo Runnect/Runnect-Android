@@ -6,12 +6,16 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.viewModels
+import coil.load
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverUploadActivity :
@@ -21,7 +25,8 @@ class DiscoverUploadActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
-        intent.getIntExtra("courseId", 0).toString() //선택한 코스의 id로 API 호출 예정
+
+
         initLayout()
         addListener()
         addObserver()
@@ -29,19 +34,25 @@ class DiscoverUploadActivity :
 
     private fun initLayout() {
         binding.etDiscoverUploadDesc.movementMethod = null //내용 초과시 스크롤 되지 않도록 함
+        with(binding) {
+            ivDiscoverUploadMap.load(intent.getStringExtra("img"))
+            tvDiscoverUploadDistance.text = intent.getStringExtra("distance")
+            tvDiscoverUploadDeparture.text = intent.getStringExtra("departure")
+            viewModel.id = intent.getIntExtra("courseId", 0) //선택한 코스의 id로 API 호출 예정
+        }
+
     }
 
     private fun addListener() {
         binding.ivDiscoverUploadBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         binding.ivDiscoverUploadFinish.setOnClickListener {
+            Timber.d("버튼 활성화 여부 - ${it.isActivated}")
             if (it.isActivated) {
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
+                viewModel.postUploadMyCourse()
             }
-
         }
         //키보드 이벤트에 따른 동작 정의
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
@@ -63,6 +74,15 @@ class DiscoverUploadActivity :
     private fun addObserver() {
         viewModel.isUploadEnable.observe(this) {
             binding.ivDiscoverUploadFinish.isActivated = it
+        }
+        viewModel.courseUpLoadState.observe(this){ state ->
+            if(state == UiState.Success){
+                showToast("업로드 완료!")
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            }
         }
     }
 
