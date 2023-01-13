@@ -3,3 +3,4 @@
         courseService.postCourseScrap(requestCourseScrap)
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
+    suspend fun getCourseDetail(publicCourseId: Int) = courseService.getCourseDetail(publicCourseId)

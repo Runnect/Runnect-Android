@@ -13,3 +13,8 @@ interface PCourseService {
         @Query("keyword") keyword: String
     ): ResponseCourseSearch
 
+    @GET("/api/public-course/detail/{publicCourseId}")
+    suspend fun getCourseDetail(
+        @Path("publicCourseId") publicCourseId: Int
+    ): ResponseCourseDetail
+

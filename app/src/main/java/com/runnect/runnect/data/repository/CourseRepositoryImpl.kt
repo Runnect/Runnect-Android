@@ -18,3 +18,7 @@
         return searchPublicCourse
     }
 
+    override suspend fun getCourseDetail(publicCourseId: Int): CourseDetailDTO {
+        return courseDataSource.getCourseDetail(publicCourseId).data.toData()
+    }
+
