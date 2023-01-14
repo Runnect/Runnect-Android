@@ -59,7 +59,7 @@ class DiscoverUploadActivity :
             val r = Rect()
             binding.root.getWindowVisibleDisplayFrame(r)
             val heightDiff: Int = binding.root.rootView.height - (r.bottom - r.top)
-            if (heightDiff > 200) { //root view의 높이가 200이상일 때에는 keyboard up
+            if (heightDiff > 600) { //root view의 높이가 200이상일 때에는 keyboard up
                 //ok now we know the keyboard is up...
                 binding.ivDiscoverUploadFinish.visibility = View.GONE
                 binding.tvDiscoverUploadFinish.visibility = View.GONE
