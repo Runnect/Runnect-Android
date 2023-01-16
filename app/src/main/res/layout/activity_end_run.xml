@@ -97,12 +97,13 @@
             app:layout_constraintStart_toEndOf="@id/iv_start_date" />
 
         <TextView
+            tools:text="2023.01.07"
             android:id="@+id/tv_date_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="2023.01.14"
+            android:text="@{model.currentTime}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_date"

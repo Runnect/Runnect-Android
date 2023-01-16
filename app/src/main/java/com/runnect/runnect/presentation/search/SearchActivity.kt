@@ -28,6 +28,8 @@ import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.text.SimpleDateFormat
 
 class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
@@ -50,7 +52,6 @@ class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearc
 
         binding.model = viewModel
         binding.lifecycleOwner = this
-
 
         val recyclerviewSearch = binding.recyclerViewSearch //xml에 짜놓은 리사이클러뷰 불러오고
         recyclerviewSearch.adapter = searchAdapter //위에서 생성한 SearchAdapter 객체랑 연결함

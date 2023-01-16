@@ -112,6 +112,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_intro_to_draw" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="18dp"
                     android:visibility="visible"
                     android:id="@+id/recyclerview_course_list"
                     android:layout_width="match_parent"
