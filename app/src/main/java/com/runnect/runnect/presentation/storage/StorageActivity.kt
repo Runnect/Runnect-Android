@@ -37,17 +37,20 @@ class StorageActivity : com.runnect.runnect.binding.BindingActivity<ActivityStor
     private fun issueHandling() {
         viewModel.errorMessage.observe(this) {
             Timber.tag(ContentValues.TAG).d("fail")
-            binding.recyclerviewCourseList.visibility = View.INVISIBLE
-            binding.ivStorage.visibility = View.VISIBLE
-            binding.tvIntroToDraw.visibility = View.VISIBLE
-            binding.btnStorageDraw.visibility = View.INVISIBLE
+            binding.recyclerviewCourseList.isVisible = false
+            binding.ivStorage.isVisible = true
+            binding.tvIntroToDraw.isVisible = true
+            binding.btnStorageDraw.isVisible = false
         }
         viewModel.getResult.observe(this) {
             Timber.tag(ContentValues.TAG).d(it.message)
-            binding.ivStorage.visibility = View.INVISIBLE
-            binding.tvIntroToDraw.visibility = View.INVISIBLE
-            binding.btnStorageDraw.visibility = View.INVISIBLE
-            binding.recyclerviewCourseList.visibility = View.VISIBLE
+            binding.ivStorage.isVisible = false
+            binding.tvIntroToDraw.isVisible = false
+            binding.btnStorageDraw.isVisible = false
+            binding.recyclerviewCourseList.isVisible = true
+
+            storageAdapter.submitList(it.data.courses)
+            Timber.tag(ContentValues.TAG).d("it.data.courses : ${it.data.courses}")
 
         }
     }

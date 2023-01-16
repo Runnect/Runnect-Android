@@ -14,7 +14,7 @@ interface KCourseService {
     suspend fun getCourseList(
     ): Response<ResponseGetCourseDto>
 
-    //코스 가져오기
+    //기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
     ): Response<ResponseGetCourseDto>
