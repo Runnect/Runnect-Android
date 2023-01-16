@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.api
 
-import com.runnect.runnect.util.Url
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.runnect.runnect.BuildConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,8 +10,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object ApiClient {
-    //    private const val BASE_URL = "https://apis.openapi.sk.com"
     private var retrofit: Retrofit? = null
+
+    private val json = Json {
+        ignoreUnknownKeys = true // Field 값이 없는 경우 무시
+    }
 
     @OptIn(ExperimentalSerializationApi::class)
     fun getRetrofit(): Retrofit {
@@ -23,11 +26,9 @@ object ApiClient {
                 .addInterceptor(logger)
                 .build()
             retrofit = Retrofit.Builder()
-                .baseUrl(Url.TMAP_URL)
+                .baseUrl(BuildConfig.TMAP_URL)
                 .client(client)
-                .addConverterFactory(Json {
-                    ignoreUnknownKeys = true // Field 값이 없는 경우 무시
-                }.asConverterFactory("application/json".toMediaType()))
+                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
         }
         return retrofit!!
