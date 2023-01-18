@@ -56,7 +56,6 @@ object KApiCourse {
 
     inline fun <reified T> create(): T = getApiClient()!!.create<T>(T::class.java)
 
-    //이러면 이렇게 생성하는 모든 레트로핏 객체 header에 machineId가 붙을 거 같은데 오류 안 뜨나?
     object ServicePool {
         val courseService = create<KCourseService>()
 

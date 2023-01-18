@@ -3,6 +3,7 @@ package com.runnect.runnect.data.api
 
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponsePostCourseDto
+import com.runnect.runnect.data.model.ResponsePostRecordDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -14,10 +15,10 @@ interface KCourseService {
     suspend fun getCourseList(
     ): Response<ResponseGetCourseDto>
 
-    //코스 가져오기
+    //기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
-    ): Response<ResponseGetCourseDto>
+    ): Response<ResponsePostRecordDto>
 
     //코스 업로드
     @Multipart

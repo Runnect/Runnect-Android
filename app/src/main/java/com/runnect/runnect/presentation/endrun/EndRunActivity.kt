@@ -18,6 +18,7 @@ import com.runnect.runnect.presentation.coursemain.CourseMainActivity
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.SimpleDateFormat
 
 class EndRunActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
@@ -25,6 +26,10 @@ class EndRunActivity :
 
     val viewModel: EndRunViewModel by viewModels()
 
+    val currentTime : Long = System.currentTimeMillis() // ms로 반환
+
+    val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
+//    val dataFormat5 = SimpleDateFormat("현재시각은 yyyy-MM-dd hh:mm:ss")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +40,13 @@ class EndRunActivity :
         editTextController()
         getIntentValue()
         saveButton()
+
+
+
+        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
+
+        viewModel.currentTime.value = dataFormat5.format(currentTime)
+
     }
 
     fun backBtn() {
@@ -58,11 +70,11 @@ class EndRunActivity :
         Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")
 
         val timerSec = intent.getStringExtra("timerSec")
-//        viewModel.timerSec.value = timerSec //뷰모델에 타이머 sec 세팅
+        viewModel.timerSec.value = timerSec //뷰모델에 타이머 sec 세팅
         Timber.tag(ContentValues.TAG).d("timerSec 로그 : ${timerSec}")
 
         val timerMilli = intent.getStringExtra("timerMilli")
-//        viewModel.timerMilli.value = timerMilli //뷰모델에 타이머 Milli 세팅
+        viewModel.timerMilli.value = timerMilli //뷰모델에 타이머 Milli 세팅
         Timber.tag(ContentValues.TAG).d("timerMilli 로그 : ${timerMilli}")
 
         Glide
