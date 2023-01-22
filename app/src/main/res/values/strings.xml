@@ -39,6 +39,8 @@
     <string name="item_mypage_history_distance_km">km</string>
     <string name="item_mypage_history_time">이동 시간</string>
     <string name="item_mypage_history_pace">평균 페이스</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
