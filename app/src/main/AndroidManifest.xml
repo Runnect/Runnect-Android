@@ -53,6 +53,12 @@
 
         <activity
             android:name=".presentation.coursemain.CourseMainActivity"
+            android:exported="false">
+
+        </activity>
+        <activity
+            android:name=".presentation.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true">
 
             <intent-filter>
@@ -61,10 +67,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".presentation.MainActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="false"></activity>
         <activity
             android:name=".presentation.discover.search.DiscoverSearchActivity"
             android:exported="false"

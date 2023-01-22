@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.endrun
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -28,6 +29,7 @@ class EndRunActivity :
 
     val currentTime : Long = System.currentTimeMillis() // ms로 반환
 
+    @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
 //    val dataFormat5 = SimpleDateFormat("현재시각은 yyyy-MM-dd hh:mm:ss")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +43,9 @@ class EndRunActivity :
         getIntentValue()
         saveButton()
 
-
-
-        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
+//
+//
+//        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
 
@@ -87,7 +89,7 @@ class EndRunActivity :
             RoundingMode.FLOOR).toDouble()
         binding.tvDepartureRecord.text = departure
         binding.tvDistanceData.text = totalDistance
-        binding.tvTimeData.text = "${timerSec} : ${timerMilli}"
+        binding.tvTimeData.text = "$timerSec : $timerMilli"
         binding.tvPaceData.text = pace.toString()
     }
 
