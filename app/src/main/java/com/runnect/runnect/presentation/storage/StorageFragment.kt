@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.runnect.runnect.R
@@ -38,20 +39,29 @@ class StorageFragment :
 
     private fun issueHandling() {
         viewModel.errorMessage.observe(requireActivity()) {
-//            Timber.tag(ContentValues.TAG).d("fail")
-            binding.recyclerviewCourseList.isVisible = false
-            binding.ivStorage.isVisible = true
-            binding.tvIntroToDraw.isVisible = true
-            binding.btnStorageDraw.isVisible = false
+            if (viewModel.errorMessage.value == null) {
+                Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
+            } else {
+                Timber.tag(ContentValues.TAG).d("fail")
+                binding.recyclerviewCourseList.isVisible = false
+                binding.ivStorage.isVisible = true
+                binding.tvIntroToDraw.isVisible = true
+                binding.btnStorageDraw.isVisible = false
+            }
         }
         viewModel.getResult.observe(requireActivity()) {
-//            Timber.tag(ContentValues.TAG).d(it.message)
-            binding.ivStorage.isVisible = false
-            binding.tvIntroToDraw.isVisible = false
-            binding.btnStorageDraw.isVisible = false
-            binding.recyclerviewCourseList.isVisible = true
+            if (viewModel.getResult.value == null) {
+                Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
+            } else {
+                Timber.tag(ContentValues.TAG).d(it.message)
+                binding.ivStorage.isVisible = false
+                binding.tvIntroToDraw.isVisible = false
+                binding.btnStorageDraw.isVisible = false
+                binding.recyclerviewCourseList.isVisible = true
 
-            storageAdapter.submitList(it.data.courses)
+                storageAdapter.submitList(it.data.courses)
+            }
+
 //            Timber.tag(ContentValues.TAG).d("it.data.courses : ${it.data.courses}")
 
         }
@@ -66,6 +76,8 @@ class StorageFragment :
 
     private fun getCourse() {
         viewModel.getCourseList()
+//        Timber.tag(ContentValues.TAG).d("에러 메세지 value 확인 : ${viewModel.errorMessage.value}")
+//        Timber.tag(ContentValues.TAG).d("getResult value 확인 : ${viewModel.getResult.value}")
     }
 
 

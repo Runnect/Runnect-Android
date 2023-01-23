@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.MainViewModel" />
@@ -21,6 +22,7 @@
             app:layout_constraintBottom_toTopOf="@id/btm_navi_main"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/btm_navi_main"
             android:layout_width="match_parent"
@@ -30,8 +32,8 @@
             app:itemTextColor="@color/main_menu_color_selector"
             app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/main_bottom_menu" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

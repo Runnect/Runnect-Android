@@ -138,8 +138,12 @@ class DrawActivity :
             Handler(Looper.getMainLooper()).postDelayed(
                 {
                     for (i in 1..distanceList.size) {
-                        distanceListtoUpload.add(UploadLatLng(distanceList[i - 1].latitude,
-                            distanceList[i - 1].longitude))
+                        distanceListtoUpload.add(
+                            UploadLatLng(
+                                distanceList[i - 1].latitude,
+                                distanceList[i - 1].longitude
+                            )
+                        )
                     }
 
                     viewModel.path.value = distanceListtoUpload //타입이 Double이 아닌 건 조금 걸리네..
@@ -388,8 +392,12 @@ class DrawActivity :
             Timber.tag("캡쳐it").d("${it}")
             Timber.tag("캡쳐uri").d("${captureUri}")
 
-            viewModel.setRequestBody(ContentUriRequestBody(this,
-                captureUri)) //Uri를 RequestBody로 바꾼 거
+            viewModel.setRequestBody(
+                ContentUriRequestBody(
+                    this,
+                    captureUri
+                )
+            ) //Uri를 RequestBody로 바꾼 거
             Timber.tag("캡쳐").d("${viewModel.image.value}")
         }
     }
@@ -406,8 +414,10 @@ class DrawActivity :
         fileOutPut.write(bitmapData)
         fileOutPut.flush()
         fileOutPut.close()
-        val uri = FileProvider.getUriForFile(this,
-            BuildConfig.APPLICATION_ID + ".fileprovider", tempFile)
+        val uri = FileProvider.getUriForFile(
+            this,
+            BuildConfig.APPLICATION_ID + ".fileprovider", tempFile
+        )
         captureUri = uri // intent로 넘길 전역변수에 uri 세팅
         return uri
     }

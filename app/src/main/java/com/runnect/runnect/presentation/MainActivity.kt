@@ -25,7 +25,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         addListener()
         changeFragment(R.id.menu_main_drawing)
     }
-
     private fun addListener() {
         binding.btmNaviMain.setOnItemSelectedListener {
             changeFragment(it.itemId)
