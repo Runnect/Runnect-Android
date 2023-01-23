@@ -82,6 +82,7 @@ class CourseMainActivity :
     private fun drawCourseButton() {
         binding.btnDraw.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
     }

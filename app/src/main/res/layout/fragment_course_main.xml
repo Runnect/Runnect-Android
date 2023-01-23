@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginHorizontal="64dp"
-            android:layout_marginBottom="46dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
             android:text="코스 그리기"

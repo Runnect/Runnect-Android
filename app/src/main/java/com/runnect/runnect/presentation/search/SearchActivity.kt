@@ -25,13 +25,14 @@ import com.runnect.runnect.presentation.departure.DepartureActivity
 import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
 import com.runnect.runnect.presentation.departure.DepartureViewModel
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
+import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 
-class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
+class  SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
     val viewModel: DepartureViewModel by viewModels()
 
@@ -41,6 +42,7 @@ class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearc
         SearchAdapter(searchResultClickListener = {
             startActivity(
                 Intent(this, DepartureActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
                     putExtra(SEARCH_RESULT_EXTRA_KEY, it)
                 }
             )
@@ -56,6 +58,7 @@ class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearc
         val recyclerviewSearch = binding.recyclerViewSearch //xml에 짜놓은 리사이클러뷰 불러오고
         recyclerviewSearch.adapter = searchAdapter //위에서 생성한 SearchAdapter 객체랑 연결함
 
+        binding.etSearch.setFocusAndShowKeyboard(this)
         addListener()
 
 

@@ -34,7 +34,7 @@
             android:layout_marginStart="12dp"
             android:background="@color/transparent_00"
             android:fontFamily="@font/pretendard_medium"
-            android:hint="지역과 키워드 위주로 검색해보세요"
+            android:hint="출발지를 설정해주세요 "
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:textColor="@color/G1"
