@@ -6,21 +6,30 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.ResponseGetCourseDto
+import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ItemStorageBinding
 
-class StorageAdapter :
+class StorageAdapter(courseClickListener: (ResponseGetCourseDto.Data.Course) -> Unit) :
     ListAdapter<ResponseGetCourseDto.Data.Course, StorageAdapter.ItemViewHolder>(Differ()) {
 
+
+    private val listener = courseClickListener
 
     inner class ItemViewHolder(val binding: ItemStorageBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 
         fun bind(courseList: ResponseGetCourseDto.Data.Course) {
-
             binding.storage = courseList
-
         }
+
+        //클릭 이벤트 구현부
+        fun bindViews(data: ResponseGetCourseDto.Data.Course) {
+            binding.root.setOnClickListener {
+                listener(data)
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -32,6 +41,7 @@ class StorageAdapter :
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(currentList[position])
+        holder.bindViews(currentList[position])
     }
 
 
