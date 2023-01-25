@@ -48,7 +48,6 @@ class CountDownActivity :
 
                     Timber.tag(ContentValues.TAG).d("drawToRunData : $drawToRunData")
 
-                    //수신 완료
 
                     val intent = Intent(this@CountDownActivity, RunActivity::class.java).apply {
                         putExtra("DrawToRunData",

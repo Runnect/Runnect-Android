@@ -47,8 +47,6 @@ class EndRunActivity :
         getIntentValue()
         saveButton()
 
-//
-//
 //        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
@@ -65,7 +63,7 @@ class EndRunActivity :
 
         //여기도 RunToEndRuData Intent가 null일 때 밑에 세팅들이 딴 값을 기준으로 될 수 있게 세팅해줘야 함.
         runToEndRunData =
-            intent.getParcelableExtra("RunToEndRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가...
+            intent.getParcelableExtra("RunToEndRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가
 
         Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
 
