@@ -20,7 +20,7 @@ class StorageFragment :
 
 
     val viewModel: StorageViewModel by viewModels()
-    private val storageAdapter = StorageAdapter()
+    private val storageAdapter = StorageAdapter(courseClickListener = {})
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

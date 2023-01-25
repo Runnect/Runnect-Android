@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/radius_menu"
+            app:itemBackground="@color/transparent_00"
             app:itemIconTint="@color/main_menu_color_selector"
             app:itemTextColor="@color/main_menu_color_selector"
             app:labelVisibilityMode="labeled"

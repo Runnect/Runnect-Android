@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat
 
 class  SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
-    val viewModel: DepartureViewModel by viewModels()
+    val viewModel: SearchViewModel by viewModels()
 
     private val getSearchService = KApiSearch.ServicePool.searchService
 
