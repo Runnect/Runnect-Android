@@ -20,57 +20,36 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
+import com.runnect.runnect.data.model.DrawToRunData
+import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
 import java.util.*
 import kotlin.concurrent.timer
-import kotlin.properties.Delegates
 
-class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBinding>(R.layout.activity_run),
+class RunActivity :
+    com.runnect.runnect.binding.BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
 
 
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
-    private var touchList = arrayListOf<LatLng>()
+
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
 
-    lateinit var secPublic :String
-    lateinit var milliPublic :String
 
-    lateinit var departure : String
-    lateinit var captureUri : String
+    lateinit var drawToRunData: DrawToRunData
 
     //타이머
     var time = 0
     var timerTask: Timer? = null
 
-    private fun startTimer() {
-        timerTask = timer(period = 10) {
-            time++
+    lateinit var timerSec: String
+    lateinit var timerMilli: String
 
-            val sec = time / 100
-            val milli = time % 100
-
-            secPublic = sec.toString() //intent로 넘길 값 전역변수에 세팅
-            milliPublic = milli.toString()
-
-            runOnUiThread{
-                binding.tvTimeRecord.text = "${sec} : ${milli}"
-            }
-
-        }
-    }
-
-    private fun stopTimer(){
-        timerTask?.cancel()
-    }
-
-    lateinit var startLatLngPublic: LocationLatLngEntity
 
     val viewModel: RunViewModel by viewModels()
 
@@ -104,10 +83,12 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
             LOCATION_PERMISSION_REQUEST_CODE
         )
     }
+
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(this) //
 //        initView() //지도 뷰 표시
     }
+
     override fun onMapReady(map: NaverMap) {
         naverMap = map
         naverMap.maxZoom = 18.0
@@ -149,27 +130,36 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
             cameraUpdate(currentLocation)
         }
     }
+
     //여기서 터치로 그려주는 게 아니라 그냥 받아온 걸로 세팅하게 만들어야 함
     private fun drawCourse() {
-        touchList = intent.getSerializableExtra("touchList") as ArrayList<LatLng>
-        startLatLngPublic = intent.getParcelableExtra("startLatLng")!!
-        val totalDistance = intent.getSerializableExtra("totalDistance") //총거리
-        viewModel.distanceSum.value = totalDistance as Double?
 
-        departure = intent.getStringExtra("departure")!! //출발지
-        captureUri = intent.getStringExtra("captureUri")!! //이미지 url
+        //여기서 intent로 전 Activity에서 data를 받아오고 뷰모델에 세팅을 해준다음
+        //그 viewModel 값들을 logic에 넣어주는 거라서
+        //만약 보관함 같은 데서 넘어오는 거면 DrawToRunData가 null이 넘어오겠지
+        //그때는 viewModel value set을 딴 Activity에서 넘겨받은 값으로 세팅을 해야겠지.
 
-        Timber.tag(ContentValues.TAG).d("startLatLng : ${startLatLngPublic}")
-        Timber.tag(ContentValues.TAG).d("touchList : ${touchList}")
-        Timber.tag(ContentValues.TAG).d("totalDistance : ${totalDistance}")
-        Timber.tag(ContentValues.TAG).d("viewModel : ${viewModel.distanceSum.value}")
+        drawToRunData =
+            intent.getParcelableExtra("DrawToRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가...
+        viewModel.distanceSum.value = drawToRunData.totalDistance
+        viewModel.departure.value = drawToRunData.departure
+        viewModel.captureUri.value = drawToRunData.captureUri
+        viewModel.startLatLng.value = drawToRunData.startLatLng
+
+        Timber.tag(ContentValues.TAG).d("drawToRunData : $drawToRunData")
         //수신 완료
+
+        val viewModelStartLatLng =
+            viewModel.startLatLng.value // 아래 startLatLng에 바로 안 들어가져서 따로 변수를 만들어서 넣어줌
+        Timber.tag(ContentValues.TAG).d("viewModelStartLatLng : ${viewModel.startLatLng.value}")
 
         val path = PathOverlay()
         //startMarker-start
         val startMarker = Marker()
+
         val startLatLng =
-            LatLng(startLatLngPublic.latitude.toDouble(), startLatLngPublic.longitude.toDouble())
+            LatLng(viewModelStartLatLng!!.latitude.toDouble(),
+                viewModelStartLatLng!!.longitude.toDouble()) //이런 데 보면 getExtra로 받아온 게 바로 쓰이고 있는데 이러면 안 되고 ViewModel을 거쳐야 함.
 
         startMarker.position =
             LatLng(startLatLng.latitude, startLatLng.longitude) // 출발지점
@@ -191,7 +181,7 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
         val marker = Marker()
 
 
-        touchList.forEach { touch ->
+        drawToRunData.touchList.forEach { touch ->
             marker.position = LatLng(touch.latitude, touch.longitude)
             marker.anchor = PointF(0.5f, 0.5f)
             marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
@@ -227,7 +217,7 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
     }
 
     @SuppressLint("MissingInflatedId")
-    fun bottomSheet(){
+    fun bottomSheet() {
         // bottomSheetDialog 객체 생성
         val bottomSheetDialog = BottomSheetDialog(
             this@RunActivity, R.style.BottomSheetDialogTheme
@@ -240,11 +230,14 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
-                putExtra("totalDistance", viewModel.distanceSum.value) //총거리
-                putExtra("timerSec",secPublic) //타이머
-                putExtra("timerMilli",milliPublic) //타이머
-                putExtra("captureUri",captureUri) //이미지Uri
-                putExtra("departure",departure) //출발지
+
+                putExtra("RunToEndRunData",
+                    RunToEndRunData(
+                        viewModel.distanceSum.value,
+                        viewModel.captureUri.value,
+                        viewModel.departure.value,
+                        timerSec,
+                        timerMilli))
 
             }
             startActivity(intent)
@@ -256,10 +249,29 @@ class RunActivity : com.runnect.runnect.binding.BindingActivity<ActivityRunBindi
         bottomSheetDialog.show()
     }
 
+    private fun startTimer() {
+        timerTask = timer(period = 10) {
+            time++
+
+            val sec = time / 100
+            val milli = time % 100
+
+            timerSec = sec.toString() //intent로 넘길 값 전역변수에 세팅
+            timerMilli = milli.toString()
+
+            runOnUiThread {
+                binding.tvTimeRecord.text = "${sec} : ${milli}"
+            }
+
+        }
+    }
+
+    private fun stopTimer() {
+        timerTask?.cancel()
+    }
+
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        const val SEARCH_RESULT_BEFORE_RUN = "SearchResultBeforeRun"
-
     }
 }

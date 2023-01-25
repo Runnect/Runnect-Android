@@ -11,10 +11,11 @@ import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.storage.adapter.StorageAdapter
 import timber.log.Timber
 
-class StorageActivity : com.runnect.runnect.binding.BindingActivity<ActivityStorageBinding>(R.layout.activity_storage) {
+class StorageActivity :
+    com.runnect.runnect.binding.BindingActivity<ActivityStorageBinding>(R.layout.activity_storage) {
 
     val viewModel: StorageViewModel by viewModels()
-    private val storageAdapter = StorageAdapter()
+    private val storageAdapter = StorageAdapter(courseClickListener = {})
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

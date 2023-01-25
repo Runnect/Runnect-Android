@@ -27,10 +27,12 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
+import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.UploadLatLng
 import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.storage.StorageActivity
 import com.runnect.runnect.util.ContentUriRequestBody
@@ -185,17 +187,24 @@ class DrawActivity :
         dialog.show()
 
         myLayout.btn_storage.setOnClickListener {
-            val intent = Intent(this, StorageActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("fromDrawActivity", "true")
+            }
+            // MainActivity의 StorageFragment로 가야 되니까
+            //당장의 생각으로는 putExtra로 어떤 키 값을 줘서 그게 null이 아닐 때 MainActivity에서 StorageFragment를 띄울 수 있게
             startActivity(intent)
             dialog.dismiss()
         }
         myLayout.btn_run.setOnClickListener {
             val intent = Intent(this, CountDownActivity::class.java)
-            intent.putExtra("touchList", touchList)
-            intent.putExtra("startLatLng", startLatLngPublic)
-            intent.putExtra("totalDistance", viewModel.distanceSum.value)
-            intent.putExtra("departure", searchResult.name)
-            intent.putExtra("captureUri", captureUri.toString())
+
+            intent.putExtra("DrawToRunData",
+                DrawToRunData(
+                    touchList,
+                    startLatLngPublic,
+                    viewModel.distanceSum.value,
+                    searchResult.name,
+                    captureUri.toString()))
 
             Timber.tag(ContentValues.TAG).d("departure 로그 : ${searchResult.name}")
             Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")

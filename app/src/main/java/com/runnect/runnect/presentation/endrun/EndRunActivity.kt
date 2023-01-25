@@ -14,6 +14,7 @@ import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.runnect.runnect.R
+import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainActivity
 import timber.log.Timber
@@ -27,11 +28,14 @@ class EndRunActivity :
 
     val viewModel: EndRunViewModel by viewModels()
 
-    val currentTime : Long = System.currentTimeMillis() // ms로 반환
+    val currentTime: Long = System.currentTimeMillis() // ms로 반환
+
+    lateinit var runToEndRunData: RunToEndRunData
 
     @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
-//    val dataFormat5 = SimpleDateFormat("현재시각은 yyyy-MM-dd hh:mm:ss")
+
+    //    val dataFormat5 = SimpleDateFormat("현재시각은 yyyy-MM-dd hh:mm:ss")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,26 +62,27 @@ class EndRunActivity :
     }
 
     fun getIntentValue() {
-        val totalDistance = intent.getSerializableExtra("totalDistance").toString() //총거리
+
+        //여기도 RunToEndRuData Intent가 null일 때 밑에 세팅들이 딴 값을 기준으로 될 수 있게 세팅해줘야 함.
+        runToEndRunData =
+            intent.getParcelableExtra("RunToEndRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가...
+
+        Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
+
+        val totalDistance = runToEndRunData.totalDistance.toString()
 //        viewModel.distanceSum.value = totalDistance as Double? // 뷰모델에 총거리 세팅
-        Timber.tag(ContentValues.TAG).d("totalDistance 로그 : ${totalDistance}")
 
-        val departure = intent.getStringExtra("departure")!! //출발지
+        val departure = runToEndRunData.departure
 //        viewModel.departure.value = departure // 뷰모델에 출발지 세팅
-        Timber.tag(ContentValues.TAG).d("departure 로그 : ${departure}")
 
+        val captureUri = runToEndRunData.captureUri!!.toUri()
+        viewModel.captureUri.value = captureUri
 
-        val captureUri = intent.getStringExtra("captureUri")!!.toUri() //이미지 uri
-        viewModel.captureUri.value = captureUri //뷰모델에 이미지 uri 세팅
-        Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")
-
-        val timerSec = intent.getStringExtra("timerSec")
+        val timerSec = runToEndRunData.timerSec
         viewModel.timerSec.value = timerSec //뷰모델에 타이머 sec 세팅
-        Timber.tag(ContentValues.TAG).d("timerSec 로그 : ${timerSec}")
 
-        val timerMilli = intent.getStringExtra("timerMilli")
+        val timerMilli = runToEndRunData.timerMilli
         viewModel.timerMilli.value = timerMilli //뷰모델에 타이머 Milli 세팅
-        Timber.tag(ContentValues.TAG).d("timerMilli 로그 : ${timerMilli}")
 
         Glide
             .with(binding.ivEndRunCapture.context)
@@ -87,7 +92,7 @@ class EndRunActivity :
 
         val pace = BigDecimal(timerSec!!.toDouble() / totalDistance.toDouble()).setScale(2,
             RoundingMode.FLOOR).toDouble()
-        binding.tvDepartureRecord.text = departure
+        binding.tvDepartureRecord.text = departure //여기 걍 시간 없어서 이렇게 떼웠었지
         binding.tvDistanceData.text = totalDistance
         binding.tvTimeData.text = "$timerSec : $timerMilli"
         binding.tvPaceData.text = pace.toString()
