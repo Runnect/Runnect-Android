@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
-import com.runnect.runnect.presentation.coursemain.CourseMainActivity
+import com.runnect.runnect.presentation.MainActivity
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -116,7 +116,8 @@ class EndRunActivity :
 
     private fun saveButton() {
         binding.btnEndRunSave.setOnClickListener {
-            val intent = Intent(this, CourseMainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             startActivity(intent)
         }
     }
