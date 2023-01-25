@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.departure
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.PointF
-import android.icu.number.Scale.none
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.naver.maps.geometry.LatLng
@@ -17,7 +16,7 @@ import com.runnect.runnect.databinding.ActivityDepartureBinding
 import com.runnect.runnect.presentation.draw.DrawActivity
 import timber.log.Timber
 
-class  DepartureActivity :
+class DepartureActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityDepartureBinding>(R.layout.activity_departure),
     OnMapReadyCallback {
 
@@ -75,8 +74,8 @@ class  DepartureActivity :
 
             val intent = Intent(this, DrawActivity::class.java).apply {
                 putExtra("searchResult", searchResult)
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             }
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             startActivity(intent)
         }
     }

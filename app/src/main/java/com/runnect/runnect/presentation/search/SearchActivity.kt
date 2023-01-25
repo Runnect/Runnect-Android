@@ -23,16 +23,14 @@ import com.runnect.runnect.data.model.tmap.Pois
 import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.departure.DepartureActivity
 import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
-import com.runnect.runnect.presentation.departure.DepartureViewModel
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.text.SimpleDateFormat
 
-class  SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
+class SearchActivity :
+    com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
     val viewModel: SearchViewModel by viewModels()
 
@@ -55,8 +53,8 @@ class  SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySear
         binding.model = viewModel
         binding.lifecycleOwner = this
 
-        val recyclerviewSearch = binding.recyclerViewSearch //xml에 짜놓은 리사이클러뷰 불러오고
-        recyclerviewSearch.adapter = searchAdapter //위에서 생성한 SearchAdapter 객체랑 연결함
+        val recyclerviewSearch = binding.recyclerViewSearch
+        recyclerviewSearch.adapter = searchAdapter
 
         binding.etSearch.setFocusAndShowKeyboard(this)
         addListener()

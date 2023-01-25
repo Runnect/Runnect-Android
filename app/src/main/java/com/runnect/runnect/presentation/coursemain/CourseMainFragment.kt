@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.runnect.runnect.presentation.search.SearchActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gun0912.tedpermission.PermissionListener
@@ -15,6 +14,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentCourseMainBinding
+import com.runnect.runnect.presentation.search.SearchActivity
 
 class CourseMainFragment :
     BindingFragment<FragmentCourseMainBinding>(R.layout.fragment_course_main),

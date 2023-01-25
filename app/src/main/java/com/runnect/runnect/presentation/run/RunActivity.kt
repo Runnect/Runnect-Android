@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.run
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -60,7 +61,6 @@ class RunActivity :
         binding.lifecycleOwner = this
 
         init()
-        initView()
         startTimer()
         getCurrentLocation()
         seeRecord()
@@ -86,7 +86,7 @@ class RunActivity :
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(this) //
-//        initView() //지도 뷰 표시
+        initView() //지도 뷰 표시
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -116,7 +116,6 @@ class RunActivity :
 
     }
 
-
     //카메라 위치 변경 함수
     private fun cameraUpdate(location: LatLng) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude))
@@ -134,13 +133,8 @@ class RunActivity :
     //여기서 터치로 그려주는 게 아니라 그냥 받아온 걸로 세팅하게 만들어야 함
     private fun drawCourse() {
 
-        //여기서 intent로 전 Activity에서 data를 받아오고 뷰모델에 세팅을 해준다음
-        //그 viewModel 값들을 logic에 넣어주는 거라서
-        //만약 보관함 같은 데서 넘어오는 거면 DrawToRunData가 null이 넘어오겠지
-        //그때는 viewModel value set을 딴 Activity에서 넘겨받은 값으로 세팅을 해야겠지.
-
         drawToRunData =
-            intent.getParcelableExtra("DrawToRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가...
+            intent.getParcelableExtra("DrawToRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가?
         viewModel.distanceSum.value = drawToRunData.totalDistance
         viewModel.departure.value = drawToRunData.departure
         viewModel.captureUri.value = drawToRunData.captureUri
@@ -159,7 +153,7 @@ class RunActivity :
 
         val startLatLng =
             LatLng(viewModelStartLatLng!!.latitude.toDouble(),
-                viewModelStartLatLng!!.longitude.toDouble()) //이런 데 보면 getExtra로 받아온 게 바로 쓰이고 있는데 이러면 안 되고 ViewModel을 거쳐야 함.
+                viewModelStartLatLng!!.longitude.toDouble())
 
         startMarker.position =
             LatLng(startLatLng.latitude, startLatLng.longitude) // 출발지점
@@ -238,6 +232,8 @@ class RunActivity :
                         viewModel.departure.value,
                         timerSec,
                         timerMilli))
+
+                addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
 
             }
             startActivity(intent)
