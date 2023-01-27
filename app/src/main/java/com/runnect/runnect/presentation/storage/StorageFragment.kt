@@ -43,10 +43,13 @@ class StorageFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d("fail")
-                binding.recyclerviewCourseList.isVisible = false
-                binding.ivStorage.isVisible = true
-                binding.tvIntroToDraw.isVisible = true
-                binding.btnStorageDraw.isVisible = false
+                with(binding){
+                    recyclerviewCourseList.isVisible = false
+                    ivStorage.isVisible = true
+                    tvIntroToDraw.isVisible = true
+                    btnStorageDraw.isVisible = false
+                }
+
             }
         }
         viewModel.getResult.observe(requireActivity()) {
@@ -54,10 +57,12 @@ class StorageFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it.message)
-                binding.ivStorage.isVisible = false
-                binding.tvIntroToDraw.isVisible = false
-                binding.btnStorageDraw.isVisible = false
-                binding.recyclerviewCourseList.isVisible = true
+                with(binding){
+                    ivStorage.isVisible = false
+                    tvIntroToDraw.isVisible = false
+                    btnStorageDraw.isVisible = false
+                    recyclerviewCourseList.isVisible = true
+                }
 
                 storageAdapter.submitList(it.data.courses)
             }

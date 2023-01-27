@@ -2,13 +2,10 @@ package com.runnect.runnect.presentation.endrun
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
@@ -17,6 +14,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.util.extension.clearFocus
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -135,13 +133,5 @@ class EndRunActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    //키보드 내리기(포커스 해제) 확장함수
-    fun Context.clearFocus(view: View) {
-        val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
-        view.clearFocus()
     }
 }
