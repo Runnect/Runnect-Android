@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.coursemain
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import com.runnect.runnect.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gun0912.tedpermission.PermissionListener
@@ -11,6 +10,7 @@ import com.gun0912.tedpermission.normal.TedPermission
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.util.FusedLocationSource
+import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ActivityCourseMainBinding
 import com.runnect.runnect.presentation.search.SearchActivity
 
@@ -82,6 +82,7 @@ class CourseMainActivity :
     private fun drawCourseButton() {
         binding.btnDraw.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
     }
