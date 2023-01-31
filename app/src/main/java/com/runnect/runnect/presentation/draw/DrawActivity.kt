@@ -34,7 +34,6 @@ import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.storage.StorageActivity
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import timber.log.Timber

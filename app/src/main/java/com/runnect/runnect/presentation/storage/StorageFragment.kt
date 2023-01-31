@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageBinding
+import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.storage.adapter.StorageAdapter
 import timber.log.Timber
@@ -20,7 +21,16 @@ class StorageFragment :
 
 
     val viewModel: StorageViewModel by viewModels()
-    private val storageAdapter = StorageAdapter(courseClickListener = {})
+    private val storageAdapter = StorageAdapter(courseClickListener = {
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${it.id}")
+        startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
+            putExtra("fromStorageFragment", it.id)
+            //코스 아이디를 보내면 MyDrawDetailActivity에서 이걸 request 파라미터로 get 올리면 이미지, 좌표값 이런 거 내려받을 수 있음
+        })
+
+
+    })
+    //터치하면 각 아이템별 상세페이지로 이동 ui, activity 새로 만들어야 함
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +53,7 @@ class StorageFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d("fail")
-                with(binding){
+                with(binding) {
                     recyclerviewCourseList.isVisible = false
                     ivStorage.isVisible = true
                     tvIntroToDraw.isVisible = true
@@ -57,7 +67,7 @@ class StorageFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it.message)
-                with(binding){
+                with(binding) {
                     ivStorage.isVisible = false
                     tvIntroToDraw.isVisible = false
                     btnStorageDraw.isVisible = false
