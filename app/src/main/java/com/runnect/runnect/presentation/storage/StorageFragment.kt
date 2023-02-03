@@ -24,14 +24,10 @@ class StorageFragment :
     private val storageAdapter = StorageAdapter(courseClickListener = {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${it.id}")
         startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             putExtra("fromStorageFragment", it.id)
-            //코스 아이디를 보내면 MyDrawDetailActivity에서 이걸 request 파라미터로 get 올리면 이미지, 좌표값 이런 거 내려받을 수 있음
         })
-
-
     })
-    //터치하면 각 아이템별 상세페이지로 이동 ui, activity 새로 만들어야 함
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,11 +73,33 @@ class StorageFragment :
                 storageAdapter.submitList(it.data.courses)
             }
 
-//            Timber.tag(ContentValues.TAG).d("it.data.courses : ${it.data.courses}")
-
         }
     }
 
+//    private fun tabLayoutAction(){
+//        binding.storageTab.addOnTabSelectedListener(
+//            object : TabLayout.OnTabSelectedListener{
+//                // 탭 버튼을 선택할 때 이벤트
+//                override fun onTabSelected(tab: TabLayout.Tab?) {
+//                    val transaction = childFragmentManager.beginTransaction()
+//                    when(tab?.id) {
+//                        R.id.tab_draw -> transaction.replace<CourseMainFragment>(R.id.fl_main)
+//                        R.id.tab_scrap -> transaction.replace<MyPageFragment>(R.id.fl_main)
+//                    }
+//                    transaction.commit()
+//                }
+//                // 다른 탭 버튼을 눌러 선택된 탭 버튼이 해제될 때 이벤트
+//                override fun onTabUnselected(tab: TabLayout.Tab?) {
+//                    TODO("Not yet implemented")
+//                }
+//                // 선택된 탭 버튼을 다시 선택할 때 이벤트
+//                override fun onTabReselected(tab: TabLayout.Tab?) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//            }
+//        )
+//    }
     private fun toDrawCourseBtn() {
         binding.btnStorageDraw.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java)
@@ -91,8 +109,6 @@ class StorageFragment :
 
     private fun getCourse() {
         viewModel.getCourseList()
-//        Timber.tag(ContentValues.TAG).d("에러 메세지 value 확인 : ${viewModel.errorMessage.value}")
-//        Timber.tag(ContentValues.TAG).d("getResult value 확인 : ${viewModel.getResult.value}")
     }
 
 

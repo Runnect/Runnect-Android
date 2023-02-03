@@ -50,11 +50,13 @@
             tools:ignore="MissingConstraints">
 
             <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_draw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="내가 그린 코스" />
 
             <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_scrap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="스크랩 코스" />
@@ -110,6 +112,12 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_intro_to_draw" />
+
+<!--                <FrameLayout-->
+<!--                    android:id="@+id/fl_main"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_marginTop="18dp"

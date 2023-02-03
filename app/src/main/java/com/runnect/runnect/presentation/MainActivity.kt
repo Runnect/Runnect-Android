@@ -28,7 +28,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         binding.lifecycleOwner = this
         fromDrawActivity()
         initView()
-        addListener() //이게 있어야 changeFragment를 돌릴 수 있는 거
+        addListener() //이게 있어야 changeFragment를 돌릴 수 있음
 
     }
 
@@ -45,7 +45,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun fromDrawActivity() {
-        fromDrawActivity = intent.getBooleanExtra("fromDrawActivity", false) //null 대신 default value를 false로 설정함.
+        fromDrawActivity =
+            intent.getBooleanExtra("fromDrawActivity", false) //null 대신 default value를 false로 설정함.
         Timber.tag("hu")
             .d("Is this from DrawActivity? : ${fromDrawActivity}")
 

@@ -147,7 +147,7 @@ class DrawActivity :
                         )
                     }
 
-                    viewModel.path.value = distanceListtoUpload //타입이 Double이 아닌 건 조금 걸리네..
+                    viewModel.path.value = distanceListtoUpload
                     //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
                     viewModel.departureAddress.value = searchResult.fullAdress
                     viewModel.departureName.value = searchResult.name
@@ -187,10 +187,8 @@ class DrawActivity :
 
         myLayout.btn_storage.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("fromDrawActivity", "true")
+                putExtra("fromDrawActivity", true)
             }
-            // MainActivity의 StorageFragment로 가야 되니까
-            //당장의 생각으로는 putExtra로 어떤 키 값을 줘서 그게 null이 아닐 때 MainActivity에서 StorageFragment를 띄울 수 있게
             startActivity(intent)
             dialog.dismiss()
         }
@@ -257,7 +255,7 @@ class DrawActivity :
         )
         //startMarker-end
 
-        //여기에 거리 계산용 list 출발 지점 추가하는 코드 넣어야 할듯?
+        //거리 계산용 list 출발 지점 추가하는 코드
         distanceList.add(
             LatLng(
                 startLatLngPublic.latitude.toDouble(),
@@ -318,7 +316,7 @@ class DrawActivity :
 
         //backButton
         binding.btnMarkerBack.setOnClickListener {
-            if (touchList.size > 0) { // 이건 터치 좌표 리스트에 아무것도 없는데 버튼이 눌려서 npe가 뜨는 걸 방지하기 위함
+            if (touchList.size > 0) { // 이건 터치 좌표 리스트에 아무것도 없는데 버튼이 눌려서 NPE가 뜨는 걸 방지하기 위함
                 touchList.removeLast()
                 Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
                 markerList.last().map = null
@@ -392,11 +390,10 @@ class DrawActivity :
     }
 
     private fun captureMap() {
-        //캡쳐해서 이미지 뷰에 set하기~
         naverMap.takeSnapshot { // intent로 넘길 전역 변수에 비트맵 data 넣음
             val captureUri = getImageUri(this@DrawActivity, it)
 
-            //캡쳐한 게 비트맵으로 반환되는데 그걸 Uri로 바꾼 거
+            //Bitmap -> Uri
             Timber.tag("캡쳐it").d("${it}")
             Timber.tag("캡쳐uri").d("${captureUri}")
 
@@ -405,7 +402,7 @@ class DrawActivity :
                     this,
                     captureUri
                 )
-            ) //Uri를 RequestBody로 바꾼 거
+            ) //Uri -> RequestBody
             Timber.tag("캡쳐").d("${viewModel.image.value}")
         }
     }

@@ -102,9 +102,6 @@ class DrawViewModel : ViewModel() {
 
 }
 
-//
-//
-//for (i in 1..path.size) add(i)
 
 
 

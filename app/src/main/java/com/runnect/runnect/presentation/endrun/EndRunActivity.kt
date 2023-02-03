@@ -58,10 +58,9 @@ class EndRunActivity :
     }
 
     fun getIntentValue() {
-
-        //여기도 RunToEndRuData Intent가 null일 때 밑에 세팅들이 딴 값을 기준으로 될 수 있게 세팅해줘야 함.
+        //DrawToRunData나 DetailToRunData나 RunActivity에서 RunToEndRunData로 가공이 되기 때문에 RunActivity와는 상황이 다름
         runToEndRunData =
-            intent.getParcelableExtra("RunToEndRunData")!! //이게 null일 수도 있는데 !!를 붙여주는 게 맞는 건가
+            intent.getParcelableExtra("RunToEndRunData")!!
 
         Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
 
@@ -88,7 +87,7 @@ class EndRunActivity :
 
         val pace = BigDecimal(timerSec!!.toDouble() / totalDistance.toDouble()).setScale(2,
             RoundingMode.FLOOR).toDouble()
-        binding.tvDepartureRecord.text = departure //여기 걍 시간 없어서 이렇게 떼웠었지
+        binding.tvDepartureRecord.text = departure //추후에 data binding으로 리팩토링
         binding.tvDistanceData.text = totalDistance
         binding.tvTimeData.text = "$timerSec : $timerMilli"
         binding.tvPaceData.text = pace.toString()

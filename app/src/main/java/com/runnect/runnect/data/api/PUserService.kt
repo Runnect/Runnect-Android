@@ -13,7 +13,7 @@ interface PUserService {
 
     @PATCH("api/user")
     suspend fun updateNickName(
-        @Body requestUpdateNickName: RequestUpdateNickName
+        @Body requestUpdateNickName: RequestUpdateNickName,
     ): ResponseUpdateNickName
 
     @GET("api/stamp/user")

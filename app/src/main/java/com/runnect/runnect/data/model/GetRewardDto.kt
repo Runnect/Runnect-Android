@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GetRewardDto(
     @SerialName("items")
-    val items: List<Item>
+    val items: List<Item>,
 ) {
     @Serializable
     data class Item(
@@ -16,6 +16,6 @@ data class GetRewardDto(
         @SerialName("imgUrl")
         val imgUrl: String,
         @SerialName("name")
-        val name: String
+        val name: String,
     )
 }

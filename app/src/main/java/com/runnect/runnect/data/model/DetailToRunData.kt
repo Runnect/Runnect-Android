@@ -1,10 +1,13 @@
 package com.runnect.runnect.data.model
 
 
-import com.naver.maps.geometry.LatLng
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-
+@Parcelize
 data class DetailToRunData(
-
-    val path: MutableList<LatLng>
-)
+    val departure: String,
+    val distance: Int,
+    val path: List<List<Double>>,
+    val image: String,
+) : Parcelable

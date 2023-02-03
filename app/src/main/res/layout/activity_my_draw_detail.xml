@@ -5,9 +5,9 @@
 
     <data>
 
-        <variable
-            name="model"
-            type="com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailViewModel" />
+<!--        <variable-->
+<!--            name="model"-->
+<!--            type="com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailViewModel" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +20,6 @@
             android:id="@+id/iv_my_draw_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@{model.image.toString()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +44,7 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            android:text="@{model.distance.toString()}"
+            android:text="0"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/frame_course_distance"
