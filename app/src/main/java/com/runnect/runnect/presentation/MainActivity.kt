@@ -10,7 +10,7 @@ import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainFragment
 import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.mypage.MyPageFragment
-import com.runnect.runnect.presentation.storage.StorageFragment
+import com.runnect.runnect.presentation.storage.StorageMainFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -71,7 +71,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             }
             R.id.menu_main_storage -> supportFragmentManager.commit {
                 fromDrawActivity = false
-                replace<StorageFragment>(R.id.fl_main)
+                replace<StorageMainFragment>(R.id.fl_main)
             }
             R.id.menu_main_discover -> supportFragmentManager.commit {
                 fromDrawActivity = false

@@ -6,16 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.data.model.entity.SearchResultEntity
-import com.runnect.runnect.databinding.ItemStorageBinding
+import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 
-class StorageAdapter(courseClickListener: (ResponseGetCourseDto.Data.Course) -> Unit) :
-    ListAdapter<ResponseGetCourseDto.Data.Course, StorageAdapter.ItemViewHolder>(Differ()) {
+class StorageMyDrawAdapter(courseClickListener: (ResponseGetCourseDto.Data.Course) -> Unit) :
+    ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
 
     private val listener = courseClickListener
 
-    inner class ItemViewHolder(val binding: ItemStorageBinding) :
+    inner class ItemViewHolder(val binding: ItemStorageMyDrawBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 
@@ -34,7 +33,7 @@ class StorageAdapter(courseClickListener: (ResponseGetCourseDto.Data.Course) -> 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemStorageBinding.inflate(inflater)
+        val binding = ItemStorageMyDrawBinding.inflate(inflater)
 
         return ItemViewHolder(binding)
     }
