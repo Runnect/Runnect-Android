@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
-import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponsePostRecordDto
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import kotlinx.coroutines.launch
@@ -19,12 +18,13 @@ class EndRunViewModel : ViewModel() {
     val departure = MutableLiveData<String>()
     val timerSec = MutableLiveData<String>()
     val timerMilli = MutableLiveData<String>()
-//    "${timerSec} : ${timerMilli}"
+
+    //    "${timerSec} : ${timerMilli}"
     val editTextValue = MutableLiveData<String>()
 
     val buttonCondition = MutableLiveData<Boolean>()
 
-    val averagePace = MutableLiveData<Int>() //이거 타입 모르겠네
+    val averagePace = MutableLiveData<Int>() //타입?
 
     val getResult = MutableLiveData<ResponsePostRecordDto>()
     val errorMessage = MutableLiveData<String>()

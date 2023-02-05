@@ -4,8 +4,8 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 
-@BindingAdapter("app:rewardImage")
-fun loadRewardImage(view: ImageView, imageUrl: String) {
+@BindingAdapter("app:myDrawDetailImage")
+fun loadMyDrawDetailImage(view: ImageView, imageUrl: String) {
     Glide
         .with(view.context)
         .load(imageUrl)

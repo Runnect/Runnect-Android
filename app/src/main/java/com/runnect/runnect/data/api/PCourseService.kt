@@ -12,17 +12,17 @@ interface PCourseService {
 
     @POST("/api/scrap")
     suspend fun postCourseScrap(
-        @Body requestCourseScrap: RequestCourseScrap
+        @Body requestCourseScrap: RequestCourseScrap,
     ): ResponseCourseScrap
 
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(
-        @Query("keyword") keyword: String
+        @Query("keyword") keyword: String,
     ): ResponseCourseSearch
 
     @GET("/api/public-course/detail/{publicCourseId}")
     suspend fun getCourseDetail(
-        @Path("publicCourseId") publicCourseId: Int
+        @Path("publicCourseId") publicCourseId: Int,
     ): ResponseCourseDetail
 
     @GET("/api/course/private/user")
@@ -31,6 +31,6 @@ interface PCourseService {
 
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(
-        @Body requestUploadMyCourse: RequestUploadMyCourse
-    ):ResponseUploadMyCourse
+        @Body requestUploadMyCourse: RequestUploadMyCourse,
+    ): ResponseUploadMyCourse
 }

@@ -1,11 +1,13 @@
 package com.runnect.runnect.presentation.detail
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import coil.load
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
+import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -44,7 +46,8 @@ class CourseDetailActivity :
             it.isSelected = !it.isSelected
             viewModel.postCourseScrap(id = courseId, it.isSelected)
         }
-        binding.ivCourseDetailFinish.setOnClickListener {
+        binding.btnCourseDetailFinish.setOnClickListener {
+            val intent = Intent(this, CountDownActivity::class.java) //보니까 지금 이거 좌표값이 없는 더미라 CountDown으로 data를 넘길 수가 없음
             //러닝 시작
         }
     }
