@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_item_discover_course_info"
+        android:id="@+id/cv_item_discover_course_info_scrap"
         android:layout_width="162dp"
         android:layout_height="0dp"
         android:backgroundTint="@color/G4"
@@ -19,7 +19,7 @@
             android:id="@+id/iv_item_discover_course_info_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -27,8 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        app:layout_constraintEnd_toEndOf="@id/cv_item_discover_course_info"
-        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info"
+        app:layout_constraintEnd_toEndOf="@id/cv_item_discover_course_info_scrap"
+        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info_scrap"
         app:srcCompat="@drawable/discover_course_scrap_selector" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -36,14 +36,14 @@
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginTop="2dp"
+        android:ellipsize="end"
         android:fontFamily="@font/pretendard_medium"
         android:gravity="center"
+        android:maxLength="13"
         android:textColor="@color/G1"
         android:textSize="14sp"
-        android:maxLength="13"
-        android:ellipsize="end"
-        app:layout_constraintStart_toStartOf="@id/cv_item_discover_course_info"
-        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info"
+        app:layout_constraintStart_toStartOf="@id/cv_item_discover_course_info_scrap"
+        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info_scrap"
         tools:text="제목" />
 
     <androidx.appcompat.widget.AppCompatTextView

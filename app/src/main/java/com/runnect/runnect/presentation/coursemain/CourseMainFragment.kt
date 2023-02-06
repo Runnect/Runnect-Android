@@ -10,6 +10,7 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
+import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
@@ -91,6 +92,10 @@ class CourseMainFragment :
 
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
+
+        //현위치 커스텀 이미지
+        val locationOverlay = naverMap.locationOverlay
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
     }
 
     private fun requestPermission() {

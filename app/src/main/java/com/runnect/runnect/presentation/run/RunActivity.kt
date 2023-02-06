@@ -116,6 +116,10 @@ class RunActivity :
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
 
+        //현위치 커스텀 이미지
+        val locationOverlay = naverMap.locationOverlay
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
+
     }
 
     //카메라 위치 변경 함수
