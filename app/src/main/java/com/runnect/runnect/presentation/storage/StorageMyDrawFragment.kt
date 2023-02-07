@@ -5,12 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
+import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
+import com.runnect.runnect.util.GridSpacingItemDecoration
 import timber.log.Timber
 
 
@@ -29,16 +33,29 @@ class StorageMyDrawFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        binding.model = viewModel
+        initLayout()
         binding.lifecycleOwner = requireActivity()
 
         val recyclerviewStorage = binding.recyclerViewStorageMyDraw
         recyclerviewStorage.adapter = storageMyDrawAdapter
 
         getCourse()
-//        toDrawCourseBtn()
+        toDrawCourseBtn()
         issueHandling()
 
+    }
+
+    private fun initLayout() {
+        binding.recyclerViewStorageMyDraw
+            .layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerViewStorageMyDraw.addItemDecoration(
+            GridSpacingItemDecoration(
+                requireContext(),
+                2,
+                6,
+                16
+            )
+        )
     }
 
     private fun issueHandling() {
@@ -47,12 +64,12 @@ class StorageMyDrawFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d("fail")
-//                with(binding) {
-//                    recyclerviewCourseList.isVisible = false
-//                    ivStorage.isVisible = true
-//                    tvIntroToDraw.isVisible = true
-//                    btnStorageDraw.isVisible = false
-//                }
+                with(binding) {
+                    recyclerViewStorageMyDraw.isVisible = false
+                    ivStorageMyDrawNoCourse.isVisible = true
+                    tvStorageMyDrawNoCourseGuide.isVisible = true
+                    btnStorageNoCourse.isVisible = true
+                }
 
             }
         }
@@ -61,12 +78,12 @@ class StorageMyDrawFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it.message)
-//                with(binding) {
-//                    ivStorage.isVisible = false
-//                    tvIntroToDraw.isVisible = false
-//                    btnStorageDraw.isVisible = false
-//                    recyclerviewCourseList.isVisible = true
-//                }
+                with(binding) {
+                    recyclerViewStorageMyDraw.isVisible = true
+                    ivStorageMyDrawNoCourse.isVisible = false
+                    tvStorageMyDrawNoCourseGuide.isVisible = false
+                    btnStorageNoCourse.isVisible = false
+                }
 
                 storageMyDrawAdapter.submitList(it.data.courses)
             }
@@ -74,12 +91,12 @@ class StorageMyDrawFragment :
         }
     }
 
-//    private fun toDrawCourseBtn() {
-//        binding.btnStorageDraw.setOnClickListener {
-//            val intent = Intent(activity, SearchActivity::class.java)
-//            startActivity(intent)
-//        }
-//    }
+    private fun toDrawCourseBtn() {
+        binding.btnStorageNoCourse.setOnClickListener {
+            val intent = Intent(activity, SearchActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
     private fun getCourse() {
         viewModel.getMyDrawList()

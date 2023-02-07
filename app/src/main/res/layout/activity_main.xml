@@ -18,7 +18,7 @@
         <FrameLayout
             android:id="@+id/fl_main"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toTopOf="@id/btm_navi_main"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +26,7 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/btm_navi_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="57dp"
             android:background="@drawable/radius_menu"
             app:itemBackground="@color/transparent_00"
             app:itemIconTint="@color/main_menu_color_selector"

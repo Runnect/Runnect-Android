@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="storage_scrap"
             type="com.runnect.runnect.data.model.ResponseGetScrapDto.Data.Scrap" />
@@ -11,32 +12,64 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:context=".presentation.storage.StorageActivity">
+        android:layout_height="wrap_content">
 
-
-        <ImageView
-            app:storageImage="@{storage_scrap.image}"
-            android:id="@+id/iv_storage"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_item_storage_scrap"
             android:layout_width="162dp"
-            android:layout_height="114dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/G4"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintDimensionRatio="162:114"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/radius_5dp" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            tools:text="서울시 광진구"
-            android:lineSpacingExtra="5sp"
-            android:id="@+id/tv_storage_title"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_item_storage_scrap_map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:storageImage="@{storage_scrap.image}" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_item_storage_scrap_heart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@{storage_scrap.title}"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@id/iv_storage"
-            app:layout_constraintTop_toBottomOf="@id/iv_storage" />
+            android:layout_marginTop="6dp"
+            app:layout_constraintEnd_toEndOf="@id/cv_item_storage_scrap"
+            app:layout_constraintTop_toBottomOf="@id/cv_item_storage_scrap"
+            app:srcCompat="@drawable/discover_course_scrap_selector" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_storage_scrap_title"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:maxLength="12"
+            android:text="@{storage_scrap.title}"
+            android:textColor="@color/G1"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/cv_item_storage_scrap"
+            app:layout_constraintTop_toBottomOf="@id/cv_item_storage_scrap"
+            tools:text="제목" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_storage_scrap_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:gravity="center"
+            android:text="@{storage_scrap.departure.city + storage_scrap.departure.region}"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="@id/tv_item_storage_scrap_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_item_storage_scrap_title"
+            tools:text="서울시 강동구" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="storage"
             type="com.runnect.runnect.data.model.ResponseGetCourseDto" />
@@ -19,29 +20,59 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_storage_my_draw"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
                 android:orientation="vertical"
+                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:spanCount="2"
                 tools:listitem="@layout/item_storage_my_draw" />
-            <!--            <androidx.recyclerview.widget.RecyclerView-->
-            <!--                android:id="@+id/recyclerview_course_list"-->
-            <!--                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toTopOf="parent"-->
-            <!--                app:spanCount="2"-->
-            <!--                tools:listitem="@layout/item_storage"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginTop="18dp"-->
-            <!--                android:orientation="vertical"-->
-            <!--                android:visibility="visible" />-->
+
+            <ImageView
+                android:id="@+id/iv_storage_my_draw_no_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="155dp"
+                android:src="@drawable/storage_my_draw_no_course"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_storage_my_draw_no_course_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:lineHeight="22sp"
+                android:visibility="invisible"
+                android:text="아직 내가 그린 코스가 없어요\n     직접 코스를 그려주세요"
+                android:textColor="@color/G2"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_storage_my_draw_no_course" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_storage_no_course"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="64dp"
+                android:layout_marginTop="22dp"
+                android:visibility="invisible"
+                android:background="@drawable/radius_10_m1_button"
+                android:fontFamily="@font/pretendard_semibold"
+                android:text="코스 그리기"
+                android:textColor="@color/W1"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_storage_my_draw_no_course_guide" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

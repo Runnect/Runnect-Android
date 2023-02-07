@@ -18,6 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <View
+            android:id="@+id/view_empty"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/transparent_00"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"/>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_draw"
@@ -32,7 +39,7 @@
             android:textColor="@color/W1"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/view_empty"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

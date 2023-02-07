@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.search
 
+
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
@@ -11,7 +12,10 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.data.api.KApiSearch
 import com.runnect.runnect.data.model.entity.LocationLatLngEntity
@@ -27,6 +31,7 @@ import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class SearchActivity :
     com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
@@ -52,6 +57,7 @@ class SearchActivity :
         binding.model = viewModel
         binding.lifecycleOwner = this
 
+        initDivider()
         val recyclerviewSearch = binding.recyclerViewSearch
         recyclerviewSearch.adapter = searchAdapter
 
@@ -61,6 +67,14 @@ class SearchActivity :
 
     }
 
+    private fun initDivider() {
+        val dividerItemDecoration = DividerItemDecoration(this,
+            LinearLayoutManager(this).orientation)
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider)!!)
+        binding.recyclerViewSearch.apply {
+            addItemDecoration(dividerItemDecoration)
+        }
+    }
 
     private fun makeMainAdress(poi: Poi): String =
         if (poi.secondNo?.trim().isNullOrEmpty()) {
