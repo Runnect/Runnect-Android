@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class MyDrawDetailViewModel : ViewModel() {
 
-    val distance = MutableLiveData<Double>(0.0)
+    val distance = MutableLiveData<Float>()
     val image = MutableLiveData<Uri>()
     val detailToRunData = MutableLiveData<DetailToRunData>()
     val courseId = MutableLiveData<Int>()

@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class DetailToRunData(
     val departure: String,
-    val distance: Int,
+    val distance: Float,
     val path: List<List<Double>>,
     val image: String,
 ) : Parcelable

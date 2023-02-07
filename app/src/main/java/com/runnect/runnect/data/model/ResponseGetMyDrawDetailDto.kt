@@ -29,7 +29,7 @@ data class ResponseGetMyDrawDetailDto(
             @SerialName("departure")
             val departure: Departure,
             @SerialName("distance")
-            val distance: Int,
+            val distance: Float,
             @SerialName("id")
             val id: Int,
             @SerialName("image")

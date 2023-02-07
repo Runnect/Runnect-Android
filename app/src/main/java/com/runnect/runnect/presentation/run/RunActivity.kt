@@ -29,6 +29,8 @@ import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 import kotlin.concurrent.timer
 
@@ -144,23 +146,34 @@ class RunActivity :
         val drawToRunData: DrawToRunData? = intent.getParcelableExtra("DrawToRunData")
         val detailToRunData: DetailToRunData? = intent.getParcelableExtra("detailToRun")
 
+
         if (drawToRunData == null) {
             for (i in 1..detailToRunData!!.path.size - 1) {
                 touchList.add(LatLng(detailToRunData.path[i][0],
                     detailToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
             }
+
+            val distanceCut =
+                BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                    .toDouble()
+
             viewModel.touchList.value =
                 touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
-
-            viewModel.distanceSum.value = detailToRunData.distance.toDouble()
+            viewModel.distanceSum.value = distanceCut
             viewModel.departure.value = detailToRunData.departure
             viewModel.captureUri.value = detailToRunData.image
             viewModel.startLatLng.value = LocationLatLngEntity(detailToRunData.path[0][0].toFloat(),
                 detailToRunData.path[0][1].toFloat())
             Timber.tag(ContentValues.TAG).d("detailToRun : $detailToRunData")
+
         } else if (detailToRunData == null) { //가독성을 위해 일부러 else가 아닌 else if를 써줌.
+
+            val distanceCut =
+                BigDecimal(drawToRunData.totalDistance!!.toDouble()).setScale(1, RoundingMode.FLOOR)
+                    .toDouble()
+
             viewModel.distanceSum.value =
-                drawToRunData?.totalDistance //앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
+                distanceCut //앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
             viewModel.departure.value = drawToRunData?.departure
             viewModel.captureUri.value = drawToRunData?.captureUri
             viewModel.startLatLng.value = drawToRunData?.startLatLng

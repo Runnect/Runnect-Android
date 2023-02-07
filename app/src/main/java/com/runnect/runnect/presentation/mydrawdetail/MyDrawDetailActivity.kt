@@ -57,13 +57,16 @@ class MyDrawDetailActivity :
             //뷰모델에 넣는 게 좋을까? 여기서 Run으로 넘겨야 되는데 재활용되는 뷰는 아님
             //어떤 이미지는 ImageView에 세팅이 되고 어떤 건 안 되는데 원인 파악이 필요함
 
+
             with(binding) {
                 Glide
                     .with(ivMyDrawDetail.context)
                     .load(it.data.course.image.toUri())
                     .centerCrop()
                     .into(ivMyDrawDetail)
+
                 tvCourseDistanceRecord.text = it.data.course.distance.toString()
+
             }
 
             viewModel.detailToRunData.value = DetailToRunData(it.data.course.departure.name,

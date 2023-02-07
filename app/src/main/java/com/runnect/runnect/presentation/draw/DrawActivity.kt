@@ -64,7 +64,7 @@ class DrawActivity :
 
 
     lateinit var startLatLngPublic: LocationLatLngEntity
-    var distancePublic by Delegates.notNull<Double>()
+    var distancePublic by Delegates.notNull<Float>()
 
     val viewModel: DrawViewModel by viewModels()
 
@@ -339,7 +339,7 @@ class DrawActivity :
                 distanceList.removeLast()
                 sumList.removeLast()
             }
-            val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toDouble()
+            val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
             viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
         }
     }
@@ -366,7 +366,7 @@ class DrawActivity :
 
             if (!sumList.contains(distanceResult)) {
                 sumList.add(distanceResult)
-                val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toDouble()
+                val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
                 viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
                 distancePublic = test //전역 변수에 세팅
             }

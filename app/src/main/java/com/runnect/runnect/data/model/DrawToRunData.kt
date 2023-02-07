@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 data class DrawToRunData(
     val touchList: ArrayList<LatLng>,
     val startLatLng: LocationLatLngEntity,
-    val totalDistance: Double?,
+    val totalDistance: Float?,
     val departure: String,
     val captureUri: String,
 ) : Parcelable
