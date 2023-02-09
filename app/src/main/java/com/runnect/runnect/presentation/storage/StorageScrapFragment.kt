@@ -58,13 +58,7 @@ class StorageScrapFragment :
             if (viewModel.errorMessage.value == null) {
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
-                Timber.tag(ContentValues.TAG).d("fail")
-                with(binding) {
-                    recyclerViewStorageScrap.isVisible = false
-                    ivStorageNoScrap.isVisible = true
-                    tvStorageNoScrapGuide.isVisible = true
-                    btnStorageNoScrap.isVisible = true
-                }
+                Timber.tag(ContentValues.TAG).d(it)
 
             }
         }
@@ -73,12 +67,23 @@ class StorageScrapFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it.message)
-                with(binding) {
-                    recyclerViewStorageScrap.isVisible = true
-                    ivStorageNoScrap.isVisible = false
-                    tvStorageNoScrapGuide.isVisible = false
-                    btnStorageNoScrap.isVisible = false
+
+                if (it.data.scraps.isEmpty()) {
+                    with(binding) { //이게 여기가 아니라 밑에 있어야 되는거였네
+                        recyclerViewStorageScrap.isVisible = false
+                        ivStorageNoScrap.isVisible = true
+                        tvStorageNoScrapGuide.isVisible = true
+                        btnStorageNoScrap.isVisible = true
+                    }
+                } else {
+                    with(binding) {
+                        recyclerViewStorageScrap.isVisible = true
+                        ivStorageNoScrap.isVisible = false
+                        tvStorageNoScrapGuide.isVisible = false
+                        btnStorageNoScrap.isVisible = false
+                    }
                 }
+
 
                 storageScrapAdapter.submitList(it.data.scraps)
             }
@@ -88,7 +93,10 @@ class StorageScrapFragment :
 
     private fun toScrapCourseBtn() {
         binding.btnStorageNoScrap.setOnClickListener {
-            val intent = Intent(activity, MainActivity::class.java) //임의의 intent
+            val intent = Intent(activity, MainActivity::class.java).apply {
+                putExtra("fromScrapFragment", true)
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            } //임의의 intent
             startActivity(intent)
         }
     }

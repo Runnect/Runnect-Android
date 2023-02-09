@@ -40,7 +40,7 @@ class StorageMyDrawFragment :
         recyclerviewStorage.adapter = storageMyDrawAdapter
 
         getCourse()
-        toDrawCourseBtn()
+        addData()
         issueHandling()
 
     }
@@ -58,12 +58,13 @@ class StorageMyDrawFragment :
         )
     }
 
+
     private fun issueHandling() {
         viewModel.errorMessage.observe(requireActivity()) {
             if (viewModel.errorMessage.value == null) {
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
-                Timber.tag(ContentValues.TAG).d("fail")
+                Timber.tag(ContentValues.TAG).d(it)
                 with(binding) {
                     recyclerViewStorageMyDraw.isVisible = false
                     ivStorageMyDrawNoCourse.isVisible = true
@@ -78,24 +79,39 @@ class StorageMyDrawFragment :
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it.message)
-                with(binding) {
-                    recyclerViewStorageMyDraw.isVisible = true
-                    ivStorageMyDrawNoCourse.isVisible = false
-                    tvStorageMyDrawNoCourseGuide.isVisible = false
-                    btnStorageNoCourse.isVisible = false
+
+                if (it.data.courses.isEmpty()) {
+                    with(binding) { //이게 여기가 아니라 밑에 있어야 되는거였네
+                        recyclerViewStorageMyDraw.isVisible = false
+                        ivStorageMyDrawNoCourse.isVisible = true
+                        tvStorageMyDrawNoCourseGuide.isVisible = true
+                        btnStorageNoCourse.isVisible = true
+                    }
+                } else {
+                    with(binding) {
+                        recyclerViewStorageMyDraw.isVisible = true
+                        ivStorageMyDrawNoCourse.isVisible = false
+                        tvStorageMyDrawNoCourseGuide.isVisible = false
+                        btnStorageNoCourse.isVisible = false
+                    }
                 }
 
                 storageMyDrawAdapter.submitList(it.data.courses)
             }
 
+
         }
     }
 
-    private fun toDrawCourseBtn() {
+    private fun addData() {
         binding.btnStorageNoCourse.setOnClickListener {
-            val intent = Intent(activity, SearchActivity::class.java)
+            val intent = Intent(activity, SearchActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            }
             startActivity(intent)
         }
+
+
     }
 
     private fun getCourse() {
