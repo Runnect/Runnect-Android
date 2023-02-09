@@ -13,6 +13,10 @@ class RunViewModel : ViewModel() {
     val captureUri = MutableLiveData<String>()
     var touchList = MutableLiveData<ArrayList<LatLng>>() //ArrayList말고 다른 걸로 할까
 
+    var courseId = MutableLiveData<Int>()
+    var publicCourseId = MutableLiveData<Int?>()
+
+
 //    java.lang.IllegalStateException: Cannot invoke setValue on a background thread라고 떠서 일단 숨겨줌
 //    var timerSec = MutableLiveData<String>()
 //    var timerMilli = MutableLiveData<String>()

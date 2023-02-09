@@ -27,6 +27,7 @@ interface KCourseService {
     //기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
+        @Body request: RequestPostRecordDto
     ): Response<ResponsePostRecordDto>
 
     //코스 업로드

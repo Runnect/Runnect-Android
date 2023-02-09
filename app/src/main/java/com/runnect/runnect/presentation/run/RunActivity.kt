@@ -50,10 +50,15 @@ class RunActivity :
 
     //타이머
     var time = 0
+    var hour = 0//시간
+    var minute = 0//분
+    var second = time //초
+
     var timerTask: Timer? = null
 
-    lateinit var timerSec: String
-    lateinit var timerMilli: String
+    lateinit var timerSecond: String
+    lateinit var timerMinute: String
+    lateinit var timerHour: String
 
 
     val viewModel: RunViewModel by viewModels()
@@ -157,6 +162,9 @@ class RunActivity :
                 BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
                     .toDouble()
 
+            viewModel.courseId.value = detailToRunData.courseId
+            viewModel.courseId.value = detailToRunData.publicCourseId
+
             viewModel.touchList.value =
                 touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
             viewModel.distanceSum.value = distanceCut
@@ -171,6 +179,9 @@ class RunActivity :
             val distanceCut =
                 BigDecimal(drawToRunData.totalDistance!!.toDouble()).setScale(1, RoundingMode.FLOOR)
                     .toDouble()
+
+            viewModel.courseId.value = drawToRunData.courseId
+            viewModel.publicCourseId.value = drawToRunData.publicCourseId
 
             viewModel.distanceSum.value =
                 distanceCut //앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
@@ -272,11 +283,13 @@ class RunActivity :
 
                 putExtra("RunToEndRunData",
                     RunToEndRunData(
+                        courseId = viewModel.courseId.value!!, publicCourseId = viewModel.publicCourseId.value,
                         viewModel.distanceSum.value,
                         viewModel.captureUri.value,
                         viewModel.departure.value,
-                        timerSec,
-                        timerMilli))
+                        timerHour,
+                        timerMinute,
+                        timerSecond))
 
                 addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
 
@@ -291,17 +304,25 @@ class RunActivity :
     }
 
     private fun startTimer() {
-        timerTask = timer(period = 10) {
-            time++
+        timerTask = timer(period = 1000) {
 
-            val sec = time / 100
-            val milli = time % 100
+            second++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
 
-            timerSec = sec.toString() //intent로 넘길 값 전역변수에 세팅
-            timerMilli = milli.toString()
+            if (second == 60) {
+                second = 0
+                minute += 1
+            }
+            if (minute == 60) {
+                minute = 0
+                hour += 1
+            }
+
+            timerSecond = second.toString() //intent로 넘길 값 전역변수에 세팅
+            timerMinute = minute.toString()
+            timerHour = hour.toString()
 
             runOnUiThread {
-                binding.tvTimeRecord.text = "${sec} : ${milli}"
+                binding.tvTimeRecord.text = "$hour : $minute : $second"
             }
 
         }

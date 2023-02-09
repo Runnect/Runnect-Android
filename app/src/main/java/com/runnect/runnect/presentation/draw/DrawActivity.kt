@@ -52,6 +52,7 @@ class DrawActivity :
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
 
+
     private lateinit var searchResult: SearchResultEntity
 
     val distanceList = arrayListOf<LatLng>()//거리 계산용 list
@@ -83,14 +84,11 @@ class DrawActivity :
                 Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
                 initView()
 //                addListeners()
+
                 courseFinish()
                 backButton()
 
-                viewModel.errorMessage.observe(this) {
-                }
-                viewModel.uploadResult.observe(this) {
 
-                }
             }
         }
 
@@ -151,6 +149,7 @@ class DrawActivity :
                     //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
                     viewModel.departureAddress.value = searchResult.fullAdress
                     viewModel.departureName.value = searchResult.name
+
                     Timber.tag(ContentValues.TAG).d("viewModel.path : ${viewModel.path.value}")
                     Timber.tag(ContentValues.TAG)
                         .d("viewModel.distance : ${viewModel.distanceSum.value}")
@@ -165,6 +164,13 @@ class DrawActivity :
             Handler(Looper.getMainLooper()).postDelayed(
                 {
                     viewModel.uploadCourse()
+
+                    viewModel.errorMessage.observe(this) {
+                    }
+                    viewModel.uploadResult.observe(this) {
+                        viewModel.courseId.value = it.data.course.id
+
+                    }
 
                 }, 800
             )
@@ -197,6 +203,8 @@ class DrawActivity :
 
             intent.putExtra("DrawToRunData",
                 DrawToRunData(
+                    courseId = viewModel.courseId.value!!,
+                    publicCourseId = null,
                     touchList,
                     startLatLngPublic,
                     viewModel.distanceSum.value,
