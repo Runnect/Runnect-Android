@@ -5,30 +5,29 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 
-class StorageScrapAdapter :
+class StorageScrapAdapter(scrapClickListener: (ResponseGetScrapDto.Data.Scrap) -> Unit) :
     ListAdapter<ResponseGetScrapDto.Data.Scrap, StorageScrapAdapter.ItemViewHolder>(Differ()) {
 
 
-//    private val listener = courseClickListener
+    private val listener = scrapClickListener
 
     inner class ItemViewHolder(val binding: ItemStorageScrapBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(courseList: ResponseGetScrapDto.Data.Scrap) {
-            binding.storageScrap = courseList
+        fun bind(scrapList: ResponseGetScrapDto.Data.Scrap) {
+            binding.storageScrap = scrapList
         }
 
-//        //클릭 이벤트 구현부
-//        fun bindViews(data: ResponseGetCourseDto.Data.Course) {
-//            binding.root.setOnClickListener {
-//                listener(data)
-//            }
-//        }
+        //클릭 이벤트 구현부
+        fun bindViews(data: ResponseGetScrapDto.Data.Scrap) {
+            binding.root.setOnClickListener {
+                listener(data)
+            }
+        }
 
     }
 
@@ -41,7 +40,7 @@ class StorageScrapAdapter :
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(currentList[position])
-//        holder.bindViews(currentList[position])
+        holder.bindViews(currentList[position])
     }
 
 

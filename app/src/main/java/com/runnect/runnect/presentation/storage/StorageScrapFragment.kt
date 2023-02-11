@@ -12,7 +12,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.search.SearchActivity
+import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import timber.log.Timber
@@ -23,7 +23,13 @@ class StorageScrapFragment :
 
 
     val viewModel: StorageViewModel by viewModels()
-    private val storageScrapAdapter = StorageScrapAdapter()
+    private val storageScrapAdapter = StorageScrapAdapter(scrapClickListener = {
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${it.publicCourseId}")
+        startActivity(Intent(activity, CourseDetailActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            putExtra("courseId", it.publicCourseId)
+        })
+    })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

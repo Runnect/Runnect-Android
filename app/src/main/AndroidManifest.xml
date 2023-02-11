@@ -20,6 +20,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ScrapDetailActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".presentation.mydrawdetail.MyDrawDetailActivity"
             android:exported="false" />
         <activity
@@ -35,15 +42,12 @@
         <activity
             android:name=".presentation.endrun.EndRunActivity"
             android:exported="false" />
-
         <activity
             android:name=".presentation.countdown.CountDownActivity"
             android:exported="false" />
-
         <activity
             android:name=".presentation.run.RunActivity"
             android:exported="false" />
-
         <activity
             android:name=".presentation.departure.DepartureActivity"
             android:exported="false" />
