@@ -23,6 +23,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.data.model.DrawToRunData
+import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.databinding.ActivityRunBinding
@@ -149,32 +150,62 @@ class RunActivity :
         val intent: Intent = intent
 
         val drawToRunData: DrawToRunData? = intent.getParcelableExtra("DrawToRunData")
+        val myDrawToRunData: MyDrawToRunData? = intent.getParcelableExtra("myDrawToRun")
         val detailToRunData: DetailToRunData? = intent.getParcelableExtra("detailToRun")
 
 
-        if (drawToRunData == null) {
-            for (i in 1..detailToRunData!!.path.size - 1) {
-                touchList.add(LatLng(detailToRunData.path[i][0],
-                    detailToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
+        if (drawToRunData == null) {//myDraw or detail
+            if(myDrawToRunData == null){
+                //detail 코드 세팅
+                for (i in 1..detailToRunData!!.path.size - 1) {
+                    touchList.add(LatLng(detailToRunData.path[i][0],
+                        detailToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
+                }
+
+                val distanceCut =
+                    BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                        .toDouble()
+
+                viewModel.courseId.value = detailToRunData.courseId
+                viewModel.publicCourseId.value = detailToRunData.publicCourseId
+                viewModel.touchList.value = touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
+                viewModel.distanceSum.value = distanceCut
+                viewModel.departure.value = detailToRunData.departure
+                viewModel.captureUri.value = detailToRunData.image
+                viewModel.startLatLng.value = LocationLatLngEntity(detailToRunData.path[0][0].toFloat(),
+                    detailToRunData.path[0][1].toFloat())
+                Timber.tag(ContentValues.TAG).d("detailToRun : $detailToRunData")
+
+
+            } else if (detailToRunData == null){
+                //myDraw 코드 세팅
+
+                for (i in 1..myDrawToRunData!!.path.size - 1) {
+                    touchList.add(LatLng(myDrawToRunData.path[i][0],
+                        myDrawToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
+                }
+
+                val distanceCut =
+                    BigDecimal(myDrawToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                        .toDouble()
+
+                viewModel.courseId.value = myDrawToRunData.courseId
+                viewModel.publicCourseId.value = myDrawToRunData.publicCourseId
+
+                viewModel.touchList.value =
+                    touchList //출발 지점을 뺀 path가 필요한데 myDrawToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
+                viewModel.distanceSum.value = distanceCut
+                viewModel.departure.value = myDrawToRunData.departure
+                viewModel.captureUri.value = myDrawToRunData.image
+                viewModel.startLatLng.value = LocationLatLngEntity(myDrawToRunData.path[0][0].toFloat(),
+                    myDrawToRunData.path[0][1].toFloat())
+                Timber.tag(ContentValues.TAG).d("myDrawToRun : $myDrawToRunData")
             }
 
-            val distanceCut =
-                BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
-                    .toDouble()
 
-            viewModel.courseId.value = detailToRunData.courseId
-            viewModel.courseId.value = detailToRunData.publicCourseId
+        } else if (drawToRunData != null) { //가독성을 위해 일부러 else가 아닌 else if를 써줌.
 
-            viewModel.touchList.value =
-                touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
-            viewModel.distanceSum.value = distanceCut
-            viewModel.departure.value = detailToRunData.departure
-            viewModel.captureUri.value = detailToRunData.image
-            viewModel.startLatLng.value = LocationLatLngEntity(detailToRunData.path[0][0].toFloat(),
-                detailToRunData.path[0][1].toFloat())
-            Timber.tag(ContentValues.TAG).d("detailToRun : $detailToRunData")
-
-        } else if (detailToRunData == null) { //가독성을 위해 일부러 else가 아닌 else if를 써줌.
+            //drawToRun 세팅
 
             val distanceCut =
                 BigDecimal(drawToRunData.totalDistance!!.toDouble()).setScale(1, RoundingMode.FLOOR)
@@ -191,7 +222,7 @@ class RunActivity :
             viewModel.touchList.value =
                 drawToRunData?.touchList //이거 때문에 굳이 viewModel.touchList의 타입을 ArrayList<LatLng>으로 해준 것.
             Timber.tag(ContentValues.TAG).d("drawToRunData : $drawToRunData")
-        }
+        } // 세팅 종료
 
 
         val viewModelStartLatLng =
