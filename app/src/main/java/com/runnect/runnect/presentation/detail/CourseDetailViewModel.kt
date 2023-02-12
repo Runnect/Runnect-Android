@@ -61,9 +61,9 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
             runCatching {
                 courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
             }.onSuccess {
-                Timber.d("스크랩 성공")
+                Timber.d("onSuccess 메세지 : $it")
             }.onFailure {
-                Timber.d("스크랩 실패")
+                Timber.d("onFailure 메세지 : $it")
             }
         }
     }

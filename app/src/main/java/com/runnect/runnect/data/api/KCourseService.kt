@@ -1,6 +1,8 @@
 package com.runnect.runnect.data.api
 
 
+import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -8,6 +10,13 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface KCourseService {
+    //스크랩
+    @POST("/api/scrap")
+    suspend fun postCourseScrap(
+        @Body requestCourseScrap: RequestCourseScrap,
+    ): ResponseCourseScrap
+
+
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
     suspend fun getCourseList(
