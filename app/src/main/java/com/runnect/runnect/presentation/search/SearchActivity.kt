@@ -1,19 +1,21 @@
 package com.runnect.runnect.presentation.search
 
+
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.data.api.KApiSearch
 import com.runnect.runnect.data.model.entity.LocationLatLngEntity
@@ -23,17 +25,18 @@ import com.runnect.runnect.data.model.tmap.Pois
 import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.departure.DepartureActivity
 import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
-import com.runnect.runnect.presentation.departure.DepartureViewModel
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
+import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.text.SimpleDateFormat
 
-class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
-    val viewModel: DepartureViewModel by viewModels()
+class SearchActivity :
+    com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search) {
+
+    val viewModel: SearchViewModel by viewModels()
 
     private val getSearchService = KApiSearch.ServicePool.searchService
 
@@ -41,6 +44,7 @@ class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearc
         SearchAdapter(searchResultClickListener = {
             startActivity(
                 Intent(this, DepartureActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
                     putExtra(SEARCH_RESULT_EXTRA_KEY, it)
                 }
             )
@@ -53,14 +57,24 @@ class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearc
         binding.model = viewModel
         binding.lifecycleOwner = this
 
-        val recyclerviewSearch = binding.recyclerViewSearch //xml에 짜놓은 리사이클러뷰 불러오고
-        recyclerviewSearch.adapter = searchAdapter //위에서 생성한 SearchAdapter 객체랑 연결함
+        initDivider()
+        val recyclerviewSearch = binding.recyclerViewSearch
+        recyclerviewSearch.adapter = searchAdapter
 
+        binding.etSearch.setFocusAndShowKeyboard(this)
         addListener()
 
 
     }
 
+    private fun initDivider() {
+        val dividerItemDecoration = DividerItemDecoration(this,
+            LinearLayoutManager(this).orientation)
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider)!!)
+        binding.recyclerViewSearch.apply {
+            addItemDecoration(dividerItemDecoration)
+        }
+    }
 
     private fun makeMainAdress(poi: Poi): String =
         if (poi.secondNo?.trim().isNullOrEmpty()) {
@@ -163,14 +177,6 @@ class SearchActivity : com.runnect.runnect.binding.BindingActivity<ActivitySearc
             }
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    //키보드 내리기(포커스 해제) 확장함수
-    fun Context.clearFocus(view: View) {
-        val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
-        view.clearFocus()
     }
 
 

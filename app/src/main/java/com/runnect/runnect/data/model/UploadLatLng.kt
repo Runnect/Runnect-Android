@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UploadLatLng(
     @SerialName("lat")
-    val lat : Double,
+    val lat: Double,
     @SerialName("long")
-    val long : Double
+    val long: Double,
 )

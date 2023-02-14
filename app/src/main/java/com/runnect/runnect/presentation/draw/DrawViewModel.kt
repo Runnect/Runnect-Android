@@ -22,9 +22,10 @@ class DrawViewModel : ViewModel() {
 
 
     val path = MutableLiveData<List<UploadLatLng>>()
-    var distanceSum = MutableLiveData<Double>(0.0)
+    var distanceSum = MutableLiveData<Float>(0.0f)
     val departureAddress = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
+    val courseId = MutableLiveData<Int>()
 
 
     private val _image = MutableLiveData<ContentUriRequestBody>()
@@ -88,7 +89,7 @@ class DrawViewModel : ViewModel() {
 
     private fun RequestBody(
         path: List<UploadLatLng>,
-        distance: Double,
+        distance: Float,
         departureAddress: String,
         departureName: String,
     ) =
@@ -102,9 +103,6 @@ class DrawViewModel : ViewModel() {
 
 }
 
-//
-//
-//for (i in 1..path.size) add(i)
 
 
 

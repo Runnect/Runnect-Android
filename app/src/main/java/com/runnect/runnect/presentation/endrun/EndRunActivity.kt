@@ -1,20 +1,21 @@
 package com.runnect.runnect.presentation.endrun
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.runnect.runnect.R
+import com.runnect.runnect.data.model.RequestPostRecordDto
+import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
-import com.runnect.runnect.presentation.coursemain.CourseMainActivity
+import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.util.extension.clearFocus
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -26,10 +27,17 @@ class EndRunActivity :
 
     val viewModel: EndRunViewModel by viewModels()
 
-    val currentTime : Long = System.currentTimeMillis() // ms로 반환
+    val currentTime: Long = System.currentTimeMillis() // ms로 반환
 
+    lateinit var runToEndRunData: RunToEndRunData
+
+//    lateinit var timeTotal : String
+//    lateinit var paceTotal : String
+
+    @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
-//    val dataFormat5 = SimpleDateFormat("현재시각은 yyyy-MM-dd hh:mm:ss")
+
+    //    val dataFormat5 = SimpleDateFormat("현재시각은 yyyy-MM-dd hh:mm:ss")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,12 +49,17 @@ class EndRunActivity :
         getIntentValue()
         saveButton()
 
-
-
-        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
+//        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
 
+        viewModel.errorMessage.observe(this) {
+            Timber.tag(ContentValues.TAG).d("${it}")
+        }
+        viewModel.uploadResult.observe(this) {
+
+            Timber.tag(ContentValues.TAG).d("서버 성공 : ${it.message}")
+        }
     }
 
     fun backBtn() {
@@ -56,26 +69,35 @@ class EndRunActivity :
     }
 
     fun getIntentValue() {
-        val totalDistance = intent.getSerializableExtra("totalDistance").toString() //총거리
+        //DrawToRunData나 DetailToRunData나 RunActivity에서 RunToEndRunData로 가공이 되기 때문에 RunActivity와는 상황이 다름
+        runToEndRunData =
+            intent.getParcelableExtra("RunToEndRunData")!!
+
+        Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
+
+        val totalDistance = runToEndRunData.totalDistance.toString()
 //        viewModel.distanceSum.value = totalDistance as Double? // 뷰모델에 총거리 세팅
-        Timber.tag(ContentValues.TAG).d("totalDistance 로그 : ${totalDistance}")
 
-        val departure = intent.getStringExtra("departure")!! //출발지
+        val departure = runToEndRunData.departure
 //        viewModel.departure.value = departure // 뷰모델에 출발지 세팅
-        Timber.tag(ContentValues.TAG).d("departure 로그 : ${departure}")
 
+        val courseId = runToEndRunData.courseId
+        viewModel.courseId.value = courseId
 
-        val captureUri = intent.getStringExtra("captureUri")!!.toUri() //이미지 uri
-        viewModel.captureUri.value = captureUri //뷰모델에 이미지 uri 세팅
-        Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")
+        val publicCourseId = runToEndRunData.publicCourseId
+        viewModel.publicCourseId.value = publicCourseId
 
-        val timerSec = intent.getStringExtra("timerSec")
-        viewModel.timerSec.value = timerSec //뷰모델에 타이머 sec 세팅
-        Timber.tag(ContentValues.TAG).d("timerSec 로그 : ${timerSec}")
+        val captureUri = runToEndRunData.captureUri!!.toUri()
+        viewModel.captureUri.value = captureUri
 
-        val timerMilli = intent.getStringExtra("timerMilli")
-        viewModel.timerMilli.value = timerMilli //뷰모델에 타이머 Milli 세팅
-        Timber.tag(ContentValues.TAG).d("timerMilli 로그 : ${timerMilli}")
+        val timerHour = runToEndRunData.timerHour
+        viewModel.timerHour.value = timerHour //뷰모델에 타이머 sec 세팅
+
+        val timerMinute = runToEndRunData.timerMinute
+        viewModel.timerMinute.value = timerMinute //뷰모델에 타이머 Milli 세팅
+
+        val timerSecond = runToEndRunData.timerSecond
+        viewModel.timerSecond.value = timerSecond //뷰모델에 타이머 Milli 세팅
 
         Glide
             .with(binding.ivEndRunCapture.context)
@@ -83,12 +105,22 @@ class EndRunActivity :
             .centerCrop()
             .into(binding.ivEndRunCapture)
 
-        val pace = BigDecimal(timerSec!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toDouble()
-        binding.tvDepartureRecord.text = departure
+        val pace1 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
+            RoundingMode.FLOOR).toString()
+        val pace2 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
+            RoundingMode.FLOOR).toString()
+        val pace3 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
+            RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
+
+        viewModel.timeTotal.value = "$timerHour:$timerMinute:$timerSecond"
+        viewModel.paceTotal.value = "$pace1:$pace2:$pace3"
+
+
+
+        binding.tvDepartureRecord.text = departure //추후에 data binding으로 리팩토링
         binding.tvDistanceData.text = totalDistance
-        binding.tvTimeData.text = "${timerSec} : ${timerMilli}"
-        binding.tvPaceData.text = pace.toString()
+        binding.tvTimeData.text = "${viewModel.timeTotal.value}"
+        binding.tvPaceData.text = "${viewModel.paceTotal.value}"
     }
 
     private fun editTextController() {
@@ -111,7 +143,23 @@ class EndRunActivity :
 
     private fun saveButton() {
         binding.btnEndRunSave.setOnClickListener {
-            val intent = Intent(this, CourseMainActivity::class.java)
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.courseId.value!!}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.publicCourseId.value}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.editTextValue.value!!}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.timeTotal.value!!}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.paceTotal.value!!}")
+
+            viewModel.postRecord(
+                RequestPostRecordDto(viewModel.courseId.value!!,viewModel.publicCourseId.value,viewModel.editTextValue.value!!,
+                    viewModel.timeTotal.value!!,viewModel.paceTotal.value!!)
+            )
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             startActivity(intent)
         }
     }
@@ -129,13 +177,5 @@ class EndRunActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    //키보드 내리기(포커스 해제) 확장함수
-    fun Context.clearFocus(view: View) {
-        val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
-        view.clearFocus()
     }
 }

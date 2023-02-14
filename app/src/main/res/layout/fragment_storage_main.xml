@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="storage"
+            type="com.runnect.runnect.data.model.ResponseGetCourseDto" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.storage.StorageActivity">
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/storage_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:fontFamily="@font/pretendard_semibold"
+                android:text="보관함"
+                android:textColor="@color/G1"
+                android:textSize="20sp" />
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/storage_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:elevation="1dp"
+            android:outlineProvider="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/storage_toolbar"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/M1"
+            app:tabIndicatorHeight="2dp"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/M1"
+            app:tabTextAppearance="@style/tab_text"
+            app:tabTextColor="@color/G2"
+            tools:ignore="MissingConstraints">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_draw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내가 그린 코스" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_scrap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="스크랩 코스" />
+
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <View
+            android:id="@+id/tab_under_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="15dp"
+            android:background="@color/G3"
+            app:layout_constraintTop_toBottomOf="@id/storage_tab" />
+
+
+        <FrameLayout
+            android:id="@+id/fl_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/view_empty"
+            app:layout_constraintTop_toBottomOf="@id/storage_tab" />
+
+        <View
+            android:id="@+id/view_empty"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/transparent_00"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"/>
+
+
+        <!--                <ImageView-->
+        <!--                    android:visibility="invisible"-->
+        <!--                    android:id="@+id/iv_storage"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:layout_marginTop="155dp"-->
+        <!--                    android:src="@drawable/storage"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                <TextView-->
+        <!--                    android:visibility="invisible"-->
+        <!--                    android:id="@+id/tv_intro_to_draw"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:layout_marginTop="24dp"-->
+        <!--                    android:text="아직 내가 그린 코스가 없어요\n직접 코스를 그려주세요"-->
+        <!--                    android:textAlignment="center"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toBottomOf="@id/iv_storage" />-->
+
+        <!--                <androidx.appcompat.widget.AppCompatButton-->
+        <!--                    android:visibility="invisible"-->
+        <!--                    android:id="@+id/btn_storage_draw"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="40dp"-->
+        <!--                    android:layout_marginHorizontal="64dp"-->
+        <!--                    android:layout_marginTop="22dp"-->
+        <!--                    android:background="@drawable/radius_10_m1_button"-->
+        <!--                    android:text="코스 그리기"-->
+        <!--                    android:textColor="@color/white"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toBottomOf="@id/tv_intro_to_draw" />-->
+
+
+        <!--                <androidx.recyclerview.widget.RecyclerView-->
+        <!--                    android:layout_marginTop="18dp"-->
+        <!--                    android:visibility="visible"-->
+        <!--                    android:id="@+id/recyclerview_course_list"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:orientation="vertical"-->
+        <!--                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toTopOf="parent"-->
+        <!--                    app:spanCount="2"-->
+        <!--                    tools:listitem="@layout/item_storage" />-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

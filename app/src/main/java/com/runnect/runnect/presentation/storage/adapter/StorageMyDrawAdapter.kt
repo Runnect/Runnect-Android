@@ -6,32 +6,41 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.databinding.ItemStorageBinding
+import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 
-class StorageAdapter :
-    ListAdapter<ResponseGetCourseDto.Data.Course, StorageAdapter.ItemViewHolder>(Differ()) {
+class StorageMyDrawAdapter(courseClickListener: (ResponseGetCourseDto.Data.Course) -> Unit) :
+    ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
 
-    inner class ItemViewHolder(val binding: ItemStorageBinding) :
+    private val listener = courseClickListener
+
+    inner class ItemViewHolder(val binding: ItemStorageMyDrawBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
 
         fun bind(courseList: ResponseGetCourseDto.Data.Course) {
-
             binding.storage = courseList
-
         }
+
+        //클릭 이벤트 구현부
+        fun bindViews(data: ResponseGetCourseDto.Data.Course) {
+            binding.root.setOnClickListener {
+                listener(data)
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemStorageBinding.inflate(inflater)
+        val binding = ItemStorageMyDrawBinding.inflate(inflater)
 
         return ItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(currentList[position])
+        holder.bindViews(currentList[position])
     }
 
 

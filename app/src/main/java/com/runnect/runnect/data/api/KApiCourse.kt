@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.api
 
-import com.runnect.runnect.util.Url
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.runnect.runnect.BuildConfig
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -45,7 +45,7 @@ object KApiCourse {
         synchronized(this) {
             if (retrofit == null) {
                 retrofit = Retrofit.Builder()
-                    .baseUrl(Url.BASE_RUNNET)
+                    .baseUrl(BuildConfig.BASE_URL)
                     .client(client)
                     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
                     .build()

@@ -1,8 +1,7 @@
 package com.runnect.runnect.data.api
 
+import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.data.model.tmap.SearchResponseTmapDto
-import com.runnect.runnect.util.Key
-import com.runnect.runnect.util.Url
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -10,9 +9,9 @@ import retrofit2.http.Query
 
 interface KSearchService {
 
-    @GET(Url.GET_TMAP_LOCATION)
+    @GET("/tmap/pois")
     suspend fun getSearchLocation(
-        @Header("appKey") appKey: String = Key.TMAP_API,
+        @Header("appKey") appKey: String = BuildConfig.TMAP_KEY,
         @Query("version") version: Int = 1,
         @Query("callback") callback: String? = null,
         @Query("count") count: Int = 20,
