@@ -52,6 +52,8 @@ class CountDownActivity :
                     val intent = Intent(this@CountDownActivity, RunActivity::class.java).apply {
                         putExtra("DrawToRunData",
                             DrawToRunData(
+                                drawToRunData.courseId,
+                                drawToRunData.publicCourseId,
                                 drawToRunData.touchList,
                                 drawToRunData.startLatLng,
                                 drawToRunData.totalDistance,

@@ -23,6 +23,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.data.model.DrawToRunData
+import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.databinding.ActivityRunBinding
@@ -50,10 +51,15 @@ class RunActivity :
 
     //타이머
     var time = 0
+    var hour = 0//시간
+    var minute = 0//분
+    var second = time //초
+
     var timerTask: Timer? = null
 
-    lateinit var timerSec: String
-    lateinit var timerMilli: String
+    lateinit var timerSecond: String
+    lateinit var timerMinute: String
+    lateinit var timerHour: String
 
 
     val viewModel: RunViewModel by viewModels()
@@ -144,33 +150,69 @@ class RunActivity :
         val intent: Intent = intent
 
         val drawToRunData: DrawToRunData? = intent.getParcelableExtra("DrawToRunData")
+        val myDrawToRunData: MyDrawToRunData? = intent.getParcelableExtra("myDrawToRun")
         val detailToRunData: DetailToRunData? = intent.getParcelableExtra("detailToRun")
 
 
-        if (drawToRunData == null) {
-            for (i in 1..detailToRunData!!.path.size - 1) {
-                touchList.add(LatLng(detailToRunData.path[i][0],
-                    detailToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
+        if (drawToRunData == null) {//myDraw or detail
+            if(myDrawToRunData == null){
+                //detail 코드 세팅
+                for (i in 1..detailToRunData!!.path.size - 1) {
+                    touchList.add(LatLng(detailToRunData.path[i][0],
+                        detailToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
+                }
+
+                val distanceCut =
+                    BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                        .toDouble()
+
+                viewModel.courseId.value = detailToRunData.courseId
+                viewModel.publicCourseId.value = detailToRunData.publicCourseId
+                viewModel.touchList.value = touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
+                viewModel.distanceSum.value = distanceCut
+                viewModel.departure.value = detailToRunData.departure
+                viewModel.captureUri.value = detailToRunData.image
+                viewModel.startLatLng.value = LocationLatLngEntity(detailToRunData.path[0][0].toFloat(),
+                    detailToRunData.path[0][1].toFloat())
+                Timber.tag(ContentValues.TAG).d("detailToRun : $detailToRunData")
+
+
+            } else if (detailToRunData == null){
+                //myDraw 코드 세팅
+
+                for (i in 1..myDrawToRunData!!.path.size - 1) {
+                    touchList.add(LatLng(myDrawToRunData.path[i][0],
+                        myDrawToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
+                }
+
+                val distanceCut =
+                    BigDecimal(myDrawToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                        .toDouble()
+
+                viewModel.courseId.value = myDrawToRunData.courseId
+                viewModel.publicCourseId.value = myDrawToRunData.publicCourseId
+
+                viewModel.touchList.value =
+                    touchList //출발 지점을 뺀 path가 필요한데 myDrawToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
+                viewModel.distanceSum.value = distanceCut
+                viewModel.departure.value = myDrawToRunData.departure
+                viewModel.captureUri.value = myDrawToRunData.image
+                viewModel.startLatLng.value = LocationLatLngEntity(myDrawToRunData.path[0][0].toFloat(),
+                    myDrawToRunData.path[0][1].toFloat())
+                Timber.tag(ContentValues.TAG).d("myDrawToRun : $myDrawToRunData")
             }
 
-            val distanceCut =
-                BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
-                    .toDouble()
 
-            viewModel.touchList.value =
-                touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
-            viewModel.distanceSum.value = distanceCut
-            viewModel.departure.value = detailToRunData.departure
-            viewModel.captureUri.value = detailToRunData.image
-            viewModel.startLatLng.value = LocationLatLngEntity(detailToRunData.path[0][0].toFloat(),
-                detailToRunData.path[0][1].toFloat())
-            Timber.tag(ContentValues.TAG).d("detailToRun : $detailToRunData")
+        } else if (drawToRunData != null) { //가독성을 위해 일부러 else가 아닌 else if를 써줌.
 
-        } else if (detailToRunData == null) { //가독성을 위해 일부러 else가 아닌 else if를 써줌.
+            //drawToRun 세팅
 
             val distanceCut =
                 BigDecimal(drawToRunData.totalDistance!!.toDouble()).setScale(1, RoundingMode.FLOOR)
                     .toDouble()
+
+            viewModel.courseId.value = drawToRunData.courseId
+            viewModel.publicCourseId.value = drawToRunData.publicCourseId
 
             viewModel.distanceSum.value =
                 distanceCut //앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
@@ -180,7 +222,7 @@ class RunActivity :
             viewModel.touchList.value =
                 drawToRunData?.touchList //이거 때문에 굳이 viewModel.touchList의 타입을 ArrayList<LatLng>으로 해준 것.
             Timber.tag(ContentValues.TAG).d("drawToRunData : $drawToRunData")
-        }
+        } // 세팅 종료
 
 
         val viewModelStartLatLng =
@@ -272,11 +314,13 @@ class RunActivity :
 
                 putExtra("RunToEndRunData",
                     RunToEndRunData(
+                        courseId = viewModel.courseId.value!!, publicCourseId = viewModel.publicCourseId.value,
                         viewModel.distanceSum.value,
                         viewModel.captureUri.value,
                         viewModel.departure.value,
-                        timerSec,
-                        timerMilli))
+                        timerHour,
+                        timerMinute,
+                        timerSecond))
 
                 addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
 
@@ -291,17 +335,25 @@ class RunActivity :
     }
 
     private fun startTimer() {
-        timerTask = timer(period = 10) {
-            time++
+        timerTask = timer(period = 1000) {
 
-            val sec = time / 100
-            val milli = time % 100
+            second++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
 
-            timerSec = sec.toString() //intent로 넘길 값 전역변수에 세팅
-            timerMilli = milli.toString()
+            if (second == 60) {
+                second = 0
+                minute += 1
+            }
+            if (minute == 60) {
+                minute = 0
+                hour += 1
+            }
+
+            timerSecond = second.toString() //intent로 넘길 값 전역변수에 세팅
+            timerMinute = minute.toString()
+            timerHour = hour.toString()
 
             runOnUiThread {
-                binding.tvTimeRecord.text = "${sec} : ${milli}"
+                binding.tvTimeRecord.text = "$hour : $minute : $second"
             }
 
         }

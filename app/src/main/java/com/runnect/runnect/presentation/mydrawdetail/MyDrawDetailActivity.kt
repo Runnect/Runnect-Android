@@ -69,7 +69,9 @@ class MyDrawDetailActivity :
 
             }
 
-            viewModel.detailToRunData.value = DetailToRunData(it.data.course.departure.name,
+            viewModel.detailToRunData.value = DetailToRunData(it.data.course.id,
+                publicCourseId = null,
+                it.data.course.departure.name,
                 it.data.course.distance,
                 it.data.course.path,
                 it.data.course.image)

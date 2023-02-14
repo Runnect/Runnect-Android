@@ -11,6 +11,7 @@ import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.runnect.runnect.R
+import com.runnect.runnect.data.model.RequestPostRecordDto
 import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -29,6 +30,9 @@ class EndRunActivity :
     val currentTime: Long = System.currentTimeMillis() // ms로 반환
 
     lateinit var runToEndRunData: RunToEndRunData
+
+//    lateinit var timeTotal : String
+//    lateinit var paceTotal : String
 
     @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
@@ -49,6 +53,13 @@ class EndRunActivity :
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
 
+        viewModel.errorMessage.observe(this) {
+            Timber.tag(ContentValues.TAG).d("${it}")
+        }
+        viewModel.uploadResult.observe(this) {
+
+            Timber.tag(ContentValues.TAG).d("서버 성공 : ${it.message}")
+        }
     }
 
     fun backBtn() {
@@ -70,14 +81,23 @@ class EndRunActivity :
         val departure = runToEndRunData.departure
 //        viewModel.departure.value = departure // 뷰모델에 출발지 세팅
 
+        val courseId = runToEndRunData.courseId
+        viewModel.courseId.value = courseId
+
+        val publicCourseId = runToEndRunData.publicCourseId
+        viewModel.publicCourseId.value = publicCourseId
+
         val captureUri = runToEndRunData.captureUri!!.toUri()
         viewModel.captureUri.value = captureUri
 
-        val timerSec = runToEndRunData.timerSec
-        viewModel.timerSec.value = timerSec //뷰모델에 타이머 sec 세팅
+        val timerHour = runToEndRunData.timerHour
+        viewModel.timerHour.value = timerHour //뷰모델에 타이머 sec 세팅
 
-        val timerMilli = runToEndRunData.timerMilli
-        viewModel.timerMilli.value = timerMilli //뷰모델에 타이머 Milli 세팅
+        val timerMinute = runToEndRunData.timerMinute
+        viewModel.timerMinute.value = timerMinute //뷰모델에 타이머 Milli 세팅
+
+        val timerSecond = runToEndRunData.timerSecond
+        viewModel.timerSecond.value = timerSecond //뷰모델에 타이머 Milli 세팅
 
         Glide
             .with(binding.ivEndRunCapture.context)
@@ -85,12 +105,22 @@ class EndRunActivity :
             .centerCrop()
             .into(binding.ivEndRunCapture)
 
-        val pace = BigDecimal(timerSec!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toDouble()
+        val pace1 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
+            RoundingMode.FLOOR).toString()
+        val pace2 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
+            RoundingMode.FLOOR).toString()
+        val pace3 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
+            RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
+
+        viewModel.timeTotal.value = "$timerHour:$timerMinute:$timerSecond"
+        viewModel.paceTotal.value = "$pace1:$pace2:$pace3"
+
+
+
         binding.tvDepartureRecord.text = departure //추후에 data binding으로 리팩토링
         binding.tvDistanceData.text = totalDistance
-        binding.tvTimeData.text = "$timerSec : $timerMilli"
-        binding.tvPaceData.text = pace.toString()
+        binding.tvTimeData.text = "${viewModel.timeTotal.value}"
+        binding.tvPaceData.text = "${viewModel.paceTotal.value}"
     }
 
     private fun editTextController() {
@@ -113,6 +143,21 @@ class EndRunActivity :
 
     private fun saveButton() {
         binding.btnEndRunSave.setOnClickListener {
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.courseId.value!!}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.publicCourseId.value}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.editTextValue.value!!}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.timeTotal.value!!}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.courseId.value!! : ${viewModel.paceTotal.value!!}")
+
+            viewModel.postRecord(
+                RequestPostRecordDto(viewModel.courseId.value!!,viewModel.publicCourseId.value,viewModel.editTextValue.value!!,
+                    viewModel.timeTotal.value!!,viewModel.paceTotal.value!!)
+            )
             val intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             startActivity(intent)

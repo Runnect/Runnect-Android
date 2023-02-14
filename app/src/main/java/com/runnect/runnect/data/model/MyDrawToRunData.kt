@@ -5,7 +5,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class DetailToRunData(
+data class MyDrawToRunData(
     val courseId : Int?,
     val publicCourseId : Int?,
     val departure: String,
