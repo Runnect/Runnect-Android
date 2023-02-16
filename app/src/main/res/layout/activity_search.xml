@@ -61,12 +61,20 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_search"
-            app:layout_constraintVertical_bias="0.0"
             tools:listitem="@layout/item_search"
             tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_noSearchResult"
@@ -85,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:fontFamily="@font/pretendard_medium "
+            android:fontFamily="@font/pretendard_medium"
             android:text="검색결과가 없습니다\n검색어를 다시 확인해주세요"
             android:textAlignment="center"
             android:textColor="@color/G3"

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
 import com.runnect.runnect.data.model.UploadLatLng
@@ -21,9 +22,9 @@ class DrawViewModel : ViewModel() {
 
     val service = KApiCourse.ServicePool.courseService //객체 생성
 
-    private var _courseInfoState = MutableLiveData<UiState>(UiState.Loading)
-    val courseInfoState: LiveData<UiState>
-        get() = _courseInfoState
+    private var _drawState = MutableLiveData<UiState>(UiState.Empty)
+    val drawState: LiveData<UiState>
+        get() = _drawState
 
 
     val path = MutableLiveData<List<UploadLatLng>>()
@@ -79,7 +80,7 @@ class DrawViewModel : ViewModel() {
     fun uploadCourse() {
         viewModelScope.launch {
            runCatching {
-               _courseInfoState.value = UiState.Loading
+               _drawState.value = UiState.Loading
                 service.uploadCourse(_image.value!!.toFormData(), RequestBody(
                     path.value!!,
                     distanceSum.value!!,
@@ -88,10 +89,10 @@ class DrawViewModel : ViewModel() {
                 ))
             }.onSuccess {
                 uploadResult.value = it.body()
-               _courseInfoState.value = UiState.Success
+               _drawState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
-               _courseInfoState.value = UiState.Failure
+               _drawState.value = UiState.Failure
             }
         }
     }

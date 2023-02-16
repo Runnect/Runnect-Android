@@ -1,8 +1,10 @@
 package com.runnect.runnect.presentation.discover
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
@@ -17,6 +19,7 @@ import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.callback.OnScrapCourse
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
@@ -64,9 +67,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addObserver() {
-        viewModel.courseInfoState.observe(viewLifecycleOwner) { state ->
-            if (state == UiState.Success) {
-                initAdapter()
+        viewModel.courseInfoState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    initAdapter()
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
             }
         }
     }

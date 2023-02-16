@@ -13,6 +13,7 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnScrapCourse
@@ -34,7 +35,7 @@ class StorageScrapFragment :
                 },
             )
         },
-    this) // 여기에 this를 넣는 게 어떤 맥락으로 되는 건지 정확한 이해는 x
+        this) // 여기에 this를 넣는 게 어떤 맥락으로 되는 건지 정확한 이해는 x
     // 일단 내 생각에는 내가 어댑터 parameter에 적어준 걸 지훈이는 인터페이스로 뺀 거고
     // 내가 위처럼 세세히 다 적어준 구현부를 scrapCourse를 오버라이드에 써줌
     // 이렇게 만들어진 OnScrapCourse 구현체를 여기에 this로 등록해준 것 같음.
@@ -52,7 +53,7 @@ class StorageScrapFragment :
 
         getCourse()
         toScrapCourseBtn()
-        issueHandling()
+        addObserver()
 
     }
 
@@ -73,45 +74,35 @@ class StorageScrapFragment :
         )
     }
 
-    private fun issueHandling() {
+    private fun addObserver() {
 
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            if (viewModel.errorMessage.value == null) {
-                Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
-            } else {
-                Timber.tag(ContentValues.TAG).d(it)
-
-            }
-
-        }
-        viewModel.getScrapListResult.observe(viewLifecycleOwner) {
-            if (viewModel.getScrapListResult.value == null) {
-                Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
-            } else {
-                Timber.tag(ContentValues.TAG).d(it.message)
-
-                if (it.data.scraps.isEmpty()) {
-                    with(binding) { //이게 여기가 아니라 밑에 있어야 되는거였네
-                        recyclerViewStorageScrap.isVisible = false
-                        ivStorageNoScrap.isVisible = true
-                        tvStorageNoScrapGuide.isVisible = true
-                        btnStorageNoScrap.isVisible = true
-                    }
-                } else {
-                    with(binding) {
-                        recyclerViewStorageScrap.isVisible = true
-                        ivStorageNoScrap.isVisible = false
-                        tvStorageNoScrapGuide.isVisible = false
-                        btnStorageNoScrap.isVisible = false
+        viewModel.storageState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
+                    if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
+                        with(binding) {
+                            ivStorageNoScrap.isVisible = true
+                            tvStorageNoScrapGuide.isVisible = true
+                            btnStorageNoScrap.isVisible = true
+                            recyclerViewStorageScrap.isVisible = false
+                        }
+                    } else {
+                        with(binding) {
+                            ivStorageNoScrap.isVisible = false
+                            tvStorageNoScrapGuide.isVisible = false
+                            btnStorageNoScrap.isVisible = false
+                            recyclerViewStorageScrap.isVisible = true
+                        }
                     }
                 }
-
-
-                storageScrapAdapter.submitList(it.data.scraps)
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage}")
             }
-
         }
-
     }
 
     private fun toScrapCourseBtn() {

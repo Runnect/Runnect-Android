@@ -20,6 +20,7 @@ import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.departure.DepartureActivity
 import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import timber.log.Timber
@@ -70,20 +71,30 @@ class SearchActivity :
 
     private fun addObserver() {
 
-        viewModel.dataList.observe(this) {
-            searchAdapter.submitList(it)
-            if (it.isNullOrEmpty()) {
-                with(binding) {
-                    recyclerViewSearch.isVisible = false
-                    ivNoSearchResult.isVisible = true
-                    emptyResultTextView.isVisible = true
+        viewModel.searchState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    searchAdapter.submitList(viewModel.dataList.value) //다른 옵저버로 뺄까
+                    if (viewModel.dataList.value.isNullOrEmpty()) {
+                        with(binding) {
+                            ivNoSearchResult.isVisible = true
+                            emptyResultTextView.isVisible = true
+                            recyclerViewSearch.isVisible = false
+                        }
+                    } else {
+                        with(binding) {
+                            ivNoSearchResult.isVisible = false
+                            emptyResultTextView.isVisible = false
+                            recyclerViewSearch.isVisible = true
+
+                        }
+                    }
                 }
-            } else {
-                with(binding) {
-                    recyclerViewSearch.isVisible = true
-                    ivNoSearchResult.isVisible = false
-                    emptyResultTextView.isVisible = false
-                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.searchError.value}")
             }
         }
 
