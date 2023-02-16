@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponseGetScrapDto
 import kotlinx.coroutines.launch
@@ -15,36 +16,34 @@ class StorageViewModel : ViewModel() {
     val service = KApiCourse.ServicePool.courseService //객체 생성
 
     val getMyDrawResult = MutableLiveData<ResponseGetCourseDto>()
-    val getScrapResult = MutableLiveData<ResponseGetScrapDto>()
+    val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
     val errorMessage = MutableLiveData<String>()
+
 
     fun getMyDrawList() {
 
-        service.also {
-            viewModelScope.launch {
-                kotlin.runCatching {
-                    service.getCourseList()
-                }.onSuccess {
-                    getMyDrawResult.value = it.body()
-                }.onFailure {
-                    errorMessage.value = it.message
-                }
+        viewModelScope.launch {
+            runCatching {
+                service.getCourseList()
+            }.onSuccess {
+                getMyDrawResult.value = it.body()
+            }.onFailure {
+                errorMessage.value = it.message
             }
         }
     }
 
     fun getScrapList() {
-        service.also {
-            viewModelScope.launch {
-                kotlin.runCatching {
-                    service.getScrapList()
-                }.onSuccess {
-                    getScrapResult.value = it.body()
-                }.onFailure {
-                    errorMessage.value = it.message
-                }
+        viewModelScope.launch {
+            runCatching {
+                service.getScrapList()
+            }.onSuccess {
+                getScrapListResult.value = it.body()
+            }.onFailure {
+                errorMessage.value = it.message
             }
         }
+
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {

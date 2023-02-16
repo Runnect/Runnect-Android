@@ -20,7 +20,7 @@ class DiscoverViewModel @Inject constructor(private val courseRepository: Course
     val courseInfoState: LiveData<UiState>
         get() = _courseInfoState
 
-    private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
+    private var _recommendCourseList = mutableListOf<RecommendCourseDTO>() //여긴 왜 LiveData로 안 만들어줬지?
     val recommendCourseList: List<RecommendCourseDTO>
         get() = _recommendCourseList
 

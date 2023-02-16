@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
@@ -17,20 +16,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
-import com.runnect.runnect.data.api.KApiSearch
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
-import com.runnect.runnect.data.model.entity.SearchResultEntity
-import com.runnect.runnect.data.model.tmap.Poi
-import com.runnect.runnect.data.model.tmap.Pois
 import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.departure.DepartureActivity
 import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class SearchActivity :
@@ -38,7 +30,6 @@ class SearchActivity :
 
     val viewModel: SearchViewModel by viewModels()
 
-    private val getSearchService = KApiSearch.ServicePool.searchService
 
     private val searchAdapter by lazy {
         SearchAdapter(searchResultClickListener = {
@@ -63,6 +54,7 @@ class SearchActivity :
 
         binding.etSearch.setFocusAndShowKeyboard(this)
         addListener()
+        addObserver()
 
 
     }
@@ -76,69 +68,31 @@ class SearchActivity :
         }
     }
 
-    private fun makeMainAdress(poi: Poi): String =
-        if (poi.secondNo?.trim().isNullOrEmpty()) {
-            (poi.upperAddrName?.trim() ?: "") + " " +
-                    (poi.middleAddrName?.trim() ?: "") + " " +
-                    (poi.lowerAddrName?.trim() ?: "") + " " +
-                    (poi.detailAddrName?.trim() ?: "") + " " +
-                    poi.firstNo?.trim()
-        } else {
-            (poi.upperAddrName?.trim() ?: "") + " " +
-                    (poi.middleAddrName?.trim() ?: "") + " " +
-                    (poi.lowerAddrName?.trim() ?: "") + " " +
-                    (poi.detailAddrName?.trim() ?: "") + " " +
-                    (poi.firstNo?.trim() ?: "") + " " +
-                    poi.secondNo?.trim()
-        }
+    private fun addObserver() {
 
-
-    private fun setData(pois: Pois) {
-        val dataList = pois.poi.map {
-            SearchResultEntity(
-                fullAdress = makeMainAdress(it),
-                name = it.name ?: "",
-                locationLatLng = LocationLatLngEntity(it.noorLat, it.noorLon)
-            )
-        }
-
-        searchAdapter.submitList(dataList)
-    }
-
-    private fun searchKeyword(keywordString: String) {
-
-
-        getSearchService.also {
-            CoroutineScope(Dispatchers.Main).launch {
-                runCatching { it.getSearchLocation(keyword = keywordString) } //레트로핏은 자동으로 I/O 스레드에서 돌아가는 걸로 앎
-                    .onSuccess {
-                        if (it.body() != null) {
-                            binding.recyclerViewSearch.isVisible = true
-                            binding.ivNoSearchResult.isVisible = false
-                            binding.emptyResultTextView.isVisible = false
-
-
-                            it.body()?.let { searchResponseSchema ->
-                                setData(searchResponseSchema.searchPoiInfo.pois) //setData()는 맵핑함수
-                            }
-                        } else {
-                            binding.recyclerViewSearch.isVisible = false
-                            binding.ivNoSearchResult.isVisible = true
-                            binding.emptyResultTextView.isVisible = true
-                        }
-
-                        Log.d(ContentValues.TAG, "success")
-
-
-                    }
-                    .onFailure {
-                        Log.d(ContentValues.TAG, "fail")
-                        Log.d(ContentValues.TAG, "${it.message}")
-
-                    }
+        viewModel.dataList.observe(this) {
+            searchAdapter.submitList(it)
+            if (it.isNullOrEmpty()) {
+                with(binding) {
+                    recyclerViewSearch.isVisible = false
+                    ivNoSearchResult.isVisible = true
+                    emptyResultTextView.isVisible = true
+                }
+            } else {
+                with(binding) {
+                    recyclerViewSearch.isVisible = true
+                    ivNoSearchResult.isVisible = false
+                    emptyResultTextView.isVisible = false
+                }
             }
         }
 
+
+    }
+
+
+    private fun searchKeyword(keywordString: String) {
+        viewModel.getSearchList(keywordString = keywordString)
     }
 
     private fun addListener() {

@@ -74,16 +74,18 @@ class StorageScrapFragment :
     }
 
     private fun issueHandling() {
-        viewModel.errorMessage.observe(requireActivity()) {
+
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
             if (viewModel.errorMessage.value == null) {
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it)
 
             }
+
         }
-        viewModel.getScrapResult.observe(requireActivity()) {
-            if (viewModel.getScrapResult.value == null) {
+        viewModel.getScrapListResult.observe(viewLifecycleOwner) {
+            if (viewModel.getScrapListResult.value == null) {
                 Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
             } else {
                 Timber.tag(ContentValues.TAG).d(it.message)
@@ -109,6 +111,7 @@ class StorageScrapFragment :
             }
 
         }
+
     }
 
     private fun toScrapCourseBtn() {
