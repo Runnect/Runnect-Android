@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.discover.search
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -41,8 +43,8 @@ class DiscoverSearchActivity :
     }
 
     private fun initLayout() {
-        binding.svDiscoverSearch.visibility = View.INVISIBLE
-        binding.constDiscoverSearchNoResult.visibility = View.INVISIBLE
+        binding.svDiscoverSearch.isVisible = true
+        binding.constDiscoverSearchNoResult.isVisible = false
         //키보드 자동 올리기 - manifest 설정과 확장함수를 동시에 해줘야 동작함.
         binding.etDiscoverSearchTitle.setFocusAndShowKeyboard(this)
         binding.rvDiscoverSearch.apply {
@@ -53,13 +55,13 @@ class DiscoverSearchActivity :
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addListener() {
         binding.ivDiscoverSearchBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
         //추후 showToast -> API 호출 대체 예정
@@ -77,25 +79,35 @@ class DiscoverSearchActivity :
     }
 
     private fun addObserver() {
-        viewModel.courseSearchState.observe(this) { state ->
+        viewModel.courseSearchState.observe(this) {
             Timber.d("${viewModel.courseSearchList.isEmpty()}")
-            if (state == UiState.Success) {
-                //검색 결과가 존재할 때
-                binding.svDiscoverSearch.visibility = View.VISIBLE
-                binding.constDiscoverSearchNoResult.visibility = View.INVISIBLE
-                //어댑터에 받아온 코스정보 리스트를 전달하는 submitList 작업
-                initAdapter()
-            }
-            else if(state==UiState.Failure){
-                //검색결과가 존재하지 않을 때
-                binding.svDiscoverSearch.visibility = View.INVISIBLE
-                binding.constDiscoverSearchNoResult.visibility = View.VISIBLE
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    //검색 결과가 존재할 때
+                    binding.svDiscoverSearch.isVisible = true
+                    binding.constDiscoverSearchNoResult.isVisible = false
+                    //어댑터에 받아온 코스정보 리스트를 전달하는 submitList 작업
+                    initAdapter()
+                }
+                UiState.Failure -> {
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                    //검색결과가 존재하지 않을 때
+                    binding.svDiscoverSearch.isVisible = false
+                    binding.constDiscoverSearchNoResult.isVisible = true
+                }
+
             }
         }
+
     }
 
+
     private fun initAdapter() {
-        adapter = DiscoverSearchAdapter(this, this,this).apply {
+        adapter = DiscoverSearchAdapter(this, this, this).apply {
             submitList(viewModel.courseSearchList)
         }
         binding.rvDiscoverSearch.adapter = this@DiscoverSearchActivity.adapter
@@ -129,6 +141,6 @@ class DiscoverSearchActivity :
     }
 
     override fun scrapCourse(id: Int, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id,scrapTF)
+        viewModel.postCourseScrap(id, scrapTF)
     }
 }

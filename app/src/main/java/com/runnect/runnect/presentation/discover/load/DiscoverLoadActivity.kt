@@ -1,8 +1,10 @@
 package com.runnect.runnect.presentation.discover.load
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -48,9 +50,17 @@ class DiscoverLoadActivity :
             Timber.d("4. ViewModel에서 변경된 라이브데이터 관찰")
             binding.ivDiscoverLoadSelectFinish.isActivated = it != 0
         }
-        viewModel.courseLoadState.observe(this) { state ->
-            if (state == UiState.Success) {
-                initAdapter()
+
+        viewModel.courseLoadState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    initAdapter()
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
             }
         }
     }

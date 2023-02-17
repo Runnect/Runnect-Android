@@ -22,6 +22,8 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
     val myUploadCourseList: List<UserUploadCourseDTO>
         get() = _myUploadCourseList
 
+    val errorMessage = MutableLiveData<String>()
+
     fun getUserUploadCourse() {
         viewModelScope.launch {
             runCatching {
@@ -31,6 +33,7 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
                 _myUploadCourseList = it
                 _myUploadCourseState.value = UiState.Success
             }.onFailure {
+                errorMessage.value = it.message
                 _myUploadCourseState.value = UiState.Failure
             }
         }

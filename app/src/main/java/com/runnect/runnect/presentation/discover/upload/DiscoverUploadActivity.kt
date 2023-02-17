@@ -1,11 +1,13 @@
 package com.runnect.runnect.presentation.discover.upload
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import coil.load
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -65,26 +67,37 @@ class DiscoverUploadActivity :
                 binding.tvDiscoverUploadFinish.visibility = View.GONE
             } else {
                 //그 이하일 때에는 keyboard down
-                binding.ivDiscoverUploadFinish.visibility = View.VISIBLE
-                binding.tvDiscoverUploadFinish.visibility = View.VISIBLE
+                binding.ivDiscoverUploadFinish.isVisible = true
+                binding.tvDiscoverUploadFinish.isVisible = true
             }
         }
     }
+
 
     private fun addObserver() {
         viewModel.isUploadEnable.observe(this) {
             binding.ivDiscoverUploadFinish.isActivated = it
         }
-        viewModel.courseUpLoadState.observe(this){ state ->
-            if(state == UiState.Success){
-                showToast("업로드 완료!")
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        viewModel.courseUpLoadState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    showToast("업로드 완료!")
+                    binding.indeterminateBar.isVisible = false
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
             }
         }
+
+
     }
+
 
     //키보드 밖 터치 시, 키보드 내림
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

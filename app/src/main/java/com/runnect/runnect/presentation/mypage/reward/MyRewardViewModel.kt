@@ -20,6 +20,8 @@ class MyRewardViewModel @Inject constructor(private val userRepository: UserRepo
 
     var stampList:MutableList<String> = mutableListOf()
 
+    val errorMessage = MutableLiveData<String>()
+
     fun getStampList() {
         viewModelScope.launch {
             runCatching {
@@ -29,6 +31,7 @@ class MyRewardViewModel @Inject constructor(private val userRepository: UserRepo
                 stampList = it
                 _stampState.value = UiState.Success
             }.onFailure {
+                errorMessage.value = it.message
                 _stampState.value = UiState.Failure
             }
         }
