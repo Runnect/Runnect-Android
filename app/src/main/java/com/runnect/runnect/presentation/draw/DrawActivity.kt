@@ -15,6 +15,7 @@ import android.os.Looper
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
@@ -34,6 +35,7 @@ import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import timber.log.Timber
@@ -84,8 +86,8 @@ class DrawActivity :
                 Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
                 initView()
 //                addListeners()
-
                 courseFinish()
+                addObserver()
                 backButton()
 
 
@@ -132,52 +134,31 @@ class DrawActivity :
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
             createMbr()
-
-            //createMbr()이 분명 먼저 도는데 변환에서 속도가 걸리니까 늦게 찍혀 그래서 핸들러를 써줌
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    for (i in 1..distanceList.size) {
-                        distanceListtoUpload.add(
-                            UploadLatLng(
-                                distanceList[i - 1].latitude,
-                                distanceList[i - 1].longitude
-                            )
-                        )
-                    }
-
-                    viewModel.path.value = distanceListtoUpload
-                    //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
-                    viewModel.departureAddress.value = searchResult.fullAdress
-                    viewModel.departureName.value = searchResult.name
-
-                    Timber.tag(ContentValues.TAG).d("viewModel.path : ${viewModel.path.value}")
-                    Timber.tag(ContentValues.TAG)
-                        .d("viewModel.distance : ${viewModel.distanceSum.value}")
-                    Timber.tag(ContentValues.TAG)
-                        .d("viewModel.departureAddress : ${viewModel.departureAddress.value}")
-                    Timber.tag(ContentValues.TAG)
-                        .d("viewModel.departureName : ${viewModel.departureName.value}")
-                    Timber.tag(ContentValues.TAG).d("viewModel.image : ${viewModel.image.value}")
-                }, 600
-            )
-
-            Handler(Looper.getMainLooper()).postDelayed(
+            Handler(Looper.getMainLooper()).postDelayed( //이거 왜 콜백으로 안 되는 거지
                 {
                     viewModel.uploadCourse()
-
-                    viewModel.errorMessage.observe(this) {
-                    }
-                    viewModel.uploadResult.observe(this) {
-                        viewModel.courseId.value = it.data.course.id
-
-                    }
-
-                }, 800
+                }, 200
             )
 
-
-            customDialog(binding.root)
         }
+    }
+
+    private fun addObserver() {
+
+        viewModel.drawState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    customDialog(binding.root)
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
+            }
+        }
+
+
     }
 
     fun customDialog(view: View) {
@@ -393,6 +374,20 @@ class DrawActivity :
         naverMap.setContentPadding(100, 100, 100, 100)
         cameraUpdate(bounds)
         captureMap()
+
+        for (i in 1..distanceList.size) {
+            distanceListtoUpload.add(
+                UploadLatLng(
+                    distanceList[i - 1].latitude,
+                    distanceList[i - 1].longitude
+                )
+            )
+        }
+
+        viewModel.path.value = distanceListtoUpload
+        //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
+        viewModel.departureAddress.value = searchResult.fullAdress
+        viewModel.departureName.value = searchResult.name
 
 
     }

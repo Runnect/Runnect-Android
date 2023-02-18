@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
 import com.runnect.runnect.data.model.UploadLatLng
@@ -79,8 +78,8 @@ class DrawViewModel : ViewModel() {
 
     fun uploadCourse() {
         viewModelScope.launch {
-           runCatching {
-               _drawState.value = UiState.Loading
+            runCatching {
+                _drawState.value = UiState.Loading
                 service.uploadCourse(_image.value!!.toFormData(), RequestBody(
                     path.value!!,
                     distanceSum.value!!,
@@ -89,10 +88,11 @@ class DrawViewModel : ViewModel() {
                 ))
             }.onSuccess {
                 uploadResult.value = it.body()
-               _drawState.value = UiState.Success
+                courseId.value = it.body()!!.data.course.id
+                _drawState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
-               _drawState.value = UiState.Failure
+                _drawState.value = UiState.Failure
             }
         }
     }

@@ -1,8 +1,10 @@
 package com.runnect.runnect.presentation.mypage
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
@@ -10,7 +12,9 @@ import com.runnect.runnect.databinding.FragmentMyPageBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
+import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -59,6 +63,18 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private fun addObserver() {
         viewModel.nickName.observe(viewLifecycleOwner) { nickName ->
             binding.tvMyPageUserName.text = nickName.toString()
+        }
+
+        viewModel.userInfoState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
+            }
         }
     }
 

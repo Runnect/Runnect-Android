@@ -25,6 +25,8 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
     val userInfoState: LiveData<UiState>
         get() = _userInfoState
 
+    val errorMessage = MutableLiveData<String>()
+
     fun getUserInfo() {
         viewModelScope.launch {
             runCatching {
@@ -37,6 +39,7 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
                 levelPercent.value = it.data.user.levelPercent
                 _userInfoState.value = UiState.Success
             }.onFailure {
+                errorMessage.value = it.message
                 _userInfoState.value = UiState.Failure
             }
         }

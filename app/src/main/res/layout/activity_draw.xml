@@ -16,6 +16,8 @@
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
         <ProgressBar
+            android:outlineProvider="none"
+            android:elevation="1dp"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

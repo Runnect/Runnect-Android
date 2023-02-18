@@ -93,6 +93,7 @@ class DiscoverSearchActivity :
                     initAdapter()
                 }
                 UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
                     //검색결과가 존재하지 않을 때
