@@ -23,15 +23,19 @@ class StorageScrapAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: ResponseGetScrapDto.Data.Scrap) {
             with(binding) {
-                ivItemStorageScrapHeart.isSelected =
-                    true //상세페이지 어댑터에서는 받아온 data에 따라 true/false 세팅해주면 되는데
-                // 여기선 ResponseGetScrapDto.Data.Scrap에 ScrapTF가 없으니까 내가 임의로 true라고 해놓음.
+                var itemCount = currentList.size
+                Timber.d("삭제 전 itemCount 값? ${itemCount}")
+                ivItemStorageScrapHeart.isSelected = true
                 ivItemStorageScrapHeart.setOnClickListener {
-                    ivItemStorageScrapHeart.isSelected =
-                        false //터치가 됐다는 건 스크랩을 취소하겠다는 거니까 false로 만들어서 하트 비워주고
-                    Timber.d("통신에 넣어줄 값? ${data.publicCourseId}, ${it.isSelected}")
-                    mCallback.scrapCourse(data.publicCourseId, it.isSelected) // <- 여기에 스크랩 취소 통신에 쓰일 data 넣기
-                } //여기까지 하면 기본적인 구현은 된 건데 스크랩 취소할 때마다 리사이클러뷰 UI 갱신을 시켜주고 싶은데 이거까진 안 돼있음.
+                    ivItemStorageScrapHeart.isSelected = false
+                    deleteItem(adapterPosition)
+                    Timber.d("삭제 후 itemCount 값? ${itemCount}") //여기가 2가 나와야 되는데 왜 3이지지                    Timber.d("통신에 넣어줄 값? ${data.publicCourseId}, ${it.isSelected}")
+                    mCallback.scrapCourse(data.publicCourseId, it.isSelected)
+                    //이렇게하면 삭제는 되는데 emptyList가 됐을 때 '스크랩하러 가기'가 안떠.
+                    //이유는, 여기서는 터치가 일어나서 item을 삭제할 때마다 scrap 통신이 일어나게끔 설계가 돼있어.
+                    //그런데 Fragment에서는 탭을 통해서 이 fragment로 처음 들어왔을 때만 서버 통신이 일어나게 돼있어서 터치랑 연결이 안 되는 거야.
+                    //이걸 해결하려면 서버통신이 처음 fragment 들어왔을 때 말고도 일어나게 해주거나 visible 조건 자체를 다른 데다 넣는 방법이 있어.
+                }
 
                 root.setOnClickListener {
                     listener(data)
@@ -45,6 +49,14 @@ class StorageScrapAdapter(
         }
 
 
+    }
+
+    fun deleteItem(position: Int){
+        val itemList = mutableListOf<ResponseGetScrapDto.Data.Scrap>()
+        itemList.addAll(currentList)
+        itemList.removeAt(position)
+        submitList(itemList)
+        Timber.d("itemList? ${itemList}")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {

@@ -1,12 +1,14 @@
 package com.runnect.runnect.presentation.mydrawdetail
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
 
 class MyDrawDetailViewModel : ViewModel() {
@@ -16,6 +18,9 @@ class MyDrawDetailViewModel : ViewModel() {
     val detailToRunData = MutableLiveData<DetailToRunData>()
     val courseId = MutableLiveData<Int>()
 
+    private var _courseInfoState = MutableLiveData<UiState>(UiState.Loading)
+    val courseInfoState: LiveData<UiState>
+        get() = _courseInfoState
 
     val service = KApiCourse.ServicePool.courseService //객체 생성
 
@@ -23,10 +28,8 @@ class MyDrawDetailViewModel : ViewModel() {
     val errorMessage = MutableLiveData<String>()
 
     fun getMyDrawDetail(courseId: Int) {
-
-        service.also {
             viewModelScope.launch {
-                kotlin.runCatching {
+                runCatching {
                     service.getMyDrawDetail(courseId)
                 }.onSuccess {
                     getResult.value = it.body()
@@ -34,7 +37,5 @@ class MyDrawDetailViewModel : ViewModel() {
                     errorMessage.value = it.message
                 }
             }
-        }
-
     }
 }

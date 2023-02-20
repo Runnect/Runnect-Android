@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
 import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -19,6 +20,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class DrawViewModel : ViewModel() {
 
     val service = KApiCourse.ServicePool.courseService //객체 생성
+
+    private var _drawState = MutableLiveData<UiState>(UiState.Empty)
+    val drawState: LiveData<UiState>
+        get() = _drawState
 
 
     val path = MutableLiveData<List<UploadLatLng>>()
@@ -70,9 +75,11 @@ class DrawViewModel : ViewModel() {
         return (rad * 180 / Math.PI)
     }
 
+
     fun uploadCourse() {
         viewModelScope.launch {
-            kotlin.runCatching {
+            runCatching {
+                _drawState.value = UiState.Loading
                 service.uploadCourse(_image.value!!.toFormData(), RequestBody(
                     path.value!!,
                     distanceSum.value!!,
@@ -81,8 +88,11 @@ class DrawViewModel : ViewModel() {
                 ))
             }.onSuccess {
                 uploadResult.value = it.body()
+                courseId.value = it.body()!!.data.course.id
+                _drawState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
+                _drawState.value = UiState.Failure
             }
         }
     }

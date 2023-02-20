@@ -38,6 +38,8 @@ class DiscoverLoadViewModel @Inject constructor(
     val distanceSelectedItem: LiveData<String>
         get() = _distanceSelectedItem
 
+    val errorMessage = MutableLiveData<String>()
+
     fun checkSelectEnable(id: Int, img: String, departure: String, distance:String) {
         Timber.d("3. 선택된 아이템의 아이디값을 Adapter로부터 받아와서 라이브 데이터 변경")
         _idSelectedItem.value = id
@@ -55,6 +57,7 @@ class DiscoverLoadViewModel @Inject constructor(
                 courseLoadList = it
                 _courseLoadState.value = UiState.Success
             }.onFailure {
+                errorMessage.value = it.message
                 _courseLoadState.value = UiState.Failure
             }
         }

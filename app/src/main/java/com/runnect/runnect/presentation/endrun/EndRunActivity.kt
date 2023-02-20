@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.viewModels
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.runnect.runnect.R
@@ -15,7 +16,9 @@ import com.runnect.runnect.data.model.RequestPostRecordDto
 import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.showToast
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -48,18 +51,31 @@ class EndRunActivity :
         editTextController()
         getIntentValue()
         saveButton()
+        addObserver()
 
 //        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
 
-        viewModel.errorMessage.observe(this) {
-            Timber.tag(ContentValues.TAG).d("${it}")
-        }
-        viewModel.uploadResult.observe(this) {
+    }
 
-            Timber.tag(ContentValues.TAG).d("서버 성공 : ${it.message}")
+    private fun addObserver() {
+        viewModel.endRunState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    showToast("업로드 완료!")
+                    Timber.tag(ContentValues.TAG)
+                        .d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
+            }
         }
+
+
     }
 
     fun backBtn() {
@@ -90,6 +106,7 @@ class EndRunActivity :
         val captureUri = runToEndRunData.captureUri!!.toUri()
         viewModel.captureUri.value = captureUri
 
+        //String으로 다룰 거면 그냥 시간/분/초 합쳐서 관리하는 게 나을듯?
         val timerHour = runToEndRunData.timerHour
         viewModel.timerHour.value = timerHour //뷰모델에 타이머 sec 세팅
 
@@ -155,8 +172,11 @@ class EndRunActivity :
                 .d("viewModel.courseId.value!! : ${viewModel.paceTotal.value!!}")
 
             viewModel.postRecord(
-                RequestPostRecordDto(viewModel.courseId.value!!,viewModel.publicCourseId.value,viewModel.editTextValue.value!!,
-                    viewModel.timeTotal.value!!,viewModel.paceTotal.value!!)
+                RequestPostRecordDto(viewModel.courseId.value!!,
+                    viewModel.publicCourseId.value,
+                    viewModel.editTextValue.value!!,
+                    viewModel.timeTotal.value!!,
+                    viewModel.paceTotal.value!!)
             )
             val intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거

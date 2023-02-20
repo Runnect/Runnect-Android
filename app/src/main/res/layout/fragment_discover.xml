@@ -91,6 +91,16 @@
                     app:layout_constraintStart_toStartOf="@id/tv_discover_recommend_title"
                     app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_title" />
 
+                <ProgressBar
+                    android:id="@+id/indeterminateBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_marginTop="100dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_discover_recommend"
                     android:layout_width="wrap_content"

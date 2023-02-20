@@ -14,7 +14,7 @@ interface KCourseService {
     @POST("/api/scrap")
     suspend fun postCourseScrap(
         @Body requestCourseScrap: RequestCourseScrap,
-    ): ResponseCourseScrap
+    ): Response<ResponseCourseScrap>
 
 
     //보관함 내가 그린 코스 가져오기

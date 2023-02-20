@@ -1,7 +1,9 @@
 package com.runnect.runnect.presentation.mypage.reward
 
+import android.content.ContentValues
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -65,13 +67,25 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
         finish()
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
     }
+    
 
     private fun addObserver() {
-        viewModel.stampState.observe(this) { state ->
-            if (state == UiState.Success) {
-                initAdapter()
+
+        viewModel.stampState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    initAdapter()
+
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
             }
         }
+
+
     }
     private fun initAdapter() {
         var index = 0

@@ -23,6 +23,8 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     val recordList: List<RecordInfoDTO>
         get() = _recordList
 
+    val errorMessage = MutableLiveData<String>()
+
     fun getRecord() {
         viewModelScope.launch {
             runCatching {
@@ -32,6 +34,7 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
                 _recordList = it
                 _recordState.value = UiState.Success
             }.onFailure {
+                errorMessage.value = it.message
                 _recordState.value = UiState.Failure
             }
         }

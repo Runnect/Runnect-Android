@@ -13,6 +13,7 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import timber.log.Timber
@@ -41,7 +42,7 @@ class StorageMyDrawFragment :
 
         getCourse()
         addData()
-        issueHandling()
+        addObserver()
 
     }
 
@@ -59,48 +60,39 @@ class StorageMyDrawFragment :
     }
 
 
-    private fun issueHandling() {
-        viewModel.errorMessage.observe(requireActivity()) {
-            if (viewModel.errorMessage.value == null) {
-                Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
-            } else {
-                Timber.tag(ContentValues.TAG).d(it)
-                with(binding) {
-                    recyclerViewStorageMyDraw.isVisible = false
-                    ivStorageMyDrawNoCourse.isVisible = true
-                    tvStorageMyDrawNoCourseGuide.isVisible = true
-                    btnStorageNoCourse.isVisible = true
+    private fun addObserver() {
+
+        viewModel.storageState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+
+                    if (viewModel.getMyDrawResult.value!!.data.courses.isEmpty()) {
+                        with(binding) {
+                            ivStorageMyDrawNoCourse.isVisible = true
+                            tvStorageMyDrawNoCourseGuide.isVisible = true
+                            btnStorageNoCourse.isVisible = true
+                            recyclerViewStorageMyDraw.isVisible = false
+                        }
+                    } else {
+                        with(binding) {
+                            ivStorageMyDrawNoCourse.isVisible = false
+                            tvStorageMyDrawNoCourseGuide.isVisible = false
+                            btnStorageNoCourse.isVisible = false
+                            recyclerViewStorageMyDraw.isVisible = true
+                        }
+                    }
+                    storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
                 }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Success : getSearchList body is not null")
 
             }
-        }
-        viewModel.getMyDrawResult.observe(requireActivity()) {
-            if (viewModel.getMyDrawResult.value == null) {
-                Toast.makeText(requireContext(), "서버에 문제가 있습니다", Toast.LENGTH_SHORT).show()
-            } else {
-                Timber.tag(ContentValues.TAG).d(it.message)
-
-                if (it.data.courses.isEmpty()) {
-                    with(binding) { //이게 여기가 아니라 밑에 있어야 되는거였네
-                        recyclerViewStorageMyDraw.isVisible = false
-                        ivStorageMyDrawNoCourse.isVisible = true
-                        tvStorageMyDrawNoCourseGuide.isVisible = true
-                        btnStorageNoCourse.isVisible = true
-                    }
-                } else {
-                    with(binding) {
-                        recyclerViewStorageMyDraw.isVisible = true
-                        ivStorageMyDrawNoCourse.isVisible = false
-                        tvStorageMyDrawNoCourseGuide.isVisible = false
-                        btnStorageNoCourse.isVisible = false
-                    }
-                }
-
-                storageMyDrawAdapter.submitList(it.data.courses)
-            }
-
 
         }
+
     }
 
     private fun addData() {
@@ -110,13 +102,13 @@ class StorageMyDrawFragment :
             }
             startActivity(intent)
         }
-
-
     }
 
     private fun getCourse() {
         viewModel.getMyDrawList()
     }
-
-
 }
+
+
+
+

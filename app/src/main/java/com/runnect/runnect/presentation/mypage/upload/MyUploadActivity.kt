@@ -1,7 +1,9 @@
 package com.runnect.runnect.presentation.mypage.upload
 
+import android.content.ContentValues
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -10,6 +12,7 @@ import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload) {
@@ -36,13 +39,15 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun addListener() {
         binding.ivMyPageUploadBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
+
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
+
     private fun initAdapter() {
         adapter = MyUploadAdapter(this).apply {
             submitList(
@@ -52,11 +57,23 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.rvMyPageUpload.adapter = adapter
     }
 
+
     private fun addObserver() {
-        viewModel.myUploadCourseState.observe(this) { state ->
-            if (state == UiState.Success) {
-                initAdapter()
+
+        viewModel.myUploadCourseState.observe(this) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    initAdapter()
+
+                }
+                UiState.Failure -> Timber.tag(ContentValues.TAG)
+                    .d("Failure : ${viewModel.errorMessage.value}")
             }
         }
+
+
     }
 }

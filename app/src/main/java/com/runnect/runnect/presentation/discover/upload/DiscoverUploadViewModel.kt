@@ -22,6 +22,8 @@ class DiscoverUploadViewModel @Inject constructor(private val courseRepository: 
     val courseUpLoadState: LiveData<UiState>
         get() = _courseUpLoadState
 
+    val errorMessage = MutableLiveData<String>()
+
     init {
         isUploadEnable.value = false
         isUploadEnable.apply {
@@ -45,6 +47,7 @@ class DiscoverUploadViewModel @Inject constructor(private val courseRepository: 
                 _courseUpLoadState.value = UiState.Success
             }.onFailure {
                 Timber.d("업로드 실패")
+                errorMessage.value = it.message
                 _courseUpLoadState.value = UiState.Failure
             }
         }

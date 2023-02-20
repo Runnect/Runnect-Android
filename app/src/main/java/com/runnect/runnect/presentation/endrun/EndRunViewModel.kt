@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.endrun
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.RequestPostRecordDto
 import com.runnect.runnect.data.model.ResponsePostRecordDto
 import com.runnect.runnect.data.model.entity.SearchResultEntity
+import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
 
 class EndRunViewModel : ViewModel() {
@@ -28,33 +30,32 @@ class EndRunViewModel : ViewModel() {
     val publicCourseId = MutableLiveData<Int?>()
 
 
-    //    "${timerSec} : ${timerMilli}"
     val editTextValue = MutableLiveData<String>()
 
-    val buttonCondition = MutableLiveData<Boolean>()
-
-    val averagePace = MutableLiveData<Int>() //타입?
 
     val uploadResult = MutableLiveData<ResponsePostRecordDto>()
     val errorMessage = MutableLiveData<String>()
 
     val currentTime = MutableLiveData<String>() //현재 시간
 
+    private val _endRunState = MutableLiveData<UiState>(UiState.Empty)
+    val endRunState: LiveData<UiState>
+        get() = _endRunState
 
-    val searchResult = MutableLiveData<SearchResultEntity>()
 
     fun postRecord(request : RequestPostRecordDto) {
-        service.also {
             viewModelScope.launch {
-                kotlin.runCatching {
+                runCatching {
+                    _endRunState.value = UiState.Loading
                     service.postRecord(RequestPostRecordDto(request.courseId, request.publicCourseId, request.title, request.time, request.pace))
                 }.onSuccess {
                     uploadResult.value = it.body()
+                    _endRunState.value = UiState.Success
                 }.onFailure {
                     errorMessage.value = it.message
+                    _endRunState.value = UiState.Failure
                 }
             }
         }
 
-    }
 }

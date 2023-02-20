@@ -23,6 +23,8 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
 
     var courseSearchList = mutableListOf<CourseSearchDTO>()
 
+    val errorMessage = MutableLiveData<String>()
+
     fun getCourseSearch(keyword: String) {
         viewModelScope.launch {
             _courseSearchState.value = UiState.Loading
@@ -34,6 +36,7 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
                 _courseSearchState.value = UiState.Success
             }.onFailure {
                 Timber.d("검색 실패 ${it.message} ${it.cause}")
+                errorMessage.value = it.message
                 _courseSearchState.value = UiState.Failure
             }
         }
