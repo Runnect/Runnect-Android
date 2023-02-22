@@ -99,8 +99,11 @@ class StorageScrapFragment :
                         }
                     }
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage}")
+                }
             }
         }
     }

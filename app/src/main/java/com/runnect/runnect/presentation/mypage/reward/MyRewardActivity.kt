@@ -59,15 +59,15 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
     private fun addListener() {
         binding.ivMyPageRewardBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
-    
+
 
     private fun addObserver() {
 
@@ -80,13 +80,17 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
                     initAdapter()
 
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
             }
         }
 
 
     }
+
     private fun initAdapter() {
         var index = 0
         if (viewModel.stampList.isNotEmpty()) {

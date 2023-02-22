@@ -93,8 +93,11 @@ class SearchActivity :
                         }
                     }
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.searchError.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.searchError.value}")
+                }
             }
         }
 

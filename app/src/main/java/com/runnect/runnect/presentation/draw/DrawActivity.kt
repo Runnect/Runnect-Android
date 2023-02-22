@@ -153,8 +153,11 @@ class DrawActivity :
                     binding.indeterminateBar.isVisible = false
                     customDialog(binding.root)
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
             }
         }
 

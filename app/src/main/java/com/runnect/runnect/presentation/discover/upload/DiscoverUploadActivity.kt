@@ -90,8 +90,11 @@ class DiscoverUploadActivity :
                     startActivity(intent)
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
             }
         }
 

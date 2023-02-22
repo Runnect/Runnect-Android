@@ -70,8 +70,11 @@ class EndRunActivity :
                     Timber.tag(ContentValues.TAG)
                         .d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
             }
         }
 
