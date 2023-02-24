@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.draw
 
+import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.put
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import timber.log.Timber
 
 class DrawViewModel : ViewModel() {
 
@@ -87,10 +89,12 @@ class DrawViewModel : ViewModel() {
                     departureName.value!!
                 ))
             }.onSuccess {
+                Timber.tag(ContentValues.TAG).d("통신success")
                 uploadResult.value = it.body()
                 courseId.value = it.body()!!.data.course.id
                 _drawState.value = UiState.Success
             }.onFailure {
+                Timber.tag(ContentValues.TAG).d("통신failure : ${it}")
                 errorMessage.value = it.message
                 _drawState.value = UiState.Failure
             }
