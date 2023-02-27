@@ -18,7 +18,7 @@ data class Record(
     val image: String,
     val machineId: String,
     val pace: String,
-    val publicCourseId: Int,
+    val publicCourseId: Int?,
     val time: String,
     val title: String
 )
