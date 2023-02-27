@@ -21,6 +21,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleX="0.4"
+            android:scaleY="0.4"
             android:src="@drawable/anim_num3" />
 
         <androidx.appcompat.widget.AppCompatTextView
