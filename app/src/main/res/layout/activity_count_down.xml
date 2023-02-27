@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".CountDownActivity"
-        android:background="@drawable/starbackground">
+        android:background="@drawable/star_background">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/is_count"
+            android:id="@+id/iv_count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,16 +24,17 @@
             android:src="@drawable/anim_num3" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_count_down_desc"
             android:fontFamily="@font/pretendard_medium"
             android:textSize="17sp"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/is_count"
-            app:layout_constraintStart_toStartOf="@id/is_count"
-            app:layout_constraintEnd_toEndOf="@id/is_count"
+            app:layout_constraintTop_toBottomOf="@id/iv_count_down"
+            app:layout_constraintStart_toStartOf="@id/iv_count_down"
+            app:layout_constraintEnd_toEndOf="@id/iv_count_down"
             android:layout_marginTop="35dp"
-            android:text="잠시 후 러닝을 시작합니다." />
+            android:text="@string/count_down_desc" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

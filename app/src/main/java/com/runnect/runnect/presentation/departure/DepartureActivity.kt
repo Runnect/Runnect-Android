@@ -96,7 +96,7 @@ class DepartureActivity :
 
         marker.position = LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble())
         marker.anchor = PointF(0.5f, 0.5f)
-        marker.icon = OverlayImage.fromResource(R.drawable.startmarker)
+        marker.icon = OverlayImage.fromResource(R.drawable.start_marker)
         marker.map = naverMap
 
 
