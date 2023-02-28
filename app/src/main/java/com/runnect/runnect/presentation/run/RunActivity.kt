@@ -240,7 +240,7 @@ class RunActivity :
         startMarker.position =
             LatLng(startLatLng.latitude, startLatLng.longitude) // 출발지점
         startMarker.anchor = PointF(0.5f, 0.7f)
-        startMarker.icon = OverlayImage.fromResource(R.drawable.startmarker)
+        startMarker.icon = OverlayImage.fromResource(R.drawable.start_marker)
         startMarker.map = naverMap
 
         cameraUpdate(

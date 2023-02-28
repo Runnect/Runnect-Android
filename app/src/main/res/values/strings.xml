@@ -11,7 +11,6 @@
     <string name="main_menu_discover">코스 발견</string>
     <string name="main_menu_my_page">마이페이지</string>
     <string name="discover_plus">+</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="discover_load_select_title">불러오기</string>
     <string name="discover_load_select_finish">선택하기</string>
     <string name="discover_upload">코스 업로드</string>
@@ -39,8 +38,8 @@
     <string name="item_mypage_history_distance_km">km</string>
     <string name="item_mypage_history_time">이동 시간</string>
     <string name="item_mypage_history_pace">평균 페이스</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="count_down_desc">잠시 후 러닝을 시작합니다.</string>
 
 
 </resources>
