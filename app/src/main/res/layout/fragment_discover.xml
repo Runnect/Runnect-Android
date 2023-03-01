@@ -110,7 +110,7 @@
                     android:nestedScrollingEnabled="false"
                     android:orientation="vertical"
                     android:overScrollMode="never"
-                    android:paddingBottom="20dp"
+                    android:paddingBottom="80dp"
                     android:scrollbars="none"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
