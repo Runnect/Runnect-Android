@@ -1,0 +1,64 @@
+name: CI
+
+on:
+    push:
+        branches: [ develop ]
+
+    pull_request:
+        branches: [ develop ]
+    
+defaults:
+    run:
+        shell: bash
+        working-directory: .
+
+jobs:
+    build:
+        name: Generate APK
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Gradle cache
+                uses: actions/cache@v2
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+            -   name: set up JDK 11
+                uses: actions/setup-java@v1
+                with:
+                    java-version: 11
+                    
+            - name: Touch local properties
+              run: touch local.properties
+                    
+            - name: Access NAVER_CLIENT_ID
+              env:
+                  NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+              run: echo "NAVER_CLIENT_ID = \"$NAVER_CLIENT_ID\"" >> local.properties
+        
+            - name: Access RUNNECT_BASE_URL
+              env:
+                  RUNNECT_BASE_URL: ${{ secrets.RUNNECT_BASE_URL }}
+              run: echo "RUNNECT_BASE_URL=\"$RUNNECT_BASE_URL\"" >> local.properties
+
+            - name: Access TMAP_BASE_URL
+              env:
+                  TMAP_BASE_URL: ${{ secrets.TMAP_BASE_URL }}
+              run: echo "TMAP_BASE_URL=\"$TMAP_BASE_URL\"" >> local.properties
+              
+            - name: Access TMAP_API_KEY
+              env:
+                  TMAP_API_KEY: ${{ secrets.TMAP_API_KEY }}
+              run: echo "TMAP_API_KEY=\"$TMAP_API_KEY\"" >> local.properties
+
+            -   name: Change gradlew permissions
+                run: chmod +x ./gradlew
+
+            -   name: Build 
+                run: ./gradlew assembleDebug --stacktrace
