@@ -5,57 +5,68 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_item_discover_course_info_scrap"
-        android:layout_width="162dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/G4"
-        app:cardCornerRadius="5dp"
-        app:layout_constraintDimensionRatio="162:114"
+    <com.ssomai.android.scalablelayout.ScalableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:scale_base_height="154"
+        app:scale_base_width="162">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_item_discover_course_info_scrap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/G4"
+            app:cardCornerRadius="5dp"
+            app:scale_height="114"
+            app:scale_width="162">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_item_discover_course_info_map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </com.google.android.material.card.MaterialCardView>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_item_discover_course_info_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-    </com.google.android.material.card.MaterialCardView>
+            android:id="@+id/iv_item_discover_course_info_scrap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            app:scale_height="12"
+            app:scale_top="121"
+            app:scale_width="14"
+            app:srcCompat="@drawable/discover_course_scrap_selector" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_item_discover_course_info_scrap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        app:layout_constraintEnd_toEndOf="@id/cv_item_discover_course_info_scrap"
-        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info_scrap"
-        app:srcCompat="@drawable/discover_course_scrap_selector" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_discover_course_info_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center_vertical"
+            android:maxLength="13"
+            android:textColor="@color/G1"
+            app:scale_height="22"
+            app:scale_textsize="14"
+            app:scale_top="116"
+            app:scale_width="144"
+            tools:text="제목" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_item_discover_course_info_title"
-        android:layout_width="wrap_content"
-        android:layout_height="22dp"
-        android:layout_marginTop="2dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/pretendard_medium"
-        android:gravity="center"
-        android:maxLength="13"
-        android:textColor="@color/G1"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/cv_item_discover_course_info_scrap"
-        app:layout_constraintTop_toBottomOf="@id/cv_item_discover_course_info_scrap"
-        tools:text="제목" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_item_discover_course_info_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/pretendard_regular"
-        android:gravity="center"
-        android:textColor="@color/G2"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/tv_item_discover_course_info_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_item_discover_course_info_title"
-        tools:text="서울시 강동구" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_discover_course_info_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:gravity="center_vertical"
+            android:textColor="@color/G2"
+            app:scale_height="16"
+            app:scale_textsize="13"
+            app:scale_top="138"
+            app:scale_width="162"
+            tools:text="서울시 강동구" />
+    </com.ssomai.android.scalablelayout.ScalableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
