@@ -54,7 +54,6 @@ class CourseDetailActivity :
 
     private fun addObserver() {
         viewModel.courseDetailState.observe(this) { state ->
-            Timber.d("Activity호출 상세코스 UiState $state")
             if (state == UiState.Success) {
                 with(binding) {
                     with(viewModel.courseDetail) {

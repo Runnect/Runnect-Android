@@ -32,7 +32,6 @@ class CourseRecommendAdapter(context: Context,listener:OnScrapCourse,dListener:O
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: RecommendCourseDTO) {
             with(binding) {
-                Timber.d("이미지 ${data.image}")
                 ivItemDiscoverCourseInfoMap.load(data.image)
                 tvItemDiscoverCourseInfoTitle.text = data.title
                 tvItemDiscoverCourseInfoLocation.text = data.departure
