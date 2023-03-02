@@ -30,9 +30,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_storage_my_draw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="18dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:paddingBottom="20dp"
                 android:orientation="vertical"
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

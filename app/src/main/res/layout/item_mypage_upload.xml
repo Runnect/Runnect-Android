@@ -3,55 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+    <com.ssomai.android.scalablelayout.ScalableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".presentation.mypage.upload.MyUploadActivity">
+        app:scale_base_height="156"
+        app:scale_base_width="162">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_my_page_upload_course"
-            android:layout_width="162dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:cardCornerRadius="5dp"
-            app:layout_constraintDimensionRatio="162:114"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:scale_height="114"
+            app:scale_width="162">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_my_page_upload_course"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
-
         </androidx.cardview.widget.CardView>
-
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_upload_course_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:height="22dp"
             android:fontFamily="@font/pretendard_medium"
-            android:gravity="bottom"
+            android:gravity="center_vertical"
             android:textColor="@color/G1"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@id/cv_my_page_upload_course"
-            app:layout_constraintTop_toBottomOf="@id/cv_my_page_upload_course"
+            app:scale_height="22"
+            app:scale_textsize="14"
+            app:scale_top="116"
+            app:scale_width="162"
             tools:text="럭셔리한 압구정 러닝" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_upload_course_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:fontFamily="@font/pretendard_regular"
+            android:gravity="center_vertical"
             android:textColor="@color/G2"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="@id/tv_my_page_upload_course_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_page_upload_course_title"
+            app:scale_height="16"
+            app:scale_textsize="13"
+            app:scale_top="140"
+            app:scale_width="162"
             tools:text="서울시 송파구 한강" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.ssomai.android.scalablelayout.ScalableLayout>
 </layout>

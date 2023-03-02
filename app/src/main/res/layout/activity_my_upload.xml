@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.mypage.upload.MyUploadViewModel" />
@@ -66,11 +67,11 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_my_page_upload"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="16dp"
                     android:orientation="vertical"
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

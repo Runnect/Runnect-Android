@@ -40,6 +40,7 @@
     <string name="item_mypage_history_pace">평균 페이스</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="count_down_desc">잠시 후 러닝을 시작합니다.</string>
+    <string name="item_mypage_reward_course_count">코스 10개</string>
 
 
 </resources>
