@@ -74,10 +74,22 @@ class RunActivity :
         startTimer()
         getCurrentLocation()
         seeRecord()
+        backButton()
 
 
     }
 
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
+
+    private fun backButton() {
+        binding.imgBtnBack.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        }
+    }
 
     private fun initView() {
 

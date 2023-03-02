@@ -95,7 +95,10 @@ class DrawActivity :
         }
 
     }
-
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
 
     private fun initView() {
 
@@ -207,6 +210,7 @@ class DrawActivity :
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
         }
     }
 

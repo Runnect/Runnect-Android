@@ -28,7 +28,11 @@ class MyDrawDetailActivity :
         observing()
         toRunButton()
 
+    }
 
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
     }
 
     fun getMyDrawDetail() {
@@ -42,7 +46,6 @@ class MyDrawDetailActivity :
             startActivity(Intent(this, RunActivity::class.java).apply {
 
                 putExtra("detailToRun", viewModel.detailToRunData.value)
-
 
             })
         }

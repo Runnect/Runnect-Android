@@ -66,7 +66,10 @@ class DepartureActivity :
 
 
     }
-
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
     private fun goToDraw() {
         binding.btnPreStart.setOnClickListener {
             Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
@@ -84,6 +87,7 @@ class DepartureActivity :
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
         }
     }
 
