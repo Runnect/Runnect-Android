@@ -1,9 +1,15 @@
 package com.runnect.runnect.presentation.discover
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,6 +32,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnItemClick, OnScrapCourse {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var adapter: CourseRecommendAdapter
+    private lateinit var startForResult: ActivityResultLauncher<Intent>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,6 +42,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.getRecommendCourse()
         addListener()
         addObserver()
+        setResultDetail()
     }
 
     private fun initLayout() {
@@ -96,14 +104,25 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverRecommend.adapter = adapter
     }
 
+
     override fun scrapCourse(id: Int, scrapTF: Boolean) {
         viewModel.postCourseScrap(id, scrapTF)
+    }
+
+    private fun setResultDetail(){
+        startForResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){ result ->
+            if (result.resultCode == RESULT_OK){
+                viewModel.getRecommendCourse()
+            }
+        }
     }
 
     override fun selectItem(id: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java)
         intent.putExtra("courseId", id)
-        startActivity(intent)
+        startForResult.launch(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
             R.anim.slide_out_left
