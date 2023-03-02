@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,8 @@ class StorageViewModel : ViewModel() {
     val getMyDrawResult = MutableLiveData<ResponseGetCourseDto>()
     val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
     val errorMessage = MutableLiveData<String>()
+
+    val itemSize = MutableLiveData<Int>()
 
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)
     val storageState: LiveData<UiState>
@@ -48,6 +51,7 @@ class StorageViewModel : ViewModel() {
                 service.getScrapList()
             }.onSuccess {
                 getScrapListResult.value = it.body()
+                Timber.tag(ContentValues.TAG).d("스크랩 리스트 사이즈 : ${it.body()!!.data.scraps.size}")
                 _storageState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
