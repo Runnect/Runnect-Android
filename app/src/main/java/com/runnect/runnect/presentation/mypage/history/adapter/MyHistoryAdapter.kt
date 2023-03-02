@@ -33,7 +33,7 @@ class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
             tvMyPageHistoryCourseName.text = data.title
             tvMyPageHistoryPlace.text = data.location
             tvMyPageHistoryDate.text = data.date
-            tvMyPageHistoryDistanceData.text = data.distance
+            tvMyPageHistoryDistanceData.text = data.distance + "km"
             tvMyPageHistoryTimeData.text = data.time
             tvMyPageHistoryPaceData.text = data.pace
         }
