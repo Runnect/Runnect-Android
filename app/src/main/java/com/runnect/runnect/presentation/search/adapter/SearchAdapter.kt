@@ -7,11 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ItemSearchBinding
+import com.runnect.runnect.util.callback.OnSearchClick
 
-class SearchAdapter(searchResultClickListener: (SearchResultEntity) -> Unit) :
+class SearchAdapter(private val searchClickListener: OnSearchClick) :
     ListAdapter<SearchResultEntity, SearchAdapter.SearchResultItemViewHolder>(Differ()) {
-
-    private val listener = searchResultClickListener
 
     inner class SearchResultItemViewHolder(
         private val binding: ItemSearchBinding, //뷰바인딩
@@ -24,7 +23,7 @@ class SearchAdapter(searchResultClickListener: (SearchResultEntity) -> Unit) :
         //클릭 이벤트 구현부
         fun bindViews(data: SearchResultEntity) {
             binding.root.setOnClickListener {
-                listener(data)
+                searchClickListener.selectItem(data)
             }
         }
 

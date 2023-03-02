@@ -86,8 +86,11 @@ class StorageMyDrawFragment :
                     }
                     storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Success : getSearchList body is not null")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Success : getSearchList body is not null")
+                }
 
             }
 

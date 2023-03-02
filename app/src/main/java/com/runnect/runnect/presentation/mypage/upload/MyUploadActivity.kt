@@ -69,8 +69,11 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
                     initAdapter()
 
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
             }
         }
 

@@ -153,8 +153,11 @@ class DrawActivity :
                     binding.indeterminateBar.isVisible = false
                     customDialog(binding.root)
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage.value}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+//                    Timber.tag(ContentValues.TAG)
+//                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
             }
         }
 
@@ -385,9 +388,13 @@ class DrawActivity :
         }
 
         viewModel.path.value = distanceListtoUpload
+        Timber.tag(ContentValues.TAG).d("뷰모델path : ${viewModel.path.value}")
         //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
         viewModel.departureAddress.value = searchResult.fullAdress
+        Timber.tag(ContentValues.TAG).d("뷰모델departureAddress : ${viewModel.departureAddress.value}")
         viewModel.departureName.value = searchResult.name
+        Timber.tag(ContentValues.TAG).d("뷰모델departureName : ${viewModel.departureName.value}")
+
 
 
     }
@@ -397,8 +404,8 @@ class DrawActivity :
             val captureUri = getImageUri(this@DrawActivity, it)
 
             //Bitmap -> Uri
-            Timber.tag("캡쳐it").d("${it}")
-            Timber.tag("캡쳐uri").d("${captureUri}")
+            Timber.tag(ContentValues.TAG).d("캡쳐it : ${it}")
+            Timber.tag(ContentValues.TAG).d("캡쳐uri : ${captureUri}")
 
             viewModel.setRequestBody(
                 ContentUriRequestBody(
@@ -406,7 +413,7 @@ class DrawActivity :
                     captureUri
                 )
             ) //Uri -> RequestBody
-            Timber.tag("캡쳐").d("${viewModel.image.value}")
+            Timber.tag(ContentValues.TAG).d("뷰모델캡쳐img : ${viewModel.image.value}")
         }
     }
 

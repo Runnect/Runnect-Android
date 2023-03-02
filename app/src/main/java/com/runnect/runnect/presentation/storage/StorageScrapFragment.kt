@@ -16,12 +16,14 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnScrapCourse
 import timber.log.Timber
 
 
 class StorageScrapFragment :
-    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnScrapCourse {
+    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnScrapCourse,
+    ItemCount {
 
 
     val viewModel: StorageViewModel by viewModels()
@@ -35,10 +37,7 @@ class StorageScrapFragment :
                 },
             )
         },
-        this) // 여기에 this를 넣는 게 어떤 맥락으로 되는 건지 정확한 이해는 x
-    // 일단 내 생각에는 내가 어댑터 parameter에 적어준 걸 지훈이는 인터페이스로 뺀 거고
-    // 내가 위처럼 세세히 다 적어준 구현부를 scrapCourse를 오버라이드에 써줌
-    // 이렇게 만들어진 OnScrapCourse 구현체를 여기에 this로 등록해준 것 같음.
+        this, this)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,6 +75,24 @@ class StorageScrapFragment :
 
     private fun addObserver() {
 
+        viewModel.itemSize.observe(viewLifecycleOwner) {
+            if (viewModel.itemSize.value == 0) {
+                with(binding) {
+                    ivStorageNoScrap.isVisible = true
+                    tvStorageNoScrapGuide.isVisible = true
+                    btnStorageNoScrap.isVisible = true
+                    recyclerViewStorageScrap.isVisible = false
+                }
+            } else {
+                with(binding) {
+                    ivStorageNoScrap.isVisible = false
+                    tvStorageNoScrapGuide.isVisible = false
+                    btnStorageNoScrap.isVisible = false
+                    recyclerViewStorageScrap.isVisible = true
+                }
+            }
+        }
+
         viewModel.storageState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
@@ -83,24 +100,12 @@ class StorageScrapFragment :
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
-                    if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
-                        with(binding) {
-                            ivStorageNoScrap.isVisible = true
-                            tvStorageNoScrapGuide.isVisible = true
-                            btnStorageNoScrap.isVisible = true
-                            recyclerViewStorageScrap.isVisible = false
-                        }
-                    } else {
-                        with(binding) {
-                            ivStorageNoScrap.isVisible = false
-                            tvStorageNoScrapGuide.isVisible = false
-                            btnStorageNoScrap.isVisible = false
-                            recyclerViewStorageScrap.isVisible = true
-                        }
-                    }
                 }
-                UiState.Failure -> Timber.tag(ContentValues.TAG)
-                    .d("Failure : ${viewModel.errorMessage}")
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage}")
+                }
             }
         }
     }
@@ -118,6 +123,10 @@ class StorageScrapFragment :
 
     private fun getCourse() {
         viewModel.getScrapList()
+    }
+
+    override fun calcItemSize(itemCount: Int) {
+        viewModel.itemSize.value = itemCount
     }
 
 
