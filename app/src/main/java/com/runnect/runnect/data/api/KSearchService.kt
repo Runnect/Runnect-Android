@@ -11,7 +11,7 @@ interface KSearchService {
 
     @GET("/tmap/pois")
     suspend fun getSearchLocation(
-        @Header("appKey") appKey: String = BuildConfig.TMAP_KEY,
+        @Header("appKey") appKey: String = BuildConfig.TMAP_API_KEY,
         @Query("version") version: Int = 1,
         @Query("callback") callback: String? = null,
         @Query("count") count: Int = 20,

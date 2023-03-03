@@ -15,7 +15,7 @@ import okio.IOException
 import retrofit2.Retrofit
 
 object PApiClient {
-    private const val BASE_URL = BuildConfig.BASE_URL
+    private const val BASE_URL = BuildConfig.RUNNECT_BASE_URL
     private var retrofit: Retrofit? = null
     private val logger = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

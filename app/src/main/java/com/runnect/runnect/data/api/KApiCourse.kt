@@ -45,7 +45,7 @@ object KApiCourse {
         synchronized(this) {
             if (retrofit == null) {
                 retrofit = Retrofit.Builder()
-                    .baseUrl(BuildConfig.BASE_URL)
+                    .baseUrl(BuildConfig.RUNNECT_BASE_URL)
                     .client(client)
                     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
                     .build()

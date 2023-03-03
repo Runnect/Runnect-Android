@@ -26,7 +26,7 @@ object KApiSearch {
                 .addInterceptor(logger)
                 .build()
             retrofit = Retrofit.Builder()
-                .baseUrl(BuildConfig.TMAP_URL)
+                .baseUrl(BuildConfig.TMAP_BASE_URL)
                 .client(client)
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
