@@ -99,6 +99,17 @@ class StorageScrapFragment :
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
+                    if(viewModel.getScrapListResult.value!!.data.scraps.isEmpty()){
+                        binding.ivStorageNoScrap.isVisible = true
+                        binding.tvStorageNoScrapGuide.isVisible = true
+                        binding.btnStorageNoScrap.isVisible = true
+                        binding.recyclerViewStorageScrap.isVisible = false
+                    } else {
+                        binding.ivStorageNoScrap.isVisible = false
+                        binding.tvStorageNoScrapGuide.isVisible = false
+                        binding.btnStorageNoScrap.isVisible = false
+                        binding.recyclerViewStorageScrap.isVisible = true
+                    }
                     storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
                 }
                 UiState.Failure -> {
