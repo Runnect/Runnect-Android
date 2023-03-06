@@ -46,8 +46,9 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar_my_page" />
 
         <ProgressBar
+            android:indeterminateTint="@color/G3"
             android:outlineProvider="none"
-            android:elevation="1dp"
+            android:elevation="2dp"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
