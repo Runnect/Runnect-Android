@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -263,50 +264,57 @@ class DrawActivity :
         //맵 터치 이벤트 관리
         naverMap.setOnMapClickListener { point, coord ->
             // 수신한 좌표값을 touchList에 추가
-            touchList.add(
-                LatLng(
+
+            // 마커 20개 제한 걸어야 됨. touchList.size로 it문 걸면 될듯.
+            if(touchList.size < 20){
+                touchList.add(
+                    LatLng(
+                        "${coord.latitude}".toDouble(),
+                        "${coord.longitude}".toDouble()
+                    )
+                )
+
+                val marker = Marker()
+
+                marker.position = LatLng(
                     "${coord.latitude}".toDouble(),
                     "${coord.longitude}".toDouble()
                 )
-            )
+                marker.anchor = PointF(0.5f, 0.5f)
+                marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
+                marker.map = naverMap
 
-            val marker = Marker()
+                markerList.add(marker)
 
-            marker.position = LatLng(
-                "${coord.latitude}".toDouble(),
-                "${coord.longitude}".toDouble()
-            )
-            marker.anchor = PointF(0.5f, 0.5f)
-            marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
-            marker.map = naverMap
-
-            markerList.add(marker)
-
-            Timber.tag(ContentValues.TAG).d("markerListSize : ${markerList.size}")
-            Timber.tag(ContentValues.TAG).d("markerList : ${markerList}")
+                Timber.tag(ContentValues.TAG).d("markerListSize : ${markerList.size}")
+                Timber.tag(ContentValues.TAG).d("markerList : ${markerList}")
 
 
-            // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
-            coords.add(LatLng("${coord.latitude}".toDouble(), "${coord.longitude}".toDouble()))
+                // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
+                coords.add(LatLng("${coord.latitude}".toDouble(), "${coord.longitude}".toDouble()))
 
-            // 경로선 그리기
+                // 경로선 그리기
 
-            path.coords = coords
+                path.coords = coords
 
-            Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
+                Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
 
-            // 경로선 색상
-            path.color = Color.parseColor("#593EEC")
-            // 경로선 테두리 색상
-            path.outlineColor = Color.parseColor("#593EEC")
-            path.map = naverMap
+                // 경로선 색상
+                path.color = Color.parseColor("#593EEC")
+                // 경로선 테두리 색상
+                path.outlineColor = Color.parseColor("#593EEC")
+                path.map = naverMap
 
-            //터치가 될 때마다 거리 계산
-            calculateDistance()
-            Timber.tag(ContentValues.TAG).d("distanceList : ${distanceList}")
-            Timber.tag(ContentValues.TAG).d("sumList : ${sumList}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel_distanceSum : ${viewModel.distanceSum.value}")
+                //터치가 될 때마다 거리 계산
+                calculateDistance()
+                Timber.tag(ContentValues.TAG).d("distanceList : ${distanceList}")
+                Timber.tag(ContentValues.TAG).d("sumList : ${sumList}")
+                Timber.tag(ContentValues.TAG)
+                    .d("viewModel_distanceSum : ${viewModel.distanceSum.value}")
+            } else {
+                Toast.makeText(this, "마커는 20개까지 생성 가능합니다", Toast.LENGTH_SHORT).show()
+            }
+
 
         } //lineMarker-end
 
