@@ -4,7 +4,9 @@ import android.content.ContentValues
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
@@ -54,7 +56,6 @@ class DepartureActivity :
                     ?: throw Exception("데이터가 존재하지 않습니다.")
 
                 Timber.tag(ContentValues.TAG).d("intent : ${searchResult}")
-//
                 viewModel.searchResult.value = searchResult
                 Timber.tag(ContentValues.TAG).d("viewModel : ${viewModel.searchResult.value}")
 

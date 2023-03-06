@@ -21,6 +21,7 @@ import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.departure.DepartureActivity
 import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
+import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.callback.OnSearchClick
@@ -76,9 +77,9 @@ class SearchActivity :
 
     override fun selectItem(item: SearchResultEntity) {
         startActivity(
-            Intent(this, DepartureActivity::class.java).apply {
+            Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
-                putExtra(SEARCH_RESULT_EXTRA_KEY, item)
+                putExtra("searchResult", item)
             }
         )
     }
