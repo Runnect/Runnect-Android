@@ -265,7 +265,6 @@ class DrawActivity :
         naverMap.setOnMapClickListener { point, coord ->
             // 수신한 좌표값을 touchList에 추가
 
-            // 마커 20개 제한 걸어야 됨. touchList.size로 it문 걸면 될듯.
             if(touchList.size < 20){
                 touchList.add(
                     LatLng(
