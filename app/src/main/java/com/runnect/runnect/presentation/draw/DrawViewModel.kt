@@ -36,6 +36,8 @@ class DrawViewModel : ViewModel() {
     val departureName = MutableLiveData<String>()
     val courseId = MutableLiveData<Int>()
 
+    val btnAvailable = MutableLiveData<Boolean>(false)
+
 
     private val _image = MutableLiveData<ContentUriRequestBody>()
     val image: LiveData<ContentUriRequestBody>

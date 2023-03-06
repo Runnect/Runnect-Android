@@ -56,8 +56,6 @@ class DrawActivity :
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
 
-    var touchAvailable: Boolean = false
-
 
     private lateinit var searchResult: SearchResultEntity
 
@@ -68,6 +66,8 @@ class DrawActivity :
 
 
     lateinit var captureUri: Uri
+
+    var markerAvailable : Boolean = false
 
 
     lateinit var startLatLngPublic: LocationLatLngEntity
@@ -155,7 +155,7 @@ class DrawActivity :
 
     private fun goToDraw() { //버튼 누르면 애니메이션으로 위아래 컴포넌트 일단 다 제거되게
         binding.btnPreStart.setOnClickListener {
-            touchAvailable = true
+            markerAvailable = true //일단 마커는 찍을 수 있게!
             val animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
             val animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
 
@@ -196,6 +196,25 @@ class DrawActivity :
     }
 
     private fun addObserver() {
+        //markerAvailable은 출발지 설정 전에 마커 못 만들게 막아놨는데 버튼 누르면 그 제한을 푸는 거고
+        //btnAvailable은 완성하기/백버튼 활성화 비활성화 컨트롤 하려고 만든 거. 변수명이 명확하지 않아서 고칠 필요는 있을 듯.
+
+        viewModel.btnAvailable.observe(this){
+            if(viewModel.btnAvailable.value == true){
+                binding.btnMarkerBack.isEnabled = true
+                binding.btnMarkerBack.setImageResource(R.drawable.backcourse_enable_true)
+
+                binding.btnDraw.isEnabled = true
+                binding.btnDraw.setBackgroundResource(R.drawable.radius_10_m1_button)
+            } else {
+                binding.btnMarkerBack.isEnabled = false
+                binding.btnMarkerBack.setImageResource(R.drawable.backcourse_enable_false)
+
+                binding.btnDraw.isEnabled = false
+                binding.btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
+            }
+
+        }
 
         viewModel.drawState.observe(this) {
             when (it) {
@@ -308,14 +327,16 @@ class DrawActivity :
             )
         )
 
+
         //lineMarker-start
         //맵 터치 이벤트 관리
         naverMap.setOnMapClickListener { point, coord ->
             // 수신한 좌표값을 touchList에 추가
+            if(markerAvailable == true){ //이 터치 함수가 돌아가게 할지 말지
+                viewModel.btnAvailable.value = true
+                if (touchList.size < 20) { // 20개까지만 생성 가능하도록 제한을 걸어주기 위함
 
-            if (touchAvailable == true) {
 
-                if (touchList.size < 20) {
                     touchList.add(
                         LatLng(
                             "${coord.latitude}".toDouble(),
@@ -367,16 +388,22 @@ class DrawActivity :
             }
 
 
+
+
         } //lineMarker-end
 
         //backButton
         binding.btnMarkerBack.setOnClickListener {
-            if (touchList.size > 0) { // 이건 터치 좌표 리스트에 아무것도 없는데 버튼이 눌려서 NPE가 뜨는 걸 방지하기 위함
+             //옵저버로 활성화 여부 컨트롤 하니까 이 조건은 이제 필요가 없는데. 뷰모델 값 false로 어떻게 바꿀지...
                 touchList.removeLast()
                 Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
                 markerList.last().map = null
                 markerList.removeLast()
                 Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
+
+                if(touchList.isEmpty()){
+                    viewModel.btnAvailable.value = false
+                }
 
 
                 coords.removeLast()
@@ -387,7 +414,6 @@ class DrawActivity :
                     path.map = null
                 }
 
-            }
 
             //백 버튼 눌렀을 때 거리 계산 다시
             if (distanceList.size > 0 && sumList.size > 0) {

@@ -86,12 +86,13 @@
             android:layout_height="match_parent" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:enabled="false"
             android:id="@+id/btn_draw"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/radius_10_m1_button"
+            android:background="@drawable/radius_10_g3_button"
             android:fontFamily="@font/pretendard_semibold"
             android:text="완성하기"
             android:textAlignment="center"
@@ -150,13 +151,14 @@
             app:layout_constraintStart_toEndOf="@id/tv_course_distance_record" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:enabled="false"
             android:id="@+id/btn_markerBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="18dp"
             android:backgroundTint="@color/W1"
-            android:src="@drawable/backcourse"
+            android:src="@drawable/backcourse_enable_false"
             android:visibility="invisible"
             app:backgroundTint="@color/W1"
             app:fabCustomSize="48dp"
