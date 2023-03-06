@@ -156,7 +156,7 @@ class RunActivity :
         }
     }
 
-    private fun drawCourse() {
+    private fun drawCourse() { //여기도 지금 getExtra가 3종류인데 CountDown 하나에서 넘어오는 거니까 수정해야 함.
 
 
         val intent: Intent = intent
@@ -265,23 +265,19 @@ class RunActivity :
         //startMarker-end
 
 
-        //lineMarker-start
-        val marker = Marker()
-
-        //여기가 그 forEach 때문에 마지막에만 마커 찍히는 부분.
-        //DrawActivity에서는 터치 리스너가 있어서 객체를 여러개 만들어 줄 수 있었는데 여기는 직접 for문 돌려줘야 될듯.
-
         val viewModelTouchList =
             viewModel.touchList.value
 
-        viewModelTouchList?.forEach { touch ->
-            marker.position = LatLng(touch.latitude, touch.longitude)
-            marker.anchor = PointF(0.5f, 0.5f)
-            marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
-            marker.map = naverMap
+        for(i in 1.. viewModelTouchList!!.size){
+            //lineMarker-start
+            val lineMarker = Marker()
+            lineMarker.position = LatLng(viewModelTouchList[i-1].latitude, viewModelTouchList[i-1].longitude)
+            lineMarker.anchor = PointF(0.5f, 0.5f)
+            lineMarker.icon = OverlayImage.fromResource(R.drawable.marker_line)
+            lineMarker.map = naverMap
 
             // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
-            coords.add(LatLng(touch.latitude, touch.longitude))
+            coords.add(LatLng(viewModelTouchList[i-1].latitude, viewModelTouchList[i-1].longitude))
 
             // 경로선 그리기
 
@@ -294,9 +290,8 @@ class RunActivity :
             // 경로선 테두리 색상
             path.outlineColor = Color.parseColor("#593EEC")
             path.map = naverMap
-        }
 
-        //lineMarker-end
+        }  //lineMarker-end
 
 
     }

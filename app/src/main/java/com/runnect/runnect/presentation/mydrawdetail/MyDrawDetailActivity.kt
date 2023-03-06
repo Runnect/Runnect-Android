@@ -10,6 +10,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
+import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.run.RunActivity
 import timber.log.Timber
 
