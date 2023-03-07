@@ -55,6 +55,7 @@ class CourseDetailActivity :
         binding.btnCourseDetailFinish.setOnClickListener {
             val intent = Intent(this, CountDownActivity::class.java) //보니까 지금 이거 좌표값이 없는 더미라 CountDown으로 data를 넘길 수가 없음
             //API 수정의 요지가 있어 추후 협의를 거친 후 달리기 시작 추가 예정
+            //여기서 path를 startLatLng과 touchList로 쪼개
         }
     }
 

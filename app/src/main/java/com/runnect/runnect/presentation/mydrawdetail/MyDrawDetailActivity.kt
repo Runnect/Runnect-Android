@@ -6,19 +6,23 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
+import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.data.api.KApiCourse
-import com.runnect.runnect.data.model.DetailToRunData
+import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.run.RunActivity
 import timber.log.Timber
 
 class MyDrawDetailActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
 
+
     val viewModel: MyDrawDetailViewModel by viewModels()
     val service = KApiCourse.ServicePool.courseService //객체 생성
+
+    lateinit var startLatLng: LatLng
+    lateinit var touchList: ArrayList<LatLng>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,13 +31,13 @@ class MyDrawDetailActivity :
         binding.lifecycleOwner = this
         getMyDrawDetail()
         observing()
-        toRunButton()
+        toCountDownButton()
 
     }
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     fun getMyDrawDetail() {
@@ -42,11 +46,11 @@ class MyDrawDetailActivity :
         viewModel.getMyDrawDetail(courseId = courseId) //서버통신
     }
 
-    fun toRunButton() {
+    fun toCountDownButton() {
         binding.btnMyDrawDetailRun.setOnClickListener {
-            startActivity(Intent(this, RunActivity::class.java).apply {
+            startActivity(Intent(this, CountDownActivity::class.java).apply {
 
-                putExtra("detailToRun", viewModel.detailToRunData.value)
+                putExtra("myDrawToRun", viewModel.myDrawToRunData.value)
 
             })
         }
@@ -73,12 +77,25 @@ class MyDrawDetailActivity :
 
             }
 
-            viewModel.detailToRunData.value = DetailToRunData(it.data.course.id,
+            startLatLng =
+                LatLng(it.data.course.path[0][0], it.data.course.path[0][1]) //startLatLng에 값 할당
+
+            //removeAt 같은 걸 써도 될 것 같긴한데 헷갈릴까봐 일단 전에 했던 거랑 방법을 맞추고 나중에 한꺼번에 바꾸려고 함.
+            for (i in 1..it.data.course.path.size) {
+                touchList.add(LatLng(it.data.course.path[i][0],
+                    it.data.course.path[i][1])) // touchList에 값 할당
+            }
+
+            //data를 뷰모델에 넣을만한 이유는, xml에서 바인딩 시켜주기 위함일듯?
+            viewModel.myDrawToRunData.value = MyDrawToRunData(
+                it.data.course.id,
                 publicCourseId = null,
                 it.data.course.departure.name,
                 it.data.course.distance,
-                it.data.course.path,
-                it.data.course.image)
+                touchList,
+                startLatLng,
+                it.data.course.image
+            )
         }
     }
 
