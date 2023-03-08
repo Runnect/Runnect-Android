@@ -22,7 +22,7 @@ class MyDrawDetailActivity :
     val service = KApiCourse.ServicePool.courseService //객체 생성
 
     lateinit var startLatLng: LatLng
-    lateinit var touchList: ArrayList<LatLng>
+    private val touchList = arrayListOf<LatLng>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,10 +61,6 @@ class MyDrawDetailActivity :
             //실패 시 action
         }
         viewModel.getResult.observe(this) {
-            //여기서 ui 세팅하거나 데이터 바인딩
-            //뷰모델에 넣는 게 좋을까? 여기서 Run으로 넘겨야 되는데 재활용되는 뷰는 아님
-            //어떤 이미지는 ImageView에 세팅이 되고 어떤 건 안 되는데 원인 파악이 필요함
-
 
             with(binding) {
                 Glide
@@ -79,23 +75,32 @@ class MyDrawDetailActivity :
 
             startLatLng =
                 LatLng(it.data.course.path[0][0], it.data.course.path[0][1]) //startLatLng에 값 할당
+            Timber.tag(ContentValues.TAG).d("startLatLng 값 : $startLatLng")
 
-            //removeAt 같은 걸 써도 될 것 같긴한데 헷갈릴까봐 일단 전에 했던 거랑 방법을 맞추고 나중에 한꺼번에 바꾸려고 함.
-            for (i in 1..it.data.course.path.size) {
-                touchList.add(LatLng(it.data.course.path[i][0],
-                    it.data.course.path[i][1])) // touchList에 값 할당
+            //val touchList = it.data.course.path as ArrayList<LatLng>
+            //touchList.removeAt(0)
+            //이렇게 하니까 CountDownActivity로 안 넘어감.
+            //근데 arrayListOf()로 만들어주니까 넘어감.
+            //정확한 이유가 뭐지
+
+
+            for(i in 1 until it.data.course.path.size){
+                touchList.add(LatLng(it.data.course.path[i][0],it.data.course.path[i][1]))
             }
+
 
             //data를 뷰모델에 넣을만한 이유는, xml에서 바인딩 시켜주기 위함일듯?
             viewModel.myDrawToRunData.value = MyDrawToRunData(
                 it.data.course.id,
                 publicCourseId = null,
-                it.data.course.departure.name,
-                it.data.course.distance,
                 touchList,
                 startLatLng,
+                it.data.course.distance,
+                it.data.course.departure.name,
                 it.data.course.image
             )
+
+            Timber.tag(ContentValues.TAG).d("viewModel.myDrawToRunData.value 값 : ${viewModel.myDrawToRunData.value}")
         }
     }
 

@@ -9,9 +9,9 @@ import kotlinx.android.parcel.Parcelize
 data class DetailToRunData(
     val courseId : Int?,
     val publicCourseId : Int?,
-    val departure: String,
-    val distance: Float,
     val touchList: ArrayList<LatLng>,
     val startLatLng: LatLng,
+    val departure: String,
+    val distance: Float,
     val image: String,
 ) : Parcelable
