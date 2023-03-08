@@ -32,7 +32,6 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.UploadLatLng
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -90,13 +89,10 @@ class DrawActivity :
                 Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
                 viewModel.searchResult.value = searchResult
                 initView()
-//                addListeners()
                 courseFinish()
                 addObserver()
                 backButton()
                 goToDraw()
-
-
             }
         }
 
@@ -226,8 +222,6 @@ class DrawActivity :
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
-//                    Timber.tag(ContentValues.TAG)
-//                        .d("Failure : ${viewModel.errorMessage.value}")
                 }
             }
         }
@@ -242,7 +236,7 @@ class DrawActivity :
             setView(myLayout)
         }
         val dialog = build.create()
-//        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.setCancelable(false) // 외부 영역 터치 금지
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
 

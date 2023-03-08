@@ -28,14 +28,14 @@ class MyDrawDetailViewModel : ViewModel() {
     val errorMessage = MutableLiveData<String>()
 
     fun getMyDrawDetail(courseId: Int) {
-            viewModelScope.launch {
-                runCatching {
-                    service.getMyDrawDetail(courseId)
-                }.onSuccess {
-                    getResult.value = it.body()
-                }.onFailure {
-                    errorMessage.value = it.message
-                }
+        viewModelScope.launch {
+            runCatching {
+                service.getMyDrawDetail(courseId)
+            }.onSuccess {
+                getResult.value = it.body()
+            }.onFailure {
+                errorMessage.value = it.message
             }
+        }
     }
 }

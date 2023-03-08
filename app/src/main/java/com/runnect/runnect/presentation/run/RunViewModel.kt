@@ -3,8 +3,6 @@ package com.runnect.runnect.presentation.run
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.naver.maps.geometry.LatLng
-import com.runnect.runnect.data.model.CountToRunData
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 
 class RunViewModel : ViewModel() {
 
@@ -16,8 +14,6 @@ class RunViewModel : ViewModel() {
 
     var courseId = MutableLiveData<Int>()
     var publicCourseId = MutableLiveData<Int?>()
-
-
 
 
 //    java.lang.IllegalStateException: Cannot invoke setValue on a background thread라고 떠서 일단 숨겨줌

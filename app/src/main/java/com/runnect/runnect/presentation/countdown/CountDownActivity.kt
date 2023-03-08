@@ -15,7 +15,6 @@ import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.databinding.ActivityCountDownBinding
 import com.runnect.runnect.presentation.run.RunActivity
-import com.runnect.runnect.presentation.run.RunViewModel
 
 class CountDownActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityCountDownBinding>(R.layout.activity_count_down) {
@@ -61,12 +60,12 @@ class CountDownActivity :
             viewModel.publicCourseId.value = drawToRunData.publicCourseId
             viewModel.courseId.value = drawToRunData.courseId
             viewModel.departure.value = drawToRunData.departure
-            viewModel.distanceSum.value = drawToRunData.totalDistance.toDouble() //딴 데랑 type이 달라 뭐든 통일시켜줘야 할 듯
+            viewModel.distanceSum.value =
+                drawToRunData.totalDistance.toDouble() //딴 데랑 type이 달라 뭐든 통일시켜줘야 할 듯
             viewModel.touchList.value = drawToRunData.touchList
             viewModel.startLatLng.value = drawToRunData.startLatLng
             viewModel.captureUri.value = drawToRunData.captureUri
         }
-
 
 
     }

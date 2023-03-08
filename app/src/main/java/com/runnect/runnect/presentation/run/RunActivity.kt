@@ -253,7 +253,8 @@ class RunActivity :
                         viewModel.departure.value,
                         timerHour,
                         timerMinute,
-                        timerSecond))
+                        timerSecond,
+                        time))
 
                 addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
 

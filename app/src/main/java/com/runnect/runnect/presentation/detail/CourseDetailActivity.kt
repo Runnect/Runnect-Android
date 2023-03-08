@@ -7,18 +7,16 @@ import coil.load
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
-    private var courseId: Int =0
+    private var courseId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,27 +33,26 @@ class CourseDetailActivity :
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this,DiscoverFragment::class.java)
-        setResult(RESULT_OK,intent)
+        val intent = Intent(this, DiscoverFragment::class.java)
+        setResult(RESULT_OK, intent)
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addListener() {
         binding.ivCourseDetailBack.setOnClickListener {
-            val intent = Intent(this,DiscoverFragment::class.java)
-            setResult(RESULT_OK,intent)
+            val intent = Intent(this, DiscoverFragment::class.java)
+            setResult(RESULT_OK, intent)
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         binding.ivCourseDetailScrap.setOnClickListener {
             it.isSelected = !it.isSelected
             viewModel.postCourseScrap(id = courseId, it.isSelected)
         }
         binding.btnCourseDetailFinish.setOnClickListener {
-            val intent = Intent(this, CountDownActivity::class.java) //보니까 지금 이거 좌표값이 없는 더미라 CountDown으로 data를 넘길 수가 없음
+            val intent = Intent(this, CountDownActivity::class.java)
             //API 수정의 요지가 있어 추후 협의를 거친 후 달리기 시작 추가 예정
-            //여기서 path를 startLatLng과 touchList로 쪼개
         }
     }
 

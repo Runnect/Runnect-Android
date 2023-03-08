@@ -84,12 +84,10 @@ class MyDrawDetailActivity :
             //정확한 이유가 뭐지
 
 
-            for(i in 1 until it.data.course.path.size){
-                touchList.add(LatLng(it.data.course.path[i][0],it.data.course.path[i][1]))
+            for (i in 1 until it.data.course.path.size) {
+                touchList.add(LatLng(it.data.course.path[i][0], it.data.course.path[i][1]))
             }
 
-
-            //data를 뷰모델에 넣을만한 이유는, xml에서 바인딩 시켜주기 위함일듯?
             viewModel.myDrawToRunData.value = MyDrawToRunData(
                 it.data.course.id,
                 publicCourseId = null,
@@ -100,7 +98,8 @@ class MyDrawDetailActivity :
                 it.data.course.image
             )
 
-            Timber.tag(ContentValues.TAG).d("viewModel.myDrawToRunData.value 값 : ${viewModel.myDrawToRunData.value}")
+            Timber.tag(ContentValues.TAG)
+                .d("viewModel.myDrawToRunData.value 값 : ${viewModel.myDrawToRunData.value}")
         }
     }
 

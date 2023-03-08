@@ -80,15 +80,16 @@ class EndRunActivity :
 
 
     }
+
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     fun backBtn() {
         binding.imgBtnBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
@@ -130,16 +131,12 @@ class EndRunActivity :
             .centerCrop()
             .into(binding.ivEndRunCapture)
 
-        val pace1 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toString()
-        val pace2 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toString()
-        val pace3 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
+        val pace =
+            BigDecimal(runToEndRunData.totalDistance!! / runToEndRunData.timeTotal!!).setScale(2,
+                RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
 
         viewModel.timeTotal.value = "$timerHour:$timerMinute:$timerSecond"
-        viewModel.paceTotal.value = "$pace1:$pace2:$pace3"
-
+        viewModel.paceTotal.value = "$pace"
 
 
         binding.tvDepartureRecord.text = departure //추후에 data binding으로 리팩토링
@@ -168,16 +165,6 @@ class EndRunActivity :
 
     private fun saveButton() {
         binding.btnEndRunSave.setOnClickListener {
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.courseId.value!!}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.publicCourseId.value}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.editTextValue.value!!}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.timeTotal.value!!}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.paceTotal.value!!}")
 
             viewModel.postRecord(
                 RequestPostRecordDto(viewModel.courseId.value!!,

@@ -18,9 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivitySearchBinding
-import com.runnect.runnect.presentation.departure.DepartureActivity
-import com.runnect.runnect.presentation.departure.DepartureActivity.Companion.SEARCH_RESULT_EXTRA_KEY
-import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
