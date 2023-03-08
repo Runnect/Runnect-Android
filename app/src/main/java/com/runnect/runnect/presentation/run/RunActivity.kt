@@ -7,6 +7,8 @@ import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -22,7 +24,6 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.*
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
@@ -47,9 +48,6 @@ class RunActivity :
 
     //타이머
     var time = 0
-    var hour = 0//시간
-    var minute = 0//분
-    var second = time //초
 
     var timerTask: Timer? = null
 
@@ -164,7 +162,8 @@ class RunActivity :
         viewModel.captureUri.value = countToRunData.image
 
         val distanceCut =
-            BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR).toDouble()
+            BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                .toDouble()
         viewModel.distanceSum.value = distanceCut
 
 // 앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
@@ -224,8 +223,8 @@ class RunActivity :
 
     private fun seeRecord() {
         binding.btnRunFinish.setOnClickListener {
-            stopTimer()
             bottomSheet()
+            stopTimer()
 
         }
     }
@@ -271,24 +270,43 @@ class RunActivity :
     private fun startTimer() {
         timerTask = timer(period = 1000) {
 
-            second++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
+            time++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
 
-            if (second == 60) {
-                second = 0
-                minute += 1
-            }
-            if (minute == 60) {
-                minute = 0
-                hour += 1
+            val hour = time / 3600
+            val minute = time / 60 //60이 되는 순간 몫이 1이 돼서 1로 표기
+            val second = time % 60 //60이 되는순간 나머지가 0이라 0으로 표기
+
+            runOnUiThread { //더 좋은 방법이 있나.
+                if (hour < 10) {
+                    binding.tvTimeHour.text = "0$hour"
+                } else {
+                    binding.tvTimeHour.text = "$hour"
+                }
+
+                if (minute < 10) {
+                    binding.tvTimeMinute.text = "0$minute"
+                } else {
+                    binding.tvTimeMinute.text = "$minute"
+                }
+
+                if (second < 10) {
+                    binding.tvTimeSecond.text = "0$second"
+                } else {
+                    binding.tvTimeSecond.text = "$second"
+                }
             }
 
-            timerSecond = second.toString() //intent로 넘길 값 전역변수에 세팅
-            timerMinute = minute.toString()
-            timerHour = hour.toString()
+            //String으로 넘길거면 그냥 이거 3개 다 합쳐서 넘겨도 될 듯?
+            //intent로 넘길 값 전역변수에 세팅
+            //이 값들을 미처 갱신하기 전에 다음으로 넘어가버리는 듯?
+            timerHour = binding.tvTimeHour.text.toString()
+            timerMinute = binding.tvTimeMinute.text.toString()
+            timerSecond = binding.tvTimeSecond.text.toString()
 
-            runOnUiThread {
-                binding.tvTimeRecord.text = "$hour : $minute : $second"
-            }
+            Timber.tag(ContentValues.TAG).d("timerHour 값 : $timerHour")
+            Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
+            Timber.tag(ContentValues.TAG).d("timerSecond 값 : $timerSecond")
+
 
         }
     }
