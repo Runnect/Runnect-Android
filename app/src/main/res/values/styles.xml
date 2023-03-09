@@ -2,6 +2,6 @@
 <resources>
     <style name="tab_text" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
     </style>
 </resources>

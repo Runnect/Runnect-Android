@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:fontFamily="@font/pretendard_semibold"
+                android:fontFamily="@font/pretendard_bold"
                 android:text="보관함"
                 android:textColor="@color/G1"
                 android:textSize="20sp" />

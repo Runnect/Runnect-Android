@@ -28,13 +28,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:onTextChanged="@{model::getSearchKeyword}"
             android:id="@+id/et_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:background="@color/transparent_00"
             android:fontFamily="@font/pretendard_medium"
-            android:hint="출발지를 설정해주세요 "
+            android:hint="출발지를 설정해주세요"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:textColor="@color/G1"
@@ -43,15 +44,16 @@
             app:layout_constraintStart_toEndOf="@id/imgBtn_back"
             app:layout_constraintTop_toTopOf="@id/imgBtn_back" />
 
-        <ImageView
-            app:layout_constraintTop_toTopOf="@id/imgBtn_back"
-            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/iv_discover_search"
+        <ImageButton
+            android:id="@+id/imgBtn_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="19.25dp"
+            android:backgroundTint="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imgBtn_back"
             app:srcCompat="@drawable/discover_search" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -78,12 +80,12 @@
             tools:visibility="visible" />
 
         <ProgressBar
-            android:outlineProvider="none"
-            android:elevation="2dp"
-            android:indeterminateTint="@color/G3"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

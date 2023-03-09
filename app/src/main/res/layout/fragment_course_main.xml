@@ -38,7 +38,6 @@
             android:textAlignment="center"
             android:textColor="@color/W1"
             android:textSize="15sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/view_empty"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

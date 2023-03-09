@@ -48,7 +48,7 @@
                 android:layout_marginStart="@dimen/start_margin_toolbar"
                 android:backgroundTint="@color/transparent_00"
                 android:fontFamily="@font/pretendard_medium"
-                android:hint="@string/discover_search_hint"
+                android:hint="지역과 키워드 위주로 검색해보세요"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLength="20"

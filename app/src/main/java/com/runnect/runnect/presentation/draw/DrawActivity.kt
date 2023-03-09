@@ -143,7 +143,7 @@ class DrawActivity :
             Handler(Looper.getMainLooper()).postDelayed( //이거 왜 콜백으로 안 되는 거지
                 {
                     viewModel.uploadCourse()
-                }, 200
+                }, 300
             )
 
         }

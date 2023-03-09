@@ -33,7 +33,7 @@ class SearchActivity :
 
     val viewModel: SearchViewModel by viewModels()
 
-    private lateinit var searchAdapter : SearchAdapter
+    private lateinit var searchAdapter: SearchAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,8 +43,9 @@ class SearchActivity :
         binding.lifecycleOwner = this
 
         initDivider()
-
+        backButton()
         binding.etSearch.setFocusAndShowKeyboard(this)
+        imgBtnSearch()
         addListener()
         addObserver()
 
@@ -62,7 +63,14 @@ class SearchActivity :
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun backButton() { //이거 왜 안 먹지 DrawActivity랑 코드 똑같이 해줬는데
+        binding.imgBtnBack.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
     }
 
     private fun initAdapter() {
@@ -80,7 +88,7 @@ class SearchActivity :
             }
         )
     }
-    
+
     private fun addObserver() {
 
         viewModel.searchState.observe(this) {
@@ -95,7 +103,8 @@ class SearchActivity :
                         with(binding) {
                             ivNoSearchResult.isVisible = true
                             emptyResultTextView.isVisible = true
-                            recyclerViewSearch.isVisible = false //지훈이는 이거 말고 스크롤뷰를 가지고 visible을 처리해줬음
+                            recyclerViewSearch.isVisible =
+                                false //지훈이는 이거 말고 스크롤뷰를 가지고 visible을 처리해줬음
 
                         }
                     } else {
@@ -125,10 +134,15 @@ class SearchActivity :
         viewModel.getSearchList(keywordString = keywordString)
     }
 
-    private fun addListener() {
-        binding.imgBtnBack.setOnClickListener {
-            finish()
+    private fun imgBtnSearch() {
+        binding.imgBtnSearch.setOnClickListener {
+            viewModel.getSearchList(keywordString = viewModel.searchKeyword.value.toString())
         }
+
+    }
+
+
+    private fun addListener() {
         //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
         //추후 showToast -> API 호출 대체 예정
         binding.etSearch.setOnEditorActionListener(object :
