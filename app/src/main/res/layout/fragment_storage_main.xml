@@ -97,57 +97,6 @@
             android:layout_height="57dp"/>
 
 
-        <!--                <ImageView-->
-        <!--                    android:visibility="invisible"-->
-        <!--                    android:id="@+id/iv_storage"-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:layout_marginTop="155dp"-->
-        <!--                    android:src="@drawable/storage"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--                <TextView-->
-        <!--                    android:visibility="invisible"-->
-        <!--                    android:id="@+id/tv_intro_to_draw"-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:layout_marginTop="24dp"-->
-        <!--                    android:text="아직 내가 그린 코스가 없어요\n직접 코스를 그려주세요"-->
-        <!--                    android:textAlignment="center"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toBottomOf="@id/iv_storage" />-->
-
-        <!--                <androidx.appcompat.widget.AppCompatButton-->
-        <!--                    android:visibility="invisible"-->
-        <!--                    android:id="@+id/btn_storage_draw"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="40dp"-->
-        <!--                    android:layout_marginHorizontal="64dp"-->
-        <!--                    android:layout_marginTop="22dp"-->
-        <!--                    android:background="@drawable/radius_10_m1_button"-->
-        <!--                    android:text="코스 그리기"-->
-        <!--                    android:textColor="@color/white"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toBottomOf="@id/tv_intro_to_draw" />-->
-
-
-        <!--                <androidx.recyclerview.widget.RecyclerView-->
-        <!--                    android:layout_marginTop="18dp"-->
-        <!--                    android:visibility="visible"-->
-        <!--                    android:id="@+id/recyclerview_course_list"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:orientation="vertical"-->
-        <!--                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toTopOf="parent"-->
-        <!--                    app:spanCount="2"-->
-        <!--                    tools:listitem="@layout/item_storage" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
