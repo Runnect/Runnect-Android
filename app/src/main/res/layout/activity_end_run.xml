@@ -73,6 +73,7 @@
             tools:background="@color/G3" />
 
         <EditText
+            android:maxLength="20"
             android:id="@+id/et_title_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

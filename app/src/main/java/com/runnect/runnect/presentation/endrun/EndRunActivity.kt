@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -153,6 +154,11 @@ class EndRunActivity :
                 binding.btnEndRunSave.isEnabled = true
                 Timber.tag(ContentValues.TAG)
                     .d("editText.value : ${viewModel.editTextValue.value}")
+
+                if (binding.etTitleCourse.text.length == 20) {
+                    Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
+                }
+
 
             } else {
                 binding.btnEndRunSave.setBackgroundResource(R.drawable.radius_10_g3_button)
