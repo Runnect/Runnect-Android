@@ -5,9 +5,9 @@
 
     <data>
 
-<!--        <variable-->
-<!--            name="model"-->
-<!--            type="com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailViewModel" />-->
+        <!--        <variable-->
+        <!--            name="model"-->
+        <!--            type="com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailViewModel" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,6 +69,27 @@
             app:layout_constraintEnd_toEndOf="@id/frame_course_distance"
 
             app:layout_constraintStart_toEndOf="@id/tv_course_distance_record" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/transparent_00"
+            android:src="@drawable/backbutton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:background="@color/transparent_00"
+            android:id="@+id/imgBtn_delete"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imgBtn_back" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_my_draw_detail_run"

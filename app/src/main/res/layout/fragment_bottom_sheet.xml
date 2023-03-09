@@ -31,7 +31,7 @@
             android:layout_marginTop="17dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/finish_run"
-            app:layout_constraintBottom_toTopOf="@id/btn_storage"
+            app:layout_constraintBottom_toTopOf="@id/btn_delete_yes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_run_finish" />
@@ -39,7 +39,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:textAlignment="center"
-            android:id="@+id/btn_storage"
+            android:id="@+id/btn_delete_yes"
             android:layout_width="330dp"
             android:layout_height="40dp"
             android:layout_marginBottom="8dp"
