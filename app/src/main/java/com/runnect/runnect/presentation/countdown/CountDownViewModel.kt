@@ -1,10 +1,11 @@
-package com.runnect.runnect.presentation.run
+package com.runnect.runnect.presentation.countdown
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.naver.maps.geometry.LatLng
+import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 
-class RunViewModel : ViewModel() {
+class CountDownViewModel : ViewModel() {
 
     var distanceSum = MutableLiveData(0.0)
     val startLatLng = MutableLiveData<LatLng>()

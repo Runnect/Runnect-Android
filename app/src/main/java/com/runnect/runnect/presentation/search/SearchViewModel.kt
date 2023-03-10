@@ -16,6 +16,15 @@ import timber.log.Timber
 
 class SearchViewModel : ViewModel() {
 
+    private val _searchKeyword = MutableLiveData<String>()
+    val searchKeyword: LiveData<String> get() = _searchKeyword
+
+    fun getSearchKeyword(s: CharSequence, start: Int, before: Int, count: Int) {
+        _searchKeyword.value = s.toString()
+        Timber.tag(ContentValues.TAG).d("EditText값 : ${_searchKeyword.value}")
+    }
+
+
     private val service = KApiSearch.ServicePool.searchService //객체 생성
 
     val searchError = MutableLiveData<String>()

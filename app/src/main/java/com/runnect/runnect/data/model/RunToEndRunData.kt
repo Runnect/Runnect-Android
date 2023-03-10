@@ -14,4 +14,5 @@ data class RunToEndRunData(
     val timerHour : String?,
     val timerMinute: String?,
     val timerSecond: String?,
+    val timeTotal: Int?,
 ) : Parcelable

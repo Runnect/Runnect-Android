@@ -122,18 +122,74 @@
             app:layout_constraintTop_toTopOf="@id/iv_time" />
 
         <TextView
-            android:id="@+id/tv_time_record"
+            android:id="@+id/tv_time_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            android:text="50:24"
+            android:text="0"
             android:textColor="@color/G1"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_unit"
-            app:layout_constraintStart_toStartOf="@id/iv_time"
-            tools:text="50:24" />
+            app:layout_constraintStart_toStartOf="@id/iv_time"/>
+
+        <TextView
+            android:id="@+id/tv_time_colon_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="11dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:outlineProvider="none"
+            android:text=":"
+            android:textColor="@color/G1"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@id/tv_time_hour"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_hour"
+            />
+
+        <TextView
+            android:id="@+id/tv_time_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="11dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:outlineProvider="none"
+            android:text="0"
+            android:textColor="@color/G1"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@id/tv_time_colon_1"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_hour"
+            />
+
+        <TextView
+            android:id="@+id/tv_time_colon_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="11dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:outlineProvider="none"
+            android:text=":"
+            android:textColor="@color/G1"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@id/tv_time_minute"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_minute"
+            />
+
+        <TextView
+            android:id="@+id/tv_time_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="11dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:outlineProvider="none"
+            android:text="0"
+            android:textColor="@color/G1"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@id/tv_time_colon_2"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_minute"
+            />
+
 
 
         <ImageView

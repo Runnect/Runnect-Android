@@ -15,12 +15,12 @@
 
         <ImageView
             android:id="@+id/iv_dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginStart="74dp"
             android:layout_marginTop="49dp"
             android:layout_marginEnd="61.79dp"
-            android:src="@drawable/alertdialog"
+            android:src="@drawable/delete"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:fontFamily="@font/pretendard_medium"
-            android:text="코스를 만들었어요!"
+            android:text="지우시겠습니까?"
             android:textColor="@color/G2"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
 
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_storage"
+            android:id="@+id/btn_delete_yes"
             android:layout_width="147dp"
             android:layout_height="45dp"
             android:layout_marginStart="13dp"
@@ -50,18 +50,18 @@
             android:background="@drawable/radius_10_m3_button"
             android:fontFamily="@font/pretendard_semibold"
             android:stateListAnimator="@null"
-            android:text="보관함 가기"
+            android:text="지울래요"
             android:textAlignment="center"
             android:textColor="@color/M1"
             android:textSize="13.31sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_run"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete_no"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_run"
+            android:id="@+id/btn_delete_no"
             android:layout_width="147dp"
             android:layout_height="45dp"
             android:layout_marginStart="6dp"
@@ -69,13 +69,13 @@
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
             android:stateListAnimator="@null"
-            android:text="바로 달리기"
+            android:text="안 지울래요"
             android:textColor="@color/W1"
             android:textSize="13.31sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_storage"
+            app:layout_constraintBottom_toBottomOf="@id/btn_delete_yes"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_storage"
-            app:layout_constraintTop_toTopOf="@id/btn_storage" />
+            app:layout_constraintStart_toEndOf="@id/btn_delete_yes"
+            app:layout_constraintTop_toTopOf="@id/btn_delete_yes" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
 

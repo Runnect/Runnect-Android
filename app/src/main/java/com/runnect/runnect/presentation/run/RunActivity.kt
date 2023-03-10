@@ -7,6 +7,8 @@ import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -21,11 +23,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.DetailToRunData
-import com.runnect.runnect.data.model.DrawToRunData
-import com.runnect.runnect.data.model.MyDrawToRunData
-import com.runnect.runnect.data.model.RunToEndRunData
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
+import com.runnect.runnect.data.model.*
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
@@ -45,15 +43,11 @@ class RunActivity :
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
 
-
     private val touchList = arrayListOf<LatLng>() //ArrayList<LatLng>() 하니까 x
 
 
     //타이머
     var time = 0
-    var hour = 0//시간
-    var minute = 0//분
-    var second = time //초
 
     var timerTask: Timer? = null
 
@@ -81,13 +75,13 @@ class RunActivity :
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
@@ -156,98 +150,30 @@ class RunActivity :
         }
     }
 
-    private fun drawCourse() {
+    private fun drawCourse() { //여기도 지금 getExtra가 3종류인데 CountDown 하나에서 넘어오는 거니까 수정해야 함.
 
 
-        val intent: Intent = intent
+        val countToRunData: CountToRunData = intent.getParcelableExtra("CountToRunData")!!
+        viewModel.courseId.value = countToRunData.courseId
+        viewModel.publicCourseId.value = countToRunData.publicCourseId
+        viewModel.departure.value = countToRunData.departure
+        viewModel.startLatLng.value = countToRunData.startLatLng
+        viewModel.touchList.value = countToRunData.touchList
+        viewModel.captureUri.value = countToRunData.image
 
-        val drawToRunData: DrawToRunData? = intent.getParcelableExtra("DrawToRunData")
-        val myDrawToRunData: MyDrawToRunData? = intent.getParcelableExtra("myDrawToRun")
-        val detailToRunData: DetailToRunData? = intent.getParcelableExtra("detailToRun")
+        val distanceCut =
+            BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+                .toDouble()
+        viewModel.distanceSum.value = distanceCut
 
+// 앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
 
-        if (drawToRunData == null) {//myDraw or detail
-            if(myDrawToRunData == null){
-                //detail 코드 세팅
-                for (i in 1..detailToRunData!!.path.size - 1) {
-                    touchList.add(LatLng(detailToRunData.path[i][0],
-                        detailToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
-                }
-
-                val distanceCut =
-                    BigDecimal(detailToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
-                        .toDouble()
-
-                viewModel.courseId.value = detailToRunData.courseId
-                viewModel.publicCourseId.value = detailToRunData.publicCourseId
-                viewModel.touchList.value = touchList //출발 지점을 뺀 path가 필요한데 detailToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
-                viewModel.distanceSum.value = distanceCut
-                viewModel.departure.value = detailToRunData.departure
-                viewModel.captureUri.value = detailToRunData.image
-                viewModel.startLatLng.value = LocationLatLngEntity(detailToRunData.path[0][0].toFloat(),
-                    detailToRunData.path[0][1].toFloat())
-                Timber.tag(ContentValues.TAG).d("detailToRun : $detailToRunData")
-
-
-            } else if (detailToRunData == null){
-                //myDraw 코드 세팅
-
-                for (i in 1..myDrawToRunData!!.path.size - 1) {
-                    touchList.add(LatLng(myDrawToRunData.path[i][0],
-                        myDrawToRunData.path[i][1])) //서버에서 보내주는 건 LatLng이 아니라 Double이라서 받아온 걸 다시 LatLng으로 감싸줘야함.
-                }
-
-                val distanceCut =
-                    BigDecimal(myDrawToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
-                        .toDouble()
-
-                viewModel.courseId.value = myDrawToRunData.courseId
-                viewModel.publicCourseId.value = myDrawToRunData.publicCourseId
-
-                viewModel.touchList.value =
-                    touchList //출발 지점을 뺀 path가 필요한데 myDrawToRunData는 포함돼있어서 직접 만들어줌. removeAt()이런 걸 쓰는 방향으로 리팩토링하면 좋을 듯함.
-                viewModel.distanceSum.value = distanceCut
-                viewModel.departure.value = myDrawToRunData.departure
-                viewModel.captureUri.value = myDrawToRunData.image
-                viewModel.startLatLng.value = LocationLatLngEntity(myDrawToRunData.path[0][0].toFloat(),
-                    myDrawToRunData.path[0][1].toFloat())
-                Timber.tag(ContentValues.TAG).d("myDrawToRun : $myDrawToRunData")
-            }
-
-
-        } else if (drawToRunData != null) { //가독성을 위해 일부러 else가 아닌 else if를 써줌.
-
-            //drawToRun 세팅
-
-            val distanceCut =
-                BigDecimal(drawToRunData.totalDistance!!.toDouble()).setScale(1, RoundingMode.FLOOR)
-                    .toDouble()
-
-            viewModel.courseId.value = drawToRunData.courseId
-            viewModel.publicCourseId.value = drawToRunData.publicCourseId
-
-            viewModel.distanceSum.value =
-                distanceCut //앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
-            viewModel.departure.value = drawToRunData?.departure
-            viewModel.captureUri.value = drawToRunData?.captureUri
-            viewModel.startLatLng.value = drawToRunData?.startLatLng
-            viewModel.touchList.value =
-                drawToRunData?.touchList //이거 때문에 굳이 viewModel.touchList의 타입을 ArrayList<LatLng>으로 해준 것.
-            Timber.tag(ContentValues.TAG).d("drawToRunData : $drawToRunData")
-        } // 세팅 종료
-
-
-        val viewModelStartLatLng =
-            viewModel.startLatLng.value // 아래 startLatLng에 바로 안 들어가져서 따로 변수를 만들어서 넣어줌
-        Timber.tag(ContentValues.TAG).d("viewModelStartLatLng : ${viewModel.startLatLng.value}")
 
         val path = PathOverlay()
         //startMarker-start
         val startMarker = Marker()
 
-        val startLatLng =
-            LatLng(viewModelStartLatLng!!.latitude.toDouble(),
-                viewModelStartLatLng!!.longitude.toDouble())
+        val startLatLng = countToRunData!!.startLatLng
 
         startMarker.position =
             LatLng(startLatLng.latitude, startLatLng.longitude) // 출발지점
@@ -265,23 +191,18 @@ class RunActivity :
         //startMarker-end
 
 
-        //lineMarker-start
-        val marker = Marker()
-
-        //여기가 그 forEach 때문에 마지막에만 마커 찍히는 부분.
-        //DrawActivity에서는 터치 리스너가 있어서 객체를 여러개 만들어 줄 수 있었는데 여기는 직접 for문 돌려줘야 될듯.
-
-        val viewModelTouchList =
-            viewModel.touchList.value
-
-        viewModelTouchList?.forEach { touch ->
-            marker.position = LatLng(touch.latitude, touch.longitude)
-            marker.anchor = PointF(0.5f, 0.5f)
-            marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
-            marker.map = naverMap
+        for (i in 1..countToRunData.touchList.size) {
+            //lineMarker-start
+            val lineMarker = Marker() //[i-1]은 for문을 touchList.size로 돌리기 때문
+            lineMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
+                countToRunData.touchList[i - 1].longitude)
+            lineMarker.anchor = PointF(0.5f, 0.5f)
+            lineMarker.icon = OverlayImage.fromResource(R.drawable.marker_line)
+            lineMarker.map = naverMap
 
             // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
-            coords.add(LatLng(touch.latitude, touch.longitude))
+            coords.add(LatLng(countToRunData.touchList[i - 1].latitude,
+                countToRunData.touchList[i - 1].longitude))
 
             // 경로선 그리기
 
@@ -294,17 +215,16 @@ class RunActivity :
             // 경로선 테두리 색상
             path.outlineColor = Color.parseColor("#593EEC")
             path.map = naverMap
-        }
 
-        //lineMarker-end
+        }  //lineMarker-end
 
 
     }
 
     private fun seeRecord() {
         binding.btnRunFinish.setOnClickListener {
-            stopTimer()
             bottomSheet()
+            stopTimer()
 
         }
     }
@@ -326,13 +246,15 @@ class RunActivity :
 
                 putExtra("RunToEndRunData",
                     RunToEndRunData(
-                        courseId = viewModel.courseId.value!!, publicCourseId = viewModel.publicCourseId.value,
+                        courseId = viewModel.courseId.value!!,
+                        publicCourseId = viewModel.publicCourseId.value,
                         viewModel.distanceSum.value,
                         viewModel.captureUri.value,
                         viewModel.departure.value,
                         timerHour,
                         timerMinute,
-                        timerSecond))
+                        timerSecond,
+                        time))
 
                 addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
 
@@ -349,24 +271,43 @@ class RunActivity :
     private fun startTimer() {
         timerTask = timer(period = 1000) {
 
-            second++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
+            time++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
 
-            if (second == 60) {
-                second = 0
-                minute += 1
-            }
-            if (minute == 60) {
-                minute = 0
-                hour += 1
+            val hour = time / 3600
+            val minute = time / 60 //60이 되는 순간 몫이 1이 돼서 1로 표기
+            val second = time % 60 //60이 되는순간 나머지가 0이라 0으로 표기
+
+            runOnUiThread { //더 좋은 방법이 있나.
+                if (hour < 10) {
+                    binding.tvTimeHour.text = "0$hour"
+                } else {
+                    binding.tvTimeHour.text = "$hour"
+                }
+
+                if (minute < 10) {
+                    binding.tvTimeMinute.text = "0$minute"
+                } else {
+                    binding.tvTimeMinute.text = "$minute"
+                }
+
+                if (second < 10) {
+                    binding.tvTimeSecond.text = "0$second"
+                } else {
+                    binding.tvTimeSecond.text = "$second"
+                }
             }
 
-            timerSecond = second.toString() //intent로 넘길 값 전역변수에 세팅
-            timerMinute = minute.toString()
-            timerHour = hour.toString()
+            //String으로 넘길거면 그냥 이거 3개 다 합쳐서 넘겨도 될 듯?
+            //intent로 넘길 값 전역변수에 세팅
+            //이 값들을 미처 갱신하기 전에 다음으로 넘어가버리는 듯?
+            timerHour = binding.tvTimeHour.text.toString()
+            timerMinute = binding.tvTimeMinute.text.toString()
+            timerSecond = binding.tvTimeSecond.text.toString()
 
-            runOnUiThread {
-                binding.tvTimeRecord.text = "$hour : $minute : $second"
-            }
+            Timber.tag(ContentValues.TAG).d("timerHour 값 : $timerHour")
+            Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
+            Timber.tag(ContentValues.TAG).d("timerSecond 값 : $timerSecond")
+
 
         }
     }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -80,15 +81,16 @@ class EndRunActivity :
 
 
     }
+
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     fun backBtn() {
         binding.imgBtnBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
@@ -130,16 +132,12 @@ class EndRunActivity :
             .centerCrop()
             .into(binding.ivEndRunCapture)
 
-        val pace1 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toString()
-        val pace2 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toString()
-        val pace3 = BigDecimal(timerSecond!!.toDouble() / totalDistance.toDouble()).setScale(2,
-            RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
+        val pace =
+            BigDecimal(runToEndRunData.totalDistance!! / runToEndRunData.timeTotal!!).setScale(2,
+                RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
 
         viewModel.timeTotal.value = "$timerHour:$timerMinute:$timerSecond"
-        viewModel.paceTotal.value = "$pace1:$pace2:$pace3"
-
+        viewModel.paceTotal.value = "$pace"
 
 
         binding.tvDepartureRecord.text = departure //추후에 data binding으로 리팩토링
@@ -157,6 +155,11 @@ class EndRunActivity :
                 Timber.tag(ContentValues.TAG)
                     .d("editText.value : ${viewModel.editTextValue.value}")
 
+                if (binding.etTitleCourse.text.length == 20) {
+                    Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
+                }
+
+
             } else {
                 binding.btnEndRunSave.setBackgroundResource(R.drawable.radius_10_g3_button)
                 binding.btnEndRunSave.isEnabled = false
@@ -168,16 +171,6 @@ class EndRunActivity :
 
     private fun saveButton() {
         binding.btnEndRunSave.setOnClickListener {
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.courseId.value!!}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.publicCourseId.value}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.editTextValue.value!!}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.timeTotal.value!!}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.courseId.value!! : ${viewModel.paceTotal.value!!}")
 
             viewModel.postRecord(
                 RequestPostRecordDto(viewModel.courseId.value!!,

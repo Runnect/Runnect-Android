@@ -50,7 +50,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center_vertical"
                 android:maxLength="13"
-                android:text="@{storage.departure.city + storage.departure.region }"
+                android:text="@{storage.departure.region + storage.departure.city }"
                 android:textColor="@color/G1"
                 app:scale_height="22"
                 app:scale_textsize="14"

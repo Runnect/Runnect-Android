@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
 import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.coroutines.launch
@@ -27,12 +28,15 @@ class DrawViewModel : ViewModel() {
     val drawState: LiveData<UiState>
         get() = _drawState
 
+    val searchResult = MutableLiveData<SearchResultEntity>()
 
     val path = MutableLiveData<List<UploadLatLng>>()
     var distanceSum = MutableLiveData<Float>(0.0f)
     val departureAddress = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
     val courseId = MutableLiveData<Int>()
+
+    val btnAvailable = MutableLiveData<Boolean>(false)
 
 
     private val _image = MutableLiveData<ContentUriRequestBody>()

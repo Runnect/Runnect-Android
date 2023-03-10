@@ -16,6 +16,9 @@
         tools:context=".presentation.endrun.EndRunActivity">
 
         <ProgressBar
+            android:outlineProvider="none"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,6 +73,7 @@
             tools:background="@color/G3" />
 
         <EditText
+            android:maxLength="20"
             android:id="@+id/et_title_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

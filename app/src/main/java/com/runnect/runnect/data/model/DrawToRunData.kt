@@ -11,8 +11,8 @@ data class DrawToRunData(
     val courseId : Int,
     val publicCourseId : Int? = null,
     val touchList: ArrayList<LatLng>,
-    val startLatLng: LocationLatLngEntity,
-    val totalDistance: Float?,
+    val startLatLng: LatLng,
+    val totalDistance: Float,
     val departure: String,
     val captureUri: String,
 ) : Parcelable

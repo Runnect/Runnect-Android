@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -30,7 +32,6 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.UploadLatLng
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -65,8 +66,10 @@ class DrawActivity :
 
     lateinit var captureUri: Uri
 
+    var markerAvailable: Boolean = false
 
-    lateinit var startLatLngPublic: LocationLatLngEntity
+
+    lateinit var startLatLngPublic: LatLng
     var distancePublic by Delegates.notNull<Float>()
 
     val viewModel: DrawViewModel by viewModels()
@@ -84,20 +87,20 @@ class DrawActivity :
                     ?: throw Exception("데이터가 존재하지 않습니다.")
 
                 Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
+                viewModel.searchResult.value = searchResult
                 initView()
-//                addListeners()
                 courseFinish()
                 addObserver()
                 backButton()
-
-
+                goToDraw()
             }
         }
 
     }
+
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun initView() {
@@ -140,13 +143,74 @@ class DrawActivity :
             Handler(Looper.getMainLooper()).postDelayed( //이거 왜 콜백으로 안 되는 거지
                 {
                     viewModel.uploadCourse()
-                }, 200
+                }, 300
             )
 
         }
     }
 
+    private fun goToDraw() { //버튼 누르면 애니메이션으로 위아래 컴포넌트 일단 다 제거되게
+        binding.btnPreStart.setOnClickListener {
+            markerAvailable = true //일단 마커는 찍을 수 있게!
+            val animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
+            val animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
+
+            with(binding) {
+
+                //Top invisible
+                viewTopFrame.startAnimation(animUp)
+                tvDeparture.startAnimation(animUp)
+
+                viewTopFrame.isVisible = false
+                tvDeparture.isVisible = false
+
+                //Bottom invisible
+                viewBottomSheetFrame.startAnimation(animDown)
+                tvPlaceName.startAnimation(animDown)
+                tvPlaceAddress.startAnimation(animDown)
+                btnPreStart.startAnimation(animDown)
+
+                viewBottomSheetFrame.isVisible =
+                    false //frame만 invisible처리 했는데 여기에 constraint가 걸려있는 것들도 다 없어짐
+                tvPlaceName.isVisible = false
+                tvPlaceAddress.isVisible = false
+                btnPreStart.isVisible = false
+
+
+                //DrawActivity Component visibile
+                btnDraw.isVisible = true
+                btnMarkerBack.isVisible = true
+                frameCourseDistance.isVisible = true
+                tvCourseDistanceRecord.isVisible = true
+                tvCourseDistanceKm.isVisible = true
+
+
+            }
+
+
+        }
+    }
+
     private fun addObserver() {
+        //markerAvailable은 출발지 설정 전에 마커 못 만들게 막아놨는데 버튼 누르면 그 제한을 푸는 거고
+        //btnAvailable은 완성하기/백버튼 활성화 비활성화 컨트롤 하려고 만든 거. 변수명이 명확하지 않아서 고칠 필요는 있을 듯.
+
+        viewModel.btnAvailable.observe(this) {
+            if (viewModel.btnAvailable.value == true) {
+                binding.btnMarkerBack.isEnabled = true
+                binding.btnMarkerBack.setImageResource(R.drawable.backcourse_enable_true)
+
+                binding.btnDraw.isEnabled = true
+                binding.btnDraw.setBackgroundResource(R.drawable.radius_10_m1_button)
+            } else {
+                binding.btnMarkerBack.isEnabled = false
+                binding.btnMarkerBack.setImageResource(R.drawable.backcourse_enable_false)
+
+                binding.btnDraw.isEnabled = false
+                binding.btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
+            }
+
+        }
 
         viewModel.drawState.observe(this) {
             when (it) {
@@ -158,8 +222,6 @@ class DrawActivity :
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
-//                    Timber.tag(ContentValues.TAG)
-//                        .d("Failure : ${viewModel.errorMessage.value}")
                 }
             }
         }
@@ -174,7 +236,7 @@ class DrawActivity :
             setView(myLayout)
         }
         val dialog = build.create()
-//        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.setCancelable(false) // 외부 영역 터치 금지
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
 
@@ -194,7 +256,7 @@ class DrawActivity :
                     publicCourseId = null,
                     touchList,
                     startLatLngPublic,
-                    viewModel.distanceSum.value,
+                    viewModel.distanceSum.value!!,
                     searchResult.name,
                     captureUri.toString()))
 
@@ -210,7 +272,7 @@ class DrawActivity :
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
@@ -233,8 +295,9 @@ class DrawActivity :
         val path = PathOverlay()
         //startMarker-start
         val startMarker = Marker()
-        val startLatLng = searchResult.locationLatLng
-        startLatLngPublic = startLatLng
+        val startLatLng = searchResult.locationLatLng //받아온 출발지 data를 여기서 세팅
+        startLatLngPublic = LatLng(startLatLng.latitude.toDouble(),
+            startLatLng.longitude.toDouble())
 
         startMarker.position =
             LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble()) // 출발지점
@@ -259,76 +322,91 @@ class DrawActivity :
             )
         )
 
+
         //lineMarker-start
         //맵 터치 이벤트 관리
         naverMap.setOnMapClickListener { point, coord ->
             // 수신한 좌표값을 touchList에 추가
-            touchList.add(
-                LatLng(
-                    "${coord.latitude}".toDouble(),
-                    "${coord.longitude}".toDouble()
-                )
-            )
-
-            val marker = Marker()
-
-            marker.position = LatLng(
-                "${coord.latitude}".toDouble(),
-                "${coord.longitude}".toDouble()
-            )
-            marker.anchor = PointF(0.5f, 0.5f)
-            marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
-            marker.map = naverMap
-
-            markerList.add(marker)
-
-            Timber.tag(ContentValues.TAG).d("markerListSize : ${markerList.size}")
-            Timber.tag(ContentValues.TAG).d("markerList : ${markerList}")
+            if (markerAvailable == true) { //이 터치 함수가 돌아가게 할지 말지
+                viewModel.btnAvailable.value = true
+                if (touchList.size < 20) { // 20개까지만 생성 가능하도록 제한을 걸어주기 위함
 
 
-            // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
-            coords.add(LatLng("${coord.latitude}".toDouble(), "${coord.longitude}".toDouble()))
+                    touchList.add(
+                        LatLng(
+                            "${coord.latitude}".toDouble(),
+                            "${coord.longitude}".toDouble()
+                        )
+                    )
 
-            // 경로선 그리기
+                    val marker = Marker()
 
-            path.coords = coords
+                    marker.position = LatLng(
+                        "${coord.latitude}".toDouble(),
+                        "${coord.longitude}".toDouble()
+                    )
+                    marker.anchor = PointF(0.5f, 0.5f)
+                    marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
+                    marker.map = naverMap
 
-            Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
+                    markerList.add(marker)
 
-            // 경로선 색상
-            path.color = Color.parseColor("#593EEC")
-            // 경로선 테두리 색상
-            path.outlineColor = Color.parseColor("#593EEC")
-            path.map = naverMap
+                    Timber.tag(ContentValues.TAG).d("markerListSize : ${markerList.size}")
+                    Timber.tag(ContentValues.TAG).d("markerList : ${markerList}")
 
-            //터치가 될 때마다 거리 계산
-            calculateDistance()
-            Timber.tag(ContentValues.TAG).d("distanceList : ${distanceList}")
-            Timber.tag(ContentValues.TAG).d("sumList : ${sumList}")
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel_distanceSum : ${viewModel.distanceSum.value}")
+
+                    // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
+                    coords.add(LatLng("${coord.latitude}".toDouble(),
+                        "${coord.longitude}".toDouble()))
+
+                    // 경로선 그리기
+
+                    path.coords = coords
+
+                    Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
+
+                    // 경로선 색상
+                    path.color = Color.parseColor("#593EEC")
+                    // 경로선 테두리 색상
+                    path.outlineColor = Color.parseColor("#593EEC")
+                    path.map = naverMap
+
+                    //터치가 될 때마다 거리 계산
+                    calculateDistance()
+                    Timber.tag(ContentValues.TAG).d("distanceList : ${distanceList}")
+                    Timber.tag(ContentValues.TAG).d("sumList : ${sumList}")
+                    Timber.tag(ContentValues.TAG)
+                        .d("viewModel_distanceSum : ${viewModel.distanceSum.value}")
+                } else {
+                    Toast.makeText(this, "마커는 20개까지 생성 가능합니다", Toast.LENGTH_SHORT).show()
+                }
+            }
+
 
         } //lineMarker-end
 
         //backButton
         binding.btnMarkerBack.setOnClickListener {
-            if (touchList.size > 0) { // 이건 터치 좌표 리스트에 아무것도 없는데 버튼이 눌려서 NPE가 뜨는 걸 방지하기 위함
-                touchList.removeLast()
-                Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
-                markerList.last().map = null
-                markerList.removeLast()
-                Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
+            //옵저버로 활성화 여부 컨트롤 하니까 이 조건은 이제 필요가 없는데. 뷰모델 값 false로 어떻게 바꿀지...
+            touchList.removeLast()
+            Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
+            markerList.last().map = null
+            markerList.removeLast()
+            Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
 
-
-                coords.removeLast()
-                if (coords.size >= 2) {
-                    path.coords = coords
-                    path.map = naverMap
-                } else {
-                    path.map = null
-                }
-
+            if (touchList.isEmpty()) {
+                viewModel.btnAvailable.value = false
             }
+
+
+            coords.removeLast()
+            if (coords.size >= 2) {
+                path.coords = coords
+                path.map = naverMap
+            } else {
+                path.map = null
+            }
+
 
             //백 버튼 눌렀을 때 거리 계산 다시
             if (distanceList.size > 0 && sumList.size > 0) {
@@ -338,6 +416,8 @@ class DrawActivity :
             val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
             viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
         }
+
+
     }
 
 
@@ -398,7 +478,6 @@ class DrawActivity :
         Timber.tag(ContentValues.TAG).d("뷰모델departureAddress : ${viewModel.departureAddress.value}")
         viewModel.departureName.value = searchResult.name
         Timber.tag(ContentValues.TAG).d("뷰모델departureName : ${viewModel.departureName.value}")
-
 
 
     }
