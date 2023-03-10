@@ -63,7 +63,8 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
+            app:endRunImage="@{model.captureUri.toString()}"
             android:id="@+id/iv_endRun_capture"
             android:layout_width="match_parent"
             android:layout_height="370dp"
@@ -150,7 +151,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_regular"
-            android:text="잠실"
+            android:text="@{model.departure}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_departure"
@@ -193,7 +194,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="1.8"
+            android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
@@ -254,7 +255,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="0:27:36"
+            android:text="@{model.timerHourMinSec}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/view_endRun_time_frame"
@@ -300,7 +301,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="1'22''"
+            android:text="@{model.paceTotal}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/view_endRun_pace_frame"

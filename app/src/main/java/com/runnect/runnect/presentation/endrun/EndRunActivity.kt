@@ -35,9 +35,6 @@ class EndRunActivity :
 
     lateinit var runToEndRunData: RunToEndRunData
 
-//    lateinit var timeTotal : String
-//    lateinit var paceTotal : String
-
     @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
 
@@ -53,8 +50,6 @@ class EndRunActivity :
         getIntentValue()
         saveButton()
         addObserver()
-
-//        Timber.tag(ContentValues.TAG).d("currentTime : ${dataFormat5.format(currentTime)}")
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
 
@@ -95,55 +90,31 @@ class EndRunActivity :
     }
 
     fun getIntentValue() {
-        //DrawToRunData나 DetailToRunData나 RunActivity에서 RunToEndRunData로 가공이 되기 때문에 RunActivity와는 상황이 다름
         runToEndRunData =
             intent.getParcelableExtra("RunToEndRunData")!!
 
         Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
 
-        val totalDistance = runToEndRunData.totalDistance.toString()
-//        viewModel.distanceSum.value = totalDistance as Double? // 뷰모델에 총거리 세팅
-
-        val departure = runToEndRunData.departure
-//        viewModel.departure.value = departure // 뷰모델에 출발지 세팅
-
-        val courseId = runToEndRunData.courseId
-        viewModel.courseId.value = courseId
-
-        val publicCourseId = runToEndRunData.publicCourseId
-        viewModel.publicCourseId.value = publicCourseId
+        viewModel.distanceSum.value = runToEndRunData.totalDistance // 뷰모델에 총거리 세팅
+        viewModel.departure.value = runToEndRunData.departure // 뷰모델에 출발지 세팅
+        viewModel.courseId.value = runToEndRunData.courseId
+        viewModel.publicCourseId.value = runToEndRunData.publicCourseId
 
         val captureUri = runToEndRunData.captureUri!!.toUri()
         viewModel.captureUri.value = captureUri
 
-        //String으로 다룰 거면 그냥 시간/분/초 합쳐서 관리하는 게 나을듯?
         val timerHour = runToEndRunData.timerHour
-        viewModel.timerHour.value = timerHour //뷰모델에 타이머 sec 세팅
-
         val timerMinute = runToEndRunData.timerMinute
-        viewModel.timerMinute.value = timerMinute //뷰모델에 타이머 Milli 세팅
-
         val timerSecond = runToEndRunData.timerSecond
-        viewModel.timerSecond.value = timerSecond //뷰모델에 타이머 Milli 세팅
 
-        Glide
-            .with(binding.ivEndRunCapture.context)
-            .load(captureUri)
-            .centerCrop()
-            .into(binding.ivEndRunCapture)
+        viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
 
         val pace =
-            BigDecimal(runToEndRunData.totalDistance!! / runToEndRunData.timeTotal!!).setScale(2,
-                RoundingMode.FLOOR).toString() //서버에서 요구하는 형식에 맞춰주기 위함
+            BigDecimal(runToEndRunData.totalDistance!! / runToEndRunData.timeTotal!!).setScale(1,
+                RoundingMode.FLOOR).toString()
 
-        viewModel.timeTotal.value = "$timerHour:$timerMinute:$timerSecond"
-        viewModel.paceTotal.value = "$pace"
-
-
-        binding.tvDepartureRecord.text = departure //추후에 data binding으로 리팩토링
-        binding.tvDistanceData.text = totalDistance
-        binding.tvTimeData.text = "${viewModel.timeTotal.value}"
-        binding.tvPaceData.text = "${viewModel.paceTotal.value}"
+        viewModel.paceTotal.value = "$pace:$pace:$pace" //서버에서 요구하는 형식에 맞춰주기 위함 HH:MM:SS
+        // 이 부분 api 수정돼야하지 않을까? 페이스 표기가 6'85" 이런식으로 되는데 HH:MM:SS로 받으면 어떡해
     }
 
     private fun editTextController() {
@@ -176,7 +147,7 @@ class EndRunActivity :
                 RequestPostRecordDto(viewModel.courseId.value!!,
                     viewModel.publicCourseId.value,
                     viewModel.editTextValue.value!!,
-                    viewModel.timeTotal.value!!,
+                    viewModel.timerHourMinSec.value!!,
                     viewModel.paceTotal.value!!)
             )
             val intent = Intent(this, MainActivity::class.java)

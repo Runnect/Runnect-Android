@@ -18,23 +18,13 @@ class EndRunViewModel : ViewModel() {
     val distanceSum = MutableLiveData<Double>()
     val captureUri = MutableLiveData<Uri>()
     val departure = MutableLiveData<String>()
-    val timerHour = MutableLiveData<String>()
-    val timerMinute = MutableLiveData<String>()
-    val timerSecond = MutableLiveData<String>()
-
-    val timeTotal = MutableLiveData<String>()
+    val timerHourMinSec = MutableLiveData<String>()
     val paceTotal = MutableLiveData<String>()
-
     val courseId = MutableLiveData<Int>()
     val publicCourseId = MutableLiveData<Int?>()
-
-
     val editTextValue = MutableLiveData<String>()
-
-
     val uploadResult = MutableLiveData<ResponsePostRecordDto>()
     val errorMessage = MutableLiveData<String>()
-
     val currentTime = MutableLiveData<String>() //현재 시간
 
     private val _endRunState = MutableLiveData<UiState>(UiState.Empty)

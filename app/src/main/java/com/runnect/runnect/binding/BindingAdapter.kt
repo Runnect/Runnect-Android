@@ -21,3 +21,12 @@ fun loadStorageImage(view: ImageView, imageUrl: String) {
         .centerCrop()
         .into(view)
 }
+
+@BindingAdapter("app:endRunImage")
+fun loadEndRunImage(view: ImageView, imageUrl: String) {
+    Glide
+        .with(view.context)
+        .load(imageUrl)
+        .centerCrop()
+        .into(view)
+}
