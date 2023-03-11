@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!--        <variable-->
-        <!--            name=""-->
-        <!--            type="" />-->
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,18 +23,22 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_my_page_history_course"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_my_page_history_course"
             android:layout_width="80dp"
             android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
             android:layout_marginStart="13.83dp"
             android:layout_marginTop="12.72dp"
-            android:scaleType="fitXY"
-            app:layout_constraintDimensionRatio="1:1"
+            app:cardCornerRadius="10dp"
             app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
-            app:layout_constraintTop_toTopOf="@id/view_my_page_history_frame"
-            tools:background="@drawable/radius_10dp_history_item_img" />
+            app:layout_constraintTop_toTopOf="@id/view_my_page_history_frame">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_my_page_history_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY" />
+        </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_history_course_name"
@@ -47,8 +49,8 @@
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
             android:textSize="15sp"
-            app:layout_constraintStart_toEndOf="@id/iv_my_page_history_course"
-            app:layout_constraintTop_toTopOf="@id/iv_my_page_history_course"
+            app:layout_constraintStart_toEndOf="@id/cv_my_page_history_course"
+            app:layout_constraintTop_toTopOf="@id/cv_my_page_history_course"
             tools:text="석촌호수 한 바퀴" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -94,7 +96,7 @@
             android:layout_marginTop="13.16dp"
             app:layout_constraintEnd_toEndOf="@id/view_my_page_history_frame"
             app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
-            app:layout_constraintTop_toBottomOf="@id/iv_my_page_history_course" />
+            app:layout_constraintTop_toBottomOf="@id/cv_my_page_history_course" />
 
 
         <View
@@ -154,20 +156,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance"
             tools:text="4.01" />
 
-<!--        <androidx.appcompat.widget.AppCompatTextView-->
-<!--            app:layout_constraintStart_toEndOf="@id/tv_my_page_history_distance_data"-->
-<!--            android:id="@+id/tv_my_page_history_distance_km"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="2dp"-->
-<!--            android:layout_marginTop="4dp"-->
-<!--            android:fontFamily="@font/pretendard_medium"-->
-<!--            android:text="@string/item_mypage_history_distance_km"-->
-<!--            android:textColor="@color/G1"-->
-<!--            android:textSize="14sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_distance_data"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance" />-->
-        <!--이동시간-->
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_history_time"
             android:layout_width="wrap_content"
