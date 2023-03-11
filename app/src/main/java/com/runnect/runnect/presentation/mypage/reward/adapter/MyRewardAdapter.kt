@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.bumptech.glide.Glide
 import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ItemMypageRewardBinding
 import com.runnect.runnect.util.RewardStampDiffUtilItemCallback
@@ -27,7 +28,10 @@ class MyRewardAdapter(context: Context) :
 class ItemViewHolder(private val binding: ItemMypageRewardBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun onBind(data: RewardStampDTO) {
-        binding.ivItemMyPageRewardCircleFrame.load(data.img)
-        binding.tvItemMyPageRewardCondition.text = data.condition
+        with(binding) {
+            Glide.with(itemView).load(data.img).thumbnail(0.3f).into(ivItemMyPageRewardCircleFrame)
+            tvItemMyPageRewardCondition.text = data.condition
+        }
+
     }
 }
