@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.RecordInfoDTO
 import com.runnect.runnect.databinding.ItemMypageHistoryBinding
 import com.runnect.runnect.util.HistoryInfoDiffUtilItemCallback
@@ -28,7 +30,9 @@ class MyHistoryAdapter(context: Context) :
 class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun onBind(data: RecordInfoDTO) {
-        with(binding){
+        with(binding) {
+            Glide.with(itemView).load(data.img).thumbnail(0.3f).format(DecodeFormat.PREFER_RGB_565)
+                .into(ivMyPageHistoryCourse)
             ivMyPageHistoryCourse.load(data.img)
             tvMyPageHistoryCourseName.text = data.title
             tvMyPageHistoryPlace.text = data.location
