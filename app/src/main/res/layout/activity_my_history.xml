@@ -6,7 +6,7 @@
     <data>
         <variable
             name="vm"
-            type="com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryViewModel" />
+            type="com.runnect.runnect.presentation.mypage.history.MyHistoryViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

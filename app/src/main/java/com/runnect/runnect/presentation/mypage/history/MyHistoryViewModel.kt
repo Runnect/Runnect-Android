@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.mypage.history.adapter
+package com.runnect.runnect.presentation.mypage.history
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +9,6 @@ import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
