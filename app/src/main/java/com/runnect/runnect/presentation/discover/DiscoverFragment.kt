@@ -109,11 +109,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.postCourseScrap(id, scrapTF)
     }
 
-    private fun setResultDetail(){
+    private fun setResultDetail() {
         startForResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ){ result ->
-            if (result.resultCode == RESULT_OK){
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
                 viewModel.getRecommendCourse()
             }
         }
