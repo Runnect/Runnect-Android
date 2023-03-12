@@ -7,10 +7,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.dto.RecordInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryBinding
 import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
-import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryViewModel
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.RecyclerOffsetDecorationHeight
 import dagger.hilt.android.AndroidEntryPoint
