@@ -34,7 +34,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="코스 그리기"
+            android:text="@string/course_main_draw_button"
             android:textAlignment="center"
             android:textColor="@color/W1"
             android:textSize="15sp"
@@ -56,7 +56,7 @@
             app:layout_constraintBottom_toTopOf="@id/btn_draw"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@null"
-            android:contentDescription="current_location" />
+            android:contentDescription="@string/course_main_description_current_location" />
 
 
 

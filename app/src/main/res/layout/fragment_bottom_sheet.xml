@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
-            android:text="수고하셨습니다! 러닝을 완료했어요!"
+            android:text="@string/bottom_sheet_notify_finish_run"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +45,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
             android:stateListAnimator="@null"
-            android:text="기록 보러 가기"
+            android:text="@string/bottom_sheet_see_record"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

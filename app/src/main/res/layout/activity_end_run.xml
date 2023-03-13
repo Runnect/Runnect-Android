@@ -16,12 +16,12 @@
         tools:context=".presentation.endrun.EndRunActivity">
 
         <ProgressBar
-            android:outlineProvider="none"
-            android:elevation="2dp"
-            android:indeterminateTint="@color/G3"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +56,7 @@
                 android:layout_gravity="start"
                 android:layout_marginStart="20dp"
                 android:fontFamily="@font/pretendard_medium"
-                android:text="러닝기록"
+                android:text="@string/end_run_page_title"
                 android:textColor="@color/G1"
                 android:textSize="17sp" />
 
@@ -64,17 +64,16 @@
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.appcompat.widget.AppCompatImageView
-            app:endRunImage="@{model.captureUri.toString()}"
             android:id="@+id/iv_endRun_capture"
             android:layout_width="match_parent"
             android:layout_height="370dp"
+            app:endRunImage="@{model.captureUri.toString()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/storage_toolbar"
             tools:background="@color/G3" />
 
         <EditText
-            android:maxLength="20"
             android:id="@+id/et_title_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +81,8 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/G5"
             android:fontFamily="@font/pretendard_semibold"
-            android:hint="글 제목"
+            android:hint="@string/end_run_title_hint"
+            android:maxLength="20"
             android:textColor="@color/G1"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,14 +105,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="9dp"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="날짜"
+            android:text="@string/end_run_date"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_start_date"
             app:layout_constraintStart_toEndOf="@id/iv_start_date" />
 
         <TextView
-            tools:text="2023.01.07"
             android:id="@+id/tv_date_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -122,7 +121,8 @@
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_date"
-            app:layout_constraintStart_toEndOf="@id/tv_date" />
+            app:layout_constraintStart_toEndOf="@id/tv_date"
+            tools:text="2023.01.07" />
 
 
         <ImageView
@@ -140,7 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="9dp"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="출발지"
+            android:text="@string/end_run_departure"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_start_departure"
@@ -181,7 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_medium"
-            android:text="거리"
+            android:text="@string/end_run_distance_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/view_endRun_distance_frame"
@@ -208,7 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:fontFamily="@font/pretendard_medium"
-            android:text="km"
+            android:text="@string/end_run_distance_unit"
             android:textColor="@color/G1"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_distance_data"
@@ -242,7 +242,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_medium"
-            android:text="이동 시간"
+            android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/view_endRun_time_frame"
@@ -288,7 +288,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12.39dp"
             android:fontFamily="@font/pretendard_medium"
-            android:text="평균 페이스"
+            android:text="@string/end_run_pace_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/view_endRun_pace_frame"
@@ -309,15 +309,15 @@
             app:layout_constraintTop_toBottomOf="@id/tv_pace" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:enabled="false"
             android:id="@+id/btn_endRun_save"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_g3_button"
+            android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="저장하기"
+            android:text="@string/end_run_save_button"
             android:textAlignment="center"
             android:textColor="@color/W1"
             android:textSize="15sp"

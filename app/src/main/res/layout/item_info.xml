@@ -11,7 +11,7 @@
         android:layout_height="29dp"
         android:background="@drawable/radius_10_m1_button"
         android:gravity="center"
-        android:text="출발"
+        android:text="@string/item_info_start"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"

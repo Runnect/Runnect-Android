@@ -44,7 +44,6 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            android:text="0"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/frame_course_distance"
@@ -62,7 +61,7 @@
             android:layout_marginStart="4dp"
             android:elevation="11dp"
             android:outlineProvider="none"
-            android:text="km"
+            android:text="@string/my_draw_distance_unit"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_course_distance_record"
@@ -98,7 +97,7 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
-            android:text="시작하기"
+            android:text="@string/my_draw_start_run_button"
             android:textColor="@color/W1"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

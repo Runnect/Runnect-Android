@@ -219,7 +219,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="출발지 설정하기"
+            android:text="@string/draw_set_departure"
             android:textAlignment="center"
             android:textColor="@color/W1"
             android:textSize="15sp"

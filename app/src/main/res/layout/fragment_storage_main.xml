@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="보관함"
+                android:text="@string/storage_main_page_title"
                 android:textColor="@color/G1"
                 android:textSize="20sp" />
 
@@ -62,13 +62,13 @@
                 android:id="@+id/tab_draw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="내가 그린 코스" />
+                android:text="@string/storage_main_tap_my_draw" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tab_scrap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="스크랩 코스" />
+                android:text="@string/storage_main_tab_scrap" />
 
 
         </com.google.android.material.tabs.TabLayout>
