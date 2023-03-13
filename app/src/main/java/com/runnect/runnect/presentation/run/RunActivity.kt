@@ -7,8 +7,6 @@ import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -178,7 +176,7 @@ class RunActivity :
         startMarker.position =
             LatLng(startLatLng.latitude, startLatLng.longitude) // 출발지점
         startMarker.anchor = PointF(0.5f, 0.7f)
-        startMarker.icon = OverlayImage.fromResource(R.drawable.start_marker)
+        startMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         startMarker.map = naverMap
 
         cameraUpdate(
@@ -197,7 +195,7 @@ class RunActivity :
             lineMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
                 countToRunData.touchList[i - 1].longitude)
             lineMarker.anchor = PointF(0.5f, 0.5f)
-            lineMarker.icon = OverlayImage.fromResource(R.drawable.marker_line)
+            lineMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
             lineMarker.map = naverMap
 
             // 경로선 list인 coords에 터치로 받아온 좌표값을 추가

@@ -55,6 +55,10 @@ class DrawActivity :
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
 
+    lateinit var departureLatLng: LatLng
+    val coords = mutableListOf<LatLng>()
+    val path = PathOverlay()
+
 
     private lateinit var searchResult: SearchResultEntity
 
@@ -65,13 +69,8 @@ class DrawActivity :
 
 
     lateinit var captureUri: Uri
-
-    var markerAvailable: Boolean = false
-
-
-    lateinit var startLatLngPublic: LatLng
+    var isMarkerAvailable: Boolean = false
     var distancePublic by Delegates.notNull<Float>()
-
     val viewModel: DrawViewModel by viewModels()
 
 
@@ -151,7 +150,7 @@ class DrawActivity :
 
     private fun goToDraw() { //버튼 누르면 애니메이션으로 위아래 컴포넌트 일단 다 제거되게
         binding.btnPreStart.setOnClickListener {
-            markerAvailable = true //일단 마커는 찍을 수 있게!
+            isMarkerAvailable = true //일단 마커는 찍을 수 있게!
             val animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
             val animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
 
@@ -192,7 +191,7 @@ class DrawActivity :
     }
 
     private fun addObserver() {
-        //markerAvailable은 출발지 설정 전에 마커 못 만들게 막아놨는데 버튼 누르면 그 제한을 푸는 거고
+        //isMarkerAvailable은 출발지 설정 전에 마커 못 만들게 막아놨는데 버튼 누르면 그 제한을 푸는 거고
         //btnAvailable은 완성하기/백버튼 활성화 비활성화 컨트롤 하려고 만든 거. 변수명이 명확하지 않아서 고칠 필요는 있을 듯.
 
         viewModel.btnAvailable.observe(this) {
@@ -255,13 +254,10 @@ class DrawActivity :
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = null,
                     touchList,
-                    startLatLngPublic,
+                    departureLatLng,
                     viewModel.distanceSum.value!!,
                     searchResult.name,
                     captureUri.toString()))
-
-            Timber.tag(ContentValues.TAG).d("departure 로그 : ${searchResult.name}")
-            Timber.tag(ContentValues.TAG).d("captureUri 로그 : ${captureUri}")
 
             startActivity(intent)
             dialog.dismiss()
@@ -291,114 +287,90 @@ class DrawActivity :
         }
     }
 
-    private fun drawCourse() {
-        val path = PathOverlay()
-        //startMarker-start
-        val startMarker = Marker()
-        val startLatLng = searchResult.locationLatLng //받아온 출발지 data를 여기서 세팅
-        startLatLngPublic = LatLng(startLatLng.latitude.toDouble(),
-            startLatLng.longitude.toDouble())
 
-        startMarker.position =
-            LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble()) // 출발지점
-        startMarker.anchor = PointF(0.5f, 0.7f)
-        startMarker.icon = OverlayImage.fromResource(R.drawable.start_marker)
-        startMarker.map = naverMap
+    private fun drawCourse() {
+        createDepartureMarker()
+        createRouteMarker()
+        deleteRouteMarker()
+    }
+
+    private fun createDepartureMarker() {
+        val departureMarker = Marker()
+        departureLatLng = LatLng(searchResult.locationLatLng.latitude.toDouble(),
+            searchResult.locationLatLng.longitude.toDouble())
+
+        departureMarker.position =
+            LatLng(departureLatLng.latitude, departureLatLng.longitude) // 출발지점
+        departureMarker.anchor = PointF(0.5f, 0.7f)
+        departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
+        departureMarker.map = naverMap
 
         cameraUpdate(
-            LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble())
+            LatLng(departureLatLng.latitude, departureLatLng.longitude)
         )
 
-        val coords = mutableListOf(
-            LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble())
-        )
-        //startMarker-end
+        coords.add(LatLng(departureLatLng.latitude, departureLatLng.longitude))
 
-        //거리 계산용 list 출발 지점 추가하는 코드
         distanceList.add(
             LatLng(
-                startLatLngPublic.latitude.toDouble(),
-                startLatLngPublic.longitude.toDouble()
+                departureLatLng.latitude,
+                departureLatLng.longitude
             )
         )
+    }
 
-
-        //lineMarker-start
-        //맵 터치 이벤트 관리
+    private fun createRouteMarker() {
         naverMap.setOnMapClickListener { point, coord ->
-            // 수신한 좌표값을 touchList에 추가
-            if (markerAvailable == true) { //이 터치 함수가 돌아가게 할지 말지
+            if (isMarkerAvailable) {
                 viewModel.btnAvailable.value = true
                 if (touchList.size < 20) { // 20개까지만 생성 가능하도록 제한을 걸어주기 위함
-
-
                     touchList.add(
                         LatLng(
-                            "${coord.latitude}".toDouble(),
-                            "${coord.longitude}".toDouble()
+                            coord.latitude,
+                            coord.longitude
                         )
                     )
 
-                    val marker = Marker()
+                    val routeMarker = Marker()
 
-                    marker.position = LatLng(
-                        "${coord.latitude}".toDouble(),
-                        "${coord.longitude}".toDouble()
+                    routeMarker.position = LatLng(
+                        coord.latitude,
+                        coord.longitude
                     )
-                    marker.anchor = PointF(0.5f, 0.5f)
-                    marker.icon = OverlayImage.fromResource(R.drawable.marker_line)
-                    marker.map = naverMap
+                    routeMarker.anchor = PointF(0.5f, 0.5f)
+                    routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
+                    routeMarker.map = naverMap
 
-                    markerList.add(marker)
+                    markerList.add(routeMarker)
 
-                    Timber.tag(ContentValues.TAG).d("markerListSize : ${markerList.size}")
-                    Timber.tag(ContentValues.TAG).d("markerList : ${markerList}")
-
-
-                    // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
-                    coords.add(LatLng("${coord.latitude}".toDouble(),
-                        "${coord.longitude}".toDouble()))
-
+                    // coords에 터치로 받아온 좌표값 추가
+                    coords.add(LatLng(coord.latitude,
+                        coord.longitude))
                     // 경로선 그리기
-
                     path.coords = coords
-
-                    Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
-
                     // 경로선 색상
                     path.color = Color.parseColor("#593EEC")
                     // 경로선 테두리 색상
                     path.outlineColor = Color.parseColor("#593EEC")
                     path.map = naverMap
 
-                    //터치가 될 때마다 거리 계산
                     calculateDistance()
-                    Timber.tag(ContentValues.TAG).d("distanceList : ${distanceList}")
-                    Timber.tag(ContentValues.TAG).d("sumList : ${sumList}")
-                    Timber.tag(ContentValues.TAG)
-                        .d("viewModel_distanceSum : ${viewModel.distanceSum.value}")
                 } else {
                     Toast.makeText(this, "마커는 20개까지 생성 가능합니다", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
 
-
-        } //lineMarker-end
-
-        //backButton
+    private fun deleteRouteMarker() {
         binding.btnMarkerBack.setOnClickListener {
-            //옵저버로 활성화 여부 컨트롤 하니까 이 조건은 이제 필요가 없는데. 뷰모델 값 false로 어떻게 바꿀지...
             touchList.removeLast()
-            Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
             markerList.last().map = null
             markerList.removeLast()
-            Timber.tag(ContentValues.TAG).d("markerList : ${markerList.size}")
 
             if (touchList.isEmpty()) {
                 viewModel.btnAvailable.value = false
             }
-
-
             coords.removeLast()
             if (coords.size >= 2) {
                 path.coords = coords
@@ -406,7 +378,6 @@ class DrawActivity :
             } else {
                 path.map = null
             }
-
 
             //백 버튼 눌렀을 때 거리 계산 다시
             if (distanceList.size > 0 && sumList.size > 0) {
@@ -416,8 +387,6 @@ class DrawActivity :
             val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
             viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
         }
-
-
     }
 
 
@@ -453,9 +422,8 @@ class DrawActivity :
     //모든 마커를 포함할 수 있도록 하는 꼭지점 좌표 두개를 만들고
 //중간지점의 좌표값을 구해서 카메라 위치를 이동할 수 있게 함.
     private fun createMbr() {
-        val startLatLng = startLatLngPublic
         val bounds = LatLngBounds.Builder()
-            .include(LatLng(startLatLng.latitude.toDouble(), startLatLng.longitude.toDouble()))
+            .include(LatLng(departureLatLng.latitude, departureLatLng.longitude))
             .include(touchList)
             .build()
         naverMap.setContentPadding(100, 100, 100, 100)
