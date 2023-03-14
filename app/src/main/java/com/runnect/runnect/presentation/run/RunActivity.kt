@@ -23,7 +23,6 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.*
 import com.runnect.runnect.databinding.ActivityRunBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
@@ -42,9 +41,10 @@ class RunActivity :
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
 
-    private val touchList = arrayListOf<LatLng>() //ArrayList<LatLng>() 하니까 x
-
-    lateinit var endRunTimer : String
+    val path = PathOverlay()
+    lateinit var departureLatLng: LatLng
+    var coords = mutableListOf<LatLng>()
+    lateinit var countToRunData: CountToRunData
 
 
     //타이머
@@ -52,9 +52,9 @@ class RunActivity :
 
     var timerTask: Timer? = null
 
-    var timerSecond : Int = 0
-    var timerMinute : Int = 0
-    var timerHour : Int = 0
+    var timerSecond: Int = 0
+    var timerMinute: Int = 0
+    var timerHour: Int = 0
 
 
     val viewModel: RunViewModel by viewModels()
@@ -128,7 +128,7 @@ class RunActivity :
                 position = LatLng(currentLocation.latitude, currentLocation.longitude)
             }
         }
-        drawCourse()
+        setCourse()
 
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
@@ -153,9 +153,15 @@ class RunActivity :
         }
     }
 
-    private fun drawCourse() {
 
-        val countToRunData: CountToRunData = intent.getParcelableExtra("CountToRunData")!!
+    private fun setCourse() {
+        setViewModelValue()
+        createDepartureMarker()
+        createRouteMarker()
+    }
+
+    private fun setViewModelValue() {
+        countToRunData = intent.getParcelableExtra("CountToRunData")!!
         viewModel.courseId.value = countToRunData.courseId
         viewModel.publicCourseId.value = countToRunData.publicCourseId
         viewModel.departure.value = countToRunData.departure
@@ -168,63 +174,49 @@ class RunActivity :
             BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
                 .toDouble()
         viewModel.distanceSum.value = distanceCut
+    }
 
-
-        val path = PathOverlay()
-        //startMarker-start
+    private fun createDepartureMarker() {
         val departureMarker = Marker()
-
-        val departureLatLng = countToRunData.startLatLng
+        departureLatLng = countToRunData.startLatLng
 
         departureMarker.position =
             LatLng(departureLatLng.latitude, departureLatLng.longitude) // 출발지점
         departureMarker.anchor = PointF(0.5f, 0.7f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
-
         cameraUpdate(
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
         )
+        coords.add(LatLng(departureLatLng.latitude, departureLatLng.longitude))
+    }
 
-        val coords = mutableListOf(
-            LatLng(departureLatLng.latitude, departureLatLng.longitude)
-        )
-        //startMarker-end
-
+    private fun createRouteMarker() {
         for (i in 1..countToRunData.touchList.size) {
-            //lineMarker-start
-            val routeMarker = Marker() //[i-1]은 for문을 touchList.size로 돌리기 때문
+            val routeMarker = Marker()
             routeMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
                 countToRunData.touchList[i - 1].longitude)
             routeMarker.anchor = PointF(0.5f, 0.5f)
             routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
             routeMarker.map = naverMap
 
-            // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
+            // coords에 터치로 받아온 좌표값을 추가
             coords.add(LatLng(countToRunData.touchList[i - 1].latitude,
                 countToRunData.touchList[i - 1].longitude))
-
             // 경로선 그리기
             path.coords = coords
-
-            Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
-
             // 경로선 색상
             path.color = Color.parseColor("#593EEC")
             // 경로선 테두리 색상
             path.outlineColor = Color.parseColor("#593EEC")
             path.map = naverMap
-
-        }  //lineMarker-end
-
-
+        }
     }
 
     private fun seeRecord() {
         binding.btnRunFinish.setOnClickListener {
             bottomSheet()
             stopTimer()
-
         }
     }
 
