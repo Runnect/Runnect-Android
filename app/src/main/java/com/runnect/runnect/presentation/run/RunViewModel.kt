@@ -11,6 +11,7 @@ class RunViewModel : ViewModel() {
     val departure = MutableLiveData<String>()
     val captureUri = MutableLiveData<String>()
     var touchList = MutableLiveData<ArrayList<LatLng>>() //ArrayList말고 다른 걸로 할까
+    val dataFrom = MutableLiveData<String>()
 
     var courseId = MutableLiveData<Int>()
     var publicCourseId = MutableLiveData<Int?>()

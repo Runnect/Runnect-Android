@@ -20,6 +20,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     var fromDrawActivity: Boolean = false
     var fromScrapFragment: Boolean = false
+    var fromEndRunActivity: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             Timber.tag("hu").d("fromDrawActivity (true->false): ${fromDrawActivity}")
         }
         else if (fromScrapFragment == true){ // 2. 다른 액티비티에서 넘어오는 경우 (from ScrapFragment)
-            fromScrapFragment = false
+            fromScrapFragment = false //이게 어디서 날라오는 거지? -> StorageFragment
             binding.btmNaviMain.menu.findItem(R.id.menu_main_discover).isChecked = true
             changeFragment(R.id.menu_main_discover)
             Timber.tag("hu").d("fromScrapFragment (true->false): ${fromScrapFragment}")
@@ -53,6 +54,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
 
     private fun fromValueCheck(){
+
         fromDrawActivity =
             intent.getBooleanExtra("fromDrawActivity", false) //null 대신 default value를 false로 설정함.
         Timber.tag("hu")
@@ -62,6 +64,16 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             intent.getBooleanExtra("fromScrapFragment", false) //null 대신 default value를 false로 설정함.
         Timber.tag("hu")
             .d("Is this from ScrapFragment? : ${fromScrapFragment}")
+
+        //지금 변수명이 헷갈리게 돼있음 fromDrawActivity가 true면 storage로 이동하게 돼있어서 이것보다는 isAvailableToStorage, toStorage 이런 걸로 바꾸는 게 나을 듯
+        fromEndRunActivity = intent.getStringExtra("dataFrom")
+        if(fromEndRunActivity == "myDraw"){
+            fromDrawActivity = true //보관함으로 갈 수 있게
+        }
+
+        if(fromEndRunActivity == "draw"){
+            //아무것도 안 해도 됨. (fromDrawActivity == false) && (fromScrapFragment == false)이기만하면 courseMain을 띄우니까
+        }
 
     }
 
@@ -80,7 +92,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             R.id.menu_main_drawing -> supportFragmentManager.commit {
                 fromDrawActivity = false
                 fromScrapFragment = false
-                replace<CourseMainFragment>(R.id.fl_main)
+                replace<CourseMainFragment>(R.id.fl_main) //replace면 back stack에 안 쌓이는 건가?
             }
             R.id.menu_main_storage -> supportFragmentManager.commit {
                 fromDrawActivity = false

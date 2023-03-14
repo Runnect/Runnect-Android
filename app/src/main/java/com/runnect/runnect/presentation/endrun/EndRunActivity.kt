@@ -15,8 +15,10 @@ import com.bumptech.glide.Glide
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.RequestPostRecordDto
 import com.runnect.runnect.data.model.RunToEndRunData
+import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.showToast
@@ -78,13 +80,21 @@ class EndRunActivity :
     }
 
     override fun onBackPressed() {
-        finish()
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("dataFrom", viewModel.dataFrom.value)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) //CLEAR TOP이랑 CLEAR TASK랑 무슨 차이야야        }
+        }
+        startActivity(intent)
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     fun backBtn() {
         binding.imgBtnBack.setOnClickListener {
-            finish()
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("dataFrom", viewModel.dataFrom.value)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) //CLEAR TOP이랑 CLEAR TASK랑 무슨 차이야야        }
+            }
+            startActivity(intent)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
@@ -99,6 +109,7 @@ class EndRunActivity :
         viewModel.departure.value = runToEndRunData.departure // 뷰모델에 출발지 세팅
         viewModel.courseId.value = runToEndRunData.courseId
         viewModel.publicCourseId.value = runToEndRunData.publicCourseId
+        viewModel.dataFrom.value = runToEndRunData.dataFrom
 
         val captureUri = runToEndRunData.captureUri!!.toUri()
         viewModel.captureUri.value = captureUri

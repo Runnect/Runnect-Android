@@ -26,6 +26,7 @@ class EndRunViewModel : ViewModel() {
     val uploadResult = MutableLiveData<ResponsePostRecordDto>()
     val errorMessage = MutableLiveData<String>()
     val currentTime = MutableLiveData<String>() //현재 시간
+    val dataFrom = MutableLiveData<String>()
 
     private val _endRunState = MutableLiveData<UiState>(UiState.Empty)
     val endRunState: LiveData<UiState>

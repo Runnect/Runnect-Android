@@ -54,6 +54,7 @@ class CountDownActivity :
             viewModel.touchList.value = myDrawToRunData.touchList
             viewModel.startLatLng.value = myDrawToRunData.startLatLng
             viewModel.captureUri.value = myDrawToRunData.image
+            viewModel.dataFrom.value = "myDraw"
         }
 
         if (drawToRunData != null) {
@@ -65,6 +66,8 @@ class CountDownActivity :
             viewModel.touchList.value = drawToRunData.touchList
             viewModel.startLatLng.value = drawToRunData.startLatLng
             viewModel.captureUri.value = drawToRunData.captureUri
+            viewModel.dataFrom.value = "draw"
+
         }
 
 
@@ -98,9 +101,9 @@ class CountDownActivity :
                                 viewModel.distanceSum.value!!.toFloat(),
                                 viewModel.touchList.value!!,
                                 viewModel.startLatLng.value!!,
-                                viewModel.captureUri.value!!
+                                viewModel.captureUri.value!!,
+                                viewModel.dataFrom.value!!
                             ))
-
                     }
                     startActivity(intentToRun)
                     finish()

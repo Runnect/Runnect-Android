@@ -14,4 +14,5 @@ data class CountToRunData(
     val touchList: ArrayList<LatLng>,
     val startLatLng: LatLng,
     val image: String,
+    val dataFrom : String
 ) : Parcelable

@@ -128,11 +128,11 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            tools:text="0"
             android:textColor="@color/G1"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_unit"
-            app:layout_constraintStart_toStartOf="@id/iv_time"/>
+            app:layout_constraintStart_toStartOf="@id/iv_time"
+            tools:text="0" />
 
         <TextView
             android:id="@+id/tv_time_colon_1"
@@ -141,12 +141,12 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            tools:text=":"
+            android:text=":"
             android:textColor="@color/G1"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@id/tv_time_hour"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_hour"
-            />
+            app:layout_constraintStart_toEndOf="@id/tv_time_hour"
+            tools:text=":" />
 
         <TextView
             android:id="@+id/tv_time_minute"
@@ -155,12 +155,11 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            tools:text="0"
             android:textColor="@color/G1"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@id/tv_time_colon_1"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_hour"
-            />
+            app:layout_constraintStart_toEndOf="@id/tv_time_colon_1"
+            tools:text="0" />
 
         <TextView
             android:id="@+id/tv_time_colon_2"
@@ -169,12 +168,12 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            tools:text=":"
+            android:text=":"
             android:textColor="@color/G1"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@id/tv_time_minute"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_minute"
-            />
+            app:layout_constraintStart_toEndOf="@id/tv_time_minute"
+            tools:text=":" />
 
         <TextView
             android:id="@+id/tv_time_second"
@@ -183,13 +182,11 @@
             android:elevation="11dp"
             android:fontFamily="@font/pretendard_semibold"
             android:outlineProvider="none"
-            tools:text="0"
             android:textColor="@color/G1"
             android:textSize="24sp"
-            app:layout_constraintStart_toEndOf="@id/tv_time_colon_2"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_minute"
-            />
-
+            app:layout_constraintStart_toEndOf="@id/tv_time_colon_2"
+            tools:text="0" />
 
 
         <ImageView
@@ -214,15 +211,15 @@
             tools:layout_editor_absoluteY="0dp" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:textAlignment="center"
-            android:fontFamily="@font/pretendard_semibold"
             android:id="@+id/btn_run_finish"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/radius_10_m1_button"
+            android:fontFamily="@font/pretendard_semibold"
             android:text="@string/run_finish_run_button"
+            android:textAlignment="center"
             android:textColor="@color/W1"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -237,13 +234,13 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="18dp"
             android:backgroundTint="@color/white"
+            android:contentDescription="@string/run_description_current_location"
             android:src="@drawable/currentlocation"
             app:backgroundTint="@color/white"
             app:fabCustomSize="48dp"
             app:layout_constraintBottom_toTopOf="@id/btn_run_finish"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="@null"
-            android:contentDescription="@string/run_description_current_location" />
+            app:tint="@null" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

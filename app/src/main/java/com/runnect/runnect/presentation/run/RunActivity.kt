@@ -23,6 +23,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.*
 import com.runnect.runnect.databinding.ActivityRunBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
@@ -72,12 +73,14 @@ class RunActivity :
     }
 
     override fun onBackPressed() {
+        stopTimer()
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
+            stopTimer()
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
@@ -148,8 +151,7 @@ class RunActivity :
         }
     }
 
-    private fun drawCourse() { //여기도 지금 getExtra가 3종류인데 CountDown 하나에서 넘어오는 거니까 수정해야 함.
-
+    private fun drawCourse() {
 
         val countToRunData: CountToRunData = intent.getParcelableExtra("CountToRunData")!!
         viewModel.courseId.value = countToRunData.courseId
@@ -158,52 +160,49 @@ class RunActivity :
         viewModel.startLatLng.value = countToRunData.startLatLng
         viewModel.touchList.value = countToRunData.touchList
         viewModel.captureUri.value = countToRunData.image
+        viewModel.dataFrom.value = countToRunData.dataFrom
 
         val distanceCut =
             BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
                 .toDouble()
         viewModel.distanceSum.value = distanceCut
 
-// 앞에 drawToRunDta. 이 부분 변수처리 해놓고 .뒤에 딸려오는 변수명 맞춰준다음 .앞에 이름만 바꿔주면 코드 양 줄일 수 있을듯
-
 
         val path = PathOverlay()
         //startMarker-start
-        val startMarker = Marker()
+        val departureMarker = Marker()
 
-        val startLatLng = countToRunData!!.startLatLng
+        val departureLatLng = countToRunData.startLatLng
 
-        startMarker.position =
-            LatLng(startLatLng.latitude, startLatLng.longitude) // 출발지점
-        startMarker.anchor = PointF(0.5f, 0.7f)
-        startMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
-        startMarker.map = naverMap
+        departureMarker.position =
+            LatLng(departureLatLng.latitude, departureLatLng.longitude) // 출발지점
+        departureMarker.anchor = PointF(0.5f, 0.7f)
+        departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
+        departureMarker.map = naverMap
 
         cameraUpdate(
-            LatLng(startLatLng.latitude, startLatLng.longitude)
+            LatLng(departureLatLng.latitude, departureLatLng.longitude)
         )
 
         val coords = mutableListOf(
-            LatLng(startLatLng.latitude, startLatLng.longitude)
+            LatLng(departureLatLng.latitude, departureLatLng.longitude)
         )
         //startMarker-end
 
-
         for (i in 1..countToRunData.touchList.size) {
             //lineMarker-start
-            val lineMarker = Marker() //[i-1]은 for문을 touchList.size로 돌리기 때문
-            lineMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
+            val routeMarker = Marker() //[i-1]은 for문을 touchList.size로 돌리기 때문
+            routeMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
                 countToRunData.touchList[i - 1].longitude)
-            lineMarker.anchor = PointF(0.5f, 0.5f)
-            lineMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
-            lineMarker.map = naverMap
+            routeMarker.anchor = PointF(0.5f, 0.5f)
+            routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
+            routeMarker.map = naverMap
 
             // 경로선 list인 coords에 터치로 받아온 좌표값을 추가
             coords.add(LatLng(countToRunData.touchList[i - 1].latitude,
                 countToRunData.touchList[i - 1].longitude))
 
             // 경로선 그리기
-
             path.coords = coords
 
             Timber.tag(ContentValues.TAG).d("pat.coords : ${path.coords}")
@@ -233,6 +232,7 @@ class RunActivity :
         val bottomSheetDialog = BottomSheetDialog(
             this@RunActivity, R.style.BottomSheetDialogTheme
         )
+
         // layout_bottom_sheet를 뷰 객체로 생성
         val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
             R.layout.custom_dialog_finish_run,
@@ -252,7 +252,8 @@ class RunActivity :
                         timerHour,
                         timerMinute,
                         timerSecond,
-                        time))
+                        time,
+                        viewModel.dataFrom.value!!))
 
                 addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
 

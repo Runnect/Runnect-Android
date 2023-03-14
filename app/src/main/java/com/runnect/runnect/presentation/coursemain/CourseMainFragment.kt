@@ -36,7 +36,7 @@ class CourseMainFragment :
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapView, it).commit()
             }
-        mapFragment.getMapAsync(this) //지도 객체 얻어오기
+        mapFragment.getMapAsync(this)
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
     }
 
@@ -49,9 +49,8 @@ class CourseMainFragment :
     }
 
     private fun init() {
-        fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity()) //
+        fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
         requestPermission()
-//        initView() //지도 뷰 표시
     }
 
 
@@ -64,6 +63,7 @@ class CourseMainFragment :
     private fun drawCourseButton() {
         binding.btnDraw.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             startActivity(intent)
         }
     }

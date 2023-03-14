@@ -66,7 +66,7 @@ class SearchActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    private fun backButton() { //이거 왜 안 먹지 DrawActivity랑 코드 똑같이 해줬는데
+    private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
