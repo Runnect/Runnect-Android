@@ -11,14 +11,11 @@ import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import com.bumptech.glide.Glide
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.RequestPostRecordDto
 import com.runnect.runnect.data.model.RunToEndRunData
-import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.showToast
@@ -37,6 +34,8 @@ class EndRunActivity :
     lateinit var pace: String
 
     lateinit var runToEndRunData: RunToEndRunData
+    var paceMinute : Int = 0
+    var paceSecond : Int = 0
 
     @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
@@ -122,27 +121,32 @@ class EndRunActivity :
         Timber.tag(ContentValues.TAG).d("timerMinute 값 : ${timerMinute}")
         Timber.tag(ContentValues.TAG).d("timerSecond 값 : ${timerSecond}")
 
+        //여기는 그냥 RunToEndRunData에 String attribute 하나 추가해서 그대로 받아온다음 그대로 보여주는 게 편하겠는데.
+        //근데 이거 할 때 이전처럼 화면에서 받아오는 식으로 코드 짜면 또 1초 딜레이 생김.
         viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
 
-        //여기까지 잘 받아왔는데 왜 밑에선 0이뜨지?
-        val transferHourToMinute : Double = timerHour!!.toDouble() * 60
-        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : ${transferHourToMinute}")
-
-        val transferSecondToMinute : Double = timerSecond!!.toDouble() / 60
-        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : ${transferSecondToMinute}")
-
+        val transferHourToMinute: Double = timerHour!!.toDouble() * 60
+        val transferSecondToMinute: Double = timerSecond!!.toDouble() / 60
         val totalMinute = transferHourToMinute + timerMinute!! + transferSecondToMinute
+
+
+        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : ${transferHourToMinute}")
+        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : ${transferSecondToMinute}")
         Timber.tag(ContentValues.TAG).d("totalMinute 값 : ${totalMinute}")
+
 
         val paceFull =
             BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(2,
-                RoundingMode.FLOOR).toDouble() // ex) 18.20
+                RoundingMode.FLOOR).toDouble() // ex) 18.20 -> 이걸 18'20" 이렇게 하면 되는건가? -> 맞음
+
+        paceMinute = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(0,
+            RoundingMode.FLOOR).toInt() // ex) 18
+
+        paceSecond = (paceFull - paceMinute).toInt()
+
         Timber.tag(ContentValues.TAG).d("paceFull 값 : ${paceFull}")
-        val paceSecond = paceFull - BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(0,
-            RoundingMode.FLOOR).toDouble() // ex) 18.20 - 18 = 0.20
-        Timber.tag(ContentValues.TAG).d("paceSecond 값 : ${paceSecond}")
-        val paceMinute = paceFull - paceSecond // ex) 18.20 - 0.20 = 18
         Timber.tag(ContentValues.TAG).d("paceMinute 값 : ${paceMinute}")
+        Timber.tag(ContentValues.TAG).d("paceSecond 값 : ${paceSecond}")
 
 
         viewModel.paceTotal.value = "$paceMinute'$paceSecond\""
@@ -180,8 +184,14 @@ class EndRunActivity :
                     viewModel.publicCourseId.value,
                     viewModel.editTextValue.value!!,
                     viewModel.timerHourMinSec.value!!,
-                    "$pace:$pace:$pace")
-            )
+                    "0:$paceMinute:$paceSecond")
+            )//페이스 data 서버로 보낼 때 뭘 보내줘야 되는 거지
+            //시간은 필요없음 분,초만 넘기면 되는거라
+            //그냥 분:초 이렇게만 보내면 안 되나?
+            //된다면 paceMinute:paceSecond 보내주면 되고
+            //안된다면 0:paceMinute:paceSecond 이런식으로 보내야 함.
+            //활동기록 페이지에서 받아쓰기 까다로울 것 같은데 어쩔 수 없음.
+
             val intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
             startActivity(intent)

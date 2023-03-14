@@ -44,6 +44,8 @@ class RunActivity :
 
     private val touchList = arrayListOf<LatLng>() //ArrayList<LatLng>() 하니까 x
 
+    lateinit var endRunTimer : String
+
 
     //타이머
     var time = 0
@@ -295,9 +297,6 @@ class RunActivity :
                 }
             }
 
-            //String으로 넘길거면 그냥 이거 3개 다 합쳐서 넘겨도 될 듯?
-            //intent로 넘길 값 전역변수에 세팅
-            //이 값들을 미처 갱신하기 전에 다음으로 넘어가버리는 듯?
             timerHour = hour
             timerMinute = minute
             timerSecond = second
