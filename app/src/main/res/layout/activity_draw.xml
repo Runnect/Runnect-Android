@@ -151,6 +151,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_course_distance_record" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            app:rippleColor="@color/transparent_00"
             android:enabled="false"
             android:id="@+id/btn_markerBack"
             android:layout_width="48dp"

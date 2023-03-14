@@ -34,6 +34,7 @@ class EndRunActivity :
     val viewModel: EndRunViewModel by viewModels()
 
     val currentTime: Long = System.currentTimeMillis() // ms로 반환
+    lateinit var pace: String
 
     lateinit var runToEndRunData: RunToEndRunData
 
@@ -117,15 +118,35 @@ class EndRunActivity :
         val timerHour = runToEndRunData.timerHour
         val timerMinute = runToEndRunData.timerMinute
         val timerSecond = runToEndRunData.timerSecond
+        Timber.tag(ContentValues.TAG).d("timerHour 값 : ${timerHour}")
+        Timber.tag(ContentValues.TAG).d("timerMinute 값 : ${timerMinute}")
+        Timber.tag(ContentValues.TAG).d("timerSecond 값 : ${timerSecond}")
 
         viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
 
-        val pace =
-            BigDecimal(runToEndRunData.totalDistance!! / runToEndRunData.timeTotal!!).setScale(1,
-                RoundingMode.FLOOR).toString()
+        //여기까지 잘 받아왔는데 왜 밑에선 0이뜨지?
+        val transferHourToMinute : Double = timerHour!!.toDouble() * 60
+        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : ${transferHourToMinute}")
 
-        viewModel.paceTotal.value = "$pace:$pace:$pace" //서버에서 요구하는 형식에 맞춰주기 위함 HH:MM:SS
-        // 이 부분 api 수정돼야하지 않을까? 페이스 표기가 6'85" 이런식으로 되는데 HH:MM:SS로 받으면 어떡해
+        val transferSecondToMinute : Double = timerSecond!!.toDouble() / 60
+        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : ${transferSecondToMinute}")
+
+        val totalMinute = transferHourToMinute + timerMinute!! + transferSecondToMinute
+        Timber.tag(ContentValues.TAG).d("totalMinute 값 : ${totalMinute}")
+
+        val paceFull =
+            BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(2,
+                RoundingMode.FLOOR).toDouble() // ex) 18.20
+        Timber.tag(ContentValues.TAG).d("paceFull 값 : ${paceFull}")
+        val paceSecond = paceFull - BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(0,
+            RoundingMode.FLOOR).toDouble() // ex) 18.20 - 18 = 0.20
+        Timber.tag(ContentValues.TAG).d("paceSecond 값 : ${paceSecond}")
+        val paceMinute = paceFull - paceSecond // ex) 18.20 - 0.20 = 18
+        Timber.tag(ContentValues.TAG).d("paceMinute 값 : ${paceMinute}")
+
+
+        viewModel.paceTotal.value = "$paceMinute'$paceSecond\""
+        // 통신 input에 viewModel 값을 그대로 넣지 말고 raw한 상태로 넣고 뷰모델에는 화면에 표기할 형식으로 세팅해줘야 할듯
     }
 
     private fun editTextController() {
@@ -159,7 +180,7 @@ class EndRunActivity :
                     viewModel.publicCourseId.value,
                     viewModel.editTextValue.value!!,
                     viewModel.timerHourMinSec.value!!,
-                    viewModel.paceTotal.value!!)
+                    "$pace:$pace:$pace")
             )
             val intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거

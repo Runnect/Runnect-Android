@@ -11,9 +11,8 @@ data class RunToEndRunData(
     val totalDistance: Double?,
     val captureUri: String?,
     val departure: String?,
-    val timerHour : String?,
-    val timerMinute: String?,
-    val timerSecond: String?,
-    val timeTotal: Int?,
+    val timerHour : Int?,
+    val timerMinute: Int?,
+    val timerSecond: Int?,
     val dataFrom: String
 ) : Parcelable

@@ -35,6 +35,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun initView() {//MainActivity가 처음 켜질 때 (1. 앱 처음 빌드, 2.다른 액티비티에서 넘어오는 경우)
+        //여기있는 것들 어차피 다 한 번에 일어날 수 없느 상황들이라 else if로 엮지 말고 그냥 독립적인 if문으로 돌려도 되지 않을까?
+        //else if가 더 빨라서 이렇게 해놓긴 했는데.
         if ( (fromDrawActivity == false) && (fromScrapFragment == false) ) {  //1. 앱 처음 빌드
             changeFragment(R.id.menu_main_drawing)
             Timber.tag("hu").d("fromDrawActivity (default) : ${fromDrawActivity}")
@@ -54,7 +56,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
 
     private fun fromValueCheck(){
-
         fromDrawActivity =
             intent.getBooleanExtra("fromDrawActivity", false) //null 대신 default value를 false로 설정함.
         Timber.tag("hu")

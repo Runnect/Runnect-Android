@@ -50,9 +50,9 @@ class RunActivity :
 
     var timerTask: Timer? = null
 
-    lateinit var timerSecond: String
-    lateinit var timerMinute: String
-    lateinit var timerHour: String
+    var timerSecond : Int = 0
+    var timerMinute : Int = 0
+    var timerHour : Int = 0
 
 
     val viewModel: RunViewModel by viewModels()
@@ -252,7 +252,6 @@ class RunActivity :
                         timerHour,
                         timerMinute,
                         timerSecond,
-                        time,
                         viewModel.dataFrom.value!!))
 
                 addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
@@ -299,9 +298,9 @@ class RunActivity :
             //String으로 넘길거면 그냥 이거 3개 다 합쳐서 넘겨도 될 듯?
             //intent로 넘길 값 전역변수에 세팅
             //이 값들을 미처 갱신하기 전에 다음으로 넘어가버리는 듯?
-            timerHour = binding.tvTimeHour.text.toString()
-            timerMinute = binding.tvTimeMinute.text.toString()
-            timerSecond = binding.tvTimeSecond.text.toString()
+            timerHour = hour
+            timerMinute = minute
+            timerSecond = second
 
             Timber.tag(ContentValues.TAG).d("timerHour 값 : $timerHour")
             Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
