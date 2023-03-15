@@ -62,6 +62,7 @@ class DrawActivity :
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
     private val viewModel: DrawViewModel by viewModels()
+    private val maxMarkerNum: Int = 20
 
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
@@ -287,8 +288,8 @@ class DrawActivity :
 
     private fun createDepartureMarker() {
         val departureMarker = Marker()
-        departureLatLng = LatLng(searchResult.locationLatLng.latitude.toDouble(),
-            searchResult.locationLatLng.longitude.toDouble())
+        departureLatLng = LatLng(searchResult.locationLatLng.latitude,
+            searchResult.locationLatLng.longitude)
 
         departureMarker.position =
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
@@ -310,43 +311,51 @@ class DrawActivity :
         )
     }
 
+
     private fun createRouteMarker() {
         naverMap.setOnMapClickListener { _, coord ->
             if (isMarkerAvailable) {
                 viewModel.isBtnAvailable.value = true
-                if (touchList.size < 20) { // 마커 생성 갯수 제한
-                    touchList.add(
-                        LatLng(
-                            coord.latitude,
-                            coord.longitude
-                        )
-                    )
-
-                    val routeMarker = Marker()
-
-                    routeMarker.position = LatLng(
-                        coord.latitude,
-                        coord.longitude
-                    )
-                    routeMarker.anchor = PointF(0.5f, 0.5f)
-                    routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
-                    routeMarker.map = naverMap
-
-                    markerList.add(routeMarker)
-
-                    coords.add(LatLng(coord.latitude, coord.longitude)) // coords에 터치로 받아온 좌표값 추가
-
-                    path.coords = coords // 경로선 그리기
-                    path.color = Color.parseColor("#593EEC") // 경로선 색상
-                    path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
-                    path.map = naverMap
-
+                if (touchList.size < maxMarkerNum) {
+                    addCoordsToTouchList(coord)
+                    setRouteMarker(coord)
+                    generateRouteLine(coord)
                     calculateDistance()
                 } else {
                     Toast.makeText(this, "마커는 20개까지 생성 가능합니다", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    private fun addCoordsToTouchList(coord: LatLng) {
+        touchList.add(
+            LatLng(
+                coord.latitude,
+                coord.longitude
+            )
+        )
+    }
+
+    private fun setRouteMarker(coord: LatLng) {
+        val routeMarker = Marker()
+        routeMarker.position = LatLng(
+            coord.latitude,
+            coord.longitude
+        )
+        routeMarker.anchor = PointF(0.5f, 0.5f)
+        routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
+        routeMarker.map = naverMap
+
+        markerList.add(routeMarker)
+    }
+
+    private fun generateRouteLine(coord: LatLng) {
+        coords.add(LatLng(coord.latitude, coord.longitude)) // coords에 터치로 받아온 좌표값 추가
+        path.coords = coords // 경로선 그리기
+        path.color = Color.parseColor("#593EEC") // 경로선 색상
+        path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
+        path.map = naverMap
     }
 
     private fun deleteRouteMarker() {
