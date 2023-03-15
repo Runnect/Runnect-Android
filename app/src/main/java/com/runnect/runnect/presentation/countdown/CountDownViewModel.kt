@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.countdown
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.naver.maps.geometry.LatLng
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 
 class CountDownViewModel : ViewModel() {
 

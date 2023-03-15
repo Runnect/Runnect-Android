@@ -75,7 +75,7 @@ class SearchActivity :
 
     private fun initAdapter() {
         searchAdapter = SearchAdapter(this).apply {
-            submitList(viewModel.dataList.value) //다른 옵저버로 뺄까
+            submitList(viewModel.dataList.value)
         }
         binding.recyclerViewSearch.adapter = searchAdapter
     }
@@ -93,7 +93,7 @@ class SearchActivity :
 
         viewModel.searchState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> {
                     binding.indeterminateBar.isVisible = true
                 }
@@ -114,7 +114,6 @@ class SearchActivity :
                             recyclerViewSearch.isVisible = true
 
                             initAdapter()
-
                         }
                     }
                 }

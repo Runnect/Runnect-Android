@@ -37,27 +37,24 @@ class RunActivity :
 
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
-
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
+    private lateinit var departureLatLng: LatLng
+    private lateinit var countToRunData: CountToRunData
+
+    private val path = PathOverlay()
+
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
-
-    val path = PathOverlay()
-    lateinit var departureLatLng: LatLng
-    var coords = mutableListOf<LatLng>()
-    lateinit var countToRunData: CountToRunData
-
+    private var coords = mutableListOf<LatLng>()
 
     //타이머
-    var time = 0
-
-    var timerTask: Timer? = null
-
-    var timerSecond: Int = 0
-    var timerMinute: Int = 0
-    var timerHour: Int = 0
+    private var time = 0
+    private var timerTask: Timer? = null
+    private var timerSecond: Int = 0
+    private var timerMinute: Int = 0
+    private var timerHour: Int = 0
 
 
-    val viewModel: RunViewModel by viewModels()
+    private val viewModel: RunViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,13 +87,12 @@ class RunActivity :
 
     private fun initView() {
 
-        //MapFragment 추가
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapView, it).commit()
             }
-        mapFragment.getMapAsync(this) //지도 객체 얻어오기
+        mapFragment.getMapAsync(this)
         locationSource = FusedLocationSource(
             this,
             LOCATION_PERMISSION_REQUEST_CODE
@@ -105,7 +101,7 @@ class RunActivity :
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(this) //
-        initView() //지도 뷰 표시
+        initView()
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -181,7 +177,7 @@ class RunActivity :
         departureLatLng = countToRunData.startLatLng
 
         departureMarker.position =
-            LatLng(departureLatLng.latitude, departureLatLng.longitude) // 출발지점
+            LatLng(departureLatLng.latitude, departureLatLng.longitude)
         departureMarker.anchor = PointF(0.5f, 0.7f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
@@ -200,15 +196,11 @@ class RunActivity :
             routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
             routeMarker.map = naverMap
 
-            // coords에 터치로 받아온 좌표값을 추가
-            coords.add(LatLng(countToRunData.touchList[i - 1].latitude,
+            coords.add(LatLng(countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
                 countToRunData.touchList[i - 1].longitude))
-            // 경로선 그리기
-            path.coords = coords
-            // 경로선 색상
-            path.color = Color.parseColor("#593EEC")
-            // 경로선 테두리 색상
-            path.outlineColor = Color.parseColor("#593EEC")
+            path.coords = coords // 경로선 그리기
+            path.color = Color.parseColor("#593EEC") // 경로선 색상
+            path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
             path.map = naverMap
         }
     }

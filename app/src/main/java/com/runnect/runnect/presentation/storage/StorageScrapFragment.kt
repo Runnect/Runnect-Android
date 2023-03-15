@@ -31,7 +31,7 @@ class StorageScrapFragment :
             Timber.tag(ContentValues.TAG).d("코스 아이디 : ${it.publicCourseId}")
             startActivity(
                 Intent(activity, CourseDetailActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     putExtra("courseId", it.publicCourseId)
                 },
             )
@@ -73,7 +73,11 @@ class StorageScrapFragment :
     }
 
     private fun addObserver() {
+        observeItemSize()
+        observeStorageState()
+    }
 
+    private fun observeItemSize() {
         viewModel.itemSize.observe(viewLifecycleOwner) {
             if (viewModel.itemSize.value == 0) {
                 with(binding) {
@@ -91,14 +95,16 @@ class StorageScrapFragment :
                 }
             }
         }
+    }
 
+    private fun observeStorageState() {
         viewModel.storageState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    if(viewModel.getScrapListResult.value!!.data.scraps.isEmpty()){
+                    if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
                         binding.ivStorageNoScrap.isVisible = true
                         binding.tvStorageNoScrapGuide.isVisible = true
                         binding.btnStorageNoScrap.isVisible = true
@@ -124,7 +130,7 @@ class StorageScrapFragment :
         binding.btnStorageNoScrap.setOnClickListener {
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra("fromScrapFragment", true)
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             } //임의의 intent
             startActivity(intent)
         }

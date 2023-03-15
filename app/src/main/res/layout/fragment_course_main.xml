@@ -20,10 +20,10 @@
 
         <View
             android:id="@+id/view_empty"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/transparent_00"
             android:layout_width="match_parent"
-            android:layout_height="57dp"/>
+            android:layout_height="57dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
         <androidx.appcompat.widget.AppCompatButton
@@ -50,14 +50,13 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="22dp"
             android:backgroundTint="@color/white"
+            android:contentDescription="@string/course_main_description_current_location"
             android:src="@drawable/currentlocation"
             app:backgroundTint="@color/white"
             app:fabCustomSize="48dp"
             app:layout_constraintBottom_toTopOf="@id/btn_draw"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="@null"
-            android:contentDescription="@string/course_main_description_current_location" />
-
+            app:tint="@null" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

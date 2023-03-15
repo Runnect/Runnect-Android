@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.api.KApiSearch
-import com.runnect.runnect.data.model.entity.LocationLatLngEntity
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.data.model.tmap.Poi
 import com.runnect.runnect.data.model.tmap.Pois
@@ -64,7 +64,7 @@ class SearchViewModel : ViewModel() {
             SearchResultEntity(
                 fullAdress = makeMainAdress(it),
                 name = it.name ?: "",
-                locationLatLng = LocationLatLngEntity(it.noorLat, it.noorLon)
+                locationLatLng = LatLng(it.noorLat.toDouble(), it.noorLon.toDouble())
             )
         }
     }

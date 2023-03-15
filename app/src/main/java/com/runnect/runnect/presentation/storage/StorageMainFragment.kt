@@ -29,13 +29,13 @@ class StorageMainFragment :
     }
 
 
-    private fun initView(){
+    private fun initView() {
         childFragmentManager.commit {
             add<StorageMyDrawFragment>(R.id.fl_main) //여기 add된 게 tabLayoutAction 돌면 메모리 누수 없겠지?
         }
     }
 
-    private fun tabLayoutAction() { //지금 이게 아예 안 먹어
+    private fun tabLayoutAction() {
         binding.storageTab.addOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
                 // 탭 버튼을 선택할 때 이벤트
@@ -48,7 +48,8 @@ class StorageMainFragment :
                         1 -> childFragmentManager.commit {
                             replace<StorageScrapFragment>(R.id.fl_main)
                             Timber.tag("hu").d("스크랩으로 이동하였음")
-                        } else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
+                        }
+                        else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
                     }
                 }
 

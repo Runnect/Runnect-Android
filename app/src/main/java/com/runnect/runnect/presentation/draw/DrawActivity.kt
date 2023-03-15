@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.draw
 
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -45,34 +44,28 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.properties.Delegates
 
 class DrawActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
+    private lateinit var departureLatLng: LatLng
+    private lateinit var animDown: Animation
+    private lateinit var animUp: Animation
+    private lateinit var searchResult: SearchResultEntity
+    private lateinit var captureUri: Uri
+
+    private val coords = mutableListOf<LatLng>()
+    private val path = PathOverlay()
+    private val listForCalcDistance = arrayListOf<LatLng>()
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
+    private val viewModel: DrawViewModel by viewModels()
 
-    lateinit var departureLatLng: LatLng
-    val coords = mutableListOf<LatLng>()
-    val path = PathOverlay()
-    lateinit var animDown: Animation
-    lateinit var animUp: Animation
-    var distanceSum: Float = 0.0f
-
-
-    private lateinit var searchResult: SearchResultEntity
-
-    val distanceList = arrayListOf<LatLng>()//거리 계산용 list
-    var sumList = mutableListOf<Double>()//Double
-
-
-    lateinit var captureUri: Uri
-    var isMarkerAvailable: Boolean = false
-    var distancePublic by Delegates.notNull<Float>()
-    val viewModel: DrawViewModel by viewModels()
+    private var distanceSum: Float = 0.0f
+    private var sumList = mutableListOf<Double>()
+    private var isMarkerAvailable: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,13 +79,13 @@ class DrawActivity :
                 searchResult = intent.getParcelableExtra("searchResult")
                     ?: throw Exception("데이터가 존재하지 않습니다.")
 
-                Timber.tag(ContentValues.TAG).d("searchResult : ${searchResult}")
+                Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
                 viewModel.searchResult.value = searchResult
                 initView()
                 courseFinish()
                 addObserver()
                 backButton()
-                goToDraw()
+                activateDrawCourse()
             }
         }
 
@@ -104,14 +97,12 @@ class DrawActivity :
     }
 
     private fun initView() {
-
-        //MapFragment 추가
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapView, it).commit()
             }
-        mapFragment.getMapAsync(this) //지도 객체 얻어오기
+        mapFragment.getMapAsync(this)
         locationSource = FusedLocationSource(
             this,
             LOCATION_PERMISSION_REQUEST_CODE
@@ -123,7 +114,6 @@ class DrawActivity :
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
 
-
         //네이버 맵 sdk에 위치 정보 제공
         locationSource = FusedLocationSource(this@DrawActivity, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
@@ -132,8 +122,6 @@ class DrawActivity :
 
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
-
-
     }
 
 
@@ -145,11 +133,10 @@ class DrawActivity :
                     viewModel.uploadCourse()
                 }, 300
             )
-
         }
     }
 
-    private fun goToDraw() { //버튼 누르면 애니메이션으로 위아래 컴포넌트 일단 다 제거되게
+    private fun activateDrawCourse() {
         binding.btnPreStart.setOnClickListener {
             isMarkerAvailable = true
             hideDeparture()
@@ -192,26 +179,31 @@ class DrawActivity :
     }
 
     private fun addObserver() {
-        //isMarkerAvailable은 출발지 설정 전에 마커 못 만들게 막아놨는데 버튼 누르면 그 제한을 푸는 거고
-        //btnAvailable은 완성하기/백버튼 활성화 비활성화 컨트롤 하려고 만든 거. 변수명이 명확하지 않아서 고칠 필요는 있을 듯.
+        observeIsBtnAvailable()
+        observeDrawState()
+    }
 
-        viewModel.btnAvailable.observe(this) {
-            if (viewModel.btnAvailable.value == true) {
-                binding.btnMarkerBack.isEnabled = true
-                binding.btnMarkerBack.setImageResource(R.drawable.backcourse_enable_true)
-
-                binding.btnDraw.isEnabled = true
-                binding.btnDraw.setBackgroundResource(R.drawable.radius_10_m1_button)
+    private fun observeIsBtnAvailable() {
+        viewModel.isBtnAvailable.observe(this) {
+            if (viewModel.isBtnAvailable.value == true) {
+                with(binding) {
+                    btnMarkerBack.isEnabled = true
+                    btnMarkerBack.setImageResource(R.drawable.backcourse_enable_true)
+                    btnDraw.isEnabled = true
+                    btnDraw.setBackgroundResource(R.drawable.radius_10_m1_button)
+                }
             } else {
-                binding.btnMarkerBack.isEnabled = false
-                binding.btnMarkerBack.setImageResource(R.drawable.backcourse_enable_false)
-
-                binding.btnDraw.isEnabled = false
-                binding.btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
+                with(binding) {
+                    btnMarkerBack.isEnabled = false
+                    btnMarkerBack.setImageResource(R.drawable.backcourse_enable_false)
+                    btnDraw.isEnabled = false
+                    btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
+                }
             }
-
         }
+    }
 
+    private fun observeDrawState() {
         viewModel.drawState.observe(this) {
             when (it) {
                 UiState.Empty -> binding.indeterminateBar.isVisible = false
@@ -225,8 +217,6 @@ class DrawActivity :
                 }
             }
         }
-
-
     }
 
     fun customDialog(view: View) {
@@ -301,7 +291,7 @@ class DrawActivity :
             searchResult.locationLatLng.longitude.toDouble())
 
         departureMarker.position =
-            LatLng(departureLatLng.latitude, departureLatLng.longitude) // 출발지점
+            LatLng(departureLatLng.latitude, departureLatLng.longitude)
         departureMarker.anchor = PointF(0.5f, 0.7f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
@@ -312,7 +302,7 @@ class DrawActivity :
 
         coords.add(LatLng(departureLatLng.latitude, departureLatLng.longitude))
 
-        distanceList.add(
+        listForCalcDistance.add(
             LatLng(
                 departureLatLng.latitude,
                 departureLatLng.longitude
@@ -321,10 +311,10 @@ class DrawActivity :
     }
 
     private fun createRouteMarker() {
-        naverMap.setOnMapClickListener { point, coord ->
+        naverMap.setOnMapClickListener { _, coord ->
             if (isMarkerAvailable) {
-                viewModel.btnAvailable.value = true
-                if (touchList.size < 20) { // 20개까지만 생성 가능하도록 제한을 걸어주기 위함
+                viewModel.isBtnAvailable.value = true
+                if (touchList.size < 20) { // 마커 생성 갯수 제한
                     touchList.add(
                         LatLng(
                             coord.latitude,
@@ -366,7 +356,7 @@ class DrawActivity :
             markerList.removeLast()
 
             if (touchList.isEmpty()) {
-                viewModel.btnAvailable.value = false
+                viewModel.isBtnAvailable.value = false
             }
             coords.removeLast()
             if (coords.size >= 2) {
@@ -375,14 +365,12 @@ class DrawActivity :
             } else {
                 path.map = null
             }
-
-            //백 버튼 눌렀을 때 거리 계산 다시
-            if (distanceList.size > 0 && sumList.size > 0) {
-                distanceList.removeLast()
+            if (listForCalcDistance.size > 0 && sumList.size > 0) { //백 버튼 시 거리 계산 다시
+                listForCalcDistance.removeLast()
                 sumList.removeLast()
             }
             distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
-            viewModel.distanceSum.value = distanceSum //거리 합을 뷰모델에 세팅
+            viewModel.distanceSum.value = distanceSum
         }
     }
 
@@ -390,32 +378,26 @@ class DrawActivity :
     private fun calculateDistance() {
 
         for (i in 1..touchList.size) {
-            if (!distanceList.contains(touchList[i - 1])) {
-                distanceList.add(touchList[i - 1])
+            if (!listForCalcDistance.contains(touchList[i - 1])) {
+                listForCalcDistance.add(touchList[i - 1])
             }
-
         }
-
-        for (num in 0..distanceList.size - 2) {
+        for (num in 0..listForCalcDistance.size - 2) {
             val distanceResult = viewModel.distance(
-                distanceList[num].latitude,
-                distanceList[num].longitude,
-                distanceList[num + 1].latitude,
-                distanceList[num + 1].longitude,
+                listForCalcDistance[num].latitude,
+                listForCalcDistance[num].longitude,
+                listForCalcDistance[num + 1].latitude,
+                listForCalcDistance[num + 1].longitude,
                 "kilometer"
             )
-
             if (!sumList.contains(distanceResult)) {
                 sumList.add(distanceResult)
                 distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
-                viewModel.distanceSum.value = distanceSum //거리 합을 뷰모델에 세팅
+                viewModel.distanceSum.value = distanceSum
             }
-        } // 거리 계산 for문 종료
-
+        }
     }
 
-    //모든 마커를 포함할 수 있도록 하는 꼭지점 좌표 두개를 만들고
-//중간지점의 좌표값을 구해서 카메라 위치를 이동할 수 있게 함.
     private fun createMbr() {
         val bounds = LatLngBounds.Builder()
             .include(LatLng(departureLatLng.latitude, departureLatLng.longitude))
@@ -425,25 +407,14 @@ class DrawActivity :
         cameraUpdate(bounds)
         captureMap()
 
-
-        viewModel.path.value = distanceList
-        Timber.tag(ContentValues.TAG).d("뷰모델path : ${viewModel.path.value}")
-        //distanceSum은 calculateDistance()에서 뷰모델에 값 갱신되도록 세팅을 해줬음
+        viewModel.path.value = listForCalcDistance
         viewModel.departureAddress.value = searchResult.fullAdress
-        Timber.tag(ContentValues.TAG).d("뷰모델departureAddress : ${viewModel.departureAddress.value}")
         viewModel.departureName.value = searchResult.name
-        Timber.tag(ContentValues.TAG).d("뷰모델departureName : ${viewModel.departureName.value}")
-
-
     }
 
     private fun captureMap() {
-        naverMap.takeSnapshot { // intent로 넘길 전역 변수에 비트맵 data 넣음
-            val captureUri = getImageUri(this@DrawActivity, it)
-
-            //Bitmap -> Uri
-            Timber.tag(ContentValues.TAG).d("캡쳐it : ${it}")
-            Timber.tag(ContentValues.TAG).d("캡쳐uri : ${captureUri}")
+        naverMap.takeSnapshot {
+            val captureUri = getImageUri(it) //Bitmap -> Uri
 
             viewModel.setRequestBody(
                 ContentUriRequestBody(
@@ -451,12 +422,11 @@ class DrawActivity :
                     captureUri
                 )
             ) //Uri -> RequestBody
-            Timber.tag(ContentValues.TAG).d("뷰모델캡쳐img : ${viewModel.image.value}")
         }
     }
 
     // Get uri of images from camera function
-    private fun getImageUri(inContext: Context?, inImage: Bitmap): Uri {
+    private fun getImageUri(inImage: Bitmap): Uri {
 
         val tempFile = File.createTempFile("temprentpk", ".png")
         val bytes = ByteArrayOutputStream()
@@ -471,7 +441,7 @@ class DrawActivity :
             this,
             BuildConfig.APPLICATION_ID + ".fileprovider", tempFile
         )
-        captureUri = uri // intent로 넘길 전역변수에 uri 세팅
+        captureUri = uri
         return uri
     }
 

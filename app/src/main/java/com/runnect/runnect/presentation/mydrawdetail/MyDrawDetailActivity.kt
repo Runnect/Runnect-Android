@@ -12,7 +12,6 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
-import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
@@ -35,7 +34,7 @@ class MyDrawDetailActivity :
         binding.lifecycleOwner = this
         getMyDrawDetail()
         backButton()
-        observing()
+        addObserver()
         toCountDownButton()
         deleteButton()
 
@@ -61,7 +60,7 @@ class MyDrawDetailActivity :
 
     }
 
-    private fun deleteButton(){
+    private fun deleteButton() {
         binding.imgBtnDelete.setOnClickListener {
             customDialog(binding.root)
         }
@@ -89,15 +88,15 @@ class MyDrawDetailActivity :
         binding.btnMyDrawDetailRun.setOnClickListener {
             startActivity(Intent(this, CountDownActivity::class.java).apply {
                 putExtra("myDrawToRun", viewModel.myDrawToRunData.value)
-
             })
         }
     }
 
-    fun observing() {
-        viewModel.errorMessage.observe(this) {
-            //실패 시 action
-        }
+    fun addObserver() {
+        observeGetResult()
+    }
+
+    private fun observeGetResult() {
         viewModel.getResult.observe(this) {
 
             with(binding) {
@@ -112,7 +111,7 @@ class MyDrawDetailActivity :
             }
 
             departureLatLng =
-                LatLng(it.data.course.path[0][0], it.data.course.path[0][1]) //departureLatLng에 값 할당
+                LatLng(it.data.course.path[0][0], it.data.course.path[0][1])
             Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
 
             for (i in 1 until it.data.course.path.size) {

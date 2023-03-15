@@ -31,12 +31,12 @@ class DrawViewModel : ViewModel() {
     val searchResult = MutableLiveData<SearchResultEntity>()
 
     val path = MutableLiveData<List<LatLng>>()
-    var distanceSum = MutableLiveData<Float>(0.0f)
+    var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
     val courseId = MutableLiveData<Int>()
 
-    val btnAvailable = MutableLiveData<Boolean>(false)
+    val isBtnAvailable = MutableLiveData(false)
 
 
     private val _image = MutableLiveData<ContentUriRequestBody>()
