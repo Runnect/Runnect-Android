@@ -58,7 +58,7 @@ class DrawActivity :
 
     private val coords = mutableListOf<LatLng>()
     private val path = PathOverlay()
-    private val listForCalcDistance = arrayListOf<LatLng>()
+    private val calcDistanceList = arrayListOf<LatLng>()
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
     private val viewModel: DrawViewModel by viewModels()
@@ -287,30 +287,42 @@ class DrawActivity :
     }
 
     private fun createDepartureMarker() {
-        val departureMarker = Marker()
+        setDepartureLatLng()
+        setDepartureMarker()
+        addDepartureToCoords()
+        addDepartureToCalcDistanceList()
+    }
+
+    private fun setDepartureLatLng() {
         departureLatLng = LatLng(searchResult.locationLatLng.latitude,
             searchResult.locationLatLng.longitude)
+    }
 
+
+    private fun setDepartureMarker() {
+        val departureMarker = Marker()
         departureMarker.position =
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
         departureMarker.anchor = PointF(0.5f, 0.7f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
-
         cameraUpdate(
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
         )
+    }
 
+    private fun addDepartureToCoords() {
         coords.add(LatLng(departureLatLng.latitude, departureLatLng.longitude))
+    }
 
-        listForCalcDistance.add(
+    private fun addDepartureToCalcDistanceList() {
+        calcDistanceList.add(
             LatLng(
                 departureLatLng.latitude,
                 departureLatLng.longitude
             )
         )
     }
-
 
     private fun createRouteMarker() {
         naverMap.setOnMapClickListener { _, coord ->
@@ -320,7 +332,7 @@ class DrawActivity :
                     addCoordsToTouchList(coord)
                     setRouteMarker(coord)
                     generateRouteLine(coord)
-                    calculateDistance()
+                    calcDistance()
                 } else {
                     Toast.makeText(this, "마커는 20개까지 생성 가능합니다", Toast.LENGTH_SHORT).show()
                 }
@@ -360,43 +372,62 @@ class DrawActivity :
 
     private fun deleteRouteMarker() {
         binding.btnMarkerBack.setOnClickListener {
-            touchList.removeLast()
-            markerList.last().map = null
-            markerList.removeLast()
-
-            if (touchList.isEmpty()) {
-                viewModel.isBtnAvailable.value = false
-            }
-            coords.removeLast()
-            if (coords.size >= 2) {
-                path.coords = coords
-                path.map = naverMap
-            } else {
-                path.map = null
-            }
-            if (listForCalcDistance.size > 0 && sumList.size > 0) { //백 버튼 시 거리 계산 다시
-                listForCalcDistance.removeLast()
-                sumList.removeLast()
-            }
-            distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
-            viewModel.distanceSum.value = distanceSum
+            updateRouteMarkerData()
+            updateBtnAvailable()
+            updateRouteLineData()
+            reCalculateDistance()
+            setDistanceViewModel()
         }
     }
 
+    private fun updateBtnAvailable() {
+        if (touchList.isEmpty()) {
+            viewModel.isBtnAvailable.value = false
+        }
+    }
 
-    private fun calculateDistance() {
+    private fun updateRouteMarkerData() {
+        touchList.removeLast()
+        markerList.last().map = null
+        markerList.removeLast()
+    }
+
+    private fun updateRouteLineData() {
+        coords.removeLast()
+        if (coords.size >= 2) {
+            path.coords = coords
+            path.map = naverMap
+        } else {
+            path.map = null
+        }
+    }
+
+    private fun reCalculateDistance() {
+        if (calcDistanceList.size > 0 && sumList.size > 0) {
+            calcDistanceList.removeLast()
+            sumList.removeLast()
+        }
+    }
+
+    private fun setDistanceViewModel() {
+        distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
+        viewModel.distanceSum.value = distanceSum
+    }
+
+
+    private fun calcDistance() {
 
         for (i in 1..touchList.size) {
-            if (!listForCalcDistance.contains(touchList[i - 1])) {
-                listForCalcDistance.add(touchList[i - 1])
+            if (!calcDistanceList.contains(touchList[i - 1])) {
+                calcDistanceList.add(touchList[i - 1])
             }
         }
-        for (num in 0..listForCalcDistance.size - 2) {
+        for (num in 0..calcDistanceList.size - 2) {
             val distanceResult = viewModel.distance(
-                listForCalcDistance[num].latitude,
-                listForCalcDistance[num].longitude,
-                listForCalcDistance[num + 1].latitude,
-                listForCalcDistance[num + 1].longitude,
+                calcDistanceList[num].latitude,
+                calcDistanceList[num].longitude,
+                calcDistanceList[num + 1].latitude,
+                calcDistanceList[num + 1].longitude,
                 "kilometer"
             )
             if (!sumList.contains(distanceResult)) {
@@ -416,7 +447,7 @@ class DrawActivity :
         cameraUpdate(bounds)
         captureMap()
 
-        viewModel.path.value = listForCalcDistance
+        viewModel.path.value = calcDistanceList
         viewModel.departureAddress.value = searchResult.fullAdress
         viewModel.departureName.value = searchResult.name
     }
