@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -31,7 +32,6 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DrawToRunData
-import com.runnect.runnect.data.model.UploadLatLng
 import com.runnect.runnect.data.model.entity.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -58,13 +58,14 @@ class DrawActivity :
     lateinit var departureLatLng: LatLng
     val coords = mutableListOf<LatLng>()
     val path = PathOverlay()
+    lateinit var animDown: Animation
+    lateinit var animUp: Animation
+    var distanceSum: Float = 0.0f
 
 
     private lateinit var searchResult: SearchResultEntity
 
     val distanceList = arrayListOf<LatLng>()//거리 계산용 list
-    val distanceListtoUpload =
-        arrayListOf<UploadLatLng>()
     var sumList = mutableListOf<Double>()//Double
 
 
@@ -150,43 +151,43 @@ class DrawActivity :
 
     private fun goToDraw() { //버튼 누르면 애니메이션으로 위아래 컴포넌트 일단 다 제거되게
         binding.btnPreStart.setOnClickListener {
-            isMarkerAvailable = true //일단 마커는 찍을 수 있게!
-            val animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
-            val animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
+            isMarkerAvailable = true
+            hideDeparture()
+            showDrawCourse()
+        }
+    }
 
-            with(binding) {
+    private fun showDrawCourse() {
+        with(binding) {
+            btnDraw.isVisible = true
+            btnMarkerBack.isVisible = true
+            frameCourseDistance.isVisible = true
+            tvCourseDistanceRecord.isVisible = true
+            tvCourseDistanceKm.isVisible = true
+        }
+    }
 
-                //Top invisible
-                viewTopFrame.startAnimation(animUp)
-                tvDeparture.startAnimation(animUp)
+    private fun hideDeparture() {
+        animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
+        animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
 
-                viewTopFrame.isVisible = false
-                tvDeparture.isVisible = false
+        with(binding) {
+            //Top invisible
+            viewTopFrame.startAnimation(animUp)
+            tvDeparture.startAnimation(animUp)
+            viewTopFrame.isVisible = false
+            tvDeparture.isVisible = false
 
-                //Bottom invisible
-                viewBottomSheetFrame.startAnimation(animDown)
-                tvPlaceName.startAnimation(animDown)
-                tvPlaceAddress.startAnimation(animDown)
-                btnPreStart.startAnimation(animDown)
+            //Bottom invisible
+            viewBottomSheetFrame.startAnimation(animDown)
+            tvPlaceName.startAnimation(animDown)
+            tvPlaceAddress.startAnimation(animDown)
+            btnPreStart.startAnimation(animDown)
 
-                viewBottomSheetFrame.isVisible =
-                    false //frame만 invisible처리 했는데 여기에 constraint가 걸려있는 것들도 다 없어짐
-                tvPlaceName.isVisible = false
-                tvPlaceAddress.isVisible = false
-                btnPreStart.isVisible = false
-
-
-                //DrawActivity Component visibile
-                btnDraw.isVisible = true
-                btnMarkerBack.isVisible = true
-                frameCourseDistance.isVisible = true
-                tvCourseDistanceRecord.isVisible = true
-                tvCourseDistanceKm.isVisible = true
-
-
-            }
-
-
+            viewBottomSheetFrame.isVisible = false
+            tvPlaceName.isVisible = false
+            tvPlaceAddress.isVisible = false
+            btnPreStart.isVisible = false
         }
     }
 
@@ -213,7 +214,7 @@ class DrawActivity :
 
         viewModel.drawState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
@@ -343,15 +344,11 @@ class DrawActivity :
 
                     markerList.add(routeMarker)
 
-                    // coords에 터치로 받아온 좌표값 추가
-                    coords.add(LatLng(coord.latitude,
-                        coord.longitude))
-                    // 경로선 그리기
-                    path.coords = coords
-                    // 경로선 색상
-                    path.color = Color.parseColor("#593EEC")
-                    // 경로선 테두리 색상
-                    path.outlineColor = Color.parseColor("#593EEC")
+                    coords.add(LatLng(coord.latitude, coord.longitude)) // coords에 터치로 받아온 좌표값 추가
+
+                    path.coords = coords // 경로선 그리기
+                    path.color = Color.parseColor("#593EEC") // 경로선 색상
+                    path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
                     path.map = naverMap
 
                     calculateDistance()
@@ -384,8 +381,8 @@ class DrawActivity :
                 distanceList.removeLast()
                 sumList.removeLast()
             }
-            val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
-            viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
+            distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
+            viewModel.distanceSum.value = distanceSum //거리 합을 뷰모델에 세팅
         }
     }
 
@@ -408,12 +405,10 @@ class DrawActivity :
                 "kilometer"
             )
 
-
             if (!sumList.contains(distanceResult)) {
                 sumList.add(distanceResult)
-                val test = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
-                viewModel.distanceSum.value = test //거리 합을 뷰모델에 세팅
-                distancePublic = test //전역 변수에 세팅
+                distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
+                viewModel.distanceSum.value = distanceSum //거리 합을 뷰모델에 세팅
             }
         } // 거리 계산 for문 종료
 
@@ -430,18 +425,10 @@ class DrawActivity :
         cameraUpdate(bounds)
         captureMap()
 
-        for (i in 1..distanceList.size) {
-            distanceListtoUpload.add(
-                UploadLatLng(
-                    distanceList[i - 1].latitude,
-                    distanceList[i - 1].longitude
-                )
-            )
-        }
 
-        viewModel.path.value = distanceListtoUpload
+        viewModel.path.value = distanceList
         Timber.tag(ContentValues.TAG).d("뷰모델path : ${viewModel.path.value}")
-        //distanceSum은 딴 데서 이미 뷰모델에 값 갱신되도록 세팅을 해줬음
+        //distanceSum은 calculateDistance()에서 뷰모델에 값 갱신되도록 세팅을 해줬음
         viewModel.departureAddress.value = searchResult.fullAdress
         Timber.tag(ContentValues.TAG).d("뷰모델departureAddress : ${viewModel.departureAddress.value}")
         viewModel.departureName.value = searchResult.name

@@ -13,13 +13,10 @@ import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.data.api.KApiCourse
-import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import timber.log.Timber
 
 class MyDrawDetailActivity :
@@ -27,15 +24,14 @@ class MyDrawDetailActivity :
 
 
     val viewModel: MyDrawDetailViewModel by viewModels()
-    val service = KApiCourse.ServicePool.courseService //객체 생성
 
-    lateinit var startLatLng: LatLng
+
+    lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        binding.model = viewModel
         binding.lifecycleOwner = this
         getMyDrawDetail()
         backButton()
@@ -86,13 +82,12 @@ class MyDrawDetailActivity :
     fun getMyDrawDetail() {
         val courseId = intent.getIntExtra("fromStorageFragment", 0)
         Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
-        viewModel.getMyDrawDetail(courseId = courseId) //서버통신
+        viewModel.getMyDrawDetail(courseId = courseId)
     }
 
     fun toCountDownButton() {
         binding.btnMyDrawDetailRun.setOnClickListener {
             startActivity(Intent(this, CountDownActivity::class.java).apply {
-
                 putExtra("myDrawToRun", viewModel.myDrawToRunData.value)
 
             })
@@ -116,16 +111,9 @@ class MyDrawDetailActivity :
 
             }
 
-            startLatLng =
-                LatLng(it.data.course.path[0][0], it.data.course.path[0][1]) //startLatLng에 값 할당
-            Timber.tag(ContentValues.TAG).d("startLatLng 값 : $startLatLng")
-
-            //val touchList = it.data.course.path as ArrayList<LatLng>
-            //touchList.removeAt(0)
-            //이렇게 하니까 CountDownActivity로 안 넘어감.
-            //근데 arrayListOf()로 만들어주니까 넘어감.
-            //정확한 이유가 뭐지
-
+            departureLatLng =
+                LatLng(it.data.course.path[0][0], it.data.course.path[0][1]) //departureLatLng에 값 할당
+            Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
 
             for (i in 1 until it.data.course.path.size) {
                 touchList.add(LatLng(it.data.course.path[i][0], it.data.course.path[i][1]))
@@ -135,14 +123,11 @@ class MyDrawDetailActivity :
                 it.data.course.id,
                 publicCourseId = null,
                 touchList,
-                startLatLng,
+                departureLatLng,
                 it.data.course.distance,
                 it.data.course.departure.name,
                 it.data.course.image
             )
-
-            Timber.tag(ContentValues.TAG)
-                .d("viewModel.myDrawToRunData.value 값 : ${viewModel.myDrawToRunData.value}")
         }
     }
 

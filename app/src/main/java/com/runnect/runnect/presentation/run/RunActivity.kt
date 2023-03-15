@@ -230,7 +230,7 @@ class RunActivity :
         // layout_bottom_sheet를 뷰 객체로 생성
         val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
             R.layout.custom_dialog_finish_run,
-            findViewById(R.id.bottomSheet) as LinearLayout?
+            findViewById<LinearLayout>(R.id.bottomSheet)
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
