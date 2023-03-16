@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.runnect.runnect.R
-import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.login.LoginActivity
 
 
 class SplashActivity : AppCompatActivity() {
@@ -18,10 +18,9 @@ class SplashActivity : AppCompatActivity() {
     }
     private fun moveMain(sec: Int) {
         handler.postDelayed(Runnable {
-            //new Intent(현재 context, 이동할 activity)
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent) //intent 에 명시된 액티비티로 이동
-            finish() //현재 액티비티 종료
-        }, (1000 * sec).toLong()) // sec초 정도 딜레이를 준 후 시작
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, (1000 * sec).toLong())
     }
 }

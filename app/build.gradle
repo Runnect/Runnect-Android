@@ -29,6 +29,7 @@ android {
         buildConfigField "String", "TMAP_BASE_URL", properties["TMAP_BASE_URL"]
         buildConfigField "String", "TMAP_API_KEY", properties["TMAP_API_KEY"]
         buildConfigField "String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"]
+        buildConfigField "String", "GOOGLE_CLIENT_ID", properties["GOOGLE_CLIENT_ID"]
     }
 
     buildTypes {
@@ -106,4 +107,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     implementation 'com.ssomai:android.scalablelayout:2.1.6'
+
+    //google social login
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
 }
