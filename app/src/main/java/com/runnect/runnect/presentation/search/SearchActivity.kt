@@ -24,9 +24,10 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.callback.OnSearchClick
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class SearchActivity :
     com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
     OnSearchClick {
@@ -130,12 +131,12 @@ class SearchActivity :
 
 
     private fun searchKeyword(keywordString: String) {
-        viewModel.getSearchList(keywordString = keywordString)
+        viewModel.getSearchList(keywordString)
     }
 
     private fun imgBtnSearch() {
         binding.imgBtnSearch.setOnClickListener {
-            viewModel.getSearchList(keywordString = viewModel.searchKeyword.value.toString())
+            viewModel.getSearchList(viewModel.searchKeyword.value.toString())
         }
 
     }
@@ -143,7 +144,6 @@ class SearchActivity :
 
     private fun addListener() {
         //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
-        //추후 showToast -> API 호출 대체 예정
         binding.etSearch.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {

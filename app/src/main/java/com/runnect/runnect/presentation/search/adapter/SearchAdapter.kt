@@ -13,14 +13,13 @@ class SearchAdapter(private val searchClickListener: OnSearchClick) :
     ListAdapter<SearchResultEntity, SearchAdapter.SearchResultItemViewHolder>(Differ()) {
 
     inner class SearchResultItemViewHolder(
-        private val binding: ItemSearchBinding, //뷰바인딩
+        private val binding: ItemSearchBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(data: SearchResultEntity) {
             binding.searchResultEntity = data
         }
 
-        //클릭 이벤트 구현부
         fun bindViews(data: SearchResultEntity) {
             binding.root.setOnClickListener {
                 searchClickListener.selectItem(data)

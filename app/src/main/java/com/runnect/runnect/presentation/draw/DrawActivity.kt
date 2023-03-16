@@ -376,7 +376,7 @@ class DrawActivity :
             updateBtnAvailable()
             updateRouteLineData()
             reCalculateDistance()
-            setDistanceViewModel()
+            setDistanceToViewModel()
         }
     }
 
@@ -409,7 +409,7 @@ class DrawActivity :
         }
     }
 
-    private fun setDistanceViewModel() {
+    private fun setDistanceToViewModel() {
         distanceSum = BigDecimal(sumList.sum()).setScale(1, RoundingMode.FLOOR).toFloat()
         viewModel.distanceSum.value = distanceSum
     }
