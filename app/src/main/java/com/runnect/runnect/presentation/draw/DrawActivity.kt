@@ -184,43 +184,61 @@ class DrawActivity :
         observeDrawState()
     }
 
+    private fun activateMarkerBackBtn() {
+        with(binding) {
+            btnMarkerBack.isEnabled = true
+            btnMarkerBack.setImageResource(R.drawable.backcourse_enable_true)
+            btnDraw.isEnabled = true
+            btnDraw.setBackgroundResource(R.drawable.radius_10_m1_button)
+        }
+    }
+
+    private fun deactivateMarkerBackBtn() {
+        with(binding) {
+            btnMarkerBack.isEnabled = false
+            btnMarkerBack.setImageResource(R.drawable.backcourse_enable_false)
+            btnDraw.isEnabled = false
+            btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
+        }
+
+    }
+
     private fun observeIsBtnAvailable() {
         viewModel.isBtnAvailable.observe(this) {
             if (viewModel.isBtnAvailable.value == true) {
-                with(binding) {
-                    btnMarkerBack.isEnabled = true
-                    btnMarkerBack.setImageResource(R.drawable.backcourse_enable_true)
-                    btnDraw.isEnabled = true
-                    btnDraw.setBackgroundResource(R.drawable.radius_10_m1_button)
-                }
+                activateMarkerBackBtn()
+
             } else {
-                with(binding) {
-                    btnMarkerBack.isEnabled = false
-                    btnMarkerBack.setImageResource(R.drawable.backcourse_enable_false)
-                    btnDraw.isEnabled = false
-                    btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
-                }
+                deactivateMarkerBackBtn()
             }
         }
+    }
+
+    private fun showLoadingBar() {
+        binding.indeterminateBar.isVisible = true
+    }
+
+    private fun hideLoadingBar() {
+        binding.indeterminateBar.isVisible = false
     }
 
     private fun observeDrawState() {
         viewModel.drawState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Empty -> hideLoadingBar()
+                UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    customDialog(binding.root)
+                    hideLoadingBar()
+                    notifyCreateFinish(binding.root)
                 }
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
+                    hideLoadingBar()
                 }
             }
         }
     }
 
-    fun customDialog(view: View) {
+    private fun notifyCreateFinish(view: View) {
         val myLayout = layoutInflater.inflate(R.layout.custom_dialog_make_course, null)
 
         val build = AlertDialog.Builder(view.context).apply {
@@ -339,6 +357,7 @@ class DrawActivity :
             }
         }
     }
+
 
     private fun addCoordsToTouchList(coord: LatLng) {
         touchList.add(

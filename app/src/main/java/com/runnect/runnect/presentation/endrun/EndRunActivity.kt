@@ -50,26 +50,34 @@ class EndRunActivity :
         backBtn()
         editTextController()
         getIntentValue()
-        saveButton()
+        saveRecord()
         addObserver()
 
         viewModel.currentTime.value = dataFormat5.format(currentTime)
 
     }
 
+    private fun showLoadingBar() {
+        binding.indeterminateBar.isVisible = true
+    }
+
+    private fun hideLoadingBar() {
+        binding.indeterminateBar.isVisible = false
+    }
+
     private fun addObserver() {
         viewModel.endRunState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Empty -> hideLoadingBar()
+                UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
+                    hideLoadingBar()
                     showToast("업로드 완료!")
                     Timber.tag(ContentValues.TAG)
                         .d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
                 }
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
+                    hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
                 }
@@ -176,7 +184,7 @@ class EndRunActivity :
     }
 
 
-    private fun saveButton() {
+    private fun saveRecord() {
         binding.btnEndRunSave.setOnClickListener {
 
             viewModel.postRecord(
