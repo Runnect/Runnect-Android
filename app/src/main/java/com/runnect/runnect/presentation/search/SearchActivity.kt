@@ -90,43 +90,62 @@ class SearchActivity :
         )
     }
 
+
+    private fun showEmptyView() {
+        with(binding) {
+            ivNoSearchResult.isVisible = true
+            emptyResultTextView.isVisible = true
+            recyclerViewSearch.isVisible = false //지훈이는 이거 말고 스크롤뷰를 가지고 visible을 처리해줬음
+        }
+    }
+
+    private fun hideEmptyView() {
+        with(binding) {
+            ivNoSearchResult.isVisible = false
+            emptyResultTextView.isVisible = false
+            recyclerViewSearch.isVisible = true
+        }
+    }
+
+    private fun showLoadingBar() {
+        binding.indeterminateBar.isVisible = true
+    }
+
+    private fun hideLoadingBar() {
+        binding.indeterminateBar.isVisible = false
+    }
+
+    private fun showSearchResult() {
+        if (viewModel.dataList.value.isNullOrEmpty()) {
+            showEmptyView()
+        } else {
+            hideEmptyView()
+            initAdapter()
+        }
+    }
+
+    private fun showErrorMessage() {
+        Timber.tag(ContentValues.TAG)
+            .d("Failure : ${viewModel.searchError.value}")
+    }
+
     private fun addObserver() {
 
         viewModel.searchState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> {
-                    binding.indeterminateBar.isVisible = true
-                }
+                UiState.Empty -> hideLoadingBar()
+                UiState.Loading -> showLoadingBar()
+
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    if (viewModel.dataList.value.isNullOrEmpty()) {
-                        with(binding) {
-                            ivNoSearchResult.isVisible = true
-                            emptyResultTextView.isVisible = true
-                            recyclerViewSearch.isVisible =
-                                false //지훈이는 이거 말고 스크롤뷰를 가지고 visible을 처리해줬음
-
-                        }
-                    } else {
-                        with(binding) {
-                            ivNoSearchResult.isVisible = false
-                            emptyResultTextView.isVisible = false
-                            recyclerViewSearch.isVisible = true
-
-                            initAdapter()
-                        }
-                    }
+                    hideLoadingBar()
+                    showSearchResult()
                 }
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.searchError.value}")
+                    hideLoadingBar()
+                    showErrorMessage()
                 }
             }
         }
-
-
     }
 
 
