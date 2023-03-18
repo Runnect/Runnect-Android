@@ -1,14 +1,11 @@
 package com.runnect.runnect.presentation.discover
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -23,13 +20,13 @@ import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.callback.OnScrapCourse
+import com.runnect.runnect.util.callback.OnHeartClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnItemClick, OnScrapCourse {
+    OnItemClick, OnHeartClick {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var adapter: CourseRecommendAdapter
     private lateinit var startForResult: ActivityResultLauncher<Intent>

@@ -10,9 +10,9 @@ import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.CourseSearchDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.callback.OnScrapCourse
+import com.runnect.runnect.util.callback.OnHeartClick
 
-class DiscoverSearchAdapter(context: Context, listener: OnItemClick,scrapListener:OnScrapCourse) :
+class DiscoverSearchAdapter(context: Context, listener: OnItemClick,scrapListener:OnHeartClick) :
     ListAdapter<CourseSearchDTO, SearchViewHolder>(
         CourseSearchDiffUtilItemCallback()
     ) {
@@ -34,7 +34,7 @@ class DiscoverSearchAdapter(context: Context, listener: OnItemClick,scrapListene
 class SearchViewHolder(
     private val binding: ItemDiscoverCourseInfoBinding,
     private val mCallback: OnItemClick,
-    private val sCallback: OnScrapCourse
+    private val sCallback: OnHeartClick
 ) :
     RecyclerView.ViewHolder(binding.root) {
     fun onBind(data: CourseSearchDTO) {

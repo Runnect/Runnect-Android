@@ -8,18 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnScrapCourse
+import com.runnect.runnect.util.callback.OnHeartClick
+import com.runnect.runnect.util.callback.OnScrapCourseClick
 import timber.log.Timber
 
 class StorageScrapAdapter(
-    scrapClickListener: (ResponseGetScrapDto.Data.Scrap) -> Unit,
-    heartListener: OnScrapCourse, itemCount: ItemCount
+    val scrapClickListener: OnScrapCourseClick,
+    val heartListener: OnHeartClick, val itemCount: ItemCount
 ) :
     ListAdapter<ResponseGetScrapDto.Data.Scrap, StorageScrapAdapter.ItemViewHolder>(Differ()) {
-
-    private var mCallback = heartListener
-    private val listener = scrapClickListener
-    private var itemCount = itemCount
 
 
     inner class ItemViewHolder(val binding: ItemStorageScrapBinding) :
@@ -30,20 +27,18 @@ class StorageScrapAdapter(
                 ivItemStorageScrapHeart.setOnClickListener {
                     ivItemStorageScrapHeart.isSelected = false
                     deleteItem(adapterPosition)
-                    mCallback.scrapCourse(data.publicCourseId, it.isSelected)
+                    heartListener.scrapCourse(data.publicCourseId, it.isSelected)
                 }
 
                 root.setOnClickListener {
-                    listener(data)
+                    scrapClickListener.selectItem(data)
                 }
             }
         }
 
-
         fun bind(scrapList: ResponseGetScrapDto.Data.Scrap) {
             binding.storageScrap = scrapList
         }
-
 
     }
 

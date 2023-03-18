@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -20,7 +19,7 @@ import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAd
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.callback.OnScrapCourse
+import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +28,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DiscoverSearchActivity :
     BindingActivity<ActivityDiscoverSearchBinding>(com.runnect.runnect.R.layout.activity_discover_search),
-    OnItemClick, OnScrapCourse {
+    OnItemClick, OnHeartClick {
     private val viewModel: DiscoverSearchViewModel by viewModels()
     private lateinit var adapter: DiscoverSearchAdapter
 

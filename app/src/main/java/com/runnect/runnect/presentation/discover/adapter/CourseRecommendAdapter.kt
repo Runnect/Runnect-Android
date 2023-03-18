@@ -11,9 +11,9 @@ import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.RecommendCourseDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.callback.OnScrapCourse
+import com.runnect.runnect.util.callback.OnHeartClick
 
-class CourseRecommendAdapter(context: Context, listener: OnScrapCourse, dListener: OnItemClick) :
+class CourseRecommendAdapter(context: Context, listener: OnHeartClick, dListener: OnItemClick) :
     ListAdapter<RecommendCourseDTO, CourseRecommendAdapter.CourseInfoViewHolder>(
         RecommendCourseDiffUtilItemCallback()
     ) {

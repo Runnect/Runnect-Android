@@ -7,8 +7,10 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
+import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -16,27 +18,20 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnScrapCourse
+import com.runnect.runnect.util.callback.OnHeartClick
+import com.runnect.runnect.util.callback.OnScrapCourseClick
 import timber.log.Timber
 
 
 class StorageScrapFragment :
-    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnScrapCourse,
+    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnHeartClick,
+    OnScrapCourseClick,
     ItemCount {
 
 
     val viewModel: StorageViewModel by viewModels()
-    private val storageScrapAdapter = StorageScrapAdapter(
-        scrapClickListener = {
-            Timber.tag(ContentValues.TAG).d("코스 아이디 : ${it.publicCourseId}")
-            startActivity(
-                Intent(activity, CourseDetailActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    putExtra("courseId", it.publicCourseId)
-                },
-            )
-        },
-        this, this)
+    lateinit var storageScrapAdapter: StorageScrapAdapter
+    lateinit var recyclerviewStorageScrap: RecyclerView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,9 +40,8 @@ class StorageScrapFragment :
         binding.lifecycleOwner = requireActivity()
         initLayout()
 
-        val recyclerviewStorage = binding.recyclerViewStorageScrap
-        recyclerviewStorage.adapter = storageScrapAdapter
-
+        recyclerviewStorageScrap = binding.recyclerViewStorageScrap
+        initAdapter()
 
         getCourse()
         toScrapCourseBtn()
@@ -77,48 +71,73 @@ class StorageScrapFragment :
         observeStorageState()
     }
 
+    private fun showEmptyView() {
+        with(binding) {
+            ivStorageNoScrap.isVisible = true
+            tvStorageNoScrapGuide.isVisible = true
+            btnStorageNoScrap.isVisible = true
+            recyclerViewStorageScrap.isVisible = false
+        }
+    }
+
+    private fun hideEmptyView() {
+        with(binding) {
+            ivStorageNoScrap.isVisible = false
+            tvStorageNoScrapGuide.isVisible = false
+            btnStorageNoScrap.isVisible = false
+            recyclerViewStorageScrap.isVisible = true
+        }
+    }
+
+
+    private fun showLoadingBar() {
+        binding.indeterminateBar.isVisible = true
+    }
+
+    private fun hideLoadingBar() {
+        binding.indeterminateBar.isVisible = false
+    }
+
+    //지금 observeItemSize()랑 showScrapResult()가 기능이 비슷해서 헷갈려 중복되는 것 같기도 하고.
+    //아마 showScrapResult()는 list바당오는 최초 서버 통신 시 emptyView 띄우는 여부 check인 것 같고
+    //observeItemSize()는 scrap 통신으로 data가 다 날아가면 emptyView 띄우는 것임.
+    //이거 두개를 합쳐볼 수는 없을까. 아니면 함수명을 명확하게 하던가
+
+
     private fun observeItemSize() {
         viewModel.itemSize.observe(viewLifecycleOwner) {
             if (viewModel.itemSize.value == 0) {
-                with(binding) {
-                    ivStorageNoScrap.isVisible = true
-                    tvStorageNoScrapGuide.isVisible = true
-                    btnStorageNoScrap.isVisible = true
-                    recyclerViewStorageScrap.isVisible = false
-                }
+                showEmptyView()
             } else {
-                with(binding) {
-                    ivStorageNoScrap.isVisible = false
-                    tvStorageNoScrapGuide.isVisible = false
-                    btnStorageNoScrap.isVisible = false
-                    recyclerViewStorageScrap.isVisible = true
-                }
+                hideEmptyView()
             }
         }
+    }
+
+    private fun showScarpResult() {
+        if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
+            showEmptyView()
+        } else {
+            hideEmptyView()
+        }
+    }
+
+    private fun updateAdapterData() {
+        storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
     }
 
     private fun observeStorageState() {
         viewModel.storageState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Empty -> hideLoadingBar()
+                UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
-                        binding.ivStorageNoScrap.isVisible = true
-                        binding.tvStorageNoScrapGuide.isVisible = true
-                        binding.btnStorageNoScrap.isVisible = true
-                        binding.recyclerViewStorageScrap.isVisible = false
-                    } else {
-                        binding.ivStorageNoScrap.isVisible = false
-                        binding.tvStorageNoScrapGuide.isVisible = false
-                        binding.btnStorageNoScrap.isVisible = false
-                        binding.recyclerViewStorageScrap.isVisible = true
-                    }
-                    storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
+                    hideLoadingBar()
+                    showScarpResult()
+                    updateAdapterData()
                 }
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
+                    hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage}")
                 }
@@ -143,6 +162,24 @@ class StorageScrapFragment :
 
     override fun calcItemSize(itemCount: Int) {
         viewModel.itemSize.value = itemCount
+    }
+
+    private fun initAdapter() {
+        storageScrapAdapter = StorageScrapAdapter(this, this, this).apply {
+            submitList(viewModel.getScrapListResult.value!!.data.scraps)
+        }
+        recyclerviewStorageScrap.adapter = storageScrapAdapter
+    }
+
+    override fun selectItem(item: ResponseGetScrapDto.Data.Scrap) {
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
+        startActivity(
+            Intent(activity, CourseDetailActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                putExtra("courseId", item.publicCourseId)
+            },
+        )
+
     }
 
 

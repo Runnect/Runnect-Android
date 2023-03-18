@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
+import com.runnect.runnect.util.callback.OnMyDrawClick
 
 
-class StorageMyDrawAdapter(courseClickListener: (ResponseGetCourseDto.Data.Course) -> Unit) :
+class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
     ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
-    private val listener = courseClickListener
+
     private lateinit var selectionTracker: SelectionTracker<Long>
 
     init {
@@ -45,7 +46,7 @@ class StorageMyDrawAdapter(courseClickListener: (ResponseGetCourseDto.Data.Cours
         // 그 뷰모델에 있는 liveData를 xml에서 구독하게 하면 굳이 이렇게 함수 2개로 안 나눠도 될듯
         fun bindViews(data: ResponseGetCourseDto.Data.Course) {
             binding.root.setOnClickListener {
-                listener(data)
+                myDrawClickListener.selectItem(data)
 //                selectionTracker.select(itemPosition.toLong())
             }
         }

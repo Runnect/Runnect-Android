@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.MyDrawToRunData
+import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -96,37 +97,50 @@ class MyDrawDetailActivity :
         observeGetResult()
     }
 
+    private fun setImage(src: ResponseGetMyDrawDetailDto) {
+        with(binding) {
+            Glide
+                .with(ivMyDrawDetail.context)
+                .load(src.data.course.image.toUri())
+                .centerCrop()
+                .into(ivMyDrawDetail)
+
+            tvCourseDistanceRecord.text = src.data.course.distance.toString()
+
+        }
+    }
+
+    //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
+    private fun setDepartureLatLng(src: ResponseGetMyDrawDetailDto) {
+        departureLatLng =
+            LatLng(src.data.course.path[0][0], src.data.course.path[0][1])
+        Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
+    }
+
+    private fun setTouchList(src: ResponseGetMyDrawDetailDto) {
+        for (i in 1 until src.data.course.path.size) {
+            touchList.add(LatLng(src.data.course.path[i][0], src.data.course.path[i][1]))
+        }
+    }
+
+    private fun setPutExtraValue(src: ResponseGetMyDrawDetailDto) {
+        viewModel.myDrawToRunData.value = MyDrawToRunData(
+            src.data.course.id,
+            publicCourseId = null,
+            touchList,
+            departureLatLng,
+            src.data.course.distance,
+            src.data.course.departure.name,
+            src.data.course.image
+        )
+    }
+
     private fun observeGetResult() {
         viewModel.getResult.observe(this) {
-
-            with(binding) {
-                Glide
-                    .with(ivMyDrawDetail.context)
-                    .load(it.data.course.image.toUri())
-                    .centerCrop()
-                    .into(ivMyDrawDetail)
-
-                tvCourseDistanceRecord.text = it.data.course.distance.toString()
-
-            }
-
-            departureLatLng =
-                LatLng(it.data.course.path[0][0], it.data.course.path[0][1])
-            Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
-
-            for (i in 1 until it.data.course.path.size) {
-                touchList.add(LatLng(it.data.course.path[i][0], it.data.course.path[i][1]))
-            }
-
-            viewModel.myDrawToRunData.value = MyDrawToRunData(
-                it.data.course.id,
-                publicCourseId = null,
-                touchList,
-                departureLatLng,
-                it.data.course.distance,
-                it.data.course.departure.name,
-                it.data.course.image
-            )
+            setImage(it) //이거 그냥 BindingAdapter로 빼도 되는데 지금 xml에서 뷰모델이 아닌 dto를 바로 구독하고 있어서 이러는 것 같음
+            setDepartureLatLng(it)
+            setTouchList(it)
+            setPutExtraValue(it)
         }
     }
 
