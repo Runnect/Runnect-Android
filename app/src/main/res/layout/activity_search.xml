@@ -28,7 +28,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:onTextChanged="@{model::getSearchKeyword}"
             android:id="@+id/et_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,6 +37,7 @@
             android:hint="@string/search_set_departure_hint"
             android:imeOptions="actionSearch"
             android:inputType="text"
+            android:onTextChanged="@{model::getSearchKeyword}"
             android:textColor="@color/G1"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"

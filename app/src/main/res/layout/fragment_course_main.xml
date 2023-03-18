@@ -13,6 +13,20 @@
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
 
+        <ImageButton
+            android:outlineProvider="none"
+            android:elevation="10dp"
+            android:id="@+id/imgBtn_hide_btm_navi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="19.25dp"
+            android:backgroundTint="@color/transparent_00"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/discover_search" />
+
+
         <FrameLayout
             android:id="@+id/mapView"
             android:layout_width="match_parent"

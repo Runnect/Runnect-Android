@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.coursemain
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentCourseMainBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 
 class CourseMainFragment :
@@ -28,6 +30,23 @@ class CourseMainFragment :
 
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
+    private var mainActivity: MainActivity? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
+    }
+
+    // MainActivity의 메서드를 호출하는 예시 메서드
+    fun callMainActivityMethod() {
+        mainActivity?.hideBtmNavi()
+    }
+
+    private fun hideBtmNavi(){
+        binding.imgBtnHideBtmNavi.setOnClickListener {
+            callMainActivityMethod()
+        }
+    }
     private fun initView() {
 
         //MapFragment 추가
@@ -45,7 +64,7 @@ class CourseMainFragment :
         init()
         getCurrentLocation()
         drawCourseButton()
-
+        hideBtmNavi()
     }
 
     private fun init() {

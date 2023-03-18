@@ -110,4 +110,8 @@ dependencies {
 
     //google social login
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
+
+    //recycler view selection
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
 }

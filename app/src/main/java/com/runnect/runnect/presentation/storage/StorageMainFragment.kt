@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.add
@@ -10,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
+import com.runnect.runnect.presentation.MainActivity
 import timber.log.Timber
 
 
@@ -19,13 +21,35 @@ class StorageMainFragment :
 
     val viewModel: StorageViewModel by viewModels()
 
+//    private var mainActivity: MainActivity? = null
+//
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        mainActivity = context as MainActivity
+//    }
+//
+//    // MainActivity의 메서드를 호출하는 예시 메서드
+//    fun callMainActivityMethod() {
+//        mainActivity?.hideBtmNavi()
+//    }
+//
+//    private fun hideBtmNavi(){
+//        binding.imgBtnHideBtmNavi.setOnClickListener {
+//            callMainActivityMethod()
+//        }
+//    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = requireActivity()
 
+
+
         initView()
         tabLayoutAction()
+//        hideBtmNavi()
+
     }
 
 

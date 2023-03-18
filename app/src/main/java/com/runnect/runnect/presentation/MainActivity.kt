@@ -1,7 +1,10 @@
 package com.runnect.runnect.presentation
 
 import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
@@ -22,6 +25,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var isChangeToDiscover: Boolean = false
     var fromEndRunActivity: String? = ""
 
+    private lateinit var animDown: Animation
+    private lateinit var animUp: Animation
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,6 +38,17 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         initView()
         addListener() //이게 있어야 changeFragment를 돌릴 수 있음
 
+    }
+
+    fun hideBtmNavi() {
+        animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
+        animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
+
+        with(binding) {
+            //Bottom invisible
+            btmNaviMain.startAnimation(animDown)
+            btmNaviMain.isVisible = false
+        }
     }
 
     private fun initView() {
