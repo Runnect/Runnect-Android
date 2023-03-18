@@ -81,7 +81,7 @@ class SearchActivity :
         binding.recyclerViewSearch.adapter = searchAdapter
     }
 
-    override fun selectItem(item: SearchResultEntity) {
+    override fun selectItem(item: SearchResultEntity) { //여기가 어댑터에서 받아온 거
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거

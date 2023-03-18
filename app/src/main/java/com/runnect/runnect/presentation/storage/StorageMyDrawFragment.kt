@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
@@ -14,6 +16,7 @@ import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
+import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import timber.log.Timber
 
@@ -21,8 +24,12 @@ import timber.log.Timber
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw) {
 
-
     val viewModel: StorageViewModel by viewModels()
+
+    lateinit var recyclerviewStorage: RecyclerView
+    lateinit var selectionTracker: SelectionTracker<Long>
+
+    //이거 인터페이스로 빼자
     private val storageMyDrawAdapter = StorageMyDrawAdapter(courseClickListener = {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${it.id}")
         startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
@@ -36,14 +43,17 @@ class StorageMyDrawFragment :
         initLayout()
         binding.lifecycleOwner = requireActivity()
 
-        val recyclerviewStorage = binding.recyclerViewStorageMyDraw
-        recyclerviewStorage.adapter = storageMyDrawAdapter
+        recyclerviewStorage = binding.recyclerViewStorageMyDraw //initRecyclerView
+        recyclerviewStorage.adapter = storageMyDrawAdapter //initAdapter
 
         getCourse()
         addData()
         addObserver()
+        addTrackerObserver() //selection
+        //        hideBtmNavi()
 
     }
+
 
     private fun initLayout() {
         binding.recyclerViewStorageMyDraw
@@ -109,7 +119,40 @@ class StorageMyDrawFragment :
     private fun getCourse() {
         viewModel.getMyDrawList()
     }
+
+    //SelectionTracker.kt로 빼준 함수 활용
+    private fun addTrackerObserver() {
+        selectionTracker = setSelectionTracker("StorageMyDrawSelectionTracker", recyclerviewStorage)
+        selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
+            override fun onSelectionChanged() {
+                super.onSelectionChanged()
+                val items = selectionTracker.selection.size()
+//                if(items == 0) binding.enabled = false
+//                else binding.enabled = items >= 1 // 선택된 아이템이 1개 이상일 경우 floating button 활성화
+
+            }
+        }))
+        storageMyDrawAdapter.setSelectionTracker(selectionTracker) //어댑터 생성 후 할당해줘야 한다는 순서지킴
+    }
 }
+
+//    private var mainActivity: MainActivity? = null
+//
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        mainActivity = context as MainActivity
+//    }
+//
+//    // MainActivity의 메서드를 호출하는 예시 메서드
+//    fun callMainActivityMethod() {
+//        mainActivity?.hideBtmNavi()
+//    }
+//
+//    private fun hideBtmNavi(){
+//        binding.imgBtnHideBtmNavi.setOnClickListener {
+//            callMainActivityMethod()
+//        }
+//    }
 
 
 

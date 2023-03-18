@@ -5,6 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StableIdKeyProvider
+import androidx.recyclerview.selection.StorageStrategy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gun0912.tedpermission.PermissionListener
@@ -19,6 +23,7 @@ import com.runnect.runnect.databinding.FragmentCourseMainBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 
+
 class CourseMainFragment :
     BindingFragment<FragmentCourseMainBinding>(R.layout.fragment_course_main),
     OnMapReadyCallback {
@@ -31,6 +36,17 @@ class CourseMainFragment :
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
     private var mainActivity: MainActivity? = null
+
+    var selectionTracker: SelectionTracker<Long>? = null
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+        getCurrentLocation()
+        drawCourseButton()
+        hideBtmNavi()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,6 +63,12 @@ class CourseMainFragment :
             callMainActivityMethod()
         }
     }
+
+    private fun init() {
+        fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
+        requestPermission()
+    }
+
     private fun initView() {
 
         //MapFragment 추가
@@ -57,19 +79,6 @@ class CourseMainFragment :
             }
         mapFragment.getMapAsync(this)
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        init()
-        getCurrentLocation()
-        drawCourseButton()
-        hideBtmNavi()
-    }
-
-    private fun init() {
-        fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
-        requestPermission()
     }
 
 
@@ -145,7 +154,6 @@ class CourseMainFragment :
         naverMap.moveCamera(cameraUpdate)
 
     }
-
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
