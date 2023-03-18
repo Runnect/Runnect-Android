@@ -12,12 +12,65 @@
         android:layout_height="match_parent"
         tools:context=".presentation.login.LoginActivity">
 
-        <Button
-            android:id="@+id/btn_login"
+        <ImageView
+            android:id="@+id/iv_login_background"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="30dp"
-            android:text="login"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ic_google_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:elevation="3dp"
+            android:outlineProvider="none"
+            android:src="@drawable/ic_google_login"
+            app:layout_constraintBottom_toBottomOf="@id/btn_signIn_google"
+            app:layout_constraintStart_toStartOf="@id/btn_signIn_google"
+            app:layout_constraintTop_toTopOf="@id/btn_signIn_google" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginBottom="8dp"
+            android:id="@+id/btn_signIn_google"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="24dp"
+            android:background="@drawable/radius_8_w1_button"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/login_signIn_google"
+            android:textSize="15.6sp"
+            app:layout_constraintBottom_toTopOf="@id/btn_signIn_kakao"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/ic_kakao_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:elevation="3dp"
+            android:outlineProvider="none"
+            android:src="@drawable/ic_kakao_login"
+            app:layout_constraintBottom_toBottomOf="@id/btn_signIn_kakao"
+            app:layout_constraintStart_toStartOf="@id/btn_signIn_kakao"
+            app:layout_constraintTop_toTopOf="@id/btn_signIn_kakao" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginBottom="48dp"
+            android:id="@+id/btn_signIn_kakao"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="24dp"
+            android:background="@drawable/radius_8_kakao_yellow_button"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/login_signIn_kakao"
+            android:textSize="15.6sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

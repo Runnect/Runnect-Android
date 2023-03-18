@@ -79,6 +79,8 @@
     <string name="run_time_title">시간</string>
     <string name="run_finish_run_button">러닝 종료</string>
     <string name="run_description_current_location">current_location</string>
+    <string name="login_signIn_google">구글로 로그인</string>
+    <string name="login_signIn_kakao">카카오로 로그인</string>
 
 
 </resources>
