@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginStart="20dp"
-                android:fontFamily="@font/pretendard_medium"
+                android:fontFamily="@font/pretendard_bold"
                 android:text="@string/end_run_page_title"
                 android:textColor="@color/G1"
                 android:textSize="17sp" />
@@ -80,7 +80,7 @@
             android:layout_marginHorizontal="14dp"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/G5"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:hint="@string/end_run_title_hint"
             android:maxLength="20"
             android:textColor="@color/G1"
@@ -189,11 +189,12 @@
             app:layout_constraintTop_toTopOf="@id/view_endRun_distance_frame" />
 
         <TextView
+            tools:text="5.1"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
             android:textSize="20sp"
@@ -250,11 +251,12 @@
             app:layout_constraintTop_toTopOf="@id/view_endRun_time_frame" />
 
         <TextView
+            tools:text="00:28:07"
             android:id="@+id/tv_time_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:text="@{model.timerHourMinSec}"
             android:textColor="@color/G1"
             android:textSize="20sp"
@@ -296,11 +298,12 @@
             app:layout_constraintTop_toTopOf="@id/view_endRun_pace_frame" />
 
         <TextView
+            tools:text="5'31''"
             android:id="@+id/tv_pace_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:text="@{model.paceTotal}"
             android:textColor="@color/G1"
             android:textSize="20sp"
