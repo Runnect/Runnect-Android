@@ -140,8 +140,17 @@ class DrawActivity :
     private fun activateDrawCourse() {
         binding.btnPreStart.setOnClickListener {
             isMarkerAvailable = true
+            showDrawGuide()
             hideDeparture()
             showDrawCourse()
+        }
+    }
+
+    private fun showDrawGuide(){
+        with(binding){
+            frameDrawGuide.isVisible = true
+            ivGuideLogo.isVisible = true
+            tvDrawGuide.isVisible =  true
         }
     }
 
