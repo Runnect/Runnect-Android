@@ -17,7 +17,7 @@ class DepartureSearchRepositoryImpl(private val departureSourceDataSource: Depar
     private fun changeData(pois: Pois): List<SearchResultEntity> {
         val changedData = pois.poi.map {
             SearchResultEntity(
-                fullAdress = makeMainAdress(it),
+                fullAddress = makeMainAdress(it),
                 name = it.name ?: "",
                 locationLatLng = LatLng(it.noorLat.toDouble(), it.noorLon.toDouble())
             )

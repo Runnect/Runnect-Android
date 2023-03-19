@@ -62,10 +62,10 @@ class RunActivity :
         binding.model = viewModel
         binding.lifecycleOwner = this
 
-        init()
+        initView()
         startTimer()
         getCurrentLocation()
-        seeRecord()
+        showRecord()
         backButton()
 
 
@@ -86,6 +86,7 @@ class RunActivity :
     }
 
     private fun initView() {
+        fusedLocation = LocationServices.getFusedLocationProviderClient(this) // 분리 필요
 
         val fm = supportFragmentManager
         val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
@@ -99,24 +100,27 @@ class RunActivity :
         )
     }
 
-    private fun init() {
-        fusedLocation = LocationServices.getFusedLocationProviderClient(this) //
-        initView()
-    }
 
     override fun onMapReady(map: NaverMap) {
         naverMap = map
-        naverMap.maxZoom = 18.0
-        naverMap.minZoom = 10.0
 
+        setZoomMinMax()
+        setLocationTrackingMode()
+        addCurrentLocationChangeListener(naverMap)
+        hideZoomControl()
+        setCourse()
+        setCurrentLocationImage()
 
-        map.locationSource = locationSource
-        map.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
+    }
 
+    private fun setLocationTrackingMode(){
         //네이버 맵 sdk에 위치 정보 제공
         locationSource = FusedLocationSource(this@RunActivity, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
+    }
 
+    private fun addCurrentLocationChangeListener(map: NaverMap){
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
             map.locationOverlay.run { //현재 위치 마커
@@ -124,15 +128,22 @@ class RunActivity :
                 position = LatLng(currentLocation.latitude, currentLocation.longitude)
             }
         }
-        setCourse()
+    }
 
+    private fun setZoomMinMax(){
+        naverMap.maxZoom = 18.0
+        naverMap.minZoom = 10.0
+    }
+
+    private fun hideZoomControl(){
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
+    }
 
+    private fun setCurrentLocationImage(){
         //현위치 커스텀 이미지
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
-
     }
 
     //카메라 위치 변경 함수
@@ -189,23 +200,30 @@ class RunActivity :
 
     private fun createRouteMarker() {
         for (i in 1..countToRunData.touchList.size) {
-            val routeMarker = Marker()
-            routeMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
-                countToRunData.touchList[i - 1].longitude)
-            routeMarker.anchor = PointF(0.5f, 0.5f)
-            routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
-            routeMarker.map = naverMap
-
-            coords.add(LatLng(countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
-                countToRunData.touchList[i - 1].longitude))
-            path.coords = coords // 경로선 그리기
-            path.color = Color.parseColor("#593EEC") // 경로선 색상
-            path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
-            path.map = naverMap
+            setRouteMarker(countToRunData, i)
+            generateRouteLine(countToRunData, i)
         }
     }
 
-    private fun seeRecord() {
+    private fun setRouteMarker(countToRunData: CountToRunData, i : Int) { //여기도 create랑 set이랑 역할 표현이 모호함
+        val routeMarker = Marker()
+        routeMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
+            countToRunData.touchList[i - 1].longitude)
+        routeMarker.anchor = PointF(0.5f, 0.5f)
+        routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
+        routeMarker.map = naverMap
+    }
+
+    private fun generateRouteLine(countToRunData: CountToRunData, i : Int) {
+        coords.add(LatLng(countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
+            countToRunData.touchList[i - 1].longitude)) // coords에 터치로 받아온 좌표값 추가
+        path.coords = coords // 경로선 그리기
+        path.color = Color.parseColor("#593EEC") // 경로선 색상
+        path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
+        path.map = naverMap
+    }
+
+    private fun showRecord() {
         binding.btnRunFinish.setOnClickListener {
             bottomSheet()
             stopTimer()
