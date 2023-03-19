@@ -34,7 +34,7 @@ class StorageMyDrawFragment :
     lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter : StorageMyDrawAdapter
 
-    //MainActivity에 작성해놓은 메서드 호출출
+    //MainActivity에 작성해놓은 메서드 호출
    private var mainActivity: MainActivity? = null
 
     override fun onAttach(context: Context) {
@@ -64,7 +64,7 @@ class StorageMyDrawFragment :
         addData()
         addObserver()
         addTrackerObserver() //selection
-        //hideBtmNavi()
+//        hideBtmNavi()
 
     }
 

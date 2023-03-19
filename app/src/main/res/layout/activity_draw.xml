@@ -164,7 +164,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="1dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"

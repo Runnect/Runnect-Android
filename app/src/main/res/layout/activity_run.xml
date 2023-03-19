@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
@@ -126,20 +126,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:textColor="@color/G1"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_unit"
             app:layout_constraintStart_toStartOf="@id/iv_time"
-            tools:text="0" />
+            tools:text="00" />
 
         <TextView
             android:id="@+id/tv_time_colon_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:text=":"
             android:textColor="@color/G1"
@@ -153,20 +153,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:textColor="@color/G1"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_hour"
             app:layout_constraintStart_toEndOf="@id/tv_time_colon_1"
-            tools:text="0" />
+            tools:text="00" />
 
         <TextView
             android:id="@+id/tv_time_colon_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:text=":"
             android:textColor="@color/G1"
@@ -180,13 +180,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_bold"
             android:outlineProvider="none"
             android:textColor="@color/G1"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_minute"
             app:layout_constraintStart_toEndOf="@id/tv_time_colon_2"
-            tools:text="0" />
+            tools:text="00" />
 
 
         <ImageView
@@ -203,7 +203,6 @@
 
 
         <FrameLayout
-
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

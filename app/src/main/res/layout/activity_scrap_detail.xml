@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="78dp"
+                    android:layout_mazrginTop="78dp"
                     android:fontFamily="@font/pretendard_bold"
                     android:textColor="@color/G1"
                     android:textSize="18sp"
