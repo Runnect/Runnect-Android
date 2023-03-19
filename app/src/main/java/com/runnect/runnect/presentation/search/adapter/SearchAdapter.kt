@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.model.entity.SearchResultEntity
+import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.databinding.ItemSearchBinding
 import com.runnect.runnect.util.callback.OnSearchClick
 

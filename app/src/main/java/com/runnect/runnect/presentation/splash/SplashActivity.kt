@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.runnect.runnect.R
-import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.MainActivity
 
 
 class SplashActivity : AppCompatActivity() {
@@ -17,8 +17,8 @@ class SplashActivity : AppCompatActivity() {
         moveMain(1)
     }
     private fun moveMain(sec: Int) {
-        handler.postDelayed(Runnable {
-            val intent = Intent(this, LoginActivity::class.java)
+        handler.postDelayed({
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }, (1000 * sec).toLong())

@@ -31,7 +31,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DrawToRunData
-import com.runnect.runnect.data.model.entity.SearchResultEntity
+import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity

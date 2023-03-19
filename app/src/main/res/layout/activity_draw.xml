@@ -203,7 +203,7 @@
             android:layout_marginTop="6dp"
             android:layout_marginBottom="18dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{model.searchResult.fullAdress}"
+            android:text="@{model.searchResult.fullAddress}"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@id/btn_pre_start"

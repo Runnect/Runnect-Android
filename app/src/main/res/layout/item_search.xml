@@ -7,7 +7,7 @@
 
         <variable
             name="searchResultEntity"
-            type="com.runnect.runnect.data.model.entity.SearchResultEntity" />
+            type="com.runnect.runnect.data.model.SearchResultEntity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +53,7 @@
             android:layout_marginTop="6dp"
             android:layout_marginBottom="14dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{searchResultEntity.fullAdress}"
+            android:text="@{searchResultEntity.fullAddress}"
             android:textColor="@color/G2"
 
             android:textSize="13sp"

@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
-import com.runnect.runnect.data.model.entity.SearchResultEntity
+import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.coroutines.launch

@@ -12,25 +12,51 @@
         android:layout_height="match_parent"
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
+        <View
+            android:id="@+id/frame_main_guide"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/radius_30_white_view"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:outlineProvider="none"
-            android:elevation="10dp"
-            android:id="@+id/imgBtn_hide_btm_navi"
+        <ImageView
+            android:id="@+id/iv_runnect_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="19.25dp"
-            android:backgroundTint="@color/transparent_00"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/discover_search" />
+            android:elevation="3dp"
+            android:outlineProvider="none"
+            android:src="@drawable/ic_google_login"
+            app:layout_constraintBottom_toBottomOf="@id/frame_main_guide"
+            app:layout_constraintStart_toStartOf="@id/frame_main_guide"
+            app:layout_constraintTop_toTopOf="@id/frame_main_guide" />
+
+        <TextView
+            android:fontFamily="@font/pretendard_medium"
+            android:id="@+id/tv_main_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="3dp"
+            android:outlineProvider="none"
+            android:text="코스그리기를 눌러 나만의 코스를 만들어봐요!"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/frame_main_guide"
+            app:layout_constraintEnd_toEndOf="@id/frame_main_guide"
+            app:layout_constraintStart_toEndOf="@id/iv_runnect_logo"
+            app:layout_constraintTop_toTopOf="@id/frame_main_guide" />
 
 
         <FrameLayout
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="-46dp"
+            tools:layout_editor_absoluteY="0dp" />
 
         <View
             android:id="@+id/view_empty"

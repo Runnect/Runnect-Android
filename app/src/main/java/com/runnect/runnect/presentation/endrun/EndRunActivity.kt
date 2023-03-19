@@ -31,11 +31,10 @@ class EndRunActivity :
     val viewModel: EndRunViewModel by viewModels()
 
     val currentTime: Long = System.currentTimeMillis() // ms로 반환
-    lateinit var pace: String
 
     lateinit var runToEndRunData: RunToEndRunData
-    var paceMinute : Int = 0
-    var paceSecond : Int = 0
+    var paceMinute: Int = 0
+    var paceSecond: Int = 0
 
     @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
@@ -65,6 +64,18 @@ class EndRunActivity :
         binding.indeterminateBar.isVisible = false
     }
 
+    private fun notifyUploadFinish() {
+        showToast("업로드 완료!")
+
+        Timber.tag(ContentValues.TAG)
+            .d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
+    }
+
+    private fun showErrorMessage() {
+        Timber.tag(ContentValues.TAG)
+            .d("Failure : ${viewModel.errorMessage.value}")
+    }
+
     private fun addObserver() {
         viewModel.endRunState.observe(this) {
             when (it) {
@@ -72,14 +83,11 @@ class EndRunActivity :
                 UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
                     hideLoadingBar()
-                    showToast("업로드 완료!")
-                    Timber.tag(ContentValues.TAG)
-                        .d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
+                    notifyUploadFinish()
                 }
                 UiState.Failure -> {
                     hideLoadingBar()
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
+                    showErrorMessage()
                 }
             }
         }
@@ -161,24 +169,35 @@ class EndRunActivity :
         // 통신 input에 viewModel 값을 그대로 넣지 말고 raw한 상태로 넣고 뷰모델에는 화면에 표기할 형식으로 세팅해줘야 할듯
     }
 
+    private fun enableSaveBtn() {
+        binding.btnEndRunSave.setBackgroundResource(R.drawable.radius_10_m1_button)
+        binding.btnEndRunSave.isEnabled = true
+    }
+
+    private fun disableSaveBtn() {
+        binding.btnEndRunSave.setBackgroundResource(R.drawable.radius_10_g3_button)
+        binding.btnEndRunSave.isEnabled = false
+    }
+
+    private fun notifyMaxTitleLength() {
+        if (binding.etTitleCourse.text.length == 20) {
+            Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun editTextController() {
         binding.etTitleCourse.addTextChangedListener {
             if (!binding.etTitleCourse.text.isNullOrEmpty()) {
+
                 viewModel.editTextValue.value = binding.etTitleCourse.text.toString()
-                binding.btnEndRunSave.setBackgroundResource(R.drawable.radius_10_m1_button)
-                binding.btnEndRunSave.isEnabled = true
                 Timber.tag(ContentValues.TAG)
                     .d("editText.value : ${viewModel.editTextValue.value}")
 
-                if (binding.etTitleCourse.text.length == 20) {
-                    Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
-                }
-
+                enableSaveBtn()
+                notifyMaxTitleLength()
 
             } else {
-                binding.btnEndRunSave.setBackgroundResource(R.drawable.radius_10_g3_button)
-                binding.btnEndRunSave.isEnabled = false
-
+                disableSaveBtn()
             }
         }
     }
