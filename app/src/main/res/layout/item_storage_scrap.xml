@@ -46,9 +46,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                app:scale_height="12"
+                app:scale_height="18"
                 app:scale_top="121"
-                app:scale_width="14"
+                app:scale_width="21"
                 app:srcCompat="@drawable/discover_course_scrap_selector" />
 
             <androidx.appcompat.widget.AppCompatTextView

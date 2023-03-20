@@ -82,6 +82,7 @@
     <string name="login_signIn_google">구글로 로그인</string>
     <string name="login_signIn_kakao">카카오로 로그인</string>
     <string name="my_draw_edit">편집</string>
+    <string name="my_draw_delete">삭제하기</string>
 
 
 </resources>

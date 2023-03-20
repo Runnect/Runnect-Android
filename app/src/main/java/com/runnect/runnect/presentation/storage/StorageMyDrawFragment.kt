@@ -1,10 +1,15 @@
 package com.runnect.runnect.presentation.storage
 
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
@@ -22,6 +27,7 @@ import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnMyDrawClick
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
 
 
@@ -33,6 +39,9 @@ class StorageMyDrawFragment :
     lateinit var recyclerviewStorageMyDraw: RecyclerView
     lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter : StorageMyDrawAdapter
+
+    private lateinit var animDown: Animation
+    private lateinit var animUp: Animation
 
     //MainActivity에 작성해놓은 메서드 호출
    private var mainActivity: MainActivity? = null
@@ -46,11 +55,53 @@ class StorageMyDrawFragment :
         mainActivity?.hideBtmNavi()
     }
 
-//    private fun hideBtmNavi(){
-//        binding.imgBtnHideBtmNavi.setOnClickListener {
-//            callMainActivityMethod()
-//        }
-//    }
+    private fun hideBtmNavi(){
+        binding.btnEditCourse.setOnClickListener {
+            callMainActivityMethod()
+            // 총코스 TextView -> 코스 선택
+            // btnEditCourse.isVisible = false
+        }
+    }
+
+    private fun showDeleteCourseBtn() {
+        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+
+        with(binding) {
+            btnDeleteCourse.startAnimation(animUp)
+            btnDeleteCourse.isVisible = true //default false
+            //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
+
+        }
+    }
+
+    fun customDialog(view: View) {
+        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
+
+        val build = AlertDialog.Builder(view.context).apply {
+            setView(myLayout)
+        }
+        val dialog = build.create()
+//        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
+        dialog.show()
+
+        myLayout.btn_delete_yes.setOnClickListener {
+            dialog.dismiss()
+            //삭제하기 누르면 다시 총코스 TextView랑 btnEditCourse.isVisible = true
+        }
+        myLayout.btn_delete_no.setOnClickListener {
+            dialog.dismiss()
+        }
+
+    }
+
+    private fun deleteCourseBtn() {
+        binding.btnDeleteCourse.setOnClickListener {
+            customDialog(binding.root)
+        }
+    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,7 +115,6 @@ class StorageMyDrawFragment :
         addData()
         addObserver()
         addTrackerObserver() //selection
-//        hideBtmNavi()
 
     }
 

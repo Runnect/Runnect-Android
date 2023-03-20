@@ -26,7 +26,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var fromEndRunActivity: String? = ""
 
     private lateinit var animDown: Animation
-    private lateinit var animUp: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +41,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     fun hideBtmNavi() {
         animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
-        animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
 
         with(binding) {
             //Bottom invisible
