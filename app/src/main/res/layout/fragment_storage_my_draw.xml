@@ -9,88 +9,125 @@
             name="storage"
             type="com.runnect.runnect.data.model.ResponseGetCourseDto" />
     </data>
-    <ScrollView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/tv_total_course_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="11dp"
+            android:fontFamily="@font/pretendard_light"
+            android:paddingBottom="11dp"
+            android:textColor="@color/G2"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/scrollview_my_draw"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="총 코스 152개" />
+        
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginBottom="7dp"
+            app:layout_constraintBottom_toTopOf="@id/scrollview_my_draw"
+            android:textColor="@color/M1"
+            android:fontFamily="@font/pretendard_medium"
+            android:textSize="12sp"
+            android:text="@string/my_draw_edit"
+            android:background="@drawable/radius_50_edit_course_button"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/btn_edit_course"
+            android:layout_width="47dp"
+            android:layout_height="22dp"/>
+
+
+
+        <ScrollView
+            android:id="@+id/scrollview_my_draw"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_course_count">
 
-            <ProgressBar
-                android:outlineProvider="none"
-                android:elevation="2dp"
-                android:indeterminateTint="@color/G3"
-                android:id="@+id/indeterminateBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_storage_my_draw"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="18dp"
-                android:layout_marginHorizontal="15dp"
-                android:paddingBottom="20dp"
-                android:orientation="vertical"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/item_storage_my_draw" />
-
-            <ImageView
-                android:id="@+id/iv_storage_my_draw_no_course"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="155dp"
-                android:src="@drawable/storage_my_draw_no_course"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_storage_my_draw_no_course_guide"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/pretendard_medium"
-                android:lineHeight="22sp"
-                android:visibility="invisible"
-                android:text="@string/storage_my_draw_no_result"
-                android:textColor="@color/G2"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_storage_my_draw_no_course" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_storage_no_course"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginHorizontal="64dp"
-                android:layout_marginTop="22dp"
-                android:visibility="invisible"
-                android:background="@drawable/radius_10_m1_button"
-                android:fontFamily="@font/pretendard_semibold"
-                android:text="@string/storage_my_draw_make_course"
-                android:textColor="@color/W1"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_storage_my_draw_no_course_guide" />
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:id="@+id/indeterminateBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="2dp"
+                    android:indeterminateTint="@color/G3"
+                    android:outlineProvider="none"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_storage_my_draw"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="15dp"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:listitem="@layout/item_storage_my_draw" />
+
+                <ImageView
+                    android:id="@+id/iv_storage_my_draw_no_course"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="155dp"
+                    android:src="@drawable/storage_my_draw_no_course"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_storage_my_draw_no_course_guide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:lineHeight="22sp"
+                    android:text="@string/storage_my_draw_no_result"
+                    android:textColor="@color/G2"
+                    android:textSize="14sp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_storage_my_draw_no_course" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_storage_no_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="64dp"
+                    android:layout_marginTop="22dp"
+                    android:background="@drawable/radius_10_m1_button"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@string/storage_my_draw_make_course"
+                    android:textColor="@color/W1"
+                    android:textSize="15sp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_storage_my_draw_no_course_guide" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
-
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

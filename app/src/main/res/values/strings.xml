@@ -81,6 +81,7 @@
     <string name="run_description_current_location">current_location</string>
     <string name="login_signIn_google">구글로 로그인</string>
     <string name="login_signIn_kakao">카카오로 로그인</string>
+    <string name="my_draw_edit">편집</string>
 
 
 </resources>
