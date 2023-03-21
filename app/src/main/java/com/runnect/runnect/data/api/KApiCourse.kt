@@ -31,8 +31,8 @@ object KApiCourse {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
-                .addHeader("accessToken", accessToken)
-                .addHeader("refreshToken", refreshToken)
+                .addHeader("accessToken", LoginActivity.accessToken)
+                .addHeader("refreshToken", LoginActivity.refreshToken)
                 .build()
             proceed(newRequest)
         }

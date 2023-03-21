@@ -32,6 +32,7 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.SearchResultEntity
+import com.runnect.runnect.data.model.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
@@ -475,7 +476,11 @@ class DrawActivity :
         cameraUpdate(bounds)
         captureMap()
 //이 부분 setViewModelValue() 이런 함수로 빼고 인자를 input 받으면 뷰모델 liveData에 할당되는 멤버변수값 갱신하는 식으로 하면 될 듯? 그런데 distanceSum은 다른 데서 할당이 되니까 매개변수 갯수를 다르게 받을 수 있게.
-        viewModel.path.value = calcDistanceList
+//        viewModel.path.value = calcDistanceList
+        val uploadLatLngList: List<UploadLatLng> = calcDistanceList.map { latLng ->
+            UploadLatLng(latLng.latitude, latLng.longitude)
+        }
+        viewModel.path.value = uploadLatLngList
         viewModel.departureAddress.value = searchResult.fullAddress
         viewModel.departureName.value = searchResult.name
     }

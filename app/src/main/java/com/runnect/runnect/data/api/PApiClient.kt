@@ -17,8 +17,6 @@ import retrofit2.Retrofit
 
 object PApiClient {
 
-    val accessToken = LoginActivity.accessToken
-    val refreshToken = LoginActivity.refreshToken
 
     private const val BASE_URL = BuildConfig.RUNNECT_BASE_URL
     private var retrofit: Retrofit? = null
@@ -31,8 +29,8 @@ object PApiClient {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
-                .addHeader("accessToken", accessToken)
-                .addHeader("refreshToken", refreshToken)
+                .addHeader("accessToken", LoginActivity.accessToken)
+                .addHeader("refreshToken", LoginActivity.refreshToken)
                 .build()
             proceed(newRequest)
         }

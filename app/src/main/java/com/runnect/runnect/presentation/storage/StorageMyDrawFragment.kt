@@ -32,19 +32,21 @@ import timber.log.Timber
 
 
 class StorageMyDrawFragment :
-    BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw), OnMyDrawClick {
+    BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
+    OnMyDrawClick {
 
     val viewModel: StorageViewModel by viewModels()
 
     lateinit var recyclerviewStorageMyDraw: RecyclerView
     lateinit var selectionTracker: SelectionTracker<Long>
-    lateinit var storageMyDrawAdapter : StorageMyDrawAdapter
+    private val storageMyDrawAdapter = StorageMyDrawAdapter(this)
+
 
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
 
     //MainActivity에 작성해놓은 메서드 호출
-   private var mainActivity: MainActivity? = null
+    private var mainActivity: MainActivity? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -55,7 +57,7 @@ class StorageMyDrawFragment :
         mainActivity?.hideBtmNavi()
     }
 
-    private fun hideBtmNavi(){
+    private fun hideBtmNavi() {
         binding.btnEditCourse.setOnClickListener {
             callMainActivityMethod()
             // 총코스 TextView -> 코스 선택
@@ -102,17 +104,16 @@ class StorageMyDrawFragment :
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLayout()
         binding.lifecycleOwner = requireActivity()
 
         recyclerviewStorageMyDraw = binding.recyclerViewStorageMyDraw //initRecyclerView
+        recyclerviewStorageMyDraw.adapter = storageMyDrawAdapter
 
-        getCourse()
-        initAdapter()
-        addData()
+        getCourse() //문제 없음
+        addData() //상관 없음
         addObserver()
         addTrackerObserver() //selection
 
@@ -140,7 +141,9 @@ class StorageMyDrawFragment :
         binding.indeterminateBar.isVisible = false
     }
 
-    private fun showMyDrawResult(){
+    private fun showMyDrawResult() {
+        Timber.tag(ContentValues.TAG)
+            .d("통신 결과 코스 비어있나? : ${viewModel.getMyDrawResult.value!!.data.courses.isEmpty()}")
         if (viewModel.getMyDrawResult.value!!.data.courses.isEmpty()) {
             with(binding) {
                 ivStorageMyDrawNoCourse.isVisible = true
@@ -158,7 +161,9 @@ class StorageMyDrawFragment :
         }
     }
 
-    private fun updateAdapterData(){
+    private fun updateAdapterData() {
+        Timber.tag(ContentValues.TAG)
+            .d("updateAdapter에 넣은 data : ${viewModel.getMyDrawResult.value!!.data.courses}")
         storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
     }
 
@@ -178,7 +183,7 @@ class StorageMyDrawFragment :
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
                         .d("Success : getSearchList body is not null")
-                }
+                } //뭐지? 조회 성공이 되는데 왜 Failure로 넘어갔지?
 
             }
 
@@ -201,7 +206,8 @@ class StorageMyDrawFragment :
 
     //SelectionTracker.kt로 빼준 함수 활용
     private fun addTrackerObserver() {
-        selectionTracker = setSelectionTracker("StorageMyDrawSelectionTracker", recyclerviewStorageMyDraw)
+        selectionTracker =
+            setSelectionTracker("StorageMyDrawSelectionTracker", recyclerviewStorageMyDraw)
         selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
@@ -214,12 +220,6 @@ class StorageMyDrawFragment :
         storageMyDrawAdapter.setSelectionTracker(selectionTracker) //어댑터 생성 후 할당해줘야 한다는 순서지킴
     }
 
-    private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this).apply {
-            submitList(viewModel.getMyDrawResult.value!!.data.courses)
-        }
-        recyclerviewStorageMyDraw.adapter = storageMyDrawAdapter
-    }
 
     override fun selectItem(item: ResponseGetCourseDto.Data.Course) {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.id}")

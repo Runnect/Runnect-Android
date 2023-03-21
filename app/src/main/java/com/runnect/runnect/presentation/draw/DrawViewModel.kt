@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
 import com.runnect.runnect.data.model.SearchResultEntity
+import com.runnect.runnect.data.model.UploadLatLng
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class DrawViewModel : ViewModel() {
 
     val searchResult = MutableLiveData<SearchResultEntity>()
 
-    val path = MutableLiveData<List<LatLng>>()
+    val path = MutableLiveData<List<UploadLatLng>>()
     var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
@@ -106,7 +106,7 @@ class DrawViewModel : ViewModel() {
     }
 
     private fun RequestBody(
-        path: List<LatLng>,
+        path: List<UploadLatLng>,
         distance: Float,
         departureAddress: String,
         departureName: String,

@@ -36,19 +36,20 @@ class LoginActivity :
     private val viewModel: LoginViewModel by viewModels()
 
     //기존 로그인 여부 체크 후 바로 MainActivity로 넘어가게 해놨는데, 추후에 카카오 로그인 추가 시 logic에 관련 코드 추가해줘야함.
-    override fun onStart() {
-        super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        account?.let {
-            if (!it.isExpired) {
-                Timber.tag(ContentValues.TAG).d("it.isExpired 값 : ${it.isExpired}")
-
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                Toast.makeText(this, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        val account = GoogleSignIn.getLastSignedInAccount(this)
+//        account?.let {
+//            if (!it.isExpired) {
+//                //보니까 자동로그인 때만 죽는 거 같은데?
+//                Timber.tag(ContentValues.TAG).d("it.isExpired 값 : ${it.isExpired}")
+//
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent)
+//                Toast.makeText(this, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +130,7 @@ class LoginActivity :
                     addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
                 }
                 startActivity(intent)
+                Toast.makeText(this, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
             }
 
         }

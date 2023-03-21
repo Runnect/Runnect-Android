@@ -47,7 +47,7 @@
         <ScrollView
             android:id="@+id/scrollview_my_draw"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_course_count">
 
             <androidx.constraintlayout.widget.ConstraintLayout
