@@ -15,6 +15,7 @@ import java.io.IOException
 
 object KApiCourse {
 
+    //헤더에 accessToken과 refreshToken을 넣어야 하는데 accessToken이 만료되면 api 통신을 통해 갱신도 시켜줘야 함
 
     private var retrofit: Retrofit? = null
     private val logger = HttpLoggingInterceptor().apply {

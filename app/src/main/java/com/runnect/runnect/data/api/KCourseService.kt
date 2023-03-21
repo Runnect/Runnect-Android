@@ -16,7 +16,6 @@ interface KCourseService {
         @Body requestCourseScrap: RequestCourseScrap,
     ): Response<ResponseCourseScrap>
 
-
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
     suspend fun getCourseList(

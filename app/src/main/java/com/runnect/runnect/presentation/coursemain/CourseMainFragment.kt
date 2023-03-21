@@ -45,7 +45,7 @@ class CourseMainFragment :
         init()
         getCurrentLocation()
         drawCourseButton()
-        hideBtmNavi()
+//        hideBtmNavi()
     }
 
     override fun onAttach(context: Context) {
@@ -58,11 +58,11 @@ class CourseMainFragment :
         mainActivity?.hideBtmNavi()
     }
 
-    private fun hideBtmNavi(){
-        binding.imgBtnHideBtmNavi.setOnClickListener {
-            callMainActivityMethod()
-        }
-    }
+//    private fun hideBtmNavi(){
+//        binding.imgBtnHideBtmNavi.setOnClickListener {
+//            callMainActivityMethod()
+//        }
+//    }
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())

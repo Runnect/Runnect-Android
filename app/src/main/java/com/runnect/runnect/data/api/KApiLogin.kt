@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-object KApiSearch {
+object KApiLogin {
     private var retrofit: Retrofit? = null
 
     private val json = Json {
@@ -26,7 +26,7 @@ object KApiSearch {
                 .addInterceptor(logger)
                 .build()
             retrofit = Retrofit.Builder()
-                .baseUrl(BuildConfig.TMAP_BASE_URL)
+                .baseUrl(BuildConfig.RUNNECT_BASE_URL)
                 .client(client)
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
@@ -37,6 +37,6 @@ object KApiSearch {
     inline fun <reified T> create(): T = getRetrofit().create<T>(T::class.java)
 
     object ServicePool {
-        val searchService = create<KSearchService>()
+        val loginService = create<KLoginService>() //다른 api들은 다 헤더에 토큰값을 넣어줘야 하는데 KApiSearch에는 없길래 여기에 만듦
     }
 }
