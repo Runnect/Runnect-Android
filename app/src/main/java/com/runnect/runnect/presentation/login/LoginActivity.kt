@@ -19,20 +19,19 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.data.model.RequestPostLoginDto
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.draw.DrawViewModel
-import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.callback.LoginToken
 import timber.log.Timber
 
 
 class LoginActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
 
+    companion object {
+        lateinit var accessToken: String
+        lateinit var refreshToken: String
+    }
+
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
-
-    lateinit var accessToken : String
-    lateinit var refreshToken : String
 
     private val viewModel: LoginViewModel by viewModels()
 
@@ -120,13 +119,21 @@ class LoginActivity :
 //            }
 //        }
 
-        viewModel.loginResult.observe(this){
+        viewModel.loginResult.observe(this) {
             Timber.tag(ContentValues.TAG).d("로그인 통신 결과: ${it.message}")
-            Timber.tag(ContentValues.TAG).d("로그인 통신 결과_accessToken: ${it.data.accessToken}")
-            Timber.tag(ContentValues.TAG).d("로그인 통신 결과_refreshToken: ${it.data.refreshToken}")
+            if (it.message == "로그인 성공") {
+                accessToken = it.data.accessToken
+                refreshToken = it.data.refreshToken
+
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+                }
+                startActivity(intent)
+            }
+
         }
 
-        viewModel.errorMessage.observe(this){
+        viewModel.errorMessage.observe(this) {
             Timber.tag(ContentValues.TAG).d("로그인 통신 실패: $it")
         }
 
