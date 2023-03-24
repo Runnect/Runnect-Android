@@ -35,8 +35,12 @@ class StorageViewModel : ViewModel() {
                 service.getCourseList()
             }.onSuccess {
                 getMyDrawResult.value = it.body()
+                Timber.tag(ContentValues.TAG)
+                    .d("데이터 수신 완료")
                 _storageState.value = UiState.Success
             }.onFailure {
+                Timber.tag(ContentValues.TAG)
+                    .d("문제가 뭐냐 $it")
                 errorMessage.value = it.message
                 _storageState.value = UiState.Failure
             }

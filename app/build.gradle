@@ -65,7 +65,7 @@ dependencies {
     def lifecycle_version = "2.5.1"
     //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    //LiveData - 데이터의 변경 사항을 알 수 있다.
+    //LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     //DataBinding
     implementation "androidx.activity:activity-ktx:1.6.1"

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResponseGetCourseDto(
     @SerialName("data")
-    val data: Data,
+    val `data`: Data,
     @SerialName("message")
     val message: String,
     @SerialName("status")
@@ -44,9 +44,8 @@ data class ResponseGetCourseDto(
 
         @Serializable
         data class User(
-            @SerialName("machineId")
-            val machineId: String,
+            @SerialName("id")
+            val id: Int,
         )
     }
-
 }

@@ -48,8 +48,8 @@ data class ResponseGetScrapDto(
 
         @Serializable
         data class User(
-            @SerialName("machineId")
-            val machineId: String,
+            @SerialName("id")
+            val id: Int,
         )
     }
 }

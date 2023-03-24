@@ -41,8 +41,6 @@ class StorageMyDrawFragment :
     lateinit var selectionTracker: SelectionTracker<Long>
     private val storageMyDrawAdapter = StorageMyDrawAdapter(this)
 
-
-    private lateinit var animDown: Animation
     private lateinit var animUp: Animation
 
     //MainActivity에 작성해놓은 메서드 호출
@@ -183,7 +181,7 @@ class StorageMyDrawFragment :
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
                         .d("Success : getSearchList body is not null")
-                } //뭐지? 조회 성공이 되는데 왜 Failure로 넘어갔지?
+                } //data 수신에는 성공했지만 onSuccess에서 예외가 발생해서 onFailure로 넘어간 것 같음
 
             }
 
