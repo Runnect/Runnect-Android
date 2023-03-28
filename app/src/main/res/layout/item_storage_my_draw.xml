@@ -4,9 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
-            name="storage"
+            name="storageItem"
             type="com.runnect.runnect.data.model.ResponseGetCourseDto.Data.Course" />
+
+        <variable
+            name="selected"
+            type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,9 +42,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    app:storageImage="@{storage.image}" />
+                    app:storageImage="@{storageItem.image}" />
 
             </com.google.android.material.card.MaterialCardView>
+
+            <ImageView
+                android:outlineProvider="none"
+                android:elevation="3dp"
+                android:visibility="@{selected ? View.VISIBLE : View.GONE}"
+                android:id="@+id/iv_select"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:image_select="@{selected}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -50,7 +66,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center_vertical"
                 android:maxLength="13"
-                android:text="@{storage.departure.region + storage.departure.city }"
+                android:text="@{storageItem.departure.region + storageItem.departure.city }"
                 android:textColor="@color/G1"
                 app:scale_height="22"
                 app:scale_textsize="14"

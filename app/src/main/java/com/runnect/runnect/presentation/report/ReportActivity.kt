@@ -7,9 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.URLUtil
 import android.webkit.WebView
 import androidx.activity.viewModels
-import com.example.firebasepractice.presentation.report.ReportViewModel
 import com.runnect.runnect.databinding.ActivityLoginBinding
-import com.runnect.runnect.databinding.ActivityReportBinding
 import kotlinx.android.synthetic.main.activity_report.*
 
 class ReportActivity : com.runnect.runnect.binding.BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_report) {

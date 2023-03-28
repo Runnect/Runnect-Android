@@ -1,5 +1,7 @@
 package com.runnect.runnect.presentation.storage.adapter
 
+import android.content.ContentValues
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
@@ -38,7 +40,7 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
 
         fun bind(courseList: ResponseGetCourseDto.Data.Course) {
-            binding.storage = courseList
+            binding.storageItem = courseList
         } //여기는 dto를 구독해서 xml 단에서 바로 ui 바인딩을 할 수 있게끔 하려는 목적인듯
 
         // 여기는 item이 터치가 됐을 때 동작을 만들어주기 위함.
@@ -47,7 +49,6 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
         fun bindViews(data: ResponseGetCourseDto.Data.Course) {
             binding.root.setOnClickListener {
                 myDrawClickListener.selectItem(data)
-//                selectionTracker.select(itemPosition.toLong())
             }
         }
 
@@ -57,24 +58,6 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
         this.selectionTracker = selectionTracker
     }
 
-    //삭제 함수도 넣어야지, Scarp에 만들어뒀던 거랑 합치기
-//    fun removeItem(selection: Selection<Long>) {
-//        val currentList = currentList.toMutableList()
-//        val itemList = mutableListOf<GitData>()
-//        selection.forEach {
-//            itemList.add(currentList[it.toInt()])
-//        }
-//        currentList.removeAll(itemList)
-//        submitList(currentList)
-//    }
-
-//    fun setSelectionTracker(selectionTracker: SelectionTracker<Long>?) {
-//        if (selectionTracker != null && selectionTracker.isSelected(getAdapterPosition() as Long)) {
-//            checkBox.setImageResource(R.drawable.checkbox_on_background)
-//        } else {
-//            checkBox.setImageResource(R.drawable.checkbox_off_background)
-//        }
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -87,13 +70,16 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
         holder.bind(currentList[position])
         holder.bindViews(currentList[position])
 
-        //근데 이걸 onBindViewHolder에 적어주는 게 맞나?
-//        with(holder as ItemViewHolder) {
-//            binding.setVariable(BR.storage, getItem(position) as GitData)
-//            binding.root.setOnClickListener {
-//                selectionTracker.select(position.toLong())
-//            }
-//            binding.selected = selectionTracker.isSelected(position.toLong()) }
+        with(holder) {
+            binding.setVariable(BR.storageItem, getItem(position))
+            binding.root.setOnClickListener {
+                selectionTracker.select(position.toLong())
+                //선택한 item 로그, 근데 최초 선택한 것만 출력됨. 이후 중복 선택된 것들은 안 나옴
+                Log.d(ContentValues.TAG, "선택된 itemId 값 : $itemId")
+
+            }
+            binding.selected = selectionTracker.isSelected(position.toLong()) }
+
     }
 
 

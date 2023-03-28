@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -39,7 +40,7 @@ class StorageMyDrawFragment :
 
     lateinit var recyclerviewStorageMyDraw: RecyclerView
     lateinit var selectionTracker: SelectionTracker<Long>
-    private val storageMyDrawAdapter = StorageMyDrawAdapter(this)
+    lateinit var storageMyDrawAdapter : StorageMyDrawAdapter
 
     private lateinit var animUp: Animation
 
@@ -107,14 +108,19 @@ class StorageMyDrawFragment :
         initLayout()
         binding.lifecycleOwner = requireActivity()
 
-        recyclerviewStorageMyDraw = binding.recyclerViewStorageMyDraw //initRecyclerView
-        recyclerviewStorageMyDraw.adapter = storageMyDrawAdapter
+        initAdapter()
 
         getCourse() //문제 없음
         addData() //상관 없음
+        initAdapter()
         addObserver()
         addTrackerObserver() //selection
 
+    }
+
+    private fun initAdapter() {
+        storageMyDrawAdapter = StorageMyDrawAdapter(this)
+        binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
 
 
@@ -205,13 +211,21 @@ class StorageMyDrawFragment :
     //SelectionTracker.kt로 빼준 함수 활용
     private fun addTrackerObserver() {
         selectionTracker =
-            setSelectionTracker("StorageMyDrawSelectionTracker", recyclerviewStorageMyDraw)
+            setSelectionTracker("StorageMyDrawSelectionTracker", binding.recyclerViewStorageMyDraw)
         selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
+
+
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
                 val items = selectionTracker.selection.size()
-//                if(items == 0) binding.enabled = false
-//                else binding.enabled = items >= 1 // 선택된 아이템이 1개 이상일 경우 floating button 활성화
+                Log.d(ContentValues.TAG, "items 사이즈?: $items")
+                if (items == 0) {
+//                    binding.btnDelete.setBackgroundResource(R.drawable.radius_10_g3_button)
+//                    binding.enabled = false
+                } else if (items >= 1) {
+//                    binding.btnDelete.setBackgroundResource(R.drawable.radius_10_m1_button)
+//                    binding.enabled = true
+                } // 선택된 아이템이 1개 이상일 경우 button 활성화 (floating button하고 그냥 버튼하고 기본 지원 옵션이 좀 다른 듯함.)
 
             }
         }))
@@ -221,10 +235,10 @@ class StorageMyDrawFragment :
 
     override fun selectItem(item: ResponseGetCourseDto.Data.Course) {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.id}")
-        startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            putExtra("fromStorageFragment", item.id)
-        })
+//        startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
+//            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+//            putExtra("fromStorageFragment", item.id)
+//        }
     }
 }
 
