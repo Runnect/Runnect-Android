@@ -12,6 +12,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
+import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
@@ -41,6 +43,8 @@ class StorageMyDrawFragment :
     lateinit var recyclerviewStorageMyDraw: RecyclerView
     lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter : StorageMyDrawAdapter
+
+    lateinit var itemBinding : ItemStorageMyDrawBinding
 
     private lateinit var animUp: Animation
 
@@ -109,7 +113,7 @@ class StorageMyDrawFragment :
         binding.lifecycleOwner = requireActivity()
 
         initAdapter()
-
+        editCourse()
         getCourse() //문제 없음
         addData() //상관 없음
         initAdapter()
@@ -117,6 +121,21 @@ class StorageMyDrawFragment :
         addTrackerObserver() //selection
 
     }
+
+    private fun editCourse(){
+        binding.btnEditCourse.setOnClickListener {
+
+        }
+    }
+
+//    private fun observeEditCourseCondition(){
+//        viewModel.editCourseCondition.observe(this){
+//            val isEditAvailable = viewModel.editCourseCondition.value
+//            if(isEditAvailable == true){ //편집 활성화
+//
+//            }
+//        }
+//    }
 
     private fun initAdapter() {
         storageMyDrawAdapter = StorageMyDrawAdapter(this)

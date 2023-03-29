@@ -24,10 +24,10 @@
             android:paddingBottom="11dp"
             android:textColor="@color/G2"
             android:textSize="12sp"
+            android:text="총 코스 152개"
             app:layout_constraintBottom_toTopOf="@id/scrollview_my_draw"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="총 코스 152개" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_edit_course"
@@ -79,8 +79,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/item_storage_my_draw"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/iv_storage_my_draw_no_course"

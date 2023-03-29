@@ -43,3 +43,12 @@ fun ImageView.loadSelect(selected: Boolean) {
         setBackgroundColor(Color.parseColor("#FFFFFF"))
     }
 }
+
+@BindingAdapter("app:image_check")
+fun ImageView.loadCheck(selected: Boolean) {
+    if (selected) {
+        setBackgroundResource(R.drawable.ic_select)
+    } else {
+        setBackgroundResource(R.drawable.ic_not_select)
+    }
+}

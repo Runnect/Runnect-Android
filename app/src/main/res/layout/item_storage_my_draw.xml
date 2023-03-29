@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="storageItem"
             type="com.runnect.runnect.data.model.ResponseGetCourseDto.Data.Course" />
@@ -21,6 +23,7 @@
         <com.ssomai.android.scalablelayout.ScalableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,18 +47,30 @@
                     android:scaleType="centerCrop"
                     app:storageImage="@{storageItem.image}" />
 
+
+                <ImageView
+                    android:id="@+id/iv_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="3dp"
+                    android:outlineProvider="none"
+                    android:visibility="@{selected ? View.VISIBLE : View.GONE}"
+                    app:image_select="@{selected}" />
+
             </com.google.android.material.card.MaterialCardView>
 
             <ImageView
-                android:outlineProvider="none"
+                android:id="@+id/iv_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:elevation="3dp"
+                android:outlineProvider="none"
                 android:visibility="@{selected ? View.VISIBLE : View.GONE}"
-                android:id="@+id/iv_select"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:image_select="@{selected}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:image_check="@{selected}"
+                app:scale_height="20"
+                app:scale_left="8"
+                app:scale_top="8"
+                app:scale_width="20" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
