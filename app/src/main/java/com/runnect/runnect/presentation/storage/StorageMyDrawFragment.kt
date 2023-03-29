@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
@@ -12,18 +13,14 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
-import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
@@ -40,11 +37,11 @@ class StorageMyDrawFragment :
 
     val viewModel: StorageViewModel by viewModels()
 
-    lateinit var recyclerviewStorageMyDraw: RecyclerView
     lateinit var selectionTracker: SelectionTracker<Long>
-    lateinit var storageMyDrawAdapter : StorageMyDrawAdapter
+    lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
 
-    lateinit var itemBinding : ItemStorageMyDrawBinding
+    var isSelectAvailable = false
+
 
     private lateinit var animUp: Animation
 
@@ -116,15 +113,21 @@ class StorageMyDrawFragment :
         editCourse()
         getCourse() //문제 없음
         addData() //상관 없음
-        initAdapter()
         addObserver()
         addTrackerObserver() //selection
-
+        noTouch()
     }
 
-    private fun editCourse(){
+    private fun editCourse() {
         binding.btnEditCourse.setOnClickListener {
+            isSelectAvailable = true
+        }
+    }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun noTouch() {
+        binding.recyclerViewStorageMyDraw.setOnTouchListener { _, _ ->
+            true
         }
     }
 
@@ -232,10 +235,11 @@ class StorageMyDrawFragment :
         selectionTracker =
             setSelectionTracker("StorageMyDrawSelectionTracker", binding.recyclerViewStorageMyDraw)
         selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
-
-
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
+                if (!isSelectAvailable) {
+                    selectionTracker.clearSelection()
+                } //터치 활성화 여부
                 val items = selectionTracker.selection.size()
                 Log.d(ContentValues.TAG, "items 사이즈?: $items")
                 if (items == 0) {
@@ -245,7 +249,6 @@ class StorageMyDrawFragment :
 //                    binding.btnDelete.setBackgroundResource(R.drawable.radius_10_m1_button)
 //                    binding.enabled = true
                 } // 선택된 아이템이 1개 이상일 경우 button 활성화 (floating button하고 그냥 버튼하고 기본 지원 옵션이 좀 다른 듯함.)
-
             }
         }))
         storageMyDrawAdapter.setSelectionTracker(selectionTracker) //어댑터 생성 후 할당해줘야 한다는 순서지킴

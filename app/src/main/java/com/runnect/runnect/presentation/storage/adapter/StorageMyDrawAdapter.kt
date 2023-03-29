@@ -20,6 +20,7 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
+    var isEditAvailable: Boolean = false
 
     init {
         setHasStableIds(true)
@@ -55,7 +56,7 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
     }
 
     fun setSelectionTracker(selectionTracker: SelectionTracker<Long>) {
-        this.selectionTracker = selectionTracker
+        this.selectionTracker = selectionTracker //입력받은 걸 멤버변수 값에 할당, 즉 입력을 안 받으면 초기화 안 했다고 앱이 죽음
     }
 
 
@@ -78,7 +79,8 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
                 Log.d(ContentValues.TAG, "선택된 itemId 값 : $itemId")
 
             }
-            binding.selected = selectionTracker.isSelected(position.toLong()) }
+            binding.selected = selectionTracker.isSelected(position.toLong())
+        }
 
     }
 
@@ -99,4 +101,5 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
         }
 
     }
+
 }
