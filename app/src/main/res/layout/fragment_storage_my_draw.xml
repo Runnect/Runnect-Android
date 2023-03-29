@@ -128,19 +128,5 @@
 
         </ScrollView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:enabled="false"
-            android:visibility="invisible"
-            android:id="@+id/btn_delete_course"
-            android:layout_width="match_parent"
-            android:layout_height="57dp"
-            android:background="@color/M1"
-            android:fontFamily="@font/pretendard_semibold"
-            android:text="@string/my_draw_delete"
-            android:textColor="@color/W1"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scrollview_my_draw" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

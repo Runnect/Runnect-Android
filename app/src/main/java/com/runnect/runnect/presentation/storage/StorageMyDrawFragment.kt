@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.storage
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
@@ -8,10 +7,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
@@ -21,6 +21,7 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
@@ -40,6 +41,7 @@ class StorageMyDrawFragment :
     lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
 
+
     var isSelectAvailable = false
 
 
@@ -53,28 +55,41 @@ class StorageMyDrawFragment :
         mainActivity = context as MainActivity
     }
 
-    fun callMainActivityMethod() {
+    fun callMainHide() {
         mainActivity?.hideBtmNavi()
     }
 
+    fun callMainShow() {
+        mainActivity?.showDeleteCourseBtn()
+    }
+
+    private fun editCourse() {
+        binding.btnEditCourse.setOnClickListener {
+            hideBtmNavi()
+            isSelectAvailable = true
+        }
+    }
+
+
     private fun hideBtmNavi() {
         binding.btnEditCourse.setOnClickListener {
-            callMainActivityMethod()
+            callMainHide()
+            callMainShow()
             // 총코스 TextView -> 코스 선택
             // btnEditCourse.isVisible = false
         }
     }
 
-    private fun showDeleteCourseBtn() {
-        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-
-        with(binding) {
-            btnDeleteCourse.startAnimation(animUp)
-            btnDeleteCourse.isVisible = true //default false
-            //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
-
-        }
-    }
+//    private fun showDeleteCourseBtn() {
+//        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+//
+//        with(binding) {
+//            btnDeleteCourse.startAnimation(animUp)
+//            btnDeleteCourse.isVisible = true //default false
+//            //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
+//
+//        }
+//    }
 
     fun customDialog(view: View) {
         val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
@@ -97,11 +112,11 @@ class StorageMyDrawFragment :
 
     }
 
-    private fun deleteCourseBtn() {
-        binding.btnDeleteCourse.setOnClickListener {
-            customDialog(binding.root)
-        }
-    }
+//    private fun deleteCourseBtn() {
+//        binding.btnDeleteCourse.setOnClickListener {
+//            customDialog(binding.root)
+//        }
+//    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,21 +130,8 @@ class StorageMyDrawFragment :
         addData() //상관 없음
         addObserver()
         addTrackerObserver() //selection
-        noTouch()
     }
 
-    private fun editCourse() {
-        binding.btnEditCourse.setOnClickListener {
-            isSelectAvailable = true
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun noTouch() {
-        binding.recyclerViewStorageMyDraw.setOnTouchListener { _, _ ->
-            true
-        }
-    }
 
 //    private fun observeEditCourseCondition(){
 //        viewModel.editCourseCondition.observe(this){
@@ -257,11 +259,12 @@ class StorageMyDrawFragment :
 
     override fun selectItem(item: ResponseGetCourseDto.Data.Course) {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.id}")
-//        startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
-//            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-//            putExtra("fromStorageFragment", item.id)
-//        }
+        startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            putExtra("fromStorageFragment", item.id)
+        })
     }
+
 }
 
 

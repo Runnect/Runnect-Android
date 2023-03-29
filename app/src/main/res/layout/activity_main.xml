@@ -22,6 +22,21 @@
             app:layout_constraintBottom_toTopOf="@id/btm_navi_main"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:enabled="false"
+            android:visibility="gone"
+            android:id="@+id/btn_delete_course"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:background="@color/M1"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/my_draw_delete"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/btm_navi_main"
@@ -36,5 +51,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/main_bottom_menu" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

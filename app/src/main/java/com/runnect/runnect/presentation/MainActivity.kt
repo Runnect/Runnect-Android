@@ -26,6 +26,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var fromEndRunActivity: String? = ""
 
     private lateinit var animDown: Animation
+    private lateinit var animUp: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             //Bottom invisible
             btmNaviMain.startAnimation(animDown)
             btmNaviMain.isVisible = false
+        }
+    }
+
+    fun showDeleteCourseBtn() {
+        animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
+        with(binding) {
+//            btnDeleteCourse.startAnimation(animUp)
+            btnDeleteCourse.isVisible = true //default false
         }
     }
 
