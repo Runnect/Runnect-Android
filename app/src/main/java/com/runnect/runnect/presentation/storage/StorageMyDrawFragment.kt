@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
@@ -49,7 +50,8 @@ class StorageMyDrawFragment :
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
 
-    lateinit var btnDeleteCourseMain: AppCompatButton
+//    lateinit var btnDeleteCourseMain: AppCompatButton
+//    lateinit var btmNaviMain: BottomNavigationView
 
 
     var isSelectAvailable = false
@@ -70,17 +72,42 @@ class StorageMyDrawFragment :
     fun hideBtmNavi() {
         animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
 
-        val btmNaviMain = mainActivity.getBtmNaviMain()
+        val btmNaviMain = mainActivity.getBtmNaviMain() as BottomNavigationView
 
         //Bottom invisible
-        btmNaviMain?.startAnimation(animDown)
-        btmNaviMain?.isVisible = false
+        btmNaviMain.startAnimation(animDown)
+        btmNaviMain.isVisible = false
+    }
+
+    fun showBtmNavi() {
+        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+
+        val btmNaviMain = mainActivity.getBtmNaviMain() as BottomNavigationView
+
+        //Bottom visible
+        btmNaviMain.startAnimation(animUp)
+        btmNaviMain.isVisible = true
+    }
+
+    private fun hideDeleteCourseBtn() {
+        animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
+
+        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+
+//        btnDeleteCourseMain.startAnimation(animDown)
+
+        btnDeleteCourseMain.isVisible = false //default false
+        //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
+
+        btnDeleteCourseMain.isEnabled = false //이 부분은 없어도 될 것 같긴 한다ㅔ
+
+
     }
 
     private fun showDeleteCourseBtn() {
         animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
 
-        btnDeleteCourseMain = (mainActivity.getBtnDeleteCourseMain() as AppCompatButton?)!!
+        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
 
 //        btmDeleteCourseMain?.startAnimation(animUp)
         btnDeleteCourseMain.isVisible = true //default false
@@ -105,10 +132,16 @@ class StorageMyDrawFragment :
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
 
+
         myLayout.btn_delete_yes.setOnClickListener {
+            Timber.d("selectionTracker.selection 값???? ${selectionTracker.selection.size()}") //여긴 문제 x 삭제후 다시 2개 선택해도 2개 뜸
             storageMyDrawAdapter.removeItem(selectionTracker.selection)
             selectionTracker.clearSelection()
+            Timber.d("selectionTracker.selection 후 값???? ${selectionTracker.selection.size()}") //인덱스값 0,3반환
             dialog.dismiss()
+
+//            hideDeleteCourseBtn()
+//            showBtmNavi()
             //삭제하기 누르면 다시 총코스 TextView랑 btnEditCourse.isVisible = true
         }
         myLayout.btn_delete_no.setOnClickListener {
@@ -245,12 +278,16 @@ class StorageMyDrawFragment :
     }
 
     private fun enableDeleteBtn() {
+        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+
         btnDeleteCourseMain.text = "삭제하기"
         btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.M1))
         btnDeleteCourseMain.isEnabled = true
     }
 
     private fun disableSaveBtn() {
+        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+
         btnDeleteCourseMain.text = "완료하기"
         btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.G3))
         btnDeleteCourseMain.isEnabled = false
