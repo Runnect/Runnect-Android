@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.storage.adapter
 import android.content.ContentValues
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -11,6 +12,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.runnect.runnect.R
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.OnMyDrawClick

@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
@@ -26,6 +28,7 @@ import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnMyDrawClick
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
 
@@ -46,12 +49,16 @@ class StorageMyDrawFragment :
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
 
+    lateinit var btnDeleteCourseMain: AppCompatButton
+
 
     var isSelectAvailable = false
 
 
     private fun editCourse() {
         binding.btnEditCourse.setOnClickListener {
+            //여기서 체크박스 visible로 바꾸고 터치 여부에 따라 setDrawble만 바뀌게
+            //참조로 가져와야 함.
             hideBtmNavi()
             showDeleteCourseBtn()
             // 총코스 TextView -> 코스 선택
@@ -73,15 +80,15 @@ class StorageMyDrawFragment :
     private fun showDeleteCourseBtn() {
         animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
 
-        val btmDeleteCourseMain = mainActivity.getBtnDeleteCourseMain()
+        btnDeleteCourseMain = (mainActivity.getBtnDeleteCourseMain() as AppCompatButton?)!!
 
 //        btmDeleteCourseMain?.startAnimation(animUp)
-        btmDeleteCourseMain?.isVisible = true //default false
+        btnDeleteCourseMain.isVisible = true //default false
         //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
 
-        btmDeleteCourseMain?.isEnabled = true //default false
+        btnDeleteCourseMain.isEnabled = true //default false
 
-        btmDeleteCourseMain?.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
+        btnDeleteCourseMain.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
             customDialog(binding.root)
         }
     }
@@ -124,15 +131,6 @@ class StorageMyDrawFragment :
         addTrackerObserver() //selection
     }
 
-
-//    private fun observeEditCourseCondition(){
-//        viewModel.editCourseCondition.observe(this){
-//            val isEditAvailable = viewModel.editCourseCondition.value
-//            if(isEditAvailable == true){ //편집 활성화
-//
-//            }
-//        }
-//    }
 
     private fun initAdapter() {
         storageMyDrawAdapter = StorageMyDrawAdapter(this)
@@ -237,15 +235,25 @@ class StorageMyDrawFragment :
                 val items = selectionTracker.selection.size()
                 Log.d(ContentValues.TAG, "items 사이즈?: $items")
                 if (items == 0) {
-//                    binding.btnDelete.setBackgroundResource(R.drawable.radius_10_g3_button)
-//                    binding.enabled = false
+                    disableSaveBtn()
                 } else if (items >= 1) {
-//                    binding.btnDelete.setBackgroundResource(R.drawable.radius_10_m1_button)
-//                    binding.enabled = true
+                    enableDeleteBtn()
                 } // 선택된 아이템이 1개 이상일 경우 button 활성화 (floating button하고 그냥 버튼하고 기본 지원 옵션이 좀 다른 듯함.)
             }
         }))
         storageMyDrawAdapter.setSelectionTracker(selectionTracker) //어댑터 생성 후 할당해줘야 한다는 순서지킴
+    }
+
+    private fun enableDeleteBtn() {
+        btnDeleteCourseMain.text = "삭제하기"
+        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.M1))
+        btnDeleteCourseMain.isEnabled = true
+    }
+
+    private fun disableSaveBtn() {
+        btnDeleteCourseMain.text = "완료하기"
+        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.G3))
+        btnDeleteCourseMain.isEnabled = false
     }
 
 
