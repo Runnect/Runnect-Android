@@ -10,12 +10,10 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
@@ -80,7 +78,14 @@ class StorageMyDrawFragment :
 //        btmDeleteCourseMain?.startAnimation(animUp)
         btmDeleteCourseMain?.isVisible = true //default false
         //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
+
+        btmDeleteCourseMain?.isEnabled = true //default false
+
+        btmDeleteCourseMain?.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
+            customDialog(binding.root)
+        }
     }
+
 
     fun customDialog(view: View) {
         val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
@@ -102,12 +107,6 @@ class StorageMyDrawFragment :
         }
 
     }
-
-//    private fun deleteCourseBtn() {
-//        binding.btnDeleteCourse.setOnClickListener {
-//            customDialog(binding.root)
-//        }
-//    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
