@@ -82,9 +82,7 @@ class StorageMyDrawFragment :
         btmDeleteCourseMain?.isEnabled = true //default false
 
         btmDeleteCourseMain?.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
-            storageMyDrawAdapter.removeItem(selectionTracker.selection)
-            selectionTracker.clearSelection()
-//            customDialog(binding.root)
+            customDialog(binding.root)
         }
     }
 

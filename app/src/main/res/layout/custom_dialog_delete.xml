@@ -29,7 +29,7 @@
 
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_delete_yes"
+            android:id="@+id/btn_delete_no"
             android:layout_width="147dp"
             android:layout_height="45dp"
             android:layout_marginStart="13dp"
@@ -43,13 +43,13 @@
             android:textColor="@color/M1"
             android:textSize="13.31sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_delete_no"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete_yes"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_delete_no"
+            android:id="@+id/btn_delete_yes"
             android:layout_width="147dp"
             android:layout_height="45dp"
             android:layout_marginStart="6dp"
@@ -60,10 +60,10 @@
             android:text="삭제하기"
             android:textColor="@color/W1"
             android:textSize="13.31sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_delete_yes"
+            app:layout_constraintBottom_toBottomOf="@id/btn_delete_no"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_delete_yes"
-            app:layout_constraintTop_toTopOf="@id/btn_delete_yes" />
+            app:layout_constraintStart_toEndOf="@id/btn_delete_no"
+            app:layout_constraintTop_toTopOf="@id/btn_delete_no" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
 
