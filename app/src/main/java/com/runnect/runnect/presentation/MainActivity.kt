@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation
 
 import android.os.Bundle
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
@@ -25,8 +26,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var isChangeToDiscover: Boolean = false
     var fromEndRunActivity: String? = ""
 
-    private lateinit var animDown: Animation
-    private lateinit var animUp: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,23 +39,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     }
 
-    fun hideBtmNavi() {
-        animDown = AnimationUtils.loadAnimation(this, R.anim.slide_out_down)
-
-        with(binding) {
-            //Bottom invisible
-            btmNaviMain.startAnimation(animDown)
-            btmNaviMain.isVisible = false
-        }
+    fun getBtmNaviMain(): View? {
+        return findViewById(R.id.btm_navi_main)
     }
 
-    fun showDeleteCourseBtn() {
-        animUp = AnimationUtils.loadAnimation(this, R.anim.slide_out_up)
-        with(binding) {
-//            btnDeleteCourse.startAnimation(animUp)
-            btnDeleteCourse.isVisible = true //default false
-        }
+    fun getBtnDeleteCourseMain(): View? {
+        return findViewById(R.id.btn_delete_course_main)
     }
+
 
     private fun initView() {
         if (!isChangeToStorage && !isChangeToDiscover) {//1. 앱 처음 빌드

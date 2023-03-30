@@ -23,19 +23,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:enabled="false"
-            android:visibility="gone"
-            android:id="@+id/btn_delete_course"
+            android:id="@+id/btn_delete_course_main"
             android:layout_width="match_parent"
             android:layout_height="57dp"
             android:background="@color/M1"
+            android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
             android:text="@string/my_draw_delete"
             android:textColor="@color/W1"
             android:textSize="15sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

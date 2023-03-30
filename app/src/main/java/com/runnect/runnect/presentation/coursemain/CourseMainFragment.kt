@@ -45,24 +45,8 @@ class CourseMainFragment :
         init()
         getCurrentLocation()
         drawCourseButton()
-//        hideBtmNavi()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity = context as MainActivity
-    }
-
-    // MainActivity의 메서드를 호출하는 예시 메서드
-    fun callMainActivityMethod() {
-        mainActivity?.hideBtmNavi()
-    }
-
-//    private fun hideBtmNavi(){
-//        binding.imgBtnHideBtmNavi.setOnClickListener {
-//            callMainActivityMethod()
-//        }
-//    }
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())

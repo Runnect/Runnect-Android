@@ -2,20 +2,20 @@ package com.runnect.runnect.presentation.storage
 
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
@@ -41,55 +41,46 @@ class StorageMyDrawFragment :
     lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
 
+    private val mainActivity: MainActivity by lazy {
+        activity as MainActivity
+    } // 이 변수가 최초 할당 이후 계속 MainActivity를 참조하니까 사용을 안 하는 순간에는 null을 할당해줌으로써 메모리에서 내려줘야 함.
+
+    private lateinit var animDown: Animation
+    private lateinit var animUp: Animation
+
 
     var isSelectAvailable = false
 
 
-    private lateinit var animUp: Animation
-
-    //MainActivity에 작성해놓은 메서드 호출
-    private var mainActivity: MainActivity? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity = context as MainActivity
-    }
-
-    fun callMainHide() {
-        mainActivity?.hideBtmNavi()
-    }
-
-    fun callMainShow() {
-        mainActivity?.showDeleteCourseBtn()
-    }
-
     private fun editCourse() {
         binding.btnEditCourse.setOnClickListener {
             hideBtmNavi()
+            showDeleteCourseBtn()
+            // 총코스 TextView -> 코스 선택
+            // btnEditCourse.isVisible = false
             isSelectAvailable = true
         }
     }
 
+    fun hideBtmNavi() {
+        animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
 
-    private fun hideBtmNavi() {
-        binding.btnEditCourse.setOnClickListener {
-            callMainHide()
-            callMainShow()
-            // 총코스 TextView -> 코스 선택
-            // btnEditCourse.isVisible = false
-        }
+        val btmNaviMain = mainActivity.getBtmNaviMain()
+
+        //Bottom invisible
+        btmNaviMain?.startAnimation(animDown)
+        btmNaviMain?.isVisible = false
     }
 
-//    private fun showDeleteCourseBtn() {
-//        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-//
-//        with(binding) {
-//            btnDeleteCourse.startAnimation(animUp)
-//            btnDeleteCourse.isVisible = true //default false
-//            //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
-//
-//        }
-//    }
+    private fun showDeleteCourseBtn() {
+        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+
+        val btmDeleteCourseMain = mainActivity.getBtnDeleteCourseMain()
+
+//        btmDeleteCourseMain?.startAnimation(animUp)
+        btmDeleteCourseMain?.isVisible = true //default false
+        //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
+    }
 
     fun customDialog(view: View) {
         val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)

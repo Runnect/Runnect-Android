@@ -31,10 +31,9 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_edit_course"
-            android:layout_width="47dp"
-            android:layout_height="22dp"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="15dp"
-            android:layout_marginBottom="7dp"
             android:background="@drawable/radius_50_edit_course_button"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/my_draw_edit"
