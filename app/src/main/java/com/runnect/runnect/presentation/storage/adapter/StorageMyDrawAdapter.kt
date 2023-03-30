@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,7 +21,6 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
-    var isEditAvailable: Boolean = false
 
     init {
         setHasStableIds(true)
@@ -74,14 +74,23 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
         with(holder) {
             binding.setVariable(BR.storageItem, getItem(position))
             binding.root.setOnClickListener {
-                selectionTracker.select(position.toLong())
-                //선택한 item 로그, 근데 최초 선택한 것만 출력됨. 이후 중복 선택된 것들은 안 나옴
-                Log.d(ContentValues.TAG, "선택된 itemId 값 : $itemId")
-
+                selectionTracker.select(position.toLong()) //이게 select을 실행시킴
             }
             binding.selected = selectionTracker.isSelected(position.toLong())
         }
 
+    }
+
+    //선택된 걸 별도의 list에다 저장하려고 애썼는데 그럴 필요가 없었음. 'selectionTracker.selection' 이 부분이 해당 역할을 이미 수행하고 있었음.
+    fun removeItem(selection: Selection<Long>) {
+        val itemList = mutableListOf<ResponseGetCourseDto.Data.Course>()
+        itemList.addAll(currentList)
+        val selectedList = selection.toMutableList()
+
+        for(i in selectedList){
+            itemList.removeAt(selectedList[i.toInt()].toInt())
+        }
+        submitList(itemList)
     }
 
 

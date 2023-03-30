@@ -82,7 +82,9 @@ class StorageMyDrawFragment :
         btmDeleteCourseMain?.isEnabled = true //default false
 
         btmDeleteCourseMain?.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
-            customDialog(binding.root)
+            storageMyDrawAdapter.removeItem(selectionTracker.selection)
+            selectionTracker.clearSelection()
+//            customDialog(binding.root)
         }
     }
 
@@ -99,6 +101,8 @@ class StorageMyDrawFragment :
         dialog.show()
 
         myLayout.btn_delete_yes.setOnClickListener {
+            storageMyDrawAdapter.removeItem(selectionTracker.selection)
+            selectionTracker.clearSelection()
             dialog.dismiss()
             //삭제하기 누르면 다시 총코스 TextView랑 btnEditCourse.isVisible = true
         }
