@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.data.model.ResponseGetCourseDto
+import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import timber.log.Timber
@@ -86,25 +87,18 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
     //선택된 걸 별도의 list에다 저장하려고 애썼는데 그럴 필요가 없었음. 'selectionTracker.selection' 이 부분이 해당 역할을 이미 수행하고 있었음.
     fun removeItem(selection: Selection<Long>) {
-        val itemList = currentList.toMutableList()
+
+        val itemList = mutableListOf<ResponseGetCourseDto.Data.Course>()
+        itemList.addAll(currentList)
         val selectedList = selection.toMutableList()
 
-//        Timber.d("selectedList 값???? ${selectedList}") //인덱스값 0,3반환
         // 인덱스를 내림차순으로 정렬
         selectedList.sortDescending()
 
         for (i in selectedList) { //0,1
             itemList.removeAt(i.toInt())
-            //2개 단위로 묶었을 때만 삭제가 됨
-            //만약 맨마지막꺼 하나만 골랐어. 그럼 size는 1이고 인덱스는 3인데
-            //여기 logic대로라면 i는 0이겠지. 그럼 itemList에서 인덱스 0을 없애는 건데
-            //순서가 안 맞긴 하네. 근데 그동안 왜 됐지? 2,4
         }
 
-        submitList(itemList)
-//        for(i in 0 until itemList.size){
-//            itemList.removeAt(selectedList[i].toInt())
-//        } // 아 logic이 잘못됐네.
 //        submitList(itemList)
     }
 

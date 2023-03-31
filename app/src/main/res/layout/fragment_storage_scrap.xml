@@ -15,6 +15,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:text="총 코스 152개"
             android:id="@+id/tv_total_course_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,8 +27,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/scrollview_scrap"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="총 코스 152개" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ScrollView
             android:id="@+id/scrollview_scrap"

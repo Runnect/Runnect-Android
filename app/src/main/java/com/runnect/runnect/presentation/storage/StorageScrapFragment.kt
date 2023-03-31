@@ -31,7 +31,6 @@ class StorageScrapFragment :
 
     val viewModel: StorageViewModel by viewModels()
     lateinit var storageScrapAdapter: StorageScrapAdapter
-    lateinit var recyclerviewStorageScrap: RecyclerView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,10 +38,7 @@ class StorageScrapFragment :
 
         binding.lifecycleOwner = requireActivity()
         initLayout()
-
-        recyclerviewStorageScrap = binding.recyclerViewStorageScrap
         initAdapter()
-
         getCourse()
         toScrapCourseBtn()
         addObserver()
@@ -165,10 +161,8 @@ class StorageScrapFragment :
     }
 
     private fun initAdapter() {
-        storageScrapAdapter = StorageScrapAdapter(this, this, this).apply {
-            submitList(viewModel.getScrapListResult.value!!.data.scraps)
-        }
-        recyclerviewStorageScrap.adapter = storageScrapAdapter
+        storageScrapAdapter = StorageScrapAdapter(this, this, this)
+        binding.recyclerViewStorageScrap.adapter = storageScrapAdapter
     }
 
     override fun selectItem(item: ResponseGetScrapDto.Data.Scrap) {
