@@ -29,7 +29,6 @@ import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnMyDrawClick
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
 
@@ -296,10 +295,13 @@ class StorageMyDrawFragment :
 
     override fun selectItem(item: ResponseGetCourseDto.Data.Course) {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.id}")
-        startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            putExtra("fromStorageFragment", item.id)
-        })
+
+        if (!isSelectAvailable) {
+            startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                putExtra("fromStorageFragment", item.id)
+            })
+        }
     }
 
 }

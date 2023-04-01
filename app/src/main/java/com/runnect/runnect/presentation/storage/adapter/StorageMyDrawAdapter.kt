@@ -48,15 +48,6 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
             binding.storageItem = courseList
         } //여기는 dto를 구독해서 xml 단에서 바로 ui 바인딩을 할 수 있게끔 하려는 목적인듯
 
-        // 여기는 item이 터치가 됐을 때 동작을 만들어주기 위함.
-        // 이 listener를 인터페이스로 만들고 추상메서드 override할 때 뷰모델에 세팅해주고
-        // 그 뷰모델에 있는 liveData를 xml에서 구독하게 하면 굳이 이렇게 함수 2개로 안 나눠도 될듯
-        fun bindViews(data: ResponseGetCourseDto.Data.Course) {
-            binding.root.setOnClickListener {
-                myDrawClickListener.selectItem(data)
-            }
-        }
-
     }
 
     fun setSelectionTracker(selectionTracker: SelectionTracker<Long>) {
@@ -73,11 +64,12 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.bindViews(currentList[position])
+//        holder.bindViews(currentList[position])
 
         with(holder) {
             binding.setVariable(BR.storageItem, getItem(position))
             binding.root.setOnClickListener {
+                myDrawClickListener.selectItem(currentList[position])
                 selectionTracker.select(position.toLong()) //이게 select을 실행시킴
             }
             binding.selected = selectionTracker.isSelected(position.toLong())
@@ -90,16 +82,27 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
         val itemList = mutableListOf<ResponseGetCourseDto.Data.Course>()
         itemList.addAll(currentList)
-        val selectedList = selection.toMutableList()
+//        val selectedList = selection.toMutableList().map { it }
+        val selectedList = selection.map { it.toInt() }
 
-        // 인덱스를 내림차순으로 정렬
-        selectedList.sortDescending()
+        Timber.tag(ContentValues.TAG)
+            .d("선택한 item 인덱스 값 : ${selectedList}")
 
-        for (i in selectedList) { //0,1
-            itemList.removeAt(i.toInt())
+        Timber.tag(ContentValues.TAG)
+            .d("삭제 전 itemList id 값: ${itemList.map { it.id }}")
+//        // 인덱스를 내림차순으로 정렬
+//        selectedList.sortDescending()
+
+        for (i in selectedList) { //0,1,2
+            itemList.removeAt(i)
+            //보면 처음엔 [0]을 지우니까 717이 잘 삭제됐는데 이후 [1]을 삭제하려고 할 때 인덱스가 하나씩 앞으로 당겨지면서 716이 아닌 715가 삭제됨. 그래도 어떻게든 삭제는 해냈는데 [2] 때는 2개 남은
+            //상황에서 [2]라는 게 애초에 존재하지 않으니 IndexOutOfBoundsException이 떠서 앱이 죽어버림.
+            Timber.tag(ContentValues.TAG)
+                .d("삭제 후: ${itemList.map { it.id }}")
         }
 
-//        submitList(itemList)
+
+        submitList(itemList) //인덱스 0만 하나 선택해서 지우면 인덱스가 안 밀리니까 반영이 잘 돼야 할 텐데 IndexOutOfBoundsException이 뜸. 이해가 안 되네.
     }
 
 
@@ -108,7 +111,7 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
             oldItem: ResponseGetCourseDto.Data.Course,
             newItem: ResponseGetCourseDto.Data.Course,
         ): Boolean {
-            return oldItem.createdAt == newItem.createdAt
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
