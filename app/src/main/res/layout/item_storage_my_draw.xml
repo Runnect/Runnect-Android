@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="3dp"
                 android:outlineProvider="none"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:image_check="@{selected}"
                 app:scale_height="20"
                 app:scale_left="8"
