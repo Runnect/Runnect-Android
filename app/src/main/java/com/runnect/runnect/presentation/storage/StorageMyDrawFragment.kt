@@ -105,13 +105,8 @@ class StorageMyDrawFragment :
 
     private fun showDeleteCourseBtn() {
         animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-
         val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-
-//        btmDeleteCourseMain?.startAnimation(animUp)
         btnDeleteCourseMain.isVisible = true //default false
-        //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
-
         btnDeleteCourseMain.isEnabled = true //default false
 
         btnDeleteCourseMain.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
@@ -133,10 +128,9 @@ class StorageMyDrawFragment :
 
 
         myLayout.btn_delete_yes.setOnClickListener {
-            Timber.d("selectionTracker.selection 값???? ${selectionTracker.selection.size()}") //여긴 문제 x 삭제후 다시 2개 선택해도 2개 뜸
             storageMyDrawAdapter.removeItem(selectionTracker.selection)
             selectionTracker.clearSelection()
-            Timber.d("selectionTracker.selection 후 값???? ${selectionTracker.selection.size()}") //인덱스값 0,3반환
+
             dialog.dismiss()
 
 //            hideDeleteCourseBtn()
@@ -212,8 +206,6 @@ class StorageMyDrawFragment :
     }
 
     private fun updateAdapterData() {
-        Timber.tag(ContentValues.TAG)
-            .d("updateAdapter에 넣은 data : ${viewModel.getMyDrawResult.value!!.data.courses}")
         storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
     }
 
@@ -233,7 +225,7 @@ class StorageMyDrawFragment :
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
                         .d("Success : getSearchList body is not null")
-                } //data 수신에는 성공했지만 onSuccess에서 예외가 발생해서 onFailure로 넘어간 것 같음
+                }
 
             }
 
@@ -273,7 +265,7 @@ class StorageMyDrawFragment :
                 } // 선택된 아이템이 1개 이상일 경우 button 활성화 (floating button하고 그냥 버튼하고 기본 지원 옵션이 좀 다른 듯함.)
             }
         }))
-        storageMyDrawAdapter.setSelectionTracker(selectionTracker) //어댑터 생성 후 할당해줘야 한다는 순서지킴
+        storageMyDrawAdapter.setSelectionTracker(selectionTracker)
     }
 
     private fun enableDeleteBtn() {
