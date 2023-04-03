@@ -23,6 +23,7 @@ import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 class EndRunActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
@@ -158,7 +159,7 @@ class EndRunActivity :
         paceMinute = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(0,
             RoundingMode.FLOOR).toInt() // ex) 18
 
-        paceSecond = (paceFull - paceMinute).toInt()
+        paceSecond = ((paceFull - paceMinute)*100).roundToInt() // ex) 0.20 ->20
 
         Timber.tag(ContentValues.TAG).d("paceFull 값 : ${paceFull}")
         Timber.tag(ContentValues.TAG).d("paceMinute 값 : ${paceMinute}")
