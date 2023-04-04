@@ -122,15 +122,16 @@ class EndRunActivity :
 
         Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
 
-        viewModel.distanceSum.value = runToEndRunData.totalDistance // 뷰모델에 총거리 세팅
-        viewModel.departure.value = runToEndRunData.departure // 뷰모델에 출발지 세팅
+        //뷰모델에 값 세팅
+        viewModel.distanceSum.value = runToEndRunData.totalDistance
+        viewModel.departure.value = runToEndRunData.departure
         viewModel.courseId.value = runToEndRunData.courseId
         viewModel.publicCourseId.value = runToEndRunData.publicCourseId
         viewModel.dataFrom.value = runToEndRunData.dataFrom
-
         val captureUri = runToEndRunData.captureUri!!.toUri()
         viewModel.captureUri.value = captureUri
 
+        //형식 가공을 위해 toString으로 바꿔줌
         var timerHour = runToEndRunData.timerHour.toString()
         var timerMinute = runToEndRunData.timerMinute.toString()
         var timerSecond = runToEndRunData.timerSecond.toString()
@@ -138,7 +139,7 @@ class EndRunActivity :
         Timber.tag(ContentValues.TAG).d("timerMinute 값 : ${timerMinute}")
         Timber.tag(ContentValues.TAG).d("timerSecond 값 : ${timerSecond}")
 
-
+        //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
         if(timerSecond.length == 1){
             timerSecond = "0${timerSecond}"
         }
@@ -151,36 +152,32 @@ class EndRunActivity :
             timerHour = "0${timerHour}"
         }
 
-
-
+        //가공한 형식을 '이동시간' TextView에 바인딩
         viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
 
-        val transferHourToMinute: Double = timerHour!!.toDouble() * 60
-        val transferSecondToMinute: Double = timerSecond!!.toDouble() / 60
-        val totalMinute = transferHourToMinute + timerMinute!!.toInt() + transferSecondToMinute
+
+        //평균페이스 Logic
+        val transferHourToMinute: Double = timerHour.toDouble() * 60 //'시간'을 '분'으로 환산
+        val transferSecondToMinute: Double = timerSecond.toDouble() / 60  //'초'를 '분'으로 환산
+        val totalMinute = transferHourToMinute + timerMinute.toInt() + transferSecondToMinute
 
 
-        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : ${transferHourToMinute}")
-        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : ${transferSecondToMinute}")
-        Timber.tag(ContentValues.TAG).d("totalMinute 값 : ${totalMinute}")
+        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : $transferHourToMinute")
+        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : $transferSecondToMinute")
+        Timber.tag(ContentValues.TAG).d("totalMinute 값 : $totalMinute")
 
 
         val paceFull =
             BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(2,
-                RoundingMode.FLOOR).toDouble() // ex) 18.20 -> 이걸 18'20" 이렇게 하면 되는건가? -> 맞음
+                RoundingMode.FLOOR).toDouble() // 평균 페이스 표기 법 ex) 18.20 -> 이걸 18'20"
 
         paceMinute = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(0,
             RoundingMode.FLOOR).toInt() // ex) 18
 
         paceSecond = ((paceFull - paceMinute)*100).roundToInt() // ex) 0.20 ->20
 
-        Timber.tag(ContentValues.TAG).d("paceFull 값 : ${paceFull}")
-        Timber.tag(ContentValues.TAG).d("paceMinute 값 : ${paceMinute}")
-        Timber.tag(ContentValues.TAG).d("paceSecond 값 : ${paceSecond}")
-
-
+        //가공한 형식을 '평균 페이스' TextView에 바인딩
         viewModel.paceTotal.value = "$paceMinute'$paceSecond\""
-        // 통신 input에 viewModel 값을 그대로 넣지 말고 raw한 상태로 넣고 뷰모델에는 화면에 표기할 형식으로 세팅해줘야 할듯
     }
 
     private fun enableSaveBtn() {
@@ -226,12 +223,8 @@ class EndRunActivity :
                     viewModel.editTextValue.value!!,
                     viewModel.timerHourMinSec.value!!,
                     "0:$paceMinute:$paceSecond")
-            )//페이스 data 서버로 보낼 때 뭘 보내줘야 되는 거지
-            //시간은 필요없음 분,초만 넘기면 되는거라
-            //그냥 분:초 이렇게만 보내면 안 되나?
-            //된다면 paceMinute:paceSecond 보내주면 되고
-            //안된다면 0:paceMinute:paceSecond 이런식으로 보내야 함.
-            //활동기록 페이지에서 받아쓰기 까다로울 것 같은데 어쩔 수 없음.
+                //평균 페이스 표기법에서는 '시간'을 안 쓰지만 서버에서 요구하는 형식에 맞춰주려면 앞에 0:을 붙여줘야 함
+            )
 
             val intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
