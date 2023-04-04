@@ -73,6 +73,8 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
             }
             Timber.tag(ContentValues.TAG)
                 .d("selection 값 : ${selectionTracker.selection}")
+            Timber.tag(ContentValues.TAG)
+                .d("getItemId 값 : $itemId")
             binding.selected = selectionTracker.isSelected(itemId)
         }
 

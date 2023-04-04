@@ -307,6 +307,10 @@ class RunActivity :
             Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
             Timber.tag(ContentValues.TAG).d("timerSecond 값 : $timerSecond")
 
+            Timber.tag(ContentValues.TAG).d("binding.tvTimeHour.text 값 : ${binding.tvTimeHour.text}")
+            Timber.tag(ContentValues.TAG).d("binding.tvTimeMinute.text 값 : ${binding.tvTimeMinute.text}")
+            Timber.tag(ContentValues.TAG).d("binding.tvTimeSecond.text 값 : ${binding.tvTimeSecond.text}")
+
 
         }
     }

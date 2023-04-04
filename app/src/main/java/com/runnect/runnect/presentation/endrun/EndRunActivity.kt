@@ -131,20 +131,33 @@ class EndRunActivity :
         val captureUri = runToEndRunData.captureUri!!.toUri()
         viewModel.captureUri.value = captureUri
 
-        val timerHour = runToEndRunData.timerHour
-        val timerMinute = runToEndRunData.timerMinute
-        val timerSecond = runToEndRunData.timerSecond
+        var timerHour = runToEndRunData.timerHour.toString()
+        var timerMinute = runToEndRunData.timerMinute.toString()
+        var timerSecond = runToEndRunData.timerSecond.toString()
         Timber.tag(ContentValues.TAG).d("timerHour 값 : ${timerHour}")
         Timber.tag(ContentValues.TAG).d("timerMinute 값 : ${timerMinute}")
         Timber.tag(ContentValues.TAG).d("timerSecond 값 : ${timerSecond}")
 
-        //여기는 그냥 RunToEndRunData에 String attribute 하나 추가해서 그대로 받아온다음 그대로 보여주는 게 편하겠는데.
-        //근데 이거 할 때 이전처럼 화면에서 받아오는 식으로 코드 짜면 또 1초 딜레이 생김.
+
+        if(timerSecond.length == 1){
+            timerSecond = "0${timerSecond}"
+        }
+
+        if(timerMinute.length == 1){
+            timerMinute = "0${timerMinute}"
+        }
+
+        if(timerHour.length == 1){
+            timerHour = "0${timerHour}"
+        }
+
+
+
         viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
 
         val transferHourToMinute: Double = timerHour!!.toDouble() * 60
         val transferSecondToMinute: Double = timerSecond!!.toDouble() / 60
-        val totalMinute = transferHourToMinute + timerMinute!! + transferSecondToMinute
+        val totalMinute = transferHourToMinute + timerMinute!!.toInt() + transferSecondToMinute
 
 
         Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : ${transferHourToMinute}")
