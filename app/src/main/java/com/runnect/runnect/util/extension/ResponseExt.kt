@@ -51,7 +51,8 @@ fun DetailData.toData(): CourseDetailDTO {
         level = user.level.toString(),
         nickname = user.nickname,
         courseId = publicCourse.courseId,
-        departure = publicCourse.departure.region + ' ' + publicCourse.departure.city + ' ' + publicCourse.departure.town + ' ' + ((publicCourse.departure.name)?:""),
+        departure = publicCourse.departure.region + ' ' + publicCourse.departure.city + ' ' + publicCourse.departure.town + ' ' + ((publicCourse.departure.name)
+            ?: ""),
         description = publicCourse.description,
         distance = publicCourse.distance.toString(),
         id = publicCourse.id,
@@ -61,13 +62,25 @@ fun DetailData.toData(): CourseDetailDTO {
     )
 }
 
-fun PrivateCourse.toData(): CourseLoadInfoDTO{
+fun PrivateCourse.toData(): CourseLoadInfoDTO {
     return CourseLoadInfoDTO(
         id = id,
         img = image,
         departure = departure.region + ' ' + departure.city + ' ' + departure.town + ' ' + departure.name,
         distance = distance.toString()
     )
+}
+
+fun ResponseLogin.toData(): LoginDTO {
+    with(this.data) {
+        return LoginDTO(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            email = email,
+            type = type
+        )
+    }
+
 }
 
 private fun timeConvert(time: String): String {
@@ -92,6 +105,7 @@ private fun paceConvert(p: String): String {
         "${pace[0]}’${pace[1]}”${pace[2]}”"
     }
 }
+
 private fun getProfileStamp(stamp: String): Int {
     return when (stamp) {
         "c1" -> R.drawable.mypage_img_stamp_c1
