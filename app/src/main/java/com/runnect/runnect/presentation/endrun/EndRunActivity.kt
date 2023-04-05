@@ -34,8 +34,18 @@ class EndRunActivity :
     val currentTime: Long = System.currentTimeMillis() // ms로 반환
 
     lateinit var runToEndRunData: RunToEndRunData
+
+    var paceFull: Double = 0.0
     var paceMinute: Int = 0
     var paceSecond: Int = 0
+
+    lateinit var timerHour : String
+    lateinit var timerMinute : String
+    lateinit var timerSecond : String
+
+    var transferHourToMinute : Double = 0.0
+    var transferSecondToMinute: Double = 0.0
+    var totalMinute : Double = 0.0
 
     @SuppressLint("SimpleDateFormat")
     val dataFormat5 = SimpleDateFormat("yyyy.MM.dd")
@@ -50,6 +60,9 @@ class EndRunActivity :
         backBtn()
         editTextController()
         getIntentValue()
+        setTimerViewModelValue()
+        transferMinuteForCalcPace()
+        setPaceViewModelValue()
         saveRecord()
         addObserver()
 
@@ -132,13 +145,15 @@ class EndRunActivity :
         viewModel.captureUri.value = captureUri
 
         //형식 가공을 위해 toString으로 바꿔줌
-        var timerHour = runToEndRunData.timerHour.toString()
-        var timerMinute = runToEndRunData.timerMinute.toString()
-        var timerSecond = runToEndRunData.timerSecond.toString()
+        timerHour = runToEndRunData.timerHour.toString()
+        timerMinute = runToEndRunData.timerMinute.toString()
+        timerSecond = runToEndRunData.timerSecond.toString()
         Timber.tag(ContentValues.TAG).d("timerHour 값 : ${timerHour}")
         Timber.tag(ContentValues.TAG).d("timerMinute 값 : ${timerMinute}")
         Timber.tag(ContentValues.TAG).d("timerSecond 값 : ${timerSecond}")
+    }
 
+    private fun setTimerViewModelValue(){
         //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
         if(timerSecond.length == 1){
             timerSecond = "0${timerSecond}"
@@ -154,20 +169,22 @@ class EndRunActivity :
 
         //가공한 형식을 '이동시간' TextView에 바인딩
         viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
+    }
 
-
+    private fun transferMinuteForCalcPace(){
         //평균페이스 Logic
-        val transferHourToMinute: Double = timerHour.toDouble() * 60 //'시간'을 '분'으로 환산
-        val transferSecondToMinute: Double = timerSecond.toDouble() / 60  //'초'를 '분'으로 환산
-        val totalMinute = transferHourToMinute + timerMinute.toInt() + transferSecondToMinute
+        transferHourToMinute = timerHour.toDouble() * 60 //'시간'을 '분'으로 환산
+        transferSecondToMinute = timerSecond.toDouble() / 60  //'초'를 '분'으로 환산
+        totalMinute = transferHourToMinute + timerMinute.toInt() + transferSecondToMinute
 
 
         Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : $transferHourToMinute")
         Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : $transferSecondToMinute")
         Timber.tag(ContentValues.TAG).d("totalMinute 값 : $totalMinute")
+    }
 
-
-        val paceFull =
+    private fun setPaceViewModelValue(){
+        paceFull =
             BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(2,
                 RoundingMode.FLOOR).toDouble() // 평균 페이스 표기 법 ex) 18.20 -> 이걸 18'20"
 
