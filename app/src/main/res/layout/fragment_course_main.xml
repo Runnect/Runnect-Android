@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:elevation="3dp"
             android:outlineProvider="none"
-            android:src="@drawable/ic_google_login"
+            android:src="@drawable/runnect_logo_circle"
             app:layout_constraintBottom_toBottomOf="@id/frame_main_guide"
             app:layout_constraintStart_toStartOf="@id/frame_main_guide"
             app:layout_constraintTop_toTopOf="@id/frame_main_guide" />

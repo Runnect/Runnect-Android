@@ -107,7 +107,7 @@ class CourseMainFragment :
 
         //현위치 커스텀 이미지
         val locationOverlay = naverMap.locationOverlay
-        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
     }
 
     private fun requestPermission() {
