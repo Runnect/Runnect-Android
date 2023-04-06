@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:elevation="3dp"
             android:outlineProvider="none"
-            android:src="@drawable/ic_google_login"
+            android:src="@drawable/runnect_logo_circle"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/frame_draw_guide"
             app:layout_constraintStart_toStartOf="@id/frame_draw_guide"
