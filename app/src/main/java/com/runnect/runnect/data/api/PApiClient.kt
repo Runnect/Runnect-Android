@@ -25,23 +25,6 @@ object PApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    class AppInterceptor : Interceptor {
-        @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
-            val newRequest = request().newBuilder()
-                .addHeader(
-                    "accessToken",
-                    PreferenceManager.getString(ApplicationClass.appContext, "access")!!
-                )
-                .addHeader(
-                    "refreshToken",
-                    PreferenceManager.getString(ApplicationClass.appContext, "refresh")!!
-                )
-                .build()
-            proceed(newRequest)
-        }
-    }
-
     private val client by lazy {
         OkHttpClient.Builder()
             .addInterceptor(logger)
