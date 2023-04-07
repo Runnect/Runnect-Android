@@ -24,6 +24,10 @@ object PApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    private val json = Json {
+        ignoreUnknownKeys = true // Field 값이 없는 경우 무시
+    }
+
     //Machine ID를 헤더로 붙임
     class AppInterceptor : Interceptor {
         @Throws(IOException::class)
@@ -51,7 +55,7 @@ object PApiClient {
                 retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)
-                    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+                    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                     .build()
             }
             return retrofit

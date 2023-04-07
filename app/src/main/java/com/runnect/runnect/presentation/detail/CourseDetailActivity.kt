@@ -74,7 +74,7 @@ class CourseDetailActivity :
             if (state == UiState.Success) {
                 with(binding) {
                     with(viewModel.courseDetail) {
-//                        getScrapListResult.value = it.body()
+                        Timber.tag(ContentValues.TAG).d("화면에 바인딩할 image 값? : $image")
                         ivCourseDetailMap.load(image)
                         ivCourseDetailProfileStamp.load(stampId)
                         ivCourseDetailProfileNickname.text = nickname
