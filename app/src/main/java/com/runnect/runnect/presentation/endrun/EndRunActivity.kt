@@ -79,7 +79,7 @@ class EndRunActivity :
     }
 
     private fun notifyUploadFinish() {
-        showToast("업로드 완료!")
+        showToast("저장한 러닝 기록은 마이페이지에서 볼 수 있어요")
 
         Timber.tag(ContentValues.TAG)
             .d("서버 성공 : ${viewModel.uploadResult.value!!.message}")

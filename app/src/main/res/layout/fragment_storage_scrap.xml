@@ -15,7 +15,6 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="총 코스 152개"
             android:id="@+id/tv_total_course_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,11 +22,12 @@
             android:layout_marginTop="11dp"
             android:fontFamily="@font/pretendard_light"
             android:paddingBottom="11dp"
+            android:text="총 코스 152개"
             android:textColor="@color/G2"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/scrollview_scrap"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:id="@+id/scrollview_scrap"
@@ -72,7 +72,7 @@
                     android:id="@+id/iv_storage_no_scrap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="155dp"
+                    android:layout_marginTop="147dp"
                     android:src="@drawable/no_course"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -86,13 +86,24 @@
                     android:layout_marginTop="24dp"
                     android:fontFamily="@font/pretendard_medium"
                     android:lineHeight="22sp"
-                    android:text="@string/storage_scrap_no_result"
+                    android:text="아직 스크랩한 코스가 없어요"
                     android:textColor="@color/G2"
                     android:textSize="14sp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_storage_no_scrap" />
+
+                <TextView
+                    android:id="@+id/tv_storage_no_scrap_guide_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text="코스를 스크랩 해주세요"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="@id/tv_storage_no_scrap_guide"
+                    app:layout_constraintStart_toStartOf="@id/tv_storage_no_scrap_guide"
+                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_storage_no_scrap"
@@ -108,7 +119,7 @@
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide_2" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

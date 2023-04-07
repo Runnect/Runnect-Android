@@ -192,6 +192,7 @@ class StorageMyDrawFragment :
             with(binding) {
                 ivStorageMyDrawNoCourse.isVisible = true
                 tvStorageMyDrawNoCourseGuide.isVisible = true
+                tvStorageMyDrawNoCourseGuide2.isVisible = true
                 btnStorageNoCourse.isVisible = true
                 recyclerViewStorageMyDraw.isVisible = false
             }
@@ -199,6 +200,7 @@ class StorageMyDrawFragment :
             with(binding) {
                 ivStorageMyDrawNoCourse.isVisible = false
                 tvStorageMyDrawNoCourseGuide.isVisible = false
+                tvStorageMyDrawNoCourseGuide2.isVisible = false
                 btnStorageNoCourse.isVisible = false
                 recyclerViewStorageMyDraw.isVisible = true
             }

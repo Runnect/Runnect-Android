@@ -70,6 +70,7 @@ class StorageScrapFragment :
         with(binding) {
             ivStorageNoScrap.isVisible = true
             tvStorageNoScrapGuide.isVisible = true
+            tvStorageNoScrapGuide2.isVisible = true
             btnStorageNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
         }
@@ -79,6 +80,7 @@ class StorageScrapFragment :
         with(binding) {
             ivStorageNoScrap.isVisible = false
             tvStorageNoScrapGuide.isVisible = false
+            tvStorageNoScrapGuide2.isVisible = false
             btnStorageNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
         }
