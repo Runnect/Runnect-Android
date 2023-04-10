@@ -40,18 +40,19 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
         viewModelScope.launch {
             runCatching {
                 _courseDetailState.value = UiState.Loading
-                Timber.d("상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("runCatching : 상세코스 UiState ${_courseDetailState.value}")
                 courseRepository.getCourseDetail(courseId)
             }.onSuccess {
                 _courseDetail = it
                 _courseDetailState.value = UiState.Success
-                Timber.d("상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("Success : 상세코스 UiState ${_courseDetailState.value}")
             }.onFailure {
                 Timber.d(it.message)
                 Timber.d(it.cause)
                 Timber.d(it.localizedMessage)
                 _courseDetailState.value = UiState.Failure
-                Timber.d("상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("Fail : 상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("Fail 메세지 왜??? ${it.message}")
             }
         }
     }

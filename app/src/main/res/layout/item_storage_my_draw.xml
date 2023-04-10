@@ -4,9 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
         <variable
-            name="storage"
+            name="storageItem"
             type="com.runnect.runnect.data.model.ResponseGetCourseDto.Data.Course" />
+
+        <variable
+            name="selected"
+            type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +23,7 @@
         <com.ssomai.android.scalablelayout.ScalableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,9 +45,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    app:storageImage="@{storage.image}" />
+                    app:storageImage="@{storageItem.image}" />
+
+
+                <ImageView
+                    android:id="@+id/iv_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="3dp"
+                    android:outlineProvider="none"
+                    android:visibility="@{selected ? View.VISIBLE : View.GONE}"
+                    app:image_select="@{selected}" />
 
             </com.google.android.material.card.MaterialCardView>
+
+            <ImageView
+                android:id="@+id/iv_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="3dp"
+                android:outlineProvider="none"
+                android:visibility="visible"
+                app:image_check="@{selected}"
+                app:scale_height="20"
+                app:scale_left="8"
+                app:scale_top="8"
+                app:scale_width="20" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -50,7 +81,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center_vertical"
                 android:maxLength="13"
-                android:text="@{storage.departure.region + storage.departure.city }"
+                android:text="@{storageItem.departure.region + storageItem.departure.city }"
                 android:textColor="@color/G1"
                 app:scale_height="22"
                 app:scale_textsize="14"

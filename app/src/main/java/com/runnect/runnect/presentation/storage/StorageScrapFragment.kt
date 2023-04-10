@@ -7,7 +7,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetScrapDto
@@ -31,7 +30,6 @@ class StorageScrapFragment :
 
     val viewModel: StorageViewModel by viewModels()
     lateinit var storageScrapAdapter: StorageScrapAdapter
-    lateinit var recyclerviewStorageScrap: RecyclerView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,10 +37,7 @@ class StorageScrapFragment :
 
         binding.lifecycleOwner = requireActivity()
         initLayout()
-
-        recyclerviewStorageScrap = binding.recyclerViewStorageScrap
         initAdapter()
-
         getCourse()
         toScrapCourseBtn()
         addObserver()
@@ -75,6 +70,7 @@ class StorageScrapFragment :
         with(binding) {
             ivStorageNoScrap.isVisible = true
             tvStorageNoScrapGuide.isVisible = true
+            tvStorageNoScrapGuide2.isVisible = true
             btnStorageNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
         }
@@ -84,6 +80,7 @@ class StorageScrapFragment :
         with(binding) {
             ivStorageNoScrap.isVisible = false
             tvStorageNoScrapGuide.isVisible = false
+            tvStorageNoScrapGuide2.isVisible = false
             btnStorageNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
         }
@@ -165,10 +162,8 @@ class StorageScrapFragment :
     }
 
     private fun initAdapter() {
-        storageScrapAdapter = StorageScrapAdapter(this, this, this).apply {
-            submitList(viewModel.getScrapListResult.value!!.data.scraps)
-        }
-        recyclerviewStorageScrap.adapter = storageScrapAdapter
+        storageScrapAdapter = StorageScrapAdapter(this, this, this)
+        binding.recyclerViewStorageScrap.adapter = storageScrapAdapter
     }
 
     override fun selectItem(item: ResponseGetScrapDto.Data.Scrap) {
