@@ -32,7 +32,7 @@ data class CourseDetailUser(
     @SerializedName("level")
     val level: Int,
     @SerializedName("nickname")
-    val nickName: String
+    val nickname: String
 )
 
 @Serializable

@@ -49,7 +49,7 @@ fun DetailData.toData(): CourseDetailDTO {
     return CourseDetailDTO(
         stampId = getProfileStamp(user.image),
         level = user.level.toString(),
-        nickname = user.nickName,
+        nickname = user.nickname,
         courseId = publicCourse.courseId,
         departure = publicCourse.departure.region + ' ' + publicCourse.departure.city + ' ' + publicCourse.departure.town + ' ' + ((publicCourse.departure.name)
             ?: ""),
