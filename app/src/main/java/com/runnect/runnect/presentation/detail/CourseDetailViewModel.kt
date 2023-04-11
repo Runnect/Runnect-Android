@@ -31,7 +31,8 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
         1,
         "1",
         false,
-        "1"
+        "1",
+        listOf(listOf(1.1))
     )
     val courseDetail: CourseDetailDTO
         get() = _courseDetail
