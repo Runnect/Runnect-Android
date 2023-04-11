@@ -11,5 +11,6 @@ data class CourseDetailDTO(
     val id: Int,
     val image: String,
     val scrap: Boolean,
-    val title: String
+    val title: String,
+    val path: List<List<Double>>
 )
