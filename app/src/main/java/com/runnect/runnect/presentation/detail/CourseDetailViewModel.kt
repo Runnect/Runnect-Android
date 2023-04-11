@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.CourseDetailDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,6 +38,7 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
     val courseDetail: CourseDetailDTO
         get() = _courseDetail
 
+
     fun getCourseDetail(courseId: Int) {
         viewModelScope.launch {
             runCatching {
@@ -46,6 +48,8 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
             }.onSuccess {
                 _courseDetail = it
                 _courseDetailState.value = UiState.Success
+//                Timber.d("Success : 상세코스 값??? $it")
+                Timber.d("Success : 상세코스 _courseDetail값??? $_courseDetail")
                 Timber.d("Success : 상세코스 UiState ${_courseDetailState.value}")
             }.onFailure {
                 Timber.d(it.message)
