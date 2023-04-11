@@ -67,7 +67,18 @@ class CountDownActivity :
             viewModel.startLatLng.value = drawToRunData.startLatLng
             viewModel.captureUri.value = drawToRunData.captureUri
             viewModel.dataFrom.value = "draw"
+        }
 
+        if (detailToRunData != null) {
+            viewModel.publicCourseId.value = detailToRunData.publicCourseId
+            viewModel.courseId.value = detailToRunData.courseId
+            viewModel.departure.value = detailToRunData.departure
+            viewModel.distanceSum.value =
+                detailToRunData.distance.toDouble() //딴 데랑 type이 달라 뭐든 통일시켜줘야 할 듯
+            viewModel.touchList.value = detailToRunData.touchList
+            viewModel.startLatLng.value = detailToRunData.startLatLng
+            viewModel.captureUri.value = detailToRunData.image
+            viewModel.dataFrom.value = "draw"
         }
 
 
