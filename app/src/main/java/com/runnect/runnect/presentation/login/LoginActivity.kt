@@ -38,18 +38,16 @@ class LoginActivity :
 
     private val viewModel: LoginViewModel by viewModels()
 
-    //sp확인
-    //- access, refresh가 없을 때, 로그인 창 -> google IdToken 요청 및 runnect post요청
-    //- access, refresh가 있을 때, 곧바로 MainActivity로 이동
+    //자동 로그인
     override fun onStart() {
         super.onStart()
         val accessToken = PreferenceManager.getString(applicationContext, "access")
         val refreshToken = PreferenceManager.getString(applicationContext, "refresh")
-
         Timber.d("엑세스 토큰 $accessToken")
         Timber.d("리프레시 토큰 $refreshToken")
         if (accessToken != "none") {
-                moveToMain()
+            Timber.d("자동로그인 완료")
+            moveToMain()
         }
     }
 
