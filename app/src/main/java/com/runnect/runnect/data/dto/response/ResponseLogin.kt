@@ -21,6 +21,8 @@ data class ResponseLogin(
         val accessToken: String,
         @SerialName("email")
         val email: String,
+        @SerialName("nickname")
+        val nickName: String = "",
         @SerialName("refreshToken")
         val refreshToken: String,
         @SerialName("type")
