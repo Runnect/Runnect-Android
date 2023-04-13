@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.dto.request.RequestLogin
 import com.runnect.runnect.data.dto.response.LoginDTO
 import com.runnect.runnect.domain.LoginRepository

@@ -30,7 +30,7 @@ class LoginActivity :
 
     companion object {
         val GOOGLE_SIGN = "GOOGLE"
-        val KAKAO_SIGN = "GOOGLE"
+        val KAKAO_SIGN = "KAKAO"
     }
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -53,7 +53,6 @@ class LoginActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // ActivityResultLauncher
         setResultGoogleSignLauncher()
         setGoogleClient()
         addObserver()
@@ -89,15 +88,21 @@ class LoginActivity :
                 }
             }
     }
+    //자동로그인 시에는 accessToken이랑, refresh토큰이 있는지만 확인하고 넘어간다.
 
-    //구글 런쳐에서 받은 결과로 Runnect post
+
+    //구글 런쳐에서 받은 token으로 Runnect post호출
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val idToken = account.idToken
+            val socialToken = account.idToken
+            PreferenceManager.setString(
+                applicationContext, "social",
+                socialToken
+            )
             viewModel.postLogin(
                 RequestLogin(
-                    idToken, GOOGLE_SIGN
+                    socialToken, GOOGLE_SIGN
                 )
             )
         } catch (e: ApiException) {
@@ -114,18 +119,23 @@ class LoginActivity :
     private fun addObserver() {
         viewModel.loginState.observe(this) {
             if (it == UiState.Success) {
-                Timber.d("옵저버 ${viewModel.loginResult.value?.accessToken}")
-                Timber.d("옵저버 ${viewModel.loginResult.value?.refreshToken}")
-                PreferenceManager.setString(
-                    applicationContext, "access",
-                    viewModel.loginResult.value?.accessToken
-                )
-                PreferenceManager.setString(
-                    applicationContext,
-                    "refresh",
-                    viewModel.loginResult.value?.refreshToken
-                )
-                moveToMain()
+                if (viewModel.loginResult.value?.status == 200) {
+                    Timber.d("옵저버 ${viewModel.loginResult.value?.accessToken}")
+                    Timber.d("옵저버 ${viewModel.loginResult.value?.refreshToken}")
+                    PreferenceManager.setString(
+                        applicationContext, "access",
+                        viewModel.loginResult.value?.accessToken
+                    )
+                    PreferenceManager.setString(
+                        applicationContext,
+                        "refresh",
+                        viewModel.loginResult.value?.refreshToken
+                    )
+                    moveToMain()
+                } else if (viewModel.loginResult.value?.status == 401) {
+                    //토큰 재발급
+
+                }
             }
         }
         viewModel.errorMessage.observe(this) {
