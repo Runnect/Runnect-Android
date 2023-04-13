@@ -37,6 +37,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         CheckIntentValue()
         initView()
         addListener() //이게 있어야 changeFragment를 돌릴 수 있음
+        Timber.d("메인 엑세스 토큰 ${PreferenceManager.getString(applicationContext,"access")}")
+        Timber.d("메인 리프레시 토큰 ${PreferenceManager.getString(applicationContext,"refresh")}")
 
     }
 

@@ -1,26 +1,17 @@
 package com.runnect.runnect.presentation.login
 
 
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.PreferenceManager
-import com.runnect.runnect.data.dto.request.RequestLogin
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -33,18 +24,14 @@ class LoginActivity :
         val KAKAO_SIGN = "KAKAO"
     }
 
-    lateinit var mGoogleSignInClient: GoogleSignInClient
-    lateinit var resultLauncher: ActivityResultLauncher<Intent>
-
+    lateinit var socialLogin: SocialLogin
+    lateinit var googleLogin: GoogleLogin
     private val viewModel: LoginViewModel by viewModels()
 
     //자동 로그인
     override fun onStart() {
         super.onStart()
         val accessToken = PreferenceManager.getString(applicationContext, "access")
-        val refreshToken = PreferenceManager.getString(applicationContext, "refresh")
-        Timber.d("엑세스 토큰 $accessToken")
-        Timber.d("리프레시 토큰 $refreshToken")
         if (accessToken != "none") {
             Timber.d("자동로그인 완료")
             moveToMain()
@@ -53,8 +40,7 @@ class LoginActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setResultGoogleSignLauncher()
-        setGoogleClient()
+        googleLogin = GoogleLogin(this@LoginActivity, viewModel)
         addObserver()
         addListener()
     }
@@ -62,68 +48,19 @@ class LoginActivity :
     private fun addListener() {
         with(binding) {
             btnSignInGoogle.setOnClickListener {
-                googleSign()
+                socialLogin = googleLogin
+                socialLogin.signIn()
             }
         }
-    }
-
-    //구글 클라이언트 옵션 세팅
-    private fun setGoogleClient() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
-            .requestEmail()
-            .requestProfile()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    //구글 런쳐 세팅
-    private fun setResultGoogleSignLauncher() {
-        resultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    val task: Task<GoogleSignInAccount> =
-                        GoogleSignIn.getSignedInAccountFromIntent(it.data)
-                    handleGoogleSignInResult(task)
-                }
-            }
-    }
-    //자동로그인 시에는 accessToken이랑, refresh토큰이 있는지만 확인하고 넘어간다.
-
-
-    //구글 런쳐에서 받은 token으로 Runnect post호출
-    private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-            val socialToken = account.idToken
-            PreferenceManager.setString(
-                applicationContext, "social",
-                socialToken
-            )
-            viewModel.postLogin(
-                RequestLogin(
-                    socialToken, GOOGLE_SIGN
-                )
-            )
-        } catch (e: ApiException) {
-            Timber.tag("failed").w("signInResult:failed code=%s", e.statusCode)
-        }
-    }
-
-    //구글 로그인 런쳐 실행
-    private fun googleSign() {
-        val intent: Intent = mGoogleSignInClient.signInIntent
-        resultLauncher.launch(intent)
     }
 
     private fun addObserver() {
         viewModel.loginState.observe(this) {
             if (it == UiState.Success) {
                 if (viewModel.loginResult.value?.status == 200) {
-                    Timber.d("옵저버 ${viewModel.loginResult.value?.accessToken}")
-                    Timber.d("옵저버 ${viewModel.loginResult.value?.refreshToken}")
                     PreferenceManager.setString(
-                        applicationContext, "access",
+                        applicationContext,
+                        "access",
                         viewModel.loginResult.value?.accessToken
                     )
                     PreferenceManager.setString(
@@ -132,9 +69,6 @@ class LoginActivity :
                         viewModel.loginResult.value?.refreshToken
                     )
                     moveToMain()
-                } else if (viewModel.loginResult.value?.status == 401) {
-                    //토큰 재발급
-
                 }
             }
         }
@@ -148,7 +82,8 @@ class LoginActivity :
             addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
         }
         startActivity(intent)
-        Toast.makeText(this, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
+        finish()
+        showToast("로그인 되었습니다")
     }
 
     private fun getCurrentUserProfile() {
