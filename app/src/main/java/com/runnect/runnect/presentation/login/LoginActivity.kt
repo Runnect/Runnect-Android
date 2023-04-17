@@ -4,9 +4,7 @@ package com.runnect.runnect.presentation.login
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -20,12 +18,13 @@ class LoginActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
 
     companion object {
-        val GOOGLE_SIGN = "GOOGLE"
-        val KAKAO_SIGN = "KAKAO"
+        const val GOOGLE_SIGN = "GOOGLE"
+        const val KAKAO_SIGN = "KAKAO"
     }
 
     lateinit var socialLogin: SocialLogin
     lateinit var googleLogin: GoogleLogin
+    lateinit var kakaoLogin: KakaoLogin
     private val viewModel: LoginViewModel by viewModels()
 
     //자동 로그인
@@ -41,6 +40,7 @@ class LoginActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         googleLogin = GoogleLogin(this@LoginActivity, viewModel)
+        kakaoLogin = KakaoLogin(this@LoginActivity, viewModel)
         addObserver()
         addListener()
     }
@@ -49,6 +49,10 @@ class LoginActivity :
         with(binding) {
             btnSignInGoogle.setOnClickListener {
                 socialLogin = googleLogin
+                socialLogin.signIn()
+            }
+            btnSignInKakao.setOnClickListener {
+                socialLogin = kakaoLogin
                 socialLogin.signIn()
             }
         }
@@ -86,22 +90,10 @@ class LoginActivity :
         showToast("로그인 되었습니다")
     }
 
-    private fun getCurrentUserProfile() {
-        val curUser = GoogleSignIn.getLastSignedInAccount(this)
-        curUser?.let {
-            val email = curUser.email.toString()
-            val familyName = curUser.familyName.toString()
-            val givenName = curUser.givenName.toString()
-            val displayName = curUser.displayName.toString()
-            val photoUrl = curUser.photoUrl.toString()
-
-            Timber.tag("현재 로그인 돼있는 유저의 이메일").d(email)
-            Timber.tag("현재 로그인 돼있는 유저의 성").d(familyName)
-            Timber.tag("현재 로그인 돼있는 유저의 이름").d(givenName)
-            Timber.tag("현재 로그인 돼있는 유저의 전체이름").d(displayName)
-            Timber.tag("현재 로그인 돼있는 유저의 프로필 사진의 주소").d(photoUrl)
+    override fun onDestroy() {
+        super.onDestroy()
+        if(::socialLogin.isInitialized){
+            socialLogin.clearSocialLogin()
         }
     }
-
-
 }

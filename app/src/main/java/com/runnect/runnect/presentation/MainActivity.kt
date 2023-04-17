@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainFragment
@@ -37,9 +36,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         CheckIntentValue()
         initView()
         addListener() //이게 있어야 changeFragment를 돌릴 수 있음
-        Timber.d("메인 엑세스 토큰 ${PreferenceManager.getString(applicationContext,"access")}")
-        Timber.d("메인 리프레시 토큰 ${PreferenceManager.getString(applicationContext,"refresh")}")
-
     }
 
     fun hideBtmNavi() {

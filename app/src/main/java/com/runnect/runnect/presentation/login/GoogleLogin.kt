@@ -15,11 +15,12 @@ import com.runnect.runnect.data.dto.request.RequestLogin
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class GoogleLogin(activity: LoginActivity,viewModel: LoginViewModel):SocialLogin {
-    lateinit var mGoogleSignInClient: GoogleSignInClient
-    lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    private var activityRef = WeakReference(activity)
-    private var viewModelRef = WeakReference(viewModel)
+class GoogleLogin(activity: LoginActivity, viewModel: LoginViewModel) : SocialLogin {
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private val activityRef = WeakReference(activity)
+    private val viewModelRef = WeakReference(viewModel)
+
     init {
         activityRef.get()?.let {
             setClient(it)
@@ -28,7 +29,7 @@ class GoogleLogin(activity: LoginActivity,viewModel: LoginViewModel):SocialLogin
     }
 
     //구글 클라이언트 옵션 세팅
-    override fun setClient(activity: LoginActivity) {
+    private fun setClient(activity: LoginActivity) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
             .requestEmail()
@@ -38,7 +39,7 @@ class GoogleLogin(activity: LoginActivity,viewModel: LoginViewModel):SocialLogin
     }
 
     //구글 런쳐 세팅
-    override fun setLauncher(activity: LoginActivity) {
+    private fun setLauncher(activity: LoginActivity) {
         resultLauncher =
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
@@ -50,7 +51,7 @@ class GoogleLogin(activity: LoginActivity,viewModel: LoginViewModel):SocialLogin
     }
 
     //구글 런쳐에서 받은 token으로 Runnect post호출
-    override fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             val socialToken = account.idToken
@@ -69,7 +70,10 @@ class GoogleLogin(activity: LoginActivity,viewModel: LoginViewModel):SocialLogin
         val intent: Intent = mGoogleSignInClient.signInIntent
         resultLauncher.launch(intent)
     }
-    override fun unregisterActivityResultLauncher() {
+
+    override fun clearSocialLogin() {
         resultLauncher.unregister()
+        activityRef.clear()
+        viewModelRef.clear()
     }
 }
