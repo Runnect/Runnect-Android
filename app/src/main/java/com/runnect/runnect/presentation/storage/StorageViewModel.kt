@@ -20,7 +20,6 @@ class StorageViewModel : ViewModel() {
     val getMyDrawResult = MutableLiveData<ResponseGetCourseDto>()
     val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
     val errorMessage = MutableLiveData<String>()
-
     val itemSize = MutableLiveData<Int>()
 
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)

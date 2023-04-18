@@ -143,7 +143,7 @@ class RunActivity :
     private fun setCurrentLocationImage(){
         //현위치 커스텀 이미지
         val locationOverlay = naverMap.locationOverlay
-        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
     }
 
     //카메라 위치 변경 함수
@@ -306,6 +306,10 @@ class RunActivity :
             Timber.tag(ContentValues.TAG).d("timerHour 값 : $timerHour")
             Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
             Timber.tag(ContentValues.TAG).d("timerSecond 값 : $timerSecond")
+
+            Timber.tag(ContentValues.TAG).d("binding.tvTimeHour.text 값 : ${binding.tvTimeHour.text}")
+            Timber.tag(ContentValues.TAG).d("binding.tvTimeMinute.text 값 : ${binding.tvTimeMinute.text}")
+            Timber.tag(ContentValues.TAG).d("binding.tvTimeSecond.text 값 : ${binding.tvTimeSecond.text}")
 
 
         }

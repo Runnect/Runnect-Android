@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.CourseDetailDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,27 +32,32 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
         1,
         "1",
         false,
-        "1"
+        "1",
+        listOf(listOf(1.1))
     )
     val courseDetail: CourseDetailDTO
         get() = _courseDetail
+
 
     fun getCourseDetail(courseId: Int) {
         viewModelScope.launch {
             runCatching {
                 _courseDetailState.value = UiState.Loading
-                Timber.d("상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("runCatching : 상세코스 UiState ${_courseDetailState.value}")
                 courseRepository.getCourseDetail(courseId)
             }.onSuccess {
                 _courseDetail = it
                 _courseDetailState.value = UiState.Success
-                Timber.d("상세코스 UiState ${_courseDetailState.value}")
+//                Timber.d("Success : 상세코스 값??? $it")
+                Timber.d("Success : 상세코스 _courseDetail값??? $_courseDetail")
+                Timber.d("Success : 상세코스 UiState ${_courseDetailState.value}")
             }.onFailure {
                 Timber.d(it.message)
                 Timber.d(it.cause)
                 Timber.d(it.localizedMessage)
                 _courseDetailState.value = UiState.Failure
-                Timber.d("상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("Fail : 상세코스 UiState ${_courseDetailState.value}")
+                Timber.d("Fail 메세지 왜??? ${it.message}")
             }
         }
     }

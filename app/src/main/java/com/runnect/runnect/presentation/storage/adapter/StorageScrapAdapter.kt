@@ -26,7 +26,7 @@ class StorageScrapAdapter(
                 ivItemStorageScrapHeart.isSelected = true
                 ivItemStorageScrapHeart.setOnClickListener {
                     ivItemStorageScrapHeart.isSelected = false
-                    deleteItem(adapterPosition)
+                    deleteItem(absoluteAdapterPosition)
                     heartListener.scrapCourse(data.publicCourseId, it.isSelected)
                 }
 

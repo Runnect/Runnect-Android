@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom|center"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_radius_20_white"
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_marginStart="23dp"
+            app:layout_constraintStart_toStartOf="@id/view_go_to_report_frame"
+            app:layout_constraintBottom_toBottomOf="@id/view_go_to_report_frame"
+            app:layout_constraintTop_toTopOf="@id/view_go_to_report_frame"
+            android:outlineProvider="none"
+            android:elevation="1dp"
+            android:src="@drawable/report_google_form"
+            android:id="@+id/iv_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_marginStart="13dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_report"
+            app:layout_constraintTop_toTopOf="@id/iv_report"
+            app:layout_constraintStart_toEndOf="@id/iv_report"
+            android:fontFamily="@font/pretendard_regular"
+            android:textSize="15sp"
+            android:outlineProvider="none"
+            android:elevation="1dp"
+            android:text="신고하기"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/view_go_to_report_frame"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"/>
+
+
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/btn_see_record"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="55dp"-->
+<!--            android:background="@color/white"-->
+<!--            android:fontFamily="@font/pretendard_semibold"-->
+<!--            android:gravity="center"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            android:text="@string/dialog_finish_run_see_record"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textSize="15sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            />-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
+
+

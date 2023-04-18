@@ -58,7 +58,8 @@ fun DetailData.toData(): CourseDetailDTO {
         id = publicCourse.id,
         image = publicCourse.image,
         scrap = publicCourse.scrap,
-        title = publicCourse.title
+        title = publicCourse.title,
+        path = publicCourse.path
     )
 }
 

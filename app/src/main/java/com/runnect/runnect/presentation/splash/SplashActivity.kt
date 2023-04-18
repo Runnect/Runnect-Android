@@ -20,6 +20,7 @@ class SplashActivity : AppCompatActivity() {
     private fun moveMain(sec: Int) {
         handler.postDelayed({
             val intent = Intent(this, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
             finish()
         }, (1000 * sec).toLong())

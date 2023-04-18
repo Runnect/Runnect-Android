@@ -45,24 +45,8 @@ class CourseMainFragment :
         init()
         getCurrentLocation()
         drawCourseButton()
-//        hideBtmNavi()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity = context as MainActivity
-    }
-
-    // MainActivity의 메서드를 호출하는 예시 메서드
-    fun callMainActivityMethod() {
-        mainActivity?.hideBtmNavi()
-    }
-
-//    private fun hideBtmNavi(){
-//        binding.imgBtnHideBtmNavi.setOnClickListener {
-//            callMainActivityMethod()
-//        }
-//    }
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -123,7 +107,7 @@ class CourseMainFragment :
 
         //현위치 커스텀 이미지
         val locationOverlay = naverMap.locationOverlay
-        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_location_overlay)
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
     }
 
     private fun requestPermission() {
