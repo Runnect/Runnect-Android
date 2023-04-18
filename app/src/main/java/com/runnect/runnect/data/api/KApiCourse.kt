@@ -2,6 +2,8 @@ package com.runnect.runnect.data.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.presentation.login.LoginActivity
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -18,9 +20,6 @@ object KApiCourse {
 
     //헤더에 accessToken과 refreshToken을 넣어야 하는데 accessToken이 만료되면 api 통신을 통해 갱신도 시켜줘야 함
 
-    val accessToken = LoginActivity.accessToken
-    val refreshToken = LoginActivity.refreshToken
-
     private var retrofit: Retrofit? = null
     private val logger = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -31,8 +30,14 @@ object KApiCourse {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
-                .addHeader("accessToken", LoginActivity.accessToken)
-                .addHeader("refreshToken", LoginActivity.refreshToken)
+                .addHeader(
+                    "accessToken",
+                    PreferenceManager.getString(ApplicationClass.appContext, "access")!!
+                )
+                .addHeader(
+                    "refreshToken",
+                    PreferenceManager.getString(ApplicationClass.appContext, "refresh")!!
+                )
                 .build()
             proceed(newRequest)
         }

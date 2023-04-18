@@ -4,17 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.api.KApiLogin
-import com.runnect.runnect.data.model.RequestPostLoginDto
-import com.runnect.runnect.data.model.ResponsePostLoginDto
+import com.runnect.runnect.application.PreferenceManager
+import com.runnect.runnect.data.dto.request.RequestLogin
+import com.runnect.runnect.data.dto.response.LoginDTO
+import com.runnect.runnect.domain.LoginRepository
 import com.runnect.runnect.presentation.state.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) :
+    ViewModel() {
 
-    val service = KApiLogin.ServicePool.loginService
 
-    val loginResult = MutableLiveData<ResponsePostLoginDto>()
+    val loginResult = MutableLiveData<LoginDTO>()
     val errorMessage = MutableLiveData<String>()
 
     private val _loginState = MutableLiveData<UiState>(UiState.Empty)
@@ -22,15 +27,17 @@ class LoginViewModel : ViewModel() {
         get() = _loginState
 
 
-    fun postLogin(request: RequestPostLoginDto) {
+    fun postLogin(request: RequestLogin) {
         viewModelScope.launch {
             runCatching {
                 _loginState.value = UiState.Loading
-                service.postLogin(RequestPostLoginDto(
-                    request.token, request.provider
-                ))
+                loginRepository.postLogin(
+                    RequestLogin(
+                        request.token, request.provider
+                    )
+                )
             }.onSuccess {
-                loginResult.value = it.body()
+                loginResult.value = it
                 _loginState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message

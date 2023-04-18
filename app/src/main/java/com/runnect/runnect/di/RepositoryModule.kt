@@ -3,12 +3,15 @@ package com.runnect.runnect.di
 import com.runnect.runnect.data.api.*
 import com.runnect.runnect.data.repository.CourseRepositoryImpl
 import com.runnect.runnect.data.repository.DepartureSearchRepositoryImpl
+import com.runnect.runnect.data.repository.LoginRepositoryImpl
 import com.runnect.runnect.data.repository.UserRepositoryImpl
 import com.runnect.runnect.data.source.remote.CourseDataSource
 import com.runnect.runnect.data.source.remote.DepartureSearchDataSource
+import com.runnect.runnect.data.source.remote.LoginDataSource
 import com.runnect.runnect.data.source.remote.UserDataSource
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.DepartureSearchRepository
+import com.runnect.runnect.domain.LoginRepository
 import com.runnect.runnect.domain.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -46,6 +49,16 @@ object RepositoryModule {
         return DepartureSearchRepositoryImpl(
             DepartureSearchDataSource(
                 KApiSearch.getRetrofit().create(KSearchService::class.java)
+            )
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoginRepository():LoginRepository{
+        return LoginRepositoryImpl(
+            LoginDataSource(
+                PApiClient.getApiClient()!!.create(LoginService::class.java)
             )
         )
     }

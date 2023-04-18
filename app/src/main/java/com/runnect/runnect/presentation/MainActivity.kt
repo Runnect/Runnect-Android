@@ -36,7 +36,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         CheckIntentValue()
         initView()
         addListener() //이게 있어야 changeFragment를 돌릴 수 있음
-
     }
 
     fun getBtmNaviMain(): View? {

@@ -1,11 +1,11 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto.response
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePostLoginDto(
+data class ResponseLogin(
     @SerialName("data")
     val `data`: Data,
     @SerialName("message")
@@ -21,6 +21,8 @@ data class ResponsePostLoginDto(
         val accessToken: String,
         @SerialName("email")
         val email: String,
+        @SerialName("nickname")
+        val nickName: String = "",
         @SerialName("refreshToken")
         val refreshToken: String,
         @SerialName("type")

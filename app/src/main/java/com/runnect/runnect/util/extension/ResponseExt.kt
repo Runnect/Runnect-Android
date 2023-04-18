@@ -72,6 +72,19 @@ fun PrivateCourse.toData(): CourseLoadInfoDTO {
     )
 }
 
+fun ResponseLogin.toData(): LoginDTO {
+    with(this.data) {
+        return LoginDTO(
+            status = status,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            email = email,
+            type = type
+        )
+    }
+
+}
+
 private fun timeConvert(time: String): String {
     var hms = mutableListOf<String>()
     hms = time.split(":").toMutableList()
