@@ -124,6 +124,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setPromotionAdapter(vpList)
         setPromotionIndicator(vp)
         setPromotionViewPager(vp)
+        setScrollHandler(vp)
     }
 
     private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
@@ -159,6 +160,34 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
         )
     }
+    private fun setScrollHandler(vp: ViewPager2) {
+        scrollHandler = Handler(Looper.getMainLooper())
+        scrollPageRunnable = Runnable {
+            vp.setCurrentItem(++currentPosition, true)
+        }
+        timer = Timer()
+    }
+
+    private fun autoScrollStart() {
+        timerTask = object : TimerTask() {
+            override fun run() {
+                scrollHandler.post(scrollPageRunnable)
+            }
+        }
+        timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
+    }
+    private fun autoScrollStop() {
+        timerTask.cancel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        autoScrollStart()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        autoScrollStop()
     }
 
 
@@ -188,4 +217,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         const val FRAME_NUM = 3
         const val PAGE_NUM = 900
+        const val INTERVAL_TIME = 5000L
+    }
 }
