@@ -37,13 +37,12 @@ class CourseDetailActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        courseId = intent.getIntExtra("courseId", 0)//선택한 코스의 id로 API 호출 예정
+        courseId = intent.getIntExtra("courseId", 0)
         Timber.tag(ContentValues.TAG).d("상세페이지로 넘겨받은 courseId 값? : $courseId")
         addListener()
         initView()
-        getCourseDetail() //서버 통신
+        getCourseDetail()
         addObserver()
-//        setTouchList() //이거 2개 함수는 더 좋은 처리 방법이 있을듯
         showReportBottomSheet()
     }
 
@@ -86,28 +85,12 @@ class CourseDetailActivity :
                 ))
             }
             startActivity(intent)
-            //API 수정의 요지가 있어 추후 협의를 거친 후 달리기 시작 추가 예정
-            //0407 지금 상세페이지로 오긴 했는데 여기서
         }
     }
 
     private fun getCourseDetail(){
         viewModel.getCourseDetail(courseId)
     }
-
-//    path=[[37.5546788388674, 126.970606917394], [37.55882941755165, 126.97027789953876]]
-
-    //DeatilToRun은 이미 아래와 같이 만들어져있고 서버에서 받은 path를 출발/route로 분리해서 담기만 하면 돼.
-    //@Parcelize
-    //data class DetailToRunData(
-    //    val courseId : Int?,
-    //    val publicCourseId : Int?,
-    //    val touchList: ArrayList<LatLng>,
-    //    val startLatLng: LatLng,
-    //    val departure: String,
-    //    val distance: Float,
-    //    val image: String,
-    //) : Parcelable
 
     //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
     private fun setDepartureLatLng() {
@@ -122,8 +105,6 @@ class CourseDetailActivity :
         }
         Timber.tag(ContentValues.TAG).d("touchList 값 : $touchList")
     }
-
-
 
 
     private fun addObserver() {
