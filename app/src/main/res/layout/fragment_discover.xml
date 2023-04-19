@@ -70,6 +70,7 @@
                     android:layout_height="10dp"
                     app:layout_constraintTop_toTopOf="@id/vp_discover_promotion"
                     android:layout_marginTop="160dp"
+                    app:ci_animator="@anim/ci_animator"
                     app:ci_width="4dp"
                     app:ci_height="4dp"
                     app:ci_drawable="@drawable/circle_indicator_selected"
