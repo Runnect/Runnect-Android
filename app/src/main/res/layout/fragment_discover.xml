@@ -124,7 +124,7 @@
                     tools:listitem="@layout/item_discover_course_info" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
-        
+
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/btn_discover_upload"
             android:layout_width="92dp"
