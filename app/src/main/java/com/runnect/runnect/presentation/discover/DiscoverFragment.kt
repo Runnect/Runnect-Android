@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,9 +45,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val vpList = mutableListOf(
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion3),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion3),
+        val promotionImages = mutableListOf(
+            DiscoverPromotionItemDTO(R.drawable.discover_promotion1),
+            DiscoverPromotionItemDTO(R.drawable.discover_promotion2),
             DiscoverPromotionItemDTO(R.drawable.discover_promotion3)
         )
         binding.vm = viewModel
@@ -58,7 +57,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         setResultDetail()
-        setPromotion(binding.vpDiscoverPromotion,vpList)
+        setPromotion(binding.vpDiscoverPromotion,promotionImages)
     }
 
     private fun initLayout() {
