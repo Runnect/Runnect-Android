@@ -124,11 +124,10 @@
                     tools:listitem="@layout/item_discover_course_info" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
-
-
+        
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/btn_discover_upload"
-            android:layout_width="52dp"
+            android:layout_width="92dp"
             android:layout_height="0dp"
             android:layout_marginEnd="14dp"
             android:layout_marginBottom="16dp"
@@ -136,8 +135,15 @@
             android:contentDescription="@string/discover_upload"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toTopOf="@id/view_empty"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintDimensionRatio="92:41"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:icon="@drawable/discover_upload_btn"
+            app:iconTint="@color/white"
+            app:iconSize="15dp"
+            android:text="@string/discover_upload_btn"
+            android:textColor="@color/M1"
+            android:padding="13dp"
+            />
 
         <View
             android:id="@+id/view_empty"
@@ -145,20 +151,21 @@
             android:background="@color/transparent_00"
             android:layout_width="match_parent"
             android:layout_height="57dp"/>
-
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_discover_upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="30dp"
-            android:fontFamily="@font/pretendard_semibold"
-            android:paddingBottom="5dp"
-            android:text="@string/discover_plus"
-            android:textColor="@color/W1"
-            android:textSize="32sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_discover_upload"
             app:layout_constraintEnd_toEndOf="@id/btn_discover_upload"
-            app:layout_constraintStart_toStartOf="@id/btn_discover_upload"
-            app:layout_constraintTop_toTopOf="@id/btn_discover_upload" />
+            app:layout_constraintTop_toTopOf="@id/btn_discover_upload"
+            app:layout_constraintBottom_toBottomOf="@id/btn_discover_upload"
+            android:elevation="10dp"
+            android:text="@string/discover_upload_btn"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_marginEnd="14dp"
+            android:fontFamily="@font/pretendard_semibold"/>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
