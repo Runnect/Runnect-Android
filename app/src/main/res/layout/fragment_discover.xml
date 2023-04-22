@@ -57,15 +57,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_discover_promotion"
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_discover_promotion"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:background="@color/M2"
-                    android:orientation="horizontal"
-                    app:layout_constraintDimensionRatio="360:169"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/discover_ad_img" />
+                    app:layout_constraintDimensionRatio="362:173"
+                    />
+                <me.relex.circleindicator.CircleIndicator3
+                    android:id="@+id/ci_discover_promotion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/vp_discover_promotion"
+                    android:layout_marginBottom="9dp"
+                    app:ci_animator="@anim/ci_animator"
+                    app:ci_width="4dp"
+                    app:ci_height="4dp"
+                    app:ci_drawable="@drawable/circle_indicator_selected"
+                    app:ci_drawable_unselected="@drawable/circle_indicator_unselected"
+                    />
+
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_discover_recommend_title"
@@ -78,7 +89,7 @@
                     android:textColor="@color/G1"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_discover_promotion" />
+                    app:layout_constraintTop_toBottomOf="@id/vp_discover_promotion" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_discover_recommend_subtitle"
