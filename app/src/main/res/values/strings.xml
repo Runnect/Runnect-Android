@@ -83,6 +83,7 @@
     <string name="login_signIn_kakao">카카오로 로그인</string>
     <string name="my_draw_edit">편집</string>
     <string name="my_draw_delete">삭제하기</string>
+    <string name="discover_upload_btn">업로드</string>
 
 
 </resources>
