@@ -18,8 +18,8 @@ import timber.log.Timber
 class StorageViewModel : ViewModel() {
 
     val service = KApiCourse.ServicePool.courseService //객체 생성
-
-    val deleteMyDrawResult = MutableLiveData<ResponsePutMyDrawDto>()
+    val selectList = MutableLiveData<MutableList<Long>>()
+    val currentList =  MutableLiveData<MutableList<ResponseGetCourseDto.Data.Course>>()
 
     val getMyDrawResult = MutableLiveData<ResponseGetCourseDto>()
     val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
@@ -50,21 +50,19 @@ class StorageViewModel : ViewModel() {
         }
     }
 
-    fun deleteMyDrawCourse(deleteCourseList: MutableList<Long>) {
+    fun deleteMyDrawCourse(deleteList : MutableList<Long>) {
         viewModelScope.launch {
             runCatching {
-                _storageState.value = UiState.Loading
-                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteCourseList))
+//                _storageState.value = UiState.Loading
+                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
             }.onSuccess {
-                deleteMyDrawResult.value = it.body()
                 Timber.tag(ContentValues.TAG)
                     .d("삭제 성공입니다")
-                _storageState.value = UiState.Success
+//                _storageState.value = UiState.Success
             }.onFailure {
                 Timber.tag(ContentValues.TAG)
                     .d("실패했고 문제는 다음과 같습니다 $it")
-                errorMessage.value = it.message
-                _storageState.value = UiState.Failure
+//                _storageState.value = UiState.Failure
             }
         }
     }

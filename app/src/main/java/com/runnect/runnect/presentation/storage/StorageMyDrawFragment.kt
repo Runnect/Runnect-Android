@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -28,7 +27,6 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.DeleteMyDrawCourse
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
@@ -36,7 +34,7 @@ import timber.log.Timber
 
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
-    OnMyDrawClick, DeleteMyDrawCourse {
+    OnMyDrawClick {
 
     val viewModel: StorageViewModel by viewModels()
 
@@ -129,8 +127,15 @@ class StorageMyDrawFragment :
 
 
         myLayout.btn_delete_yes.setOnClickListener {
-            storageMyDrawAdapter.removeItem(selectionTracker.selection)
+            removeItem() //currentList-selectList만 함 submitList를 옵저버로 처리하려고 이렇게 하는 거
+            viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
+//            storageMyDrawAdapter.removeItem(selectionTracker.selection)
             selectionTracker.clearSelection()
+
+            initAdapter()
+            addTrackerObserver()
+            
+            viewModel.getMyDrawList()
 
             dialog.dismiss()
 
@@ -156,11 +161,12 @@ class StorageMyDrawFragment :
         addData() //상관 없음
         addObserver()
         addTrackerObserver() //selection
+        observeCurrentList()
     }
 
 
     private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this, this)
+        storageMyDrawAdapter = StorageMyDrawAdapter(this)
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
 
@@ -259,8 +265,15 @@ class StorageMyDrawFragment :
                 if (!isSelectAvailable) {
                     selectionTracker.clearSelection()
                 } //터치 활성화 여부
+
+//                binding.selected = selectionTracker.isSelected(itemId)
+
+                viewModel.selectList.value = selectionTracker.selection.toMutableList()
+                Timber.tag(ContentValues.TAG)
+                    .d("실시간 뷰모델 selectList 값 : ${viewModel.selectList.value}")
+
                 val items = selectionTracker.selection.size()
-                Log.d(ContentValues.TAG, "items 사이즈?: $items")
+//                Log.d(ContentValues.TAG, "items 사이즈?: $items")
                 if (items == 0) {
                     disableSaveBtn()
                 } else if (items >= 1) {
@@ -299,9 +312,48 @@ class StorageMyDrawFragment :
         }
     }
 
-    override fun deleteCourse(deleteList: MutableList<Long>) {
-        viewModel.deleteMyDrawCourse(deleteList)
-        Timber.tag(ContentValues.TAG).d("삭제될 코스들 : $deleteList")
+    fun observeCurrentList() { //삭제 버튼 누르면 뷰모델에 있는 currentList에서 삭제만 되게 해놓음
+        viewModel.getMyDrawResult.observe(viewLifecycleOwner) {
+            //삭제가 됐다면 변화가 일어나서 이게 작동할 거고
+            storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
+        }
+    }
+// 지금 삭제 api에도 uiState를 넣어주었는데 이게 옵저버로 관찰 중이라
+    // 코스 삭제 통신을 실행시키는 순간 아래의 코드가 옵저버에 의해 자동으로 실행됨
+    //어쩌면 이게 문제였을 수도? getMyDrawResult는 최초 1번에 받아온 data를 저장해놓는 건데
+    //이걸 submitList하고 있었으니까. 삭제가 됐어도 갱신이 안 되는 거지.
+    //일단 삭제 코드에서 uistate 뺐음.
+
+//    private fun updateAdapterData() {
+//        storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
+//    }
+
+    fun removeItem() {
+        //select할 때마다 onSelectionChanged()가 실행되잖아.
+        //이걸 활용해서 터치가 일어날 때마다 뷰모델에 selectList 값 갱신
+        //삭제 버튼을 누르면 뷰모델에 저장해놓은 currentList 값에서 selectList 값 삭제
+        //이걸 옵저버로 관찰하게 하면 변화가 일어났으니 동작을 하겠지?
+        //변경된 currentList를 submitList하기.
+        viewModel.currentList.value = storageMyDrawAdapter.currentList.toMutableList()
+        Timber.tag(ContentValues.TAG)
+            .d("뷰모델 currentList 값 : ${viewModel.currentList.value!!.map { it.id }}")
+        val itemList = viewModel.currentList.value
+        val selectedIds = viewModel.selectList.value
+
+        Timber.tag(ContentValues.TAG).d("removeItem에서의 뷰모델 currentList 값 : ${itemList!!.map { it.id }}")
+        Timber.tag(ContentValues.TAG).d("removeItem에서의 뷰모델 selectList 값 : $selectedIds")
+
+        for (id in selectedIds!!) {
+            val index = itemList!!.indexOfFirst { it.id.toLong() == id.toLong() }
+            if (index != -1) {
+                itemList.removeAt(index)
+            }
+        }
+
+        viewModel.currentList.value = itemList
+
+        Timber.tag(ContentValues.TAG)
+            .d("삭제 후 뷰모델 currentList 값 : ${viewModel.currentList.value!!.map { it.id }}")
     }
 
 }

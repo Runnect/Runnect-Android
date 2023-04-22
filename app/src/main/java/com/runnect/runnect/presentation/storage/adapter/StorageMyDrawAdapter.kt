@@ -19,8 +19,7 @@ import timber.log.Timber
 
 
 class StorageMyDrawAdapter(
-    val myDrawClickListener: OnMyDrawClick,
-    val deleteCourseListener: DeleteMyDrawCourse
+    val myDrawClickListener: OnMyDrawClick
 ) :
     ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
@@ -98,7 +97,6 @@ class StorageMyDrawAdapter(
         }
         submitList(itemList)
 
-        deleteCourseListener.deleteCourse(selectedIds)
     }
 
 
