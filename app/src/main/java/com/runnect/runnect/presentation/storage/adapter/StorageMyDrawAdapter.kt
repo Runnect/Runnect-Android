@@ -71,33 +71,12 @@ class StorageMyDrawAdapter(
                 myDrawClickListener.selectItem(currentList[position])
                 selectionTracker.select(itemId) //이게 select을 실행시킴. 리사이클러뷰 아이템 고유 id 수집
             }
-            Timber.tag(ContentValues.TAG)
-                .d("selection 값 : ${selectionTracker.selection}")
-            Timber.tag(ContentValues.TAG)
-                .d("getItemId 값 : $itemId")
+
             binding.selected = selectionTracker.isSelected(itemId)
         }
 
     }
 
-    fun removeItem(selection: Selection<Long>) {
-        val itemList = currentList.toMutableList()
-        val selectedIds = selection.toMutableList()
-
-        Timber.tag(ContentValues.TAG)
-            .d("selectedIds 값 : $selectedIds")
-
-        //화면에서 지우는 거랑 이걸 서버에 반영해주는 거랑 별개야
-        //이렇게 하면 화면에선 지운 거고 인터페이스로
-        for (id in selectedIds) {
-            val index = itemList.indexOfFirst { it.id.toLong() == id.toLong() }
-            if (index != -1) {
-                itemList.removeAt(index)
-            }
-        }
-        submitList(itemList)
-
-    }
 
 
     class Differ : DiffUtil.ItemCallback<ResponseGetCourseDto.Data.Course>() {
