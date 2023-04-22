@@ -28,6 +28,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.callback.DeleteMyDrawCourse
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
@@ -35,7 +36,7 @@ import timber.log.Timber
 
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
-    OnMyDrawClick {
+    OnMyDrawClick, DeleteMyDrawCourse {
 
     val viewModel: StorageViewModel by viewModels()
 
@@ -159,7 +160,7 @@ class StorageMyDrawFragment :
 
 
     private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this)
+        storageMyDrawAdapter = StorageMyDrawAdapter(this, this)
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
 
@@ -296,6 +297,11 @@ class StorageMyDrawFragment :
                 putExtra("fromStorageFragment", item.id)
             })
         }
+    }
+
+    override fun deleteCourse(deleteList: MutableList<Long>) {
+        viewModel.deleteMyDrawCourse(deleteList)
+        Timber.tag(ContentValues.TAG).d("삭제될 코스들 : $deleteList")
     }
 
 }

@@ -1,9 +1,7 @@
 package com.runnect.runnect.presentation.storage.adapter
 
 import android.content.ContentValues
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -12,15 +10,18 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.R
+import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
+import com.runnect.runnect.util.callback.DeleteMyDrawCourse
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import timber.log.Timber
 
 
-class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
+class StorageMyDrawAdapter(
+    val myDrawClickListener: OnMyDrawClick,
+    val deleteCourseListener: DeleteMyDrawCourse
+) :
     ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
 
@@ -79,10 +80,16 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
         }
 
     }
+
     fun removeItem(selection: Selection<Long>) {
         val itemList = currentList.toMutableList()
         val selectedIds = selection.toMutableList()
 
+        Timber.tag(ContentValues.TAG)
+            .d("selectedIds 값 : $selectedIds")
+
+        //화면에서 지우는 거랑 이걸 서버에 반영해주는 거랑 별개야
+        //이렇게 하면 화면에선 지운 거고 인터페이스로
         for (id in selectedIds) {
             val index = itemList.indexOfFirst { it.id.toLong() == id.toLong() }
             if (index != -1) {
@@ -90,8 +97,9 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
             }
         }
         submitList(itemList)
-    }
 
+        deleteCourseListener.deleteCourse(selectedIds)
+    }
 
 
     class Differ : DiffUtil.ItemCallback<ResponseGetCourseDto.Data.Course>() {

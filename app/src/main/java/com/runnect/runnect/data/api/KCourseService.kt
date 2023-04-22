@@ -9,12 +9,20 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
+
 interface KCourseService {
     //스크랩
     @POST("/api/scrap")
     suspend fun postCourseScrap(
         @Body requestCourseScrap: RequestCourseScrap,
     ): Response<ResponseCourseScrap>
+
+    // {id}와 같이 동적인 경로 변수가 없다면 @Path 생략 가능
+    //내가 그린 코스 수정
+    @PUT("/api/course")
+    suspend fun deleteMyDrawCourse(
+        @Body deleteCourseList: RequestPutMyDrawDto
+    ): Response<ResponsePutMyDrawDto>
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
