@@ -32,6 +32,13 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
     override fun onBindViewHolder(holder: DiscoverLoadViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
+    fun clearSelection() {
+        if (beforeSelected != null) {
+            beforeSelected!!.isSelected = false
+            beforeSelected = null
+            mCallback.selectCourse(0,"","","")
+        }
+    }
 
     inner class DiscoverLoadViewHolder(private val binding: ItemDiscoverLoadSelectBinding) :
         RecyclerView.ViewHolder(binding.root) {

@@ -93,6 +93,7 @@ class DiscoverLoadActivity :
                     putExtra("distance", viewModel.distanceSelectedItem.value)
                 }
                 startActivity(intent)
+                adapter.clearSelection()
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
         }
