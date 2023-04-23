@@ -49,10 +49,8 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
                 } else if (!it.isSelected) {
                     if(beforeSelected != null){
                         beforeSelected!!.isSelected = false
-                        Timber.d("beforeSelected != null -> $beforeSelected")
                     }
                     beforeSelected = it
-                    Timber.d("beforeSelected -> $beforeSelected")
                     mCallback.selectCourse(data.id, data.img, data.departure, data.distance)
                     it.isSelected = true
                 }
