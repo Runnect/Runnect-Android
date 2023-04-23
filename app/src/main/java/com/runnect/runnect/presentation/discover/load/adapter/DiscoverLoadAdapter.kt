@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.discover.load.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,7 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
     ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(DiffUtilItemCallback()) {
     private val inflater by lazy { LayoutInflater.from(context) }
     private val mCallback = listener
-    private var selectedCount = 0
+    private var beforeSelected: View? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverLoadViewHolder {
         return DiscoverLoadViewHolder(
@@ -44,11 +45,16 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
                 if (it.isSelected) {
                     mCallback.selectCourse(0,"","","")
                     it.isSelected = false
-                    selectedCount -= 1
-                } else if (!it.isSelected && selectedCount < 1) {
+                    beforeSelected = null
+                } else if (!it.isSelected) {
+                    if(beforeSelected != null){
+                        beforeSelected!!.isSelected = false
+                        Timber.d("beforeSelected != null -> $beforeSelected")
+                    }
+                    beforeSelected = it
+                    Timber.d("beforeSelected -> $beforeSelected")
                     mCallback.selectCourse(data.id, data.img, data.departure, data.distance)
                     it.isSelected = true
-                    selectedCount += 1
                 }
             }
         }
