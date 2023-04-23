@@ -127,13 +127,13 @@ class StorageMyDrawFragment :
 
 
         myLayout.btn_delete_yes.setOnClickListener {
-            removeItem()
+            deleteCourse()
 
             selectionTracker.clearSelection()
 
             initAdapter()
             addTrackerObserver()
-            
+
             viewModel.getMyDrawList()
 
             dialog.dismiss()
@@ -157,7 +157,7 @@ class StorageMyDrawFragment :
         initAdapter()
         editCourse()
         getCourse() //문제 없음
-        addData() //상관 없음
+        requireCourse() //상관 없음
         addObserver()
         addTrackerObserver() //selection
         observeCurrentList()
@@ -193,7 +193,7 @@ class StorageMyDrawFragment :
 
     private fun showMyDrawResult() {
         Timber.tag(ContentValues.TAG)
-            .d("통신 결과 코스 비어있나? : ${viewModel.getMyDrawResult.value!!.data.courses.isEmpty()}")
+            .d("Success but emptyList : ${viewModel.getMyDrawResult.value!!.data.courses.isEmpty()}")
         if (viewModel.getMyDrawResult.value!!.data.courses.isEmpty()) {
             with(binding) {
                 ivStorageMyDrawNoCourse.isVisible = true
@@ -241,7 +241,7 @@ class StorageMyDrawFragment :
 
     }
 
-    private fun addData() {
+    private fun requireCourse() {
         binding.btnStorageNoCourse.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -315,7 +315,7 @@ class StorageMyDrawFragment :
         }
     }
 
-    fun removeItem() {
+    fun deleteCourse() {
         viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
     }
 
