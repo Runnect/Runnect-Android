@@ -84,6 +84,8 @@
     <string name="my_draw_edit">편집</string>
     <string name="my_draw_delete">삭제하기</string>
     <string name="discover_upload_btn">업로드</string>
+    <string name="discover_load_draw_course">코스 그리기</string>
+    <string name="discover_load_no_course">공유할 수 있는 코스가 없어요!\n코스를 그려주세요!</string>
 
 
 </resources>

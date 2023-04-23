@@ -40,7 +40,7 @@ class DiscoverLoadViewModel @Inject constructor(
 
     val errorMessage = MutableLiveData<String>()
 
-    fun checkSelectEnable(id: Int, img: String, departure: String, distance:String) {
+    fun checkSelectEnable(id: Int, img: String, departure: String, distance: String) {
         Timber.d("3. 선택된 아이템의 아이디값을 Adapter로부터 받아와서 라이브 데이터 변경")
         _idSelectedItem.value = id
         _imgSelectedItem.value = img
@@ -54,8 +54,12 @@ class DiscoverLoadViewModel @Inject constructor(
             runCatching {
                 courseRepository.getMyCourseLoad()
             }.onSuccess {
-                courseLoadList = it
-                _courseLoadState.value = UiState.Success
+                if (it.isEmpty()) {
+                    _courseLoadState.value = UiState.Empty
+                } else {
+                    courseLoadList = it
+                    _courseLoadState.value = UiState.Success
+                }
             }.onFailure {
                 errorMessage.value = it.message
                 _courseLoadState.value = UiState.Failure

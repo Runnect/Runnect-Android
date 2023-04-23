@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.discover.load.DiscoverLoadViewModel" />
@@ -16,12 +17,12 @@
         android:layout_height="match_parent">
 
         <ProgressBar
-            android:outlineProvider="none"
-            android:elevation="2dp"
-            android:indeterminateTint="@color/G3"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,10 +59,10 @@
             android:id="@+id/sv_discover_load_select_scroll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical"
-            android:scrollbars="none"
-            android:overScrollMode="never"
             android:layout_marginBottom="56dp"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_discover_load_select">
 
@@ -77,11 +78,11 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="15dp"
-                    android:paddingBottom="30dp"
+                    android:nestedScrollingEnabled="false"
                     android:orientation="vertical"
                     android:overScrollMode="never"
+                    android:paddingBottom="30dp"
                     android:scrollbars="none"
-                    android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -95,26 +96,77 @@
             android:id="@+id/iv_discover_load_select_finish"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="330:40"
-            android:background="@drawable/all_finish_btn_selector"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/all_finish_btn_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="330:40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/iv_discover_load_select_finish"
-            app:layout_constraintBottom_toBottomOf="@id/iv_discover_load_select_finish"
-            app:layout_constraintStart_toStartOf="@id/iv_discover_load_select_finish"
-            app:layout_constraintEnd_toEndOf="@id/iv_discover_load_select_finish"
+            android:fontFamily="@font/pretendard_semibold"
             android:text="@string/discover_load_select_finish"
             android:textColor="@color/M4"
             android:textSize="15sp"
-            android:fontFamily="@font/pretendard_semibold" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_discover_load_select_finish"
+            app:layout_constraintEnd_toEndOf="@id/iv_discover_load_select_finish"
+            app:layout_constraintStart_toStartOf="@id/iv_discover_load_select_finish"
+            app:layout_constraintTop_toTopOf="@id/iv_discover_load_select_finish" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_discover_load_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="141dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/toolbar_discover_load_select"
+            android:visibility="invisible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/alertdialog" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="center"
+                android:lineHeight="22dp"
+                android:text="@string/discover_load_no_course"
+                android:textColor="@color/G2"
+                android:textSize="14sp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_discover_draw_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                app:cardCornerRadius="10dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="231dp"
+                    android:layout_height="40dp"
+                    android:background="@color/M1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@string/discover_load_draw_course"
+                    android:textColor="@color/W1"
+                    android:textSize="15sp" />
+            </androidx.cardview.widget.CardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
