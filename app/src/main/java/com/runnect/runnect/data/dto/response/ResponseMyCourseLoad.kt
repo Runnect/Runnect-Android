@@ -26,7 +26,7 @@ data class LoadDeparture(
     @SerializedName("city")
     val city: String,
     @SerializedName("name")
-    val name: String,
+    val name: String?,
     @SerializedName("region")
     val region: String,
     @SerializedName("town")
