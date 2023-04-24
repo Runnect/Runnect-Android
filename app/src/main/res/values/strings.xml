@@ -84,6 +84,9 @@
     <string name="my_draw_edit">편집</string>
     <string name="my_draw_delete">삭제하기</string>
     <string name="discover_upload_btn">업로드</string>
+    <string name="my_page_setting_title">설정</string>
+    <string name="my_page_version_title">버전정보</string>
+    <string name="my_page_version">v. 1.0.1</string>
 
 
 </resources>
