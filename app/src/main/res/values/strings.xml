@@ -94,6 +94,7 @@
     <string name="my_page_edit_name_guide">닉네임을 입력하세요</string>
     <string name="my_page_edit_name_redundant_warning">동일 닉네임의 유저가 존재합니다.\n다른 닉네임을 입력해 주세요.</string>
     <string name="discover_search_guide">지역과 키워드 위주로 검색해보세요</string>
+    <string name="my_page_history_no_history">아직 러닝 기록이 없어요!\n코스를 그리고 달려보세요</string>
 
 
 </resources>

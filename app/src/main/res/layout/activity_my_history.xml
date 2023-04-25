@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.mypage.history.MyHistoryViewModel" />
@@ -15,12 +16,12 @@
         tools:context=".presentation.mypage.history.MyHistoryActivity">
 
         <ProgressBar
-            android:outlineProvider="none"
-            android:elevation="2dp"
-            android:indeterminateTint="@color/G3"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp">
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_my_page_history"
                     android:layout_width="wrap_content"
@@ -82,5 +84,58 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_my_page_history_no_result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="64dp"
+            android:layout_marginTop="158dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/toolbar_my_page_history">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/no_course" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="center"
+                android:lineHeight="22dp"
+                android:text="@string/my_page_history_no_history"
+                android:textColor="@color/G2"
+                android:textSize="14sp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_history_my_page_draw_course"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                app:cardCornerRadius="10dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/M1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@string/discover_load_draw_course"
+                    android:textColor="@color/W1"
+                    android:textSize="15sp" />
+            </androidx.cardview.widget.CardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.mypage.history
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -9,6 +10,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyHistoryBinding
 import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
+import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.RecyclerOffsetDecorationHeight
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +47,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
+        binding.cvHistoryMyPageDrawCourse.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onBackPressed() {
@@ -57,10 +65,15 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
         viewModel.recordState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> {
+                    binding.indeterminateBar.isVisible = false
+                    binding.layoutMyPageHistoryNoResult.isVisible = true
+                }
+
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
+                    binding.layoutMyPageHistoryNoResult.isVisible = false
                     initAdapter()
                 }
                 UiState.Failure -> {
