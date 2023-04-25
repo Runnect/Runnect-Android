@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.R
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,17 +39,6 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
             }.onFailure {
                 errorMessage.value = it.message
                 _userInfoState.value = UiState.Failure
-            }
-        }
-    }
-
-    fun updateNickName() {
-        viewModelScope.launch {
-            runCatching {
-                userRepository.updateNickName(RequestUpdateNickName(nickName.value.toString()))
-            }.onSuccess {
-            }.onFailure {
-                Timber.d("${it.message}")
             }
         }
     }
