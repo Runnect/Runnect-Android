@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.runnect.runnect.presentation.mypage.editname.MyPageEditNameViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.mypage.editname.MyPageEditNameActivity">
+
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_my_page_edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:contentInsetStart="0dp"
+            app:layout_constraintDimensionRatio="360:48"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_my_page_edit_name_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/start_margin_back_btn"
+                app:srcCompat="@drawable/all_back_arrow" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_edit_name_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="@string/my_page_edit_name_title"
+                android:textColor="@color/G1"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_edit_name_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="23dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="@string/my_page_edit_name_finish"
+                android:textColor="@color/my_page_finish_selector"
+                android:textSize="16sp" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_my_page_edit_name_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="98dp"
+            app:imgRes="@{vm.profileImg}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/toolbar_my_page_edit_name" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_my_page_edit_name"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="51dp"
+            android:background="@drawable/my_page_edit_name_border"
+            android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
+            android:hint="@string/my_page_edit_name_guide"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLength="7"
+            android:maxLines="1"
+            android:text="@={vm.nickName}"
+            android:textColor="@color/G1"
+            android:textColorHint="@color/G3"
+            android:textCursorDrawable="@color/M1"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_my_page_edit_name_profile" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
