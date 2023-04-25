@@ -77,7 +77,16 @@ class MyPageEditNameActivity :
             }
         }
         viewModel.nickName.observe(this) {
-            binding.tvMyPageEditNameFinish.isActivated = !it.isNullOrEmpty()
+            with(binding.tvMyPageEditNameFinish){
+                if(it.isNullOrEmpty()){
+                    isActivated = false
+                    isClickable = false
+                }
+                else{
+                    isActivated = true
+                    isClickable = true
+                }
+            }
         }
     }
 
