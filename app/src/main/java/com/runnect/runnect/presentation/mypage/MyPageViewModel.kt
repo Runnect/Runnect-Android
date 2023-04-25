@@ -16,6 +16,7 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
     ViewModel() {
     val nickName: MutableLiveData<String> = MutableLiveData<String>()
     val stampId: MutableLiveData<String> = MutableLiveData<String>(STAMP_LOCK)
+    val profileImg: MutableLiveData<Int> = MutableLiveData<Int>(R.drawable.user_profile_basic)
     val level: MutableLiveData<String> = MutableLiveData<String>()
     val levelPercent: MutableLiveData<Int> = MutableLiveData<Int>()
 
@@ -24,6 +25,13 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
         get() = _userInfoState
 
     val errorMessage = MutableLiveData<String>()
+    fun setNickName(nickName: String) {
+        this.nickName.value = nickName
+    }
+
+    fun setProfileImg(profileImg: Int) {
+        this.profileImg.value = profileImg
+    }
 
     fun getUserInfo() {
         viewModelScope.launch {
