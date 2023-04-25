@@ -85,7 +85,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="26dp"
                     android:layout_marginEnd="16dp"
-                    android:backgroundTint="@color/transparent_00"
+                    android:backgroundTint="@color/W1"
                     android:fontFamily="@font/pretendard_semibold"
                     android:hint="@string/discover_upload_title"
                     android:text="@={vm.title}"
