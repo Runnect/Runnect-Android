@@ -13,10 +13,9 @@ import com.runnect.runnect.util.DiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnRecommendCourseClick
 import timber.log.Timber
 
-class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
+class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCourseClick) :
     ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(DiffUtilItemCallback()) {
     private val inflater by lazy { LayoutInflater.from(context) }
-    private val mCallback = listener
     private var beforeSelected: View? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverLoadViewHolder {
@@ -36,7 +35,7 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
         if (beforeSelected != null) {
             beforeSelected!!.isSelected = false
             beforeSelected = null
-            mCallback.selectCourse(0,"","","")
+            listener.selectCourse(0,"","","")
         }
     }
 
@@ -50,7 +49,7 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
                 Timber.d("1. Adapter에서 Activity에 정의된 콜백함수 호출")
                 //오직 하나의 코스만 선택되도록 함
                 if (it.isSelected) {
-                    mCallback.selectCourse(0,"","","")
+                    listener.selectCourse(0,"","","")
                     it.isSelected = false
                     beforeSelected = null
                 } else if (!it.isSelected) {
@@ -58,7 +57,7 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
                         beforeSelected!!.isSelected = false
                     }
                     beforeSelected = it
-                    mCallback.selectCourse(data.id, data.img, data.departure, data.distance)
+                    listener.selectCourse(data.id, data.img, data.departure, data.distance)
                     it.isSelected = true
                 }
             }
