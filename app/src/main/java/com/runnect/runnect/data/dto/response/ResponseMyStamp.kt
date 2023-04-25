@@ -22,5 +22,5 @@ data class Stamp(
 
 @Serializable
 data class StampUser(
-    val machineId: String
+    val id: Int
 )
