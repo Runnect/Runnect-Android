@@ -20,6 +20,5 @@ data class User(
     val latestStamp: String,
     val level: Int,
     val levelPercent: Int,
-    val machineId: String,
     val nickname: String
 )

@@ -86,6 +86,9 @@
     <string name="discover_upload_btn">업로드</string>
     <string name="discover_load_draw_course">코스 그리기</string>
     <string name="discover_load_no_course">공유할 수 있는 코스가 없어요!\n코스를 그려주세요!</string>
+    <string name="my_page_setting_title">설정</string>
+    <string name="my_page_version_title">버전정보</string>
+    <string name="my_page_version">v. 1.0.1</string>
 
 
 </resources>
