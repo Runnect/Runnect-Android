@@ -8,7 +8,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/radius_10dp_history_item"
         app:layout_constraintDimensionRatio="330:166"
@@ -16,11 +16,10 @@
 
         <View
             android:id="@+id/view_my_page_history_frame"
-            android:layout_width="330dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="330:177"
+            app:layout_constraintDimensionRatio="330:162"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <androidx.cardview.widget.CardView
@@ -28,8 +27,8 @@
             android:layout_width="80dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"
-            android:layout_marginStart="13.83dp"
-            android:layout_marginTop="12.72dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="10dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
             app:layout_constraintTop_toTopOf="@id/view_my_page_history_frame">
@@ -37,14 +36,14 @@
                 android:id="@+id/iv_my_page_history_course"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scaleType="fitXY" />
+                android:scaleType="centerCrop"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_history_course_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="13.9dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
@@ -69,7 +68,7 @@
         <View
             android:id="@+id/divider_my_page_history_vertical1"
             android:layout_width="1dp"
-            android:layout_height="10.5dp"
+            android:layout_height="10dp"
             android:layout_marginStart="7dp"
             android:background="@color/G2"
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_place"
@@ -88,14 +87,16 @@
             app:layout_constraintTop_toTopOf="@id/tv_my_page_history_place"
             tools:text="2022.12.28" />
 
-        <com.google.android.material.divider.MaterialDivider
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/divider_my_page_history_horizontal1"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="9dp"
-            android:layout_marginTop="13.16dp"
-            app:layout_constraintEnd_toEndOf="@id/view_my_page_history_frame"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/my_page_history_divider"
+            android:layout_marginHorizontal="18dp"
             app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
+            app:layout_constraintEnd_toEndOf="@id/view_my_page_history_frame"
             app:layout_constraintTop_toBottomOf="@id/cv_my_page_history_course" />
 
 
@@ -103,14 +104,12 @@
             android:id="@+id/divider_my_page_history_vertical2"
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_marginStart="111.54dp"
-            android:layout_marginTop="12.59dp"
-            android:layout_marginEnd="218.46dp"
+            android:layout_marginStart="112dp"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="20.71dp"
             android:background="@color/G4"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
 
@@ -118,41 +117,39 @@
             android:id="@+id/divider_my_page_history_vertical3"
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_marginStart="216.62dp"
-            android:layout_marginTop="12.59dp"
-            android:layout_marginEnd="113.38dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="112dp"
             android:layout_marginBottom="20.71dp"
             android:background="@color/G4"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
 
         <!--총 거리-->
         <androidx.appcompat.widget.AppCompatTextView
-            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/tv_my_page_history_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14.85dp"
+            android:layout_marginTop="14dp"
             android:fontFamily="@font/pretendard_regular"
             android:text="@string/item_mypage_history_distance"
             android:textColor="@color/G2"
-            android:textSize="12sp"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical2"
             app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical2"
-            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/tv_my_page_history_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
-            android:textSize="15sp"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical2"
             app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance"
             tools:text="4.01" />
 
@@ -161,11 +158,11 @@
             android:id="@+id/tv_my_page_history_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14.85dp"
+            android:layout_marginTop="14dp"
             android:fontFamily="@font/pretendard_regular"
             android:text="@string/item_mypage_history_time"
             android:textColor="@color/G2"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical3"
             app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical2"
             app:layout_constraintTop_toBottomOf="@id/divider_my_page_history_horizontal1" />
@@ -177,7 +174,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
-            android:textSize="15sp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_distance_data"
             app:layout_constraintEnd_toStartOf="@id/divider_my_page_history_vertical3"
             app:layout_constraintHorizontal_bias="0.521"
@@ -189,7 +186,7 @@
             android:id="@+id/tv_my_page_history_pace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14.85dp"
+            android:layout_marginTop="14dp"
             android:fontFamily="@font/pretendard_regular"
             android:text="@string/item_mypage_history_pace"
             android:textColor="@color/G2"
@@ -207,7 +204,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_time_data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical3"
-            tools:text="6'45''" />
+            tools:text="6’45”" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

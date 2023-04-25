@@ -29,7 +29,7 @@
     <string name="my_page_lv_indicator">LV </string>
     <string name="my_page_progress_max">/100</string>
     <string name="my_page_reward_title">목표 보상</string>
-    <string name="my_page_history_title">활동 기록</string>
+    <string name="my_page_history_title">러닝 기록</string>
     <string name="my_page_upload_title">업로드한 코스</string>
     <string name="my_page_dialog_edit_name">닉네임 수정</string>
     <string name="my_page_dialog_edit_name_hint">닉네임을 입력하세요</string>
