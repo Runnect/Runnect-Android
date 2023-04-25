@@ -11,6 +11,7 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverLoadSelectBinding
 import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapter
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
+import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnRecommendCourseClick
@@ -53,11 +54,15 @@ class DiscoverLoadActivity :
 
         viewModel.courseLoadState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> {
+                    binding.indeterminateBar.isVisible = false
+                    binding.layoutDiscoverLoadSelect.isVisible = true
+                }
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     initAdapter()
+                    binding.layoutDiscoverLoadSelect.isVisible = false
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
@@ -88,8 +93,15 @@ class DiscoverLoadActivity :
                     putExtra("distance", viewModel.distanceSelectedItem.value)
                 }
                 startActivity(intent)
+                adapter.clearSelection()
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
+        }
+        binding.cvDiscoverDrawCourse.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            startActivity(intent)
+            finish()
         }
     }
 

@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.discover.load.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,11 +13,10 @@ import com.runnect.runnect.util.DiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnRecommendCourseClick
 import timber.log.Timber
 
-class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
+class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCourseClick) :
     ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(DiffUtilItemCallback()) {
     private val inflater by lazy { LayoutInflater.from(context) }
-    private val mCallback = listener
-    private var selectedCount = 0
+    private var beforeSelected: View? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverLoadViewHolder {
         return DiscoverLoadViewHolder(
@@ -31,6 +31,13 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
     override fun onBindViewHolder(holder: DiscoverLoadViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
+    fun clearSelection() {
+        if (beforeSelected != null) {
+            beforeSelected!!.isSelected = false
+            beforeSelected = null
+            listener.selectCourse(0,"","","")
+        }
+    }
 
     inner class DiscoverLoadViewHolder(private val binding: ItemDiscoverLoadSelectBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -42,13 +49,16 @@ class DiscoverLoadAdapter(context: Context, listener: OnRecommendCourseClick) :
                 Timber.d("1. Adapter에서 Activity에 정의된 콜백함수 호출")
                 //오직 하나의 코스만 선택되도록 함
                 if (it.isSelected) {
-                    mCallback.selectCourse(0,"","","")
+                    listener.selectCourse(0,"","","")
                     it.isSelected = false
-                    selectedCount -= 1
-                } else if (!it.isSelected && selectedCount < 1) {
-                    mCallback.selectCourse(data.id, data.img, data.departure, data.distance)
+                    beforeSelected = null
+                } else if (!it.isSelected) {
+                    if(beforeSelected != null){
+                        beforeSelected!!.isSelected = false
+                    }
+                    beforeSelected = it
+                    listener.selectCourse(data.id, data.img, data.departure, data.distance)
                     it.isSelected = true
-                    selectedCount += 1
                 }
             }
         }

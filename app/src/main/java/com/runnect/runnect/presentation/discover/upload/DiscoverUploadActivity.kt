@@ -86,7 +86,7 @@ class DiscoverUploadActivity :
                     showToast("업로드 완료!")
                     binding.indeterminateBar.isVisible = false
                     val intent = Intent(this, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivity(intent)
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
