@@ -87,11 +87,15 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
         viewModel.userInfoState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
+                UiState.Loading -> {
+                    binding.indeterminateBar.isVisible = true
+                    binding.ivMyPageEditFrame.isClickable = false
+                }
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     viewModel.setProfileImg(getProfileStamp(viewModel.stampId.value))
+                    binding.ivMyPageEditFrame.isClickable = true
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
