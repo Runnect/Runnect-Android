@@ -74,6 +74,8 @@ class MyPageEditNameActivity :
                 }
             }
         }
+        viewModel.nickName.observe(this) {
+            binding.tvMyPageEditNameFinish.isActivated = !it.isNullOrEmpty()
         }
     }
 
