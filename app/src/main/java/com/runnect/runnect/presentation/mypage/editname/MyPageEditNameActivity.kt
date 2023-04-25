@@ -70,6 +70,8 @@ class MyPageEditNameActivity :
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
+                    if (viewModel.statusCode.value == 400) {
+                        showToast(getString(R.string.my_page_edit_name_redundant_warning))
                     }
                 }
             }
