@@ -91,6 +91,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
+                    viewModel.setProfileImg(getProfileStamp(viewModel.stampId.value))
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
@@ -101,4 +102,18 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
     }
 
+    private fun getProfileStamp(stampId: String?): Int {
+        with(requireContext()) {
+            val resName = "$RES_NAME$stampId"
+            val packageName = packageName
+            return resources.getIdentifier(resName, RES_STAMP_TYPE, packageName)
+        }
+    }
+
+    companion object {
+        const val RES_NAME = "mypage_img_stamp_"
+        const val RES_STAMP_TYPE = "drawable"
+        const val NICK_NAME = "nickname"
+        const val PROFILE = "profile_img"
+    }
 }
