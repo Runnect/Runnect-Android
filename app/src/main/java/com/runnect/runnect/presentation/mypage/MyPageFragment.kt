@@ -32,8 +32,6 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
     private fun addListener() {
         binding.ivMyPageEditFrame.setOnClickListener {
-            val dialog = MyPageEditNameDialog()
-            dialog.show(activity?.supportFragmentManager!!, "MyPageEditNameDialog")
         }
 
 
