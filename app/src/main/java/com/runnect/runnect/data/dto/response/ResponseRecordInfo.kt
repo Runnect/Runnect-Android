@@ -16,7 +16,6 @@ data class Record(
     val distance: Double,
     val id: Int,
     val image: String,
-    val machineId: String,
     val pace: String,
     val publicCourseId: Int?,
     val time: String,
@@ -29,7 +28,7 @@ data class Departure(
 )
 @Serializable
 data class RecordUser(
-    val machineId: String
+    val id: Int
 )
 @Serializable
 data class HistoryData(
