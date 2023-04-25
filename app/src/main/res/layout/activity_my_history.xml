@@ -13,6 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/M3"
         tools:context=".presentation.mypage.history.MyHistoryActivity">
 
         <ProgressBar
@@ -33,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:contentInsetStart="0dp"
+            android:background="@color/W1"
             app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
