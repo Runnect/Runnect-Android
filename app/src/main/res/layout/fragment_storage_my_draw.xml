@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,49 +10,62 @@
             type="com.runnect.runnect.data.model.ResponseGetCourseDto" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_total_course_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:fontFamily="@font/pretendard_light"
-            android:text="총 코스 152개"
-            android:textColor="@color/G2"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_edit_course"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btn_edit_course" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_edit_course"
-            android:layout_width="50dp"
-            android:layout_height="28dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/radius_50_edit_course_button"
-            android:fontFamily="@font/pretendard_medium"
-            android:text="@string/my_draw_edit"
-            android:textColor="@color/M1"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@id/scrollview_my_draw"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <ScrollView
-            android:id="@+id/scrollview_my_draw"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fix_constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="7dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_edit_course">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_total_course_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/pretendard_light"
+                android:text="총 코스 152개"
+                android:textColor="@color/G2"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_edit_course"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_edit_course" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_edit_course"
+                android:layout_width="50dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/radius_50_edit_course_button"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="@string/my_draw_edit"
+                android:textColor="@color/M1"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fix_constraintLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fix_constraintLayout">
 
                 <ProgressBar
                     android:id="@+id/indeterminateBar"
@@ -67,6 +81,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    tools:listitem="@layout/item_storage_my_draw"
                     android:id="@+id/recyclerView_storage_my_draw"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -75,7 +90,6 @@
                     android:paddingBottom="20dp"
                     android:visibility="visible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -111,8 +125,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
-                    android:visibility="invisible"
                     android:text="직접 코스를 그려주세요"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="@id/tv_storage_my_draw_no_course_guide"
                     app:layout_constraintStart_toStartOf="@id/tv_storage_my_draw_no_course_guide"
                     app:layout_constraintTop_toBottomOf="@id/tv_storage_my_draw_no_course_guide" />
@@ -133,10 +147,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_storage_my_draw_no_course_guide_2" />
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
