@@ -12,6 +12,7 @@ import com.runnect.runnect.databinding.ActivityMyRewardBinding
 import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -23,17 +24,17 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
 
     private val stampImgList = mutableListOf(
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 1개"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 5개"),
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 10개"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 30개"),
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 1회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 5회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 10회"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 20회"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 40회"),
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 1회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 5회"),
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 10회"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 30회"),
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 1회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 5회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 10회"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 15회"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 30회"),
     )
 
 
@@ -96,9 +97,11 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
         if (viewModel.stampList.isNotEmpty()) {
             for (i in viewModel.stampList) {
                 index = stampListForIndex.indexOf(i)
-                stampImgList[index].img = resources.getIdentifier(
-                    "mypage_img_stamp_$i", "drawable", this.packageName
+                val stampResId = this.getStampResId(
+                    i,
+                    RES_NAME, RES_STAMP_TYPE, this.packageName
                 )
+                stampImgList[index].img = stampResId
             }
         }
         adapter = MyRewardAdapter(this).apply {
@@ -107,6 +110,11 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
             )
         }
         binding.rvMyPageRewardStamps.adapter = this.adapter
+    }
+
+    companion object {
+        const val RES_NAME = "mypage_img_stamp_"
+        const val RES_STAMP_TYPE = "drawable"
     }
 }
 
