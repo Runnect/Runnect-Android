@@ -55,6 +55,41 @@ class StorageMyDrawFragment :
     var isSelectAvailable = false
 
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initLayout()
+        binding.lifecycleOwner = requireActivity()
+
+        initAdapter()
+        editCourse()
+        getCourse() //문제 없음
+        requireCourse() //상관 없음
+        addObserver()
+        addTrackerObserver() //selection
+        observeCurrentList()
+    }
+
+
+    private fun initAdapter() {
+        storageMyDrawAdapter = StorageMyDrawAdapter(this)
+        binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
+    }
+
+
+    private fun initLayout() {
+        binding.recyclerViewStorageMyDraw
+            .layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerViewStorageMyDraw.addItemDecoration(
+            GridSpacingItemDecoration(
+                requireContext(),
+                2,
+                6,
+                16
+            )
+        )
+    }
+
     private fun editCourse() {
         binding.btnEditCourse.setOnClickListener {
             //여기서 체크박스 visible로 바꾸고 터치 여부에 따라 setDrawble만 바뀌게
@@ -146,41 +181,6 @@ class StorageMyDrawFragment :
             dialog.dismiss()
         }
 
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initLayout()
-        binding.lifecycleOwner = requireActivity()
-
-        initAdapter()
-        editCourse()
-        getCourse() //문제 없음
-        requireCourse() //상관 없음
-        addObserver()
-        addTrackerObserver() //selection
-        observeCurrentList()
-    }
-
-
-    private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this)
-        binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
-    }
-
-
-    private fun initLayout() {
-        binding.recyclerViewStorageMyDraw
-            .layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerViewStorageMyDraw.addItemDecoration(
-            GridSpacingItemDecoration(
-                requireContext(),
-                2,
-                6,
-                16
-            )
-        )
     }
 
     private fun showLoadingBar() {

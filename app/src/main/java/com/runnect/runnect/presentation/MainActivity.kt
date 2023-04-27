@@ -81,6 +81,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         if (fromEndRunActivity == "draw") {
             //아무것도 안 해도 됨. (fromDrawActivity == false) && (fromScrapFragment == false)이기만하면 courseMain을 띄우니까
         }
+
+        isChangeToStorage = intent.getBooleanExtra("fromDeleteMyDraw", false) //MyDrawDetail에서 삭제해서 넘어오는 경우
     }
 
     private fun addListener() {

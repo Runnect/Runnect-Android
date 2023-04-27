@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.mydrawdetail
 
+import android.content.ContentValues
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,9 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.MyDrawToRunData
+import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MyDrawDetailViewModel : ViewModel() {
 
@@ -17,6 +20,7 @@ class MyDrawDetailViewModel : ViewModel() {
     val image = MutableLiveData<Uri>()
     val myDrawToRunData = MutableLiveData<MyDrawToRunData>()
     val courseId = MutableLiveData<Int>()
+
 
     private var _courseInfoState = MutableLiveData<UiState>(UiState.Loading)
     val courseInfoState: LiveData<UiState>
@@ -35,6 +39,23 @@ class MyDrawDetailViewModel : ViewModel() {
                 getResult.value = it.body()
             }.onFailure {
                 errorMessage.value = it.message
+            }
+        }
+    }
+
+    fun deleteMyDrawCourse(deleteList : MutableList<Long>) {
+        viewModelScope.launch {
+            runCatching {
+//                _storageState.value = UiState.Loading
+                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
+            }.onSuccess {
+                Timber.tag(ContentValues.TAG)
+                    .d("삭제 성공입니다")
+//                _storageState.value = UiState.Success
+            }.onFailure {
+                Timber.tag(ContentValues.TAG)
+                    .d("실패했고 문제는 다음과 같습니다 $it")
+//                _storageState.value = UiState.Failure
             }
         }
     }
