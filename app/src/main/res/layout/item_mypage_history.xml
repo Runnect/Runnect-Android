@@ -10,18 +10,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/radius_10dp_history_item"
         app:layout_constraintDimensionRatio="330:166"
         tools:context=".presentation.mypage.history.MyHistoryActivity">
 
-        <View
-            android:id="@+id/view_my_page_history_frame"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_my_page_history_frame"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="330:162"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/my_page_history_frame_selector"/>
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_my_page_history_course"
             android:layout_width="80dp"
@@ -30,8 +30,8 @@
             android:layout_marginStart="18dp"
             android:layout_marginTop="10dp"
             app:cardCornerRadius="10dp"
-            app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
-            app:layout_constraintTop_toTopOf="@id/view_my_page_history_frame">
+            app:layout_constraintStart_toStartOf="@id/iv_my_page_history_frame"
+            app:layout_constraintTop_toTopOf="@id/iv_my_page_history_frame">
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_my_page_history_course"
                 android:layout_width="wrap_content"
@@ -95,8 +95,8 @@
             android:scaleType="fitXY"
             app:srcCompat="@drawable/my_page_history_divider"
             android:layout_marginHorizontal="18dp"
-            app:layout_constraintStart_toStartOf="@id/view_my_page_history_frame"
-            app:layout_constraintEnd_toEndOf="@id/view_my_page_history_frame"
+            app:layout_constraintStart_toStartOf="@id/iv_my_page_history_frame"
+            app:layout_constraintEnd_toEndOf="@id/iv_my_page_history_frame"
             app:layout_constraintTop_toBottomOf="@id/cv_my_page_history_course" />
 
 
@@ -200,7 +200,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
-            android:textSize="15sp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_time_data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical3"
