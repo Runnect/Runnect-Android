@@ -56,7 +56,6 @@ class StorageMyDrawFragment :
     var isSelectAvailable = false
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLayout()
@@ -91,16 +90,31 @@ class StorageMyDrawFragment :
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun editCourse() {
+        var availableEdit = false
         binding.btnEditCourse.setOnClickListener {
-            //여기서 체크박스 visible로 바꾸고 터치 여부에 따라 setDrawble만 바뀌게
-            //참조로 가져와야 함.
-            hideBtmNavi()
-            showDeleteCourseBtn()
-            // 총코스 TextView -> 코스 선택
-            // btnEditCourse.isVisible = false
-            binding.tvTotalCourseCount.text = "코스 선택"
-            isSelectAvailable = true
+            if (!availableEdit) {
+                //여기서 체크박스 visible로 바꾸고 터치 여부에 따라 setDrawble만 바뀌게
+                //참조로 가져와야 함.
+                availableEdit = true
+                hideBtmNavi()
+                showDeleteCourseBtn()
+                // 총코스 TextView -> 코스 선택
+                // btnEditCourse.isVisible = false
+                binding.tvTotalCourseCount.text = "코스 선택"
+                binding.btnEditCourse.text = "취소"
+                isSelectAvailable = true
+            } else {
+                availableEdit = false
+                binding.btnEditCourse.text = "편집"
+                selectionTracker.clearSelection()
+                isSelectAvailable = false
+                hideDeleteCourseBtn()
+                showBtmNavi()
+                binding.tvTotalCourseCount.text =
+                    "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
+            }
         }
     }
 
@@ -115,12 +129,12 @@ class StorageMyDrawFragment :
     }
 
     fun showBtmNavi() {
-        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+//        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
 
         val btmNaviMain = mainActivity.getBtmNaviMain() as BottomNavigationView
 
         //Bottom visible
-        btmNaviMain.startAnimation(animUp)
+//        btmNaviMain.startAnimation(animUp)
         btmNaviMain.isVisible = true
     }
 
@@ -167,17 +181,14 @@ class StorageMyDrawFragment :
             deleteCourse()
 
             selectionTracker.clearSelection()
-
             initAdapter()
             addTrackerObserver()
-
             viewModel.getMyDrawList()
-
             dialog.dismiss()
 
-//            hideDeleteCourseBtn()
-//            showBtmNavi()
-            //삭제하기 누르면 다시 총코스 TextView랑 btnEditCourse.isVisible = true
+            isSelectAvailable = false
+            hideDeleteCourseBtn()
+            showBtmNavi()
         }
         myLayout.btn_delete_no.setOnClickListener {
             dialog.dismiss()
@@ -205,7 +216,8 @@ class StorageMyDrawFragment :
                 btnStorageNoCourse.isVisible = true
                 recyclerViewStorageMyDraw.isVisible = false
                 btnEditCourse.isEnabled = false
-                tvTotalCourseCount.text = "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
+                tvTotalCourseCount.text =
+                    "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
             }
         } else {
             with(binding) {
@@ -215,7 +227,8 @@ class StorageMyDrawFragment :
                 btnStorageNoCourse.isVisible = false
                 recyclerViewStorageMyDraw.isVisible = true
                 btnEditCourse.isEnabled = true
-                tvTotalCourseCount.text = "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
+                tvTotalCourseCount.text =
+                    "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
             }
         }
     }
@@ -324,6 +337,7 @@ class StorageMyDrawFragment :
 
     fun deleteCourse() {
         viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
+        binding.btnEditCourse.text = "편집"
     }
 
 }

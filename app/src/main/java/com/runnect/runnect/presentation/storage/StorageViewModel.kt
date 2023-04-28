@@ -1,10 +1,8 @@
 package com.runnect.runnect.presentation.storage
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.model.RequestPutMyDrawDto
