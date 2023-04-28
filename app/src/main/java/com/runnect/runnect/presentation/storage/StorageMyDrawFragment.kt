@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
@@ -98,6 +99,7 @@ class StorageMyDrawFragment :
             showDeleteCourseBtn()
             // 총코스 TextView -> 코스 선택
             // btnEditCourse.isVisible = false
+            binding.tvTotalCourseCount.text = "코스 선택"
             isSelectAvailable = true
         }
     }
@@ -191,6 +193,7 @@ class StorageMyDrawFragment :
         binding.indeterminateBar.isVisible = false
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showMyDrawResult() {
         Timber.tag(ContentValues.TAG)
             .d("Success but emptyList : ${viewModel.getMyDrawResult.value!!.data.courses.isEmpty()}")
@@ -201,6 +204,8 @@ class StorageMyDrawFragment :
                 tvStorageMyDrawNoCourseGuide2.isVisible = true
                 btnStorageNoCourse.isVisible = true
                 recyclerViewStorageMyDraw.isVisible = false
+                btnEditCourse.isEnabled = false
+                tvTotalCourseCount.text = "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
             }
         } else {
             with(binding) {
@@ -209,6 +214,8 @@ class StorageMyDrawFragment :
                 tvStorageMyDrawNoCourseGuide2.isVisible = false
                 btnStorageNoCourse.isVisible = false
                 recyclerViewStorageMyDraw.isVisible = true
+                btnEditCourse.isEnabled = true
+                tvTotalCourseCount.text = "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
             }
         }
     }

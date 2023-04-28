@@ -26,6 +26,7 @@ class StorageViewModel : ViewModel() {
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
 
+
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)
     val storageState: LiveData<UiState>
         get() = _storageState

@@ -22,7 +22,6 @@
             android:layout_marginTop="11dp"
             android:fontFamily="@font/pretendard_light"
             android:paddingBottom="11dp"
-            android:text="총 코스 152개"
             android:textColor="@color/G2"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/scrollview_scrap"

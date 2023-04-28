@@ -21,12 +21,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:fontFamily="@font/pretendard_light"
-            android:text="총 코스 152개"
             android:textColor="@color/G2"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/btn_edit_course"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btn_edit_course" />
+            app:layout_constraintTop_toTopOf="@id/btn_edit_course"
+            tools:text="총 코스 152개" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_edit_course"
