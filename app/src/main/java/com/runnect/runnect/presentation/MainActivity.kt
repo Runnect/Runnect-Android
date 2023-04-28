@@ -2,10 +2,7 @@ package com.runnect.runnect.presentation
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
@@ -25,6 +22,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var isChangeToStorage: Boolean = false
     var isChangeToDiscover: Boolean = false
     var fromEndRunActivity: String? = ""
+    var fromDeleteMyDraw: Boolean = false
+    var fromDrawMyCourse: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +66,17 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
 
     private fun CheckIntentValue() {
-        isChangeToStorage =
-            intent.getBooleanExtra("fromDrawActivity", false)
+
+        fromDeleteMyDraw = intent.getBooleanExtra("fromDeleteMyDraw", false)
+        fromDrawMyCourse = intent.getBooleanExtra("fromDrawActivity", false)
+
+        if (fromDeleteMyDraw) {
+            isChangeToStorage = true
+        }
+
+        if (fromDrawMyCourse) {
+            isChangeToStorage = true
+        }
 
         isChangeToDiscover =
             intent.getBooleanExtra("fromScrapFragment", false)
@@ -82,7 +90,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             //아무것도 안 해도 됨. (fromDrawActivity == false) && (fromScrapFragment == false)이기만하면 courseMain을 띄우니까
         }
 
-        isChangeToStorage = intent.getBooleanExtra("fromDeleteMyDraw", false) //MyDrawDetail에서 삭제해서 넘어오는 경우
+
     }
 
     private fun addListener() {
