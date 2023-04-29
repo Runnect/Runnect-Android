@@ -42,15 +42,16 @@ class StorageMyDrawFragment :
     lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
 
+
     private val mainActivity: MainActivity by lazy {
         activity as MainActivity
     } // 이 변수가 최초 할당 이후 계속 MainActivity를 참조하니까 사용을 안 하는 순간에는 null을 할당해줌으로써 메모리에서 내려줘야 함.
 
+    lateinit var btnDeleteCourseMain: AppCompatButton
+    lateinit var btmNaviMain: BottomNavigationView
+
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
-
-//    lateinit var btnDeleteCourseMain: AppCompatButton
-//    lateinit var btmNaviMain: BottomNavigationView
 
 
     var isSelectAvailable = false
@@ -63,11 +64,10 @@ class StorageMyDrawFragment :
 
         initAdapter()
         editCourse()
-        getCourse() //문제 없음
-        requireCourse() //상관 없음
+        getCourse()
+        requireCourse()
         addObserver()
-        addTrackerObserver() //selection
-        observeCurrentList()
+        addSelectionTracker()
     }
 
 
@@ -95,13 +95,9 @@ class StorageMyDrawFragment :
         var availableEdit = false
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
-                //여기서 체크박스 visible로 바꾸고 터치 여부에 따라 setDrawble만 바뀌게
-                //참조로 가져와야 함.
                 availableEdit = true
                 hideBtmNavi()
                 showDeleteCourseBtn()
-                // 총코스 TextView -> 코스 선택
-                // btnEditCourse.isVisible = false
                 binding.tvTotalCourseCount.text = "코스 선택"
                 binding.btnEditCourse.text = "취소"
                 isSelectAvailable = true
@@ -121,45 +117,39 @@ class StorageMyDrawFragment :
     fun hideBtmNavi() {
         animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
 
-        val btmNaviMain = mainActivity.getBtmNaviMain() as BottomNavigationView
+        btmNaviMain =
+            mainActivity.getBtmNaviMain() as BottomNavigationView
 
-        //Bottom invisible
         btmNaviMain.startAnimation(animDown)
         btmNaviMain.isVisible = false
     }
 
     fun showBtmNavi() {
-//        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-
-        val btmNaviMain = mainActivity.getBtmNaviMain() as BottomNavigationView
-
-        //Bottom visible
-//        btmNaviMain.startAnimation(animUp)
+        btmNaviMain =
+            mainActivity.getBtmNaviMain() as BottomNavigationView
         btmNaviMain.isVisible = true
     }
 
     private fun hideDeleteCourseBtn() {
         animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
 
-        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+        btnDeleteCourseMain =
+            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
 
-//        btnDeleteCourseMain.startAnimation(animDown)
-
-        btnDeleteCourseMain.isVisible = false //default false
-        //item 터치가 하나 이상될 시 버튼 활성화, 아니면 다시 비활성화
-
-        btnDeleteCourseMain.isEnabled = false //이 부분은 없어도 될 것 같긴 한다ㅔ
-
-
+        btnDeleteCourseMain.isVisible = false
+        btnDeleteCourseMain.isEnabled = false
     }
 
     private fun showDeleteCourseBtn() {
         animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-        btnDeleteCourseMain.isVisible = true //default false
-        btnDeleteCourseMain.isEnabled = true //default false
 
-        btnDeleteCourseMain.setOnClickListener { //이 부분 나중에 따로 함수로 빼주기
+        btnDeleteCourseMain =
+            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+
+        btnDeleteCourseMain.isVisible = true
+        btnDeleteCourseMain.isEnabled = true
+
+        btnDeleteCourseMain.setOnClickListener {
             customDialog(binding.root)
         }
     }
@@ -172,18 +162,17 @@ class StorageMyDrawFragment :
             setView(myLayout)
         }
         val dialog = build.create()
-//        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
 
 
         myLayout.btn_delete_yes.setOnClickListener {
-            deleteCourse()
 
-            selectionTracker.clearSelection()
+            deleteCourse()
+            clearSelection()
             initAdapter()
-            addTrackerObserver()
-            viewModel.getMyDrawList()
+            addSelectionTracker()
+            getMyDrawCourse()
             dialog.dismiss()
 
             isSelectAvailable = false
@@ -194,6 +183,10 @@ class StorageMyDrawFragment :
             dialog.dismiss()
         }
 
+    }
+
+    private fun getMyDrawCourse() {
+        viewModel.getMyDrawList()
     }
 
     private fun showLoadingBar() {
@@ -237,9 +230,12 @@ class StorageMyDrawFragment :
         storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
     }
 
-
     private fun addObserver() {
+        observeStorageState()
+        observeGetMyDrawResult()
+    }
 
+    private fun observeStorageState() {
         viewModel.storageState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> hideLoadingBar()
@@ -258,7 +254,17 @@ class StorageMyDrawFragment :
             }
 
         }
+    }
 
+    fun observeGetMyDrawResult() {
+        viewModel.getMyDrawResult.observe(viewLifecycleOwner) {
+
+            storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
+        }
+    }
+
+    private fun clearSelection() {
+        selectionTracker.clearSelection()
     }
 
     private fun requireCourse() {
@@ -274,34 +280,57 @@ class StorageMyDrawFragment :
         viewModel.getMyDrawList()
     }
 
-    //SelectionTracker.kt로 빼준 함수 활용
-    private fun addTrackerObserver() {
-        selectionTracker =
-            setSelectionTracker("StorageMyDrawSelectionTracker", binding.recyclerViewStorageMyDraw)
-        selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
-            override fun onSelectionChanged() {
-                super.onSelectionChanged()
-                if (!isSelectAvailable) {
-                    selectionTracker.clearSelection()
-                } //터치 활성화 여부
+    private fun addSelectionTracker() {
+        createSelectionTracker()
+        setSelectionTrackerObserver()
+        setTrackerInAdapter()
+    }
 
-                viewModel.selectList.value = selectionTracker.selection.toMutableList()
-                Timber.tag(ContentValues.TAG)
-                    .d("실시간 뷰모델 selectList 값 : ${viewModel.selectList.value}")
-
-                val items = selectionTracker.selection.size()
-                if (items == 0) {
-                    disableSaveBtn()
-                } else if (items >= 1) {
-                    enableDeleteBtn()
-                } // 선택된 아이템이 1개 이상일 경우 button 활성화 (floating button하고 그냥 버튼하고 기본 지원 옵션이 좀 다른 듯함.)
-            }
-        }))
+    private fun setTrackerInAdapter() {
         storageMyDrawAdapter.setSelectionTracker(selectionTracker)
     }
 
+    private fun createSelectionTracker() {
+        selectionTracker =
+            setSelectionTracker("StorageMyDrawSelectionTracker", binding.recyclerViewStorageMyDraw)
+    }
+
+    private fun setSelectionTrackerObserver() {
+        selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
+            override fun onSelectionChanged() {
+                super.onSelectionChanged()
+
+                checkDisableSelection()
+                createSelectList()
+                manageSaveDeleteBtnCondition()
+            }
+        }))
+    }
+
+    private fun checkDisableSelection() {
+        if (!isSelectAvailable) {
+            selectionTracker.clearSelection()
+        }
+    }
+
+    private fun manageSaveDeleteBtnCondition() {
+        val selectedItems = selectionTracker.selection.size()
+        if (selectedItems == 0) {
+            disableSaveBtn()
+        } else if (selectedItems >= 1) {
+            enableDeleteBtn()
+        }
+    }
+
+    private fun createSelectList() {
+        viewModel.selectList.value = selectionTracker.selection.toMutableList()
+        Timber.tag(ContentValues.TAG)
+            .d("실시간 뷰모델 selectList 값 : ${viewModel.selectList.value}")
+    }
+
     private fun enableDeleteBtn() {
-        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+        btnDeleteCourseMain =
+            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
 
         btnDeleteCourseMain.text = "삭제하기"
         btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.M1))
@@ -309,7 +338,8 @@ class StorageMyDrawFragment :
     }
 
     private fun disableSaveBtn() {
-        val btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+        btnDeleteCourseMain =
+            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
 
         btnDeleteCourseMain.text = "완료하기"
         btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.G3))
@@ -328,12 +358,6 @@ class StorageMyDrawFragment :
         }
     }
 
-    fun observeCurrentList() {
-        viewModel.getMyDrawResult.observe(viewLifecycleOwner) {
-
-            storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
-        }
-    }
 
     fun deleteCourse() {
         viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
