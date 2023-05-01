@@ -55,6 +55,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
         binding.btnMyPageHistoryEditHistory.setOnClickListener {
             viewModel.convertMode()
+            binding.tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
         }
 
         onBackPressedDispatcher.addCallback(this, backPressedCallback)

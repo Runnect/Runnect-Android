@@ -71,7 +71,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{vm.getHistoryCount()}"
             tools:text="총 기록 152개"
             android:textColor="@color/G2"
             android:layout_gravity="start|center_vertical"
@@ -176,6 +175,23 @@
                     android:textSize="15sp" />
             </androidx.cardview.widget.CardView>
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_delete"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/history_delete"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            android:background="@drawable/all_finish_btn_selector"
+            android:gravity="center"
+            android:layout_marginHorizontal="15dp"
+            app:layout_constraintDimensionRatio="330:40"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="18dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
