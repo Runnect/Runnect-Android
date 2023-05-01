@@ -111,6 +111,11 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                 }
             }
         }
+        viewModel.selectedItemsCount.observe(this) { count ->
+            with(binding.tvMyPageHistoryDelete){
+                text = getTextDeleteButton(count)
+            }
+        }
     }
 
     private fun initAdapter() {
@@ -122,6 +127,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     companion object{
         const val EDIT_CANCEL = "취소"
         const val EDIT_MODE = "편집"
+    private fun getTextDeleteButton(count:Int): String {
+        return if (count == 0) {
+            "삭제하기"
+        } else {
+            "삭제하기(${count})"
+        }
     }
 
     override fun selectItem(s:String): Boolean {
