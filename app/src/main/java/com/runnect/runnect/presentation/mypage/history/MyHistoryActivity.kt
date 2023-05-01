@@ -59,12 +59,14 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             binding.tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
         }
         binding.tvMyPageHistoryDelete.setOnClickListener {
-            //viewmodel의 itemsToDeleted에 저장되어있는 데이터를 이용하여 삭제 API 호출
-            viewModel.clearItemsToDelete()
+            if(it.isActivated){
+                showToast("awef")
+            }
         }
 
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
+
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             finish()
@@ -113,6 +115,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
         viewModel.selectedItemsCount.observe(this) { count ->
             with(binding.tvMyPageHistoryDelete){
+                isActivated = count != 0
                 text = getTextDeleteButton(count)
             }
         }
