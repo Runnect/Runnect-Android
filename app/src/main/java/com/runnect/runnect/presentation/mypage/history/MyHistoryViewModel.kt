@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.RecordInfoDTO
+import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,13 +14,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MyHistoryViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
-    private var _recordState = MutableLiveData<UiState>()
-    val recordState: LiveData<UiState>
-        get() = _recordState
+    private var _historyState = MutableLiveData<UiState>()
+    val historyState: LiveData<UiState>
+        get() = _historyState
 
-    private var _recordList: MutableList<RecordInfoDTO> = mutableListOf()
-    val recordList: List<RecordInfoDTO>
-        get() = _recordList
+    private var _historyItems: MutableList<HistoryInfoDTO> = mutableListOf()
+    val historyItem: List<HistoryInfoDTO>
+        get() = _historyItems
 
     val errorMessage = MutableLiveData<String>()
 
@@ -31,14 +31,14 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     fun getRecord() {
         viewModelScope.launch {
             runCatching {
-                _recordState.value = UiState.Loading
+                _historyState.value = UiState.Loading
                 userRepository.getRecord()
             }.onSuccess {
-                _recordList = it
-                _recordState.value = UiState.Success
+                _historyItems = it
+                _historyState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
-                _recordState.value = UiState.Failure
+                _historyState.value = UiState.Failure
             }
         }
     }

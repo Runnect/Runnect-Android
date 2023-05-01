@@ -90,7 +90,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun initAdapter() {
         adapter = MyHistoryAdapter(this).apply {
-            submitList(viewModel.recordList)
+            submitList(viewModel.historyItem)
         }
         binding.rvMyPageHistory.adapter = adapter
     }

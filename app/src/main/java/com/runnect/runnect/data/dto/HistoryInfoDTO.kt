@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.dto
 
-data class RecordInfoDTO(
+data class HistoryInfoDTO(
     val id: Int,
     val title: String,
     val img: String,
