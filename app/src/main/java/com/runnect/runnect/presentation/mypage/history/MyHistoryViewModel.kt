@@ -24,6 +24,10 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
 
     val errorMessage = MutableLiveData<String>()
 
+    fun getHistoryCount():String{
+        return "총 기록 ${_historyItems.size}개"
+    }
+
     fun getRecord() {
         viewModelScope.launch {
             runCatching {

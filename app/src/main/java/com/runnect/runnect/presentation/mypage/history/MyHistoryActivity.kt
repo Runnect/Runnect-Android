@@ -30,7 +30,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         viewModel.getRecord()
 
         //활동기록 날짜 형식 바꿀 때에는 공백 기준으로 뒤에 건 날려버리고 앞에건 -를 .으로 replace하면 될듯!
-        //페이스 이상한 따옴표는 피그마에서 글자 복사해오면 된다.
         //이미지는 bindingAdapter쓰고.
         initLayout()
         addListener()
@@ -63,17 +62,19 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun addObserver() {
 
-        viewModel.recordState.observe(this) {
+        viewModel.historyState.observe(this) {
             when (it) {
                 UiState.Empty -> {
                     binding.indeterminateBar.isVisible = false
                     binding.layoutMyPageHistoryNoResult.isVisible = true
+                    binding.constMyPageHistoryEditBar.isVisible = false
                 }
 
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     binding.layoutMyPageHistoryNoResult.isVisible = false
+                    binding.constMyPageHistoryEditBar.isVisible = true
                     initAdapter()
                 }
                 UiState.Failure -> {
