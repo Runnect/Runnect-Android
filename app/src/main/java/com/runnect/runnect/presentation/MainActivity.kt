@@ -38,7 +38,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     }
 
-    fun getBtmNaviMain(): View? {
+    fun getBottomNavMain(): View? {
         return findViewById(R.id.btm_navi_main)
     }
 

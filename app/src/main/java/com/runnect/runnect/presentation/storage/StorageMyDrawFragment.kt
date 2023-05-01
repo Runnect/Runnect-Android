@@ -48,7 +48,7 @@ class StorageMyDrawFragment :
     } // 이 변수가 최초 할당 이후 계속 MainActivity를 참조하니까 사용을 안 하는 순간에는 null을 할당해줌으로써 메모리에서 내려줘야 함.
 
     lateinit var btnDeleteCourseMain: AppCompatButton
-    lateinit var btmNaviMain: BottomNavigationView
+    lateinit var bottomNavMain: BottomNavigationView
 
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
@@ -61,7 +61,6 @@ class StorageMyDrawFragment :
         super.onViewCreated(view, savedInstanceState)
         initLayout()
         binding.lifecycleOwner = requireActivity()
-
         initAdapter()
         editCourse()
         getCourse()
@@ -69,13 +68,6 @@ class StorageMyDrawFragment :
         addObserver()
         addSelectionTracker()
     }
-
-
-    private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this)
-        binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
-    }
-
 
     private fun initLayout() {
         binding.recyclerViewStorageMyDraw
@@ -90,13 +82,18 @@ class StorageMyDrawFragment :
         )
     }
 
+    private fun initAdapter() {
+        storageMyDrawAdapter = StorageMyDrawAdapter(this)
+        binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
+    }
+
     @SuppressLint("SetTextI18n")
     private fun editCourse() {
         var availableEdit = false
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
                 availableEdit = true
-                hideBtmNavi()
+                hideBottomNav()
                 showDeleteCourseBtn()
                 binding.tvTotalCourseCount.text = "코스 선택"
                 binding.btnEditCourse.text = "취소"
@@ -107,27 +104,27 @@ class StorageMyDrawFragment :
                 selectionTracker.clearSelection()
                 isSelectAvailable = false
                 hideDeleteCourseBtn()
-                showBtmNavi()
+                showBottomNav()
                 binding.tvTotalCourseCount.text =
                     "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
             }
         }
     }
 
-    fun hideBtmNavi() {
+    fun hideBottomNav() {
         animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
 
-        btmNaviMain =
-            mainActivity.getBtmNaviMain() as BottomNavigationView
+        bottomNavMain =
+            mainActivity.getBottomNavMain() as BottomNavigationView
 
-        btmNaviMain.startAnimation(animDown)
-        btmNaviMain.isVisible = false
+        bottomNavMain.startAnimation(animDown)
+        bottomNavMain.isVisible = false
     }
 
-    fun showBtmNavi() {
-        btmNaviMain =
-            mainActivity.getBtmNaviMain() as BottomNavigationView
-        btmNaviMain.isVisible = true
+    fun showBottomNav() {
+        bottomNavMain =
+            mainActivity.getBottomNavMain() as BottomNavigationView
+        bottomNavMain.isVisible = true
     }
 
     private fun hideDeleteCourseBtn() {
@@ -165,24 +162,29 @@ class StorageMyDrawFragment :
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
 
-
         myLayout.btn_delete_yes.setOnClickListener {
-
             deleteCourse()
             clearSelection()
             initAdapter()
             addSelectionTracker()
             getMyDrawCourse()
             dialog.dismiss()
-
             isSelectAvailable = false
             hideDeleteCourseBtn()
-            showBtmNavi()
+            showBottomNav()
         }
         myLayout.btn_delete_no.setOnClickListener {
             dialog.dismiss()
         }
+    }
 
+    fun deleteCourse() {
+        viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
+        binding.btnEditCourse.text = "편집"
+    }
+
+    private fun clearSelection() {
+        selectionTracker.clearSelection()
     }
 
     private fun getMyDrawCourse() {
@@ -250,21 +252,14 @@ class StorageMyDrawFragment :
                     Timber.tag(ContentValues.TAG)
                         .d("Success : getSearchList body is not null")
                 }
-
             }
-
         }
     }
 
     fun observeGetMyDrawResult() {
         viewModel.getMyDrawResult.observe(viewLifecycleOwner) {
-
             storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
         }
-    }
-
-    private fun clearSelection() {
-        selectionTracker.clearSelection()
     }
 
     private fun requireCourse() {
@@ -286,20 +281,19 @@ class StorageMyDrawFragment :
         setTrackerInAdapter()
     }
 
-    private fun setTrackerInAdapter() {
-        storageMyDrawAdapter.setSelectionTracker(selectionTracker)
-    }
-
     private fun createSelectionTracker() {
         selectionTracker =
             setSelectionTracker("StorageMyDrawSelectionTracker", binding.recyclerViewStorageMyDraw)
+    }
+
+    private fun setTrackerInAdapter() {
+        storageMyDrawAdapter.setSelectionTracker(selectionTracker)
     }
 
     private fun setSelectionTrackerObserver() {
         selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
-
                 checkDisableSelection()
                 createSelectList()
                 manageSaveDeleteBtnCondition()
@@ -313,6 +307,12 @@ class StorageMyDrawFragment :
         }
     }
 
+    private fun createSelectList() {
+        viewModel.selectList.value = selectionTracker.selection.toMutableList()
+        Timber.tag(ContentValues.TAG)
+            .d("실시간 뷰모델 selectList 값 : ${viewModel.selectList.value}")
+    }
+
     private fun manageSaveDeleteBtnCondition() {
         val selectedItems = selectionTracker.selection.size()
         if (selectedItems == 0) {
@@ -320,21 +320,6 @@ class StorageMyDrawFragment :
         } else if (selectedItems >= 1) {
             enableDeleteBtn()
         }
-    }
-
-    private fun createSelectList() {
-        viewModel.selectList.value = selectionTracker.selection.toMutableList()
-        Timber.tag(ContentValues.TAG)
-            .d("실시간 뷰모델 selectList 값 : ${viewModel.selectList.value}")
-    }
-
-    private fun enableDeleteBtn() {
-        btnDeleteCourseMain =
-            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-
-        btnDeleteCourseMain.text = "삭제하기"
-        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.M1))
-        btnDeleteCourseMain.isEnabled = true
     }
 
     private fun disableSaveBtn() {
@@ -346,6 +331,14 @@ class StorageMyDrawFragment :
         btnDeleteCourseMain.isEnabled = false
     }
 
+    private fun enableDeleteBtn() {
+        btnDeleteCourseMain =
+            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+
+        btnDeleteCourseMain.text = "삭제하기"
+        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.M1))
+        btnDeleteCourseMain.isEnabled = true
+    }
 
     override fun selectItem(item: ResponseGetCourseDto.Data.Course) {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.id}")
@@ -357,13 +350,6 @@ class StorageMyDrawFragment :
             })
         }
     }
-
-
-    fun deleteCourse() {
-        viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
-        binding.btnEditCourse.text = "편집"
-    }
-
 }
 
 
