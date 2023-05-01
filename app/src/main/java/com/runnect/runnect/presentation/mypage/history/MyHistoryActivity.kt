@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.mypage.history
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,11 +55,14 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
     }
 
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
-
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
+    }
 
     private fun addObserver() {
 
