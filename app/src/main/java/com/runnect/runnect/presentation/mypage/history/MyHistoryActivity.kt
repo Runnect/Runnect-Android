@@ -19,7 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history),OnHistoryItemClick {
+class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history),
+    OnHistoryItemClick {
     private val viewModel: MyHistoryViewModel by viewModels()
 
     private lateinit var adapter: MyHistoryAdapter
@@ -99,13 +100,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             }
         }
 
-        viewModel.editMode.observe(this){ editMode->
-            with(binding.btnMyPageHistoryEditHistory){
-                if(editMode){
+        viewModel.editMode.observe(this) { editMode ->
+            with(binding.btnMyPageHistoryEditHistory) {
+                if (editMode) {
                     this.text = EDIT_CANCEL
                     binding.tvMyPageHistoryTotalCourseCount.text = "기록 선택"
-                }
-                else{
+                } else {
                     this.text = EDIT_MODE
                     binding.tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
                     adapter.clearSelection()
@@ -120,16 +120,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             }
         }
     }
-
     private fun initAdapter() {
-        adapter = MyHistoryAdapter(this,this).apply {
+        adapter = MyHistoryAdapter(this, this).apply {
             submitList(viewModel.historyItem)
         }
         binding.rvMyPageHistory.adapter = adapter
     }
-    companion object{
-        const val EDIT_CANCEL = "취소"
-        const val EDIT_MODE = "편집"
     private fun getTextDeleteButton(count:Int): String {
         return if (count == 0) {
             "삭제하기"
@@ -137,16 +133,18 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             "삭제하기(${count})"
         }
     }
-
-    override fun selectItem(s:String): Boolean {
-        return if(viewModel.editMode.value == true){
-            viewModel.addItemToDelete(s)
-            showToast("기록 선택 완료")
+    override fun selectItem(id: Int): Boolean {
+        return if (viewModel.editMode.value == true) {
+            viewModel.modifyItemsToDelete(id)
             true
-        } else{
+        } else {
             //매개변수로 아이템 정보를 넘겨받아 기록 조회 액티비티 이동
             showToast("기록 조회 액티비티 이동")
             false
         }
+    }
+    companion object {
+        const val EDIT_CANCEL = "취소"
+        const val EDIT_MODE = "편집"
     }
 }

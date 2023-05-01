@@ -34,14 +34,22 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
 
     val errorMessage = MutableLiveData<String>()
 
-    fun addItemToDelete(s:String){
-        itemsToDelete.add(s)
+    fun modifyItemsToDelete(id: Int) {
+        if(itemsToDelete.contains(id)){
+            itemsToDelete.remove(id)
             setSelectedItemsCount()
+        }
+        else{
+            itemsToDelete.add(id)
             setSelectedItemsCount()
+        }
     }
-    fun clearItemsToDelete(){
+
+    fun clearItemsToDelete() {
         itemsToDelete.clear()
         setSelectedItemsCount()
+    }
+
     private fun setSelectedItemsCount() {
         _selectedItemsCount.value = itemsToDelete.count()
     }
