@@ -30,6 +30,9 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
 
     val errorMessage = MutableLiveData<String>()
 
+    fun addItemToDelete(s:String){
+        itemsToDelete.add(s)
+    }
     fun clearItemsToDelete(){
         itemsToDelete.clear()
     }
