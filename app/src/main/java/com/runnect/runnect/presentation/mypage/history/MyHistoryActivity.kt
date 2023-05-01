@@ -96,9 +96,11 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             with(binding.btnMyPageHistoryEditHistory){
                 if(editMode){
                     this.text = EDIT_CANCEL
+                    binding.tvMyPageHistoryTotalCourseCount.text = "기록 선택"
                 }
                 else{
                     this.text = EDIT_MODE
+                    binding.tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
                 }
             }
         }
