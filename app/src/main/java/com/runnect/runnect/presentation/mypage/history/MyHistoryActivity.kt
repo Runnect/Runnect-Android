@@ -53,7 +53,9 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             startActivity(intent)
             finish()
         }
-    }
+        binding.btnMyPageHistoryEditHistory.setOnClickListener {
+            viewModel.convertMode()
+        }
 
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
@@ -89,7 +91,16 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             }
         }
 
-
+        viewModel.editMode.observe(this){ editMode->
+            with(binding.btnMyPageHistoryEditHistory){
+                if(editMode){
+                    this.text = EDIT_CANCEL
+                }
+                else{
+                    this.text = EDIT_MODE
+                }
+            }
+        }
     }
 
     private fun initAdapter() {
@@ -97,5 +108,9 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             submitList(viewModel.historyItem)
         }
         binding.rvMyPageHistory.adapter = adapter
+    }
+    companion object{
+        const val EDIT_CANCEL = "취소"
+        const val EDIT_MODE = "편집"
     }
 }

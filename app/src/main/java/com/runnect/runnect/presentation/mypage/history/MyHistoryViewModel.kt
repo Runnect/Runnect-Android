@@ -22,10 +22,18 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     val historyItem: List<HistoryInfoDTO>
         get() = _historyItems
 
+    private var _editMode = MutableLiveData(false)
+    val editMode: LiveData<Boolean>
+        get() = _editMode
+
     val errorMessage = MutableLiveData<String>()
 
-    fun getHistoryCount():String{
+    fun getHistoryCount(): String {
         return "총 기록 ${_historyItems.size}개"
+    }
+
+    fun convertMode() {
+        _editMode.value = !_editMode.value!!
     }
 
     fun getRecord() {
