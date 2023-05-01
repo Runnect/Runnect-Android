@@ -14,8 +14,6 @@ import com.runnect.runnect.databinding.ItemMypageHistoryBinding
 import com.runnect.runnect.util.HistoryInfoDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnHistoryItemClick
 
-class MyHistoryAdapter(context: Context) :
-    ListAdapter<HistoryInfoDTO, MyHistoryViewHolder>(
 class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
     ListAdapter<HistoryInfoDTO, MyHistoryAdapter.MyHistoryViewHolder>(
         HistoryInfoDiffUtilItemCallback()
@@ -29,6 +27,11 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
 
     override fun onBindViewHolder(holder: MyHistoryViewHolder, position: Int) {
         holder.onBind(currentList[position])
+    }
+    fun clearSelection(){
+        selectedItems?.forEach {
+            it.isSelected = false
+        }
     }
     inner class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -60,3 +63,4 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
         }
     }
 }
+

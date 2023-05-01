@@ -26,7 +26,13 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     val editMode: LiveData<Boolean>
         get() = _editMode
 
+    private var itemsToDelete: MutableList<String> = mutableListOf()
+
     val errorMessage = MutableLiveData<String>()
+
+    fun clearItemsToDelete(){
+        itemsToDelete.clear()
+    }
 
     fun getHistoryCount(): String {
         return "총 기록 ${_historyItems.size}개"

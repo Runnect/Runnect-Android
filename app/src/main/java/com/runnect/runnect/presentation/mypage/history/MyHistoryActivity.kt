@@ -102,6 +102,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                 else{
                     this.text = EDIT_MODE
                     binding.tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
+                    adapter.clearSelection()
+                    viewModel.clearItemsToDelete()
                 }
             }
         }
