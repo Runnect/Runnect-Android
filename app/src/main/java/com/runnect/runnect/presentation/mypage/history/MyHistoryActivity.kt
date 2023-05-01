@@ -14,11 +14,12 @@ import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.RecyclerOffsetDecorationHeight
+import com.runnect.runnect.util.callback.OnHistoryItemClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history) {
+class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history),OnHistoryItemClick {
     private val viewModel: MyHistoryViewModel by viewModels()
 
     private lateinit var adapter: MyHistoryAdapter
@@ -107,7 +108,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initAdapter() {
-        adapter = MyHistoryAdapter(this).apply {
+        adapter = MyHistoryAdapter(this,this).apply {
             submitList(viewModel.historyItem)
         }
         binding.rvMyPageHistory.adapter = adapter
@@ -115,5 +116,17 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     companion object{
         const val EDIT_CANCEL = "취소"
         const val EDIT_MODE = "편집"
+    }
+
+    override fun selectItem(s:String): Boolean {
+        return if(viewModel.editMode.value == true){
+            viewModel.addItemToDelete(s)
+            showToast("기록 선택 완료")
+            true
+        } else{
+            //매개변수로 아이템 정보를 넘겨받아 기록 조회 액티비티 이동
+            showToast("기록 조회 액티비티 이동")
+            false
+        }
     }
 }
