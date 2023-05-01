@@ -28,7 +28,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
-        viewModel.getRecord()
 
         //활동기록 날짜 형식 바꿀 때에는 공백 기준으로 뒤에 건 날려버리고 앞에건 -를 .으로 replace하면 될듯!
         //이미지는 bindingAdapter쓰고.
@@ -38,6 +37,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initLayout() {
+        viewModel.getRecord()
         binding.rvMyPageHistory.layoutManager = LinearLayoutManager(this)
         binding.rvMyPageHistory.addItemDecoration(RecyclerOffsetDecorationHeight(this, 10))
     }
