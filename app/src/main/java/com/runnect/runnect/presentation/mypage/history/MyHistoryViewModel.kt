@@ -66,7 +66,6 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
 
     fun getRecord() {
         _historyState.value = UiState.Loading
-        _historyState.value = UiState.Success
         _historyItems = mutableListOf()
         viewModelScope.launch {
             runCatching {
