@@ -164,6 +164,11 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private fun initAdapter() {
         adapter = MyHistoryAdapter(this, this).apply {
             submitList(viewModel.historyItems)
+    private fun handleSuccessfulHistoryDeletion() {
+        binding.indeterminateBar.isVisible = false
+        adapter.removeItems(viewModel.itemsToDelete)
+        adapter.clearSelection()
+        viewModel.clearItemsToDelete()
         }
         binding.rvMyPageHistory.adapter = adapter
     }
