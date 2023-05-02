@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -76,104 +77,124 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
-            startActivity(intent)
-            finish()
+            startSearchActivity()
         }
         binding.btnMyPageHistoryEditHistory.setOnClickListener {
-            viewModel.convertMode()
-            binding.tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
+            handleEditClicked()
         }
         binding.tvMyPageHistoryDelete.setOnClickListener {
-            if (it.isActivated) {
-                setDialogClickEvent()
-                dialog.show()
-            }
+            handleDeleteButtonClicked(it)
         }
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
-
-    private fun addObserver() {
-        viewModel.historyState.observe(this) {
-            when (it) {
-                UiState.Empty -> {
-                    binding.indeterminateBar.isVisible = false
-                    binding.layoutMyPageHistoryNoResult.isVisible = true
-                    binding.constMyPageHistoryEditBar.isVisible = false
-                }
-
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    binding.layoutMyPageHistoryNoResult.isVisible = false
-                    binding.constMyPageHistoryEditBar.isVisible = true
-                    binding.tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
-                    initAdapter()
-                }
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                }
-            }
-        }
-        viewModel.historyDeleteState.observe(this){
-            when(it){
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    adapter.removeItems(viewModel.itemsToDelete)
-                    adapter.clearSelection()
-                }
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                }
-                else ->{
-                    binding.indeterminateBar.isVisible = false }
-            }
-        }
-        viewModel.editMode.observe(this) { editMode ->
-            with(binding) {
-                if (editMode) {
-                    btnMyPageHistoryEditHistory.text = EDIT_CANCEL
-                    tvMyPageHistoryTotalCourseCount.text = CHOICE_MODE_DESC
-                } else {
-                    btnMyPageHistoryEditHistory.text = EDIT_MODE
-                    tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
-                    if(::adapter.isInitialized) adapter.clearSelection()
-                    tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
-                    viewModel.clearItemsToDelete()
-                }
-            }
-        }
-        viewModel.selectedItemsCount.observe(this) { count ->
-            setDeleteButton(count)
-        }
-        viewModel.selectCountMediator.observe(this) {}
+    private fun startSearchActivity(){
+        val intent = Intent(this, SearchActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+        startActivity(intent)
+        finish()
     }
-    private fun setDeleteButton(count:Int){
-        with(binding.tvMyPageHistoryDelete) {
-            isActivated = count != 0
-            text = getTextDeleteButton(count)
+    private fun handleEditClicked(){
+        viewModel.convertMode()
+        binding.tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
+    }
+    private fun handleDeleteButtonClicked(it: View){
+        if (it.isActivated) {
+            setDialogClickEvent()
+            dialog.show()
         }
     }
 
     private fun initAdapter() {
         adapter = MyHistoryAdapter(this, this).apply {
             submitList(viewModel.historyItems)
+        }
+        binding.rvMyPageHistory.adapter = adapter
+    }
+
+    private fun addObserver() {
+        viewModel.historyState.observe(this) {
+            when (it) {
+                UiState.Empty -> handleEmptyHistoryLoad()
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> handleSuccessfulHistoryLoad()
+                UiState.Failure -> handleUnsuccessfulHistoryCall()
+            }
+        }
+        viewModel.historyDeleteState.observe(this) {
+            updateDeleteButton(viewModel.selectedItemsCount.value ?: 0)
+            when (it) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> handleSuccessfulHistoryDeletion()
+                UiState.Failure -> handleUnsuccessfulHistoryCall()
+                else -> binding.indeterminateBar.isVisible = false
+
+            }
+        }
+        viewModel.editMode.observe(this) { editMode ->
+            if (editMode) {
+                enterEditMode()
+            } else {
+                exitEditMode()
+            }
+        }
+        viewModel.selectedItemsCount.observe(this) { count ->
+            updateDeleteButton(count)
+        }
+        viewModel.selectCountMediator.observe(this) {}
+    }
+    private fun handleEmptyHistoryLoad(){
+        with(binding) {
+            indeterminateBar.isVisible = false
+            layoutMyPageHistoryNoResult.isVisible = true
+            constMyPageHistoryEditBar.isVisible = false
+        }
+    }
+
+    private fun handleSuccessfulHistoryLoad() {
+        with(binding) {
+            indeterminateBar.isVisible = false
+            layoutMyPageHistoryNoResult.isVisible = false
+            constMyPageHistoryEditBar.isVisible = true
+            tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
+        }
+        initAdapter()
+    }
+
     private fun handleSuccessfulHistoryDeletion() {
         binding.indeterminateBar.isVisible = false
         adapter.removeItems(viewModel.itemsToDelete)
         adapter.clearSelection()
         viewModel.clearItemsToDelete()
+    }
+    private fun handleUnsuccessfulHistoryCall() {
+        binding.indeterminateBar.isVisible = false
+        Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+    }
+    private fun enterEditMode() {
+        with(binding) {
+            btnMyPageHistoryEditHistory.text = EDIT_CANCEL
+            tvMyPageHistoryTotalCourseCount.text = CHOICE_MODE_DESC
         }
-        binding.rvMyPageHistory.adapter = adapter
+    }
+    /**편집 취소 버튼을 누르는 경우 or 모든 기록이 삭제된 경우*/
+    private fun exitEditMode() {
+        with(binding) {
+            btnMyPageHistoryEditHistory.text = EDIT_MODE
+            tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
+            if (::adapter.isInitialized) adapter.clearSelection()
+            tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
+            viewModel.clearItemsToDelete()
+        }
     }
 
-    private fun getTextDeleteButton(count: Int): String {
+    private fun updateDeleteButton(count: Int) {
+        with(binding.tvMyPageHistoryDelete) {
+            isActivated = count != 0
+            text = updateDeleteButtonLabel(count)
+        }
+    }
+
+    private fun updateDeleteButtonLabel(count: Int): String {
         return if (count == 0) {
             DELETE_BTN
         } else {

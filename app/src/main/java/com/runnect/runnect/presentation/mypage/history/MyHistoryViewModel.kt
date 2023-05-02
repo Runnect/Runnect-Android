@@ -43,7 +43,7 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
         }
     }
 
-    private var _selectedItemsCount = MutableLiveData(0)
+    private var _selectedItemsCount = MutableLiveData(DEFAULT_SELECTED_COUNT)
     val selectedItemsCount: LiveData<Int>
         get() = _selectedItemsCount
 
@@ -98,8 +98,6 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     }
 
     fun deleteHistory() {
-        _historyDeleteState.value = UiState.Loading
-        _historyDeleteState.value = UiState.Success
         viewModelScope.launch {
             runCatching {
                 _historyDeleteState.value = UiState.Loading
@@ -109,8 +107,7 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
                 _historyItems =
                     _historyItems.filter { !itemsToDelete.contains(it.id) }.toMutableList()
                 _historyDeleteState.value = UiState.Success
-
-                //모든 기록 삭제 시, 편집모드 -> 열람모드
+                //모든 기록 삭제 시, 편집 모드 취소
                 if (_historyItems.isEmpty()) {
                     _historyState.value = UiState.Empty
                     convertMode()
