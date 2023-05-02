@@ -1,9 +1,6 @@
 package com.runnect.runnect.presentation.mypage.history
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -26,8 +23,14 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     val editMode: LiveData<Boolean>
         get() = _editMode
 
+    private var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
     private var itemsToDelete: MutableList<Int> = mutableListOf()
-
+    val selectCountMediator = MediatorLiveData<List<Int>>()
+    init {
+        selectCountMediator.addSource(itemsToDeleteLiveData){
+            setSelectedItemsCount()
+        }
+    }
     private var _selectedItemsCount = MutableLiveData<Int>()
     val selectedItemsCount:LiveData<Int>
         get() = _selectedItemsCount
@@ -37,17 +40,16 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     fun modifyItemsToDelete(id: Int) {
         if(itemsToDelete.contains(id)){
             itemsToDelete.remove(id)
-            setSelectedItemsCount()
         }
         else{
             itemsToDelete.add(id)
-            setSelectedItemsCount()
         }
+        itemsToDeleteLiveData.value = itemsToDelete
     }
 
     fun clearItemsToDelete() {
         itemsToDelete.clear()
-        setSelectedItemsCount()
+        itemsToDeleteLiveData.value = itemsToDelete
     }
 
     private fun setSelectedItemsCount() {
@@ -63,6 +65,9 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     }
 
     fun getRecord() {
+        _historyState.value = UiState.Loading
+        _historyState.value = UiState.Success
+        _historyItems = mutableListOf()
         viewModelScope.launch {
             runCatching {
                 _historyState.value = UiState.Loading

@@ -32,6 +32,7 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
         selectedItems?.forEach {
             it.isSelected = false
         }
+        selectedItems?.clear()
     }
     inner class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,7 +48,7 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
                 tvMyPageHistoryTimeData.text = data.time
                 tvMyPageHistoryPaceData.text = data.pace
                 ivMyPageHistoryFrame.setOnClickListener {
-                    val isEditMode = listener.selectItem(it.id.toString())
+                    val isEditMode = listener.selectItem(data.id)
                     if(isEditMode){
                         if(it.isSelected){
                             it.isSelected = false
