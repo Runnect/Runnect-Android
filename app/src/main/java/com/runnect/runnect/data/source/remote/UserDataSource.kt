@@ -1,6 +1,7 @@
 package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.api.PUserService
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
 
@@ -11,5 +12,7 @@ class UserDataSource(private val userService: PUserService) {
 
     suspend fun getMyStamp(): ResponseMyStamp = userService.getMyStamp()
     suspend fun getRecord(): ResponseRecordInfo = userService.getRecord()
-    suspend fun getUserUploadCourse():ResponseUserUploadCourse = userService.getUserUploadCourse()
+    suspend fun getUserUploadCourse(): ResponseUserUploadCourse = userService.getUserUploadCourse()
+    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): ResponseDeleteHistory =
+        userService.putDeleteHistory(requestDeleteHistory)
 }

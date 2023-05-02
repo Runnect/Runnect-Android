@@ -8,7 +8,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.config.GservicesValue.isInitialized
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyHistoryBinding
@@ -61,11 +60,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         dialog.setDialogClickListener { which ->
             when (which) {
                 dialog.btn_delete_yes -> {
-                    //viewmodel의 itemsToDelete에 저장되어있는 데이터를 이용하여 삭제 다이얼로그에 전달
-                    //삭제 시, 이 메소드 호출 viewModel.clearItemsToDelete()
-                    showToast("삭제 API 호출")
-                    adapter.clearSelection()
-                    viewModel.clearItemsToDelete()
+                    viewModel.deleteHistory()
                     dialog.dismiss()
                 }
                 dialog.btn_delete_no -> {
@@ -113,6 +108,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                     binding.indeterminateBar.isVisible = false
                     binding.layoutMyPageHistoryNoResult.isVisible = false
                     binding.constMyPageHistoryEditBar.isVisible = true
+                    binding.tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
                     initAdapter()
                 }
                 UiState.Failure -> {
@@ -122,31 +118,52 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                 }
             }
         }
+        viewModel.historyDeleteState.observe(this){
+            when(it){
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    adapter.removeItems(viewModel.itemsToDelete)
+                    adapter.clearSelection()
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else ->{
+                    binding.indeterminateBar.isVisible = false }
+            }
+        }
         viewModel.editMode.observe(this) { editMode ->
-            with(binding.btnMyPageHistoryEditHistory) {
+            with(binding) {
                 if (editMode) {
-                    this.text = EDIT_CANCEL
-                    binding.tvMyPageHistoryTotalCourseCount.text = CHOICE_MODE_DESC
+                    btnMyPageHistoryEditHistory.text = EDIT_CANCEL
+                    tvMyPageHistoryTotalCourseCount.text = CHOICE_MODE_DESC
                 } else {
-                    this.text = EDIT_MODE
-                    binding.tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
+                    btnMyPageHistoryEditHistory.text = EDIT_MODE
+                    tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
                     if(::adapter.isInitialized) adapter.clearSelection()
+                    tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
                     viewModel.clearItemsToDelete()
                 }
             }
         }
         viewModel.selectedItemsCount.observe(this) { count ->
-            with(binding.tvMyPageHistoryDelete) {
-                isActivated = count != 0
-                text = getTextDeleteButton(count)
-            }
+            setDeleteButton(count)
         }
         viewModel.selectCountMediator.observe(this) {}
+    }
+    private fun setDeleteButton(count:Int){
+        with(binding.tvMyPageHistoryDelete) {
+            isActivated = count != 0
+            text = getTextDeleteButton(count)
+        }
     }
 
     private fun initAdapter() {
         adapter = MyHistoryAdapter(this, this).apply {
-            submitList(viewModel.historyItem)
+            submitList(viewModel.historyItems)
         }
         binding.rvMyPageHistory.adapter = adapter
     }

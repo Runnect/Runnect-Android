@@ -34,6 +34,12 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
         }
         selectedItems?.clear()
     }
+    fun removeItems(removedIds:List<Int>){
+        if(currentList.isNotEmpty()){
+            val newItems = currentList.filter { !removedIds.contains(it.id) }
+            submitList(newItems)
+        }
+    }
     inner class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: HistoryInfoDTO) {
