@@ -93,6 +93,7 @@ class StorageMyDrawFragment :
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
                 availableEdit = true
+                storageMyDrawAdapter.ableSelect()
                 hideBottomNav()
                 showDeleteCourseBtn()
                 binding.tvTotalCourseCount.text = "코스 선택"
@@ -100,6 +101,7 @@ class StorageMyDrawFragment :
                 isSelectAvailable = true
             } else {
                 availableEdit = false
+                storageMyDrawAdapter.disableSelect()
                 binding.btnEditCourse.text = "편집"
                 selectionTracker.clearSelection()
                 isSelectAvailable = false
@@ -168,6 +170,7 @@ class StorageMyDrawFragment :
             initAdapter()
             addSelectionTracker()
             getMyDrawCourse()
+            storageMyDrawAdapter.disableSelect()
             dialog.dismiss()
             isSelectAvailable = false
             hideDeleteCourseBtn()

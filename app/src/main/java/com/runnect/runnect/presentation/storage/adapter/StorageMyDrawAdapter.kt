@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.storage.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
@@ -20,6 +21,14 @@ class StorageMyDrawAdapter(
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
+    lateinit var binding: ItemStorageMyDrawBinding
+
+    var checkAvailable: Boolean = false
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
 
     init {
         setHasStableIds(true)
@@ -52,7 +61,7 @@ class StorageMyDrawAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemStorageMyDrawBinding.inflate(inflater)
+        binding = ItemStorageMyDrawBinding.inflate(inflater)
 
         return ItemViewHolder(binding)
     }
@@ -62,14 +71,22 @@ class StorageMyDrawAdapter(
 
         with(holder) {
             binding.setVariable(BR.storageItem, getItem(position))
+            binding.ivCheckbox.isVisible = checkAvailable
             binding.root.setOnClickListener {
                 myDrawClickListener.selectItem(currentList[position])
                 selectionTracker.select(itemId) //이게 select을 실행시킴. 리사이클러뷰 아이템 고유 id 수집
             }
-
             binding.selected = selectionTracker.isSelected(itemId)
         }
 
+    }
+
+    fun ableSelect() {
+        checkAvailable = true
+    }
+
+    fun disableSelect() {
+        checkAvailable = false
     }
 
 
