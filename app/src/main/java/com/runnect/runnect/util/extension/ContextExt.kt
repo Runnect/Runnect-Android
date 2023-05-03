@@ -60,16 +60,18 @@ fun Context.setCustomDialog(
     dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     return dialog
 }
-fun AlertDialog.setDialogClickListener(listener:(which: AppCompatButton)->Unit){
+fun AlertDialog.setDialogClickListener(listener:(which: AppCompatButton)->Unit) {
     this.setOnShowListener {
-    val yesButton = this.btn_delete_yes
-    val noButton = this.btn_delete_no
-    yesButton.setOnClickListener {
-        listener(yesButton)
+        val yesButton = this.btn_delete_yes
+        val noButton = this.btn_delete_no
+        yesButton.setOnClickListener {
+            listener(yesButton)
+        }
+        noButton.setOnClickListener {
+            listener(noButton)
+        }
     }
-    noButton.setOnClickListener {
-        listener(noButton)
-    }
+}
 
 fun Context.getStampResId(stampId: String?,resNameParam:String,resType:String,packageName:String):Int{
     with(this) {
