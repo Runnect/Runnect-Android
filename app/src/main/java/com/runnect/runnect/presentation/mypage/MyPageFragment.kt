@@ -17,6 +17,7 @@ import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -49,7 +50,11 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         binding.ivMyPageEditFrame.setOnClickListener {
             val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
             intent.putExtra(NICK_NAME, "${viewModel.nickName.value}")
-            intent.putExtra(PROFILE, getProfileStamp(viewModel.stampId.value))
+            val stampResId = requireContext().getStampResId(
+                viewModel.stampId.value,
+                RES_NAME, RES_STAMP_TYPE, requireContext().packageName
+            )
+            intent.putExtra(PROFILE, stampResId)
             resultEditNameLauncher.launch(intent)
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right,
@@ -94,7 +99,11 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                 }
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    viewModel.setProfileImg(getProfileStamp(viewModel.stampId.value))
+                    val stampResId = requireContext().getStampResId(
+                        viewModel.stampId.value,
+                        RES_NAME, RES_STAMP_TYPE, requireContext().packageName
+                    )
+                    viewModel.setProfileImg(stampResId)
                     binding.ivMyPageEditFrame.isClickable = true
                 }
                 UiState.Failure -> {
@@ -103,14 +112,6 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                         .d("Failure : ${viewModel.errorMessage.value}")
                 }
             }
-        }
-    }
-
-    private fun getProfileStamp(stampId: String?): Int {
-        with(requireContext()) {
-            val resName = "$RES_NAME$stampId"
-            val packageName = packageName
-            return resources.getIdentifier(resName, RES_STAMP_TYPE, packageName)
         }
     }
 

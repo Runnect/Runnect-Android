@@ -19,6 +19,8 @@ import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
 import timber.log.Timber
+import com.runnect.runnect.presentation.mypage.MyPageFragment
+
 
 //확장할 클래스 - Context 클래스
 //Context 클래스에 속한 인스턴스 객체 - this
@@ -35,6 +37,7 @@ fun Context.clearFocus(view: View) {
     imm.hideSoftInputFromWindow(view.windowToken, 0)
     view.clearFocus()
 }
+
 
 fun Context.setCustomDialog(
     layoutInflater: LayoutInflater,
@@ -67,5 +70,12 @@ fun AlertDialog.setDialogClickListener(listener:(which: AppCompatButton)->Unit){
     noButton.setOnClickListener {
         listener(noButton)
     }
+
+fun Context.getStampResId(stampId: String?,resNameParam:String,resType:String,packageName:String):Int{
+    with(this) {
+        val resName = "${resNameParam}$stampId"
+        return resources.getIdentifier(resName,
+            resType, packageName)
+
     }
 }
