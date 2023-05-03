@@ -29,7 +29,7 @@
     <string name="my_page_lv_indicator">LV </string>
     <string name="my_page_progress_max">/100</string>
     <string name="my_page_reward_title">목표 보상</string>
-    <string name="my_page_history_title">활동 기록</string>
+    <string name="my_page_history_title">러닝 기록</string>
     <string name="my_page_upload_title">업로드한 코스</string>
     <string name="my_page_dialog_edit_name">닉네임 수정</string>
     <string name="my_page_dialog_edit_name_hint">닉네임을 입력하세요</string>
@@ -94,6 +94,8 @@
     <string name="my_page_edit_name_guide">닉네임을 입력하세요</string>
     <string name="my_page_edit_name_redundant_warning">동일 닉네임의 유저가 존재합니다.\n다른 닉네임을 입력해 주세요.</string>
     <string name="discover_search_guide">지역과 키워드 위주로 검색해보세요</string>
+    <string name="my_page_history_no_history">아직 러닝 기록이 없어요!\n코스를 그리고 달려보세요</string>
+    <string name="history_delete">삭제하기</string>
 
 
 </resources>

@@ -4,8 +4,8 @@ import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.*
 import com.runnect.runnect.data.dto.response.*
 
-fun Record.toData(): RecordInfoDTO {
-    return RecordInfoDTO(
+fun Record.toData(): HistoryInfoDTO {
+    return HistoryInfoDTO(
         id = id,
         img = image,
         title = title,

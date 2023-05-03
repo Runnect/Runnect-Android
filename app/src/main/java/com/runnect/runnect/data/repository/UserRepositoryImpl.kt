@@ -1,8 +1,10 @@
 package com.runnect.runnect.data.repository
 
-import com.runnect.runnect.data.dto.RecordInfoDTO
+import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponseUpdateNickName
 import com.runnect.runnect.data.dto.response.ResponseUser
 import com.runnect.runnect.data.source.remote.UserDataSource
@@ -22,8 +24,8 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
         return stampList
     }
 
-    override suspend fun getRecord(): MutableList<RecordInfoDTO> {
-        val recordList = mutableListOf<RecordInfoDTO>()
+    override suspend fun getRecord(): MutableList<HistoryInfoDTO> {
+        val recordList = mutableListOf<HistoryInfoDTO>()
         for (i in userDataSource.getRecord().data.records) {
             recordList.add(i.toData())
         }
@@ -36,6 +38,10 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
             userUploadCourseList.add(i.toData())
         }
         return userUploadCourseList
+    }
+
+    override suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): ResponseDeleteHistory {
+        return userDataSource.putDeleteHistory(requestDeleteHistory)
     }
 
 }
