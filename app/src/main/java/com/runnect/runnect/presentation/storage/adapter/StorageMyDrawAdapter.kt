@@ -1,30 +1,34 @@
 package com.runnect.runnect.presentation.storage.adapter
 
-import android.content.ContentValues
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.R
 import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.OnMyDrawClick
-import timber.log.Timber
 
 
-class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
+class StorageMyDrawAdapter(
+    val myDrawClickListener: OnMyDrawClick
+) :
     ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
 
     private lateinit var selectionTracker: SelectionTracker<Long>
+    lateinit var binding: ItemStorageMyDrawBinding
+
+    var checkAvailable: Boolean = false
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
 
     init {
         setHasStableIds(true)
@@ -57,7 +61,7 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemStorageMyDrawBinding.inflate(inflater)
+        binding = ItemStorageMyDrawBinding.inflate(inflater)
 
         return ItemViewHolder(binding)
     }
@@ -67,31 +71,23 @@ class StorageMyDrawAdapter(val myDrawClickListener: OnMyDrawClick) :
 
         with(holder) {
             binding.setVariable(BR.storageItem, getItem(position))
+            binding.ivCheckbox.isVisible = checkAvailable
             binding.root.setOnClickListener {
                 myDrawClickListener.selectItem(currentList[position])
                 selectionTracker.select(itemId) //이게 select을 실행시킴. 리사이클러뷰 아이템 고유 id 수집
             }
-            Timber.tag(ContentValues.TAG)
-                .d("selection 값 : ${selectionTracker.selection}")
-            Timber.tag(ContentValues.TAG)
-                .d("getItemId 값 : $itemId")
             binding.selected = selectionTracker.isSelected(itemId)
         }
 
     }
-    fun removeItem(selection: Selection<Long>) {
-        val itemList = currentList.toMutableList()
-        val selectedIds = selection.toMutableList()
 
-        for (id in selectedIds) {
-            val index = itemList.indexOfFirst { it.id.toLong() == id.toLong() }
-            if (index != -1) {
-                itemList.removeAt(index)
-            }
-        }
-        submitList(itemList)
+    fun ableSelect() {
+        checkAvailable = true
     }
 
+    fun disableSelect() {
+        checkAvailable = false
+    }
 
 
     class Differ : DiffUtil.ItemCallback<ResponseGetCourseDto.Data.Course>() {

@@ -100,6 +100,6 @@ class ReportActivity : com.runnect.runnect.binding.BindingActivity<ActivityLogin
     }
 
     companion object {
-        private const val DEFAULT_URL = "https://www.naver.com/"
+        private const val DEFAULT_URL = "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
     }
 }

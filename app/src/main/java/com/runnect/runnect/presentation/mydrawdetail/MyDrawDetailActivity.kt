@@ -15,7 +15,10 @@ import com.runnect.runnect.R
 import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.storage.StorageMainFragment
+import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
 
@@ -25,6 +28,7 @@ class MyDrawDetailActivity :
 
     val viewModel: MyDrawDetailViewModel by viewModels()
 
+    val selectList = arrayListOf<Long>()
 
     lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
@@ -53,7 +57,12 @@ class MyDrawDetailActivity :
         dialog.show()
 
         myLayout.btn_delete_yes.setOnClickListener {
+            deleteCourse()
             dialog.dismiss()
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("fromDeleteMyDraw", true)
+            }
+            startActivity(intent)
         }
         myLayout.btn_delete_no.setOnClickListener {
             dialog.dismiss()
@@ -82,6 +91,8 @@ class MyDrawDetailActivity :
     fun getMyDrawDetail() {
         val courseId = intent.getIntExtra("fromStorageFragment", 0)
         Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
+
+        selectList.add(courseId.toLong()) //courseId를 지역변수로 선언해서 여기에 작성해주었음
         viewModel.getMyDrawDetail(courseId = courseId)
     }
 
@@ -142,6 +153,10 @@ class MyDrawDetailActivity :
             setTouchList(it)
             setPutExtraValue(it)
         }
+    }
+
+    fun deleteCourse() {
+        viewModel.deleteMyDrawCourse(selectList)
     }
 
 

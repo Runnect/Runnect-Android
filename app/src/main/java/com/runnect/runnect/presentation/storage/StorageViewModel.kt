@@ -1,14 +1,14 @@
 package com.runnect.runnect.presentation.storage
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponseGetScrapDto
+import com.runnect.runnect.data.model.ResponsePutMyDrawDto
 import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -16,11 +16,14 @@ import timber.log.Timber
 class StorageViewModel : ViewModel() {
 
     val service = KApiCourse.ServicePool.courseService //객체 생성
+    val selectList = MutableLiveData<MutableList<Long>>()
+    val currentList =  MutableLiveData<MutableList<ResponseGetCourseDto.Data.Course>>()
 
     val getMyDrawResult = MutableLiveData<ResponseGetCourseDto>()
     val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
+
 
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)
     val storageState: LiveData<UiState>
@@ -42,6 +45,23 @@ class StorageViewModel : ViewModel() {
                     .d("문제가 뭐냐 $it")
                 errorMessage.value = it.message
                 _storageState.value = UiState.Failure
+            }
+        }
+    }
+
+    fun deleteMyDrawCourse(deleteList : MutableList<Long>) {
+        viewModelScope.launch {
+            runCatching {
+//                _storageState.value = UiState.Loading
+                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
+            }.onSuccess {
+                Timber.tag(ContentValues.TAG)
+                    .d("삭제 성공입니다")
+//                _storageState.value = UiState.Success
+            }.onFailure {
+                Timber.tag(ContentValues.TAG)
+                    .d("실패했고 문제는 다음과 같습니다 $it")
+//                _storageState.value = UiState.Failure
             }
         }
     }
