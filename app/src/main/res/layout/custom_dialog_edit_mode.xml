@@ -1,55 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layout_edit_frame"
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_edit_mode"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/layout_delete_frame"
-        app:layout_constraintDimensionRatio="360:55">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center||start"
-            android:layout_marginStart="23dp"
-            app:srcCompat="@drawable/dialog_edit" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_edit_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/W1"
+            app:layout_constraintBottom_toTopOf="@id/layout_delete_frame"
+            app:layout_constraintDimensionRatio="360:55">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center||start"
-            android:layout_marginStart="13dp"
-            android:fontFamily="@font/pretendard_regular"
-            android:text="@string/dialog_edit"
-            android:textColor="@color/G1" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="23dp"
+                app:srcCompat="@drawable/dialog_edit" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layout_delete_frame"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="360:55">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="13dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="@string/dialog_edit"
+                android:textColor="@color/G1" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center||start"
-            android:layout_marginStart="23dp"
-            app:srcCompat="@drawable/dialog_remove" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_delete_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/W1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="360:55">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center||start"
-            android:layout_marginStart="13dp"
-            android:fontFamily="@font/pretendard_regular"
-            android:text="@string/dialog_remove"
-            android:textColor="@color/G1"
-            android:textSize="15sp" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="23dp"
+                app:srcCompat="@drawable/dialog_remove" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="13dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="@string/dialog_remove"
+                android:textColor="@color/G1"
+                android:textSize="15sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
