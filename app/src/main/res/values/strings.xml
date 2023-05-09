@@ -97,5 +97,7 @@
     <string name="my_page_history_no_history">아직 러닝 기록이 없어요!\n코스를 그리고 달려보세요</string>
     <string name="history_delete">삭제하기</string>
     <string name="history_edit_finish">완료</string>
+    <string name="dialog_edit">수정하기</string>
+    <string name="dialog_remove">삭제하기</string>
 
 </resources>
