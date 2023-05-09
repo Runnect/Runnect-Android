@@ -63,10 +63,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             when (which) {
                 dialog.btn_delete_yes -> {
                     viewModel.deleteHistory()
-                    dialog.dismiss()
-                }
-                dialog.btn_delete_no -> {
-                    dialog.dismiss()
                 }
             }
         }
