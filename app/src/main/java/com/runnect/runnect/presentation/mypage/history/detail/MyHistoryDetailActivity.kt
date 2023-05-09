@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.mypage.history.detail
 
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -13,10 +14,12 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
+import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyHistoryDetailActivity :
@@ -58,6 +61,7 @@ class MyHistoryDetailActivity :
             viewModel.distance = distance
             viewModel.time = time
             viewModel.pace = pace
+            viewModel.historyIdToDelete = listOf(id)
         }
     }
 
@@ -97,6 +101,22 @@ class MyHistoryDetailActivity :
                     isActivated = true
                     isClickable = true
                 }
+            }
+        }
+        viewModel.uiState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    val intent = Intent(this, MyHistoryActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else -> {}
             }
         }
     }
@@ -195,8 +215,7 @@ class MyHistoryDetailActivity :
         deleteDialog.setDialogClickListener { which ->
             when (which) {
                 deleteDialog.btn_delete_yes -> {
-                    showToast("삭제하기")
-                    finish()
+                    viewModel.deleteHistory()
                 }
             }
 
@@ -231,8 +250,6 @@ class MyHistoryDetailActivity :
         const val READ_MODE = "readMode"
         const val DELETE_DIALOG_DESC = "러닝 기록을 정말로 삭제하시겠어요?"
         const val DELETE_DIALOG_YES_BTN = "삭제하기"
-
-
         const val EDIT_INTERRUPT_DIALOG_DESC = "     러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"

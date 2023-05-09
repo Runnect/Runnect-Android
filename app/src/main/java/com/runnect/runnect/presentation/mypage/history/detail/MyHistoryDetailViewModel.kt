@@ -3,9 +3,12 @@ package com.runnect.runnect.presentation.mypage.history.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,6 +17,7 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     val uiState: LiveData<UiState>
         get() = _uiState
     private val _uiState = MutableLiveData<UiState>()
+    val errorMessage = MutableLiveData<String>()
 
     var editMode = MutableLiveData(READ_MODE)
 
@@ -25,9 +29,24 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     var distance = DEFAULT_DISTANCE
     var time = DEFAULT_TIME
     var pace = DEFAULT_PACE
+    var historyIdToDelete = listOf(0)
 
     fun setTitle(titleParam: String) {
         title.value = titleParam
+    }
+
+    fun deleteHistory(){
+        viewModelScope.launch {
+            runCatching {
+                _uiState.value = UiState.Loading
+                userRepository.putDeleteHistory(RequestDeleteHistory(historyIdToDelete))
+            }.onSuccess {
+                _uiState.value = UiState.Success
+            }.onFailure {
+                _uiState.value = UiState.Failure
+                errorMessage.value = it.message
+            }
+        }
     }
 
     companion object {
@@ -37,7 +56,6 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         const val DEFAULT_PACE = "0’00"
         const val DEFAULT_TIME = "00:00:00"
         const val DEFAULT_DISTANCE = "0.0"
-        const val EDIT_MODE = "editMode"
         const val READ_MODE = "readMode"
     }
 }
