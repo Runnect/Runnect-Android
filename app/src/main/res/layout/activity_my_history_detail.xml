@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailViewModel" />
@@ -64,22 +65,26 @@
             android:id="@+id/iv_detail_course_image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/G3"
+            android:scaleType="centerCrop"
+            app:imgUri="@{vm.mapImg}"
             app:layout_constraintDimensionRatio="360:443"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail"
-            android:scaleType="centerCrop"
-            android:background="@color/G3" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image_edit"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/G4"
+            android:visibility="visible"
+            android:scaleType="centerCrop"
+            app:imgUri="@{vm.mapImg}"
             app:layout_constraintDimensionRatio="360:362"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail"
-            android:background="@color/G2"
-            android:visibility="visible"/>
+            app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_course_title"
@@ -90,14 +95,14 @@
             android:backgroundTint="@color/W1"
             android:fontFamily="@font/pretendard_bold"
             android:hint="@string/end_run_title_hint"
-            android:text="@{vm.title}"
-            android:singleLine="true"
             android:maxLength="20"
+            android:singleLine="true"
+            android:text="@={vm.title}"
             android:textColor="@color/G1"
             android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/divider_course_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/divider_course_title" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider_course_title"
@@ -204,6 +209,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
+            android:text="@{vm.distance}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
@@ -211,7 +217,6 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
             app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
-            android:text="@{vm.distance}"
             tools:text="5.1" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -259,12 +264,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
+            android:text="@{vm.time}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/tv_time"
             app:layout_constraintStart_toStartOf="@id/tv_time"
             app:layout_constraintTop_toBottomOf="@id/tv_time"
-            android:text="@{vm.time}"
             tools:text="00:28:07" />
 
         <View
@@ -298,30 +303,30 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
+            android:text="@{vm.pace}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
             app:layout_constraintEnd_toEndOf="@id/tv_pace"
             app:layout_constraintStart_toStartOf="@id/tv_pace"
             app:layout_constraintTop_toBottomOf="@id/tv_pace"
-            android:text="@{vm.pace}"
             tools:text="5’31’’" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_history_edit_finish"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/all_finish_btn_selector"
             android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
             android:text="@string/history_edit_finish"
             android:textColor="@color/W1"
             android:textSize="15sp"
-            android:background="@drawable/all_finish_btn_selector"
-            android:gravity="center"
-            android:layout_marginHorizontal="15dp"
-            app:layout_constraintDimensionRatio="330:40"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintDimensionRatio="330:40"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="18dp"/>
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
