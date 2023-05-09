@@ -78,8 +78,10 @@ class MyHistoryDetailActivity :
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 } else {
                     val intent = Intent(this, MyHistoryActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                     finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
             }
         }
@@ -109,8 +111,10 @@ class MyHistoryDetailActivity :
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     val intent = Intent(this, MyHistoryActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                     finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
