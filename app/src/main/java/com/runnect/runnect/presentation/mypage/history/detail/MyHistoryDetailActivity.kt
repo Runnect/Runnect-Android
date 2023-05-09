@@ -86,9 +86,7 @@ class MyHistoryDetailActivity :
             }
         }
         binding.tvHistoryEditFinish.setOnClickListener {
-            showToast("수정 완료 통신")
-            enterReadMode()
-            viewModel.titleForInterruption = viewModel.title.value.toString()
+            viewModel.editHistoryTitle()
         }
     }
 
@@ -105,7 +103,7 @@ class MyHistoryDetailActivity :
                 }
             }
         }
-        viewModel.uiState.observe(this) { state ->
+        viewModel.deleteState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
@@ -115,6 +113,21 @@ class MyHistoryDetailActivity :
                     startActivity(intent)
                     finish()
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else -> {}
+            }
+        }
+        viewModel.editState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    enterReadMode()
+                    viewModel.titleForInterruption = viewModel.title.value.toString()
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
