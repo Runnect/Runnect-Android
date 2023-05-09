@@ -43,8 +43,8 @@
                 android:id="@+id/iv_back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="6dp"
+                android:padding="10dp"
                 android:background="@color/W1"
                 android:src="@drawable/backbutton"
                 app:layout_constraintStart_toStartOf="@id/toolbar_history_detail"
@@ -56,7 +56,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginEnd="28dp"
+                android:layout_marginEnd="18dp"
+                android:padding="10dp"
                 android:backgroundTint="@color/W1"
                 android:src="@drawable/showmorebtn" />
         </androidx.appcompat.widget.Toolbar>
