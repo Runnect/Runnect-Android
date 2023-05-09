@@ -54,7 +54,7 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
                 tvMyPageHistoryTimeData.text = data.time
                 tvMyPageHistoryPaceData.text = data.pace
                 ivMyPageHistoryFrame.setOnClickListener {
-                    val isEditMode = listener.selectItem(data.id)
+                    val isEditMode = listener.selectItem(data)
                     if(isEditMode){
                         if(it.isSelected){
                             it.isSelected = false

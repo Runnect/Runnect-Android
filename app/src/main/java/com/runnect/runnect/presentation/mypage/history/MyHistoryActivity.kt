@@ -11,15 +11,16 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
+import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryBinding
 import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
+import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.RecyclerOffsetDecorationHeight
 import com.runnect.runnect.util.callback.OnHistoryItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
-import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
 import timber.log.Timber
@@ -203,13 +204,17 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
 
-    override fun selectItem(id: Int): Boolean {
+    override fun selectItem(data: HistoryInfoDTO): Boolean {
         return if (viewModel.editMode.value == true) {
-            viewModel.modifyItemsToDelete(id)
+            viewModel.modifyItemsToDelete(data.id)
             true
         } else {
             //매개변수로 아이템 정보를 넘겨받아 기록 조회 액티비티 이동
-            showToast("기록 조회 액티비티 이동")
+            val intent = Intent(this,MyHistoryDetailActivity::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("historyDataBundle",data)
+            intent.putExtra("historyData", bundle)
+            startActivity(intent)
             false
         }
     }
