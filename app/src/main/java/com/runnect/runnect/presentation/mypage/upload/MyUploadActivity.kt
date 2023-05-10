@@ -51,7 +51,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun initAdapter() {
         adapter = MyUploadAdapter(this).apply {
             submitList(
-                viewModel.myUploadCourseList
+                viewModel.myUploadCourses
             )
         }
         binding.rvMyPageUpload.adapter = adapter
