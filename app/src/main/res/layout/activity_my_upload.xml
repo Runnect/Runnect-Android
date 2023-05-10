@@ -77,7 +77,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_my_page_upload_edit_history"
+                android:id="@+id/btn_my_page_upload_edit_course"
                 android:layout_width="50dp"
                 android:layout_height="28dp"
                 android:background="@drawable/radius_50_edit_course_button"

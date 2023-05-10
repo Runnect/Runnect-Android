@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
+import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
@@ -41,11 +42,12 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
+        binding.btnMyPageUploadEditCourse.setOnClickListener {
+            handleEditClicked()
+        }
     }
-
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun handleEditClicked(){
+        viewModel.convertMode()
     }
 
     private fun initAdapter() {
@@ -57,17 +59,14 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.rvMyPageUpload.adapter = adapter
     }
 
-
     private fun addObserver() {
 
         viewModel.myUploadCourseState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    initAdapter()
-
+                    handleSuccessfulCourseLoad()
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
@@ -76,7 +75,40 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
                 }
             }
         }
+        viewModel.editMode.observe(this){editMode ->
+            if (editMode) {
+                enterEditMode()
+            } else {
+                exitEditMode()
+            }
+        }
+    }
+    private fun enterEditMode() {
+        with(binding) {
+            btnMyPageUploadEditCourse.text = EDIT_CANCEL
+            tvMyPageUploadTotalCourseCount.text = CHOICE_MODE_DESC
+        }
+    }
+    /**편집 취소 버튼을 누르는 경우 or 모든 기록이 삭제된 경우*/
+    private fun exitEditMode() {
+        with(binding) {
+            btnMyPageUploadEditCourse.text = EDIT_MODE
+            tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
+        }
+    }
 
-
+    private fun handleSuccessfulCourseLoad(){
+        with(binding){
+            indeterminateBar.isVisible = false
+            tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
+            constMyPageUploadEditBar.isVisible = true
+            //NoResultView visible false
+        }
+        initAdapter()
+    }
+    companion object {
+        const val CHOICE_MODE_DESC = "기록 선택"
+        const val EDIT_CANCEL = "취소"
+        const val EDIT_MODE = "편집"
     }
 }

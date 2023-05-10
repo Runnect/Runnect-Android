@@ -24,6 +24,10 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
 
     val errorMessage = MutableLiveData<String>()
 
+    private var _editMode = MutableLiveData(false)
+    val editMode: LiveData<Boolean>
+        get() = _editMode
+
     fun getUserUploadCourse() {
         viewModelScope.launch {
             runCatching {
@@ -37,5 +41,13 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
                 _myUploadCourseState.value = UiState.Failure
             }
         }
+    }
+
+    fun convertMode() {
+        _editMode.value = !_editMode.value!!
+    }
+
+    fun getCourseCount(): String {
+        return "총 기록 ${_myUploadCourses.count()}개"
     }
 }
