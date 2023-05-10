@@ -17,7 +17,7 @@ fun Record.toData(): HistoryInfoDTO {
     )
 }
 
-fun PublicCourse.toData(): UserUploadCourseDTO {
+fun PublicCourseUpload.toData(): UserUploadCourseDTO {
     return UserUploadCourseDTO(
         id = id, title = title, img = image, departure = departure.region + ' ' + departure.city
     )
