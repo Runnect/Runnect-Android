@@ -125,7 +125,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/layout_my_page_history_no_result"
+            android:id="@+id/layout_my_page_upload_no_result"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="64dp"

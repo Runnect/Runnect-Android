@@ -63,7 +63,9 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
         viewModel.myUploadCourseState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
+                UiState.Empty -> {
+                    handleEmptyUploadCourse()
+                }
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     handleSuccessfulCourseLoad()
@@ -102,9 +104,16 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             indeterminateBar.isVisible = false
             tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
             constMyPageUploadEditBar.isVisible = true
-            //NoResultView visible false
+            layoutMyPageUploadNoResult.isVisible = false
         }
         initAdapter()
+    }
+    private fun handleEmptyUploadCourse(){
+        with(binding) {
+            indeterminateBar.isVisible = false
+            constMyPageUploadEditBar.isVisible = false
+            layoutMyPageUploadNoResult.isVisible = true
+        }
     }
     companion object {
         const val CHOICE_MODE_DESC = "기록 선택"
