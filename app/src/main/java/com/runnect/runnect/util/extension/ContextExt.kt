@@ -8,10 +8,15 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.LinearLayout
 
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.LinearLayoutCompat
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.runnect.runnect.R
 import com.runnect.runnect.presentation.MainActivity
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
@@ -20,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
 import timber.log.Timber
 import com.runnect.runnect.presentation.mypage.MyPageFragment
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
 
 
 //확장할 클래스 - Context 클래스
@@ -66,12 +72,38 @@ fun AlertDialog.setDialogClickListener(listener:(which: AppCompatButton)->Unit) 
         val noButton = this.btn_delete_no
         yesButton.setOnClickListener {
             listener(yesButton)
+            this.dismiss()
         }
         noButton.setOnClickListener {
             listener(noButton)
+            this.dismiss()
         }
     }
 }
+
+fun Context.setEditBottomSheet():BottomSheetDialog{
+    val bottomSheetDialog = BottomSheetDialog(
+        this, R.style.BottomSheetDialogTheme
+    )
+    val bottomSheetView = LayoutInflater.from(this).inflate(
+        R.layout.custom_dialog_edit_mode,null
+    )
+    bottomSheetDialog.setContentView(bottomSheetView)
+    return bottomSheetDialog
+}
+fun BottomSheetDialog.setEditBottomSheetClickListener(listener:(which:LinearLayoutCompat)->Unit){
+    this.setOnShowListener {
+        val editButton = this.layout_edit_frame
+        val deleteButton = this.layout_delete_frame
+        editButton.setOnClickListener {
+            listener(editButton)
+        }
+        deleteButton.setOnClickListener {
+            listener(deleteButton)
+        }
+    }
+}
+
 
 fun Context.getStampResId(stampId: String?,resNameParam:String,resType:String,packageName:String):Int{
     with(this) {

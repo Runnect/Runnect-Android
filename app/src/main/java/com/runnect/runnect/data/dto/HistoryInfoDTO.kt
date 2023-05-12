@@ -1,5 +1,7 @@
 package com.runnect.runnect.data.dto
 
+import java.io.Serializable
+
 data class HistoryInfoDTO(
     val id: Int,
     val title: String,
@@ -9,4 +11,4 @@ data class HistoryInfoDTO(
     val distance: String,
     val time: String,
     val pace: String
-)
+): Serializable

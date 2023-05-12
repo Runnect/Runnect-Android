@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/const_my_history_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.mypage.history.detail.MyHistoryDetailActivity">
+
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_history_detail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/W1"
+            app:contentInsetStart="0dp"
+            app:layout_constraintDimensionRatio="360:48"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:padding="10dp"
+                android:background="@color/W1"
+                android:src="@drawable/backbutton"
+                app:layout_constraintStart_toStartOf="@id/toolbar_history_detail"
+                app:layout_constraintTop_toTopOf="@id/toolbar_history_detail" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_show_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="18dp"
+                android:padding="10dp"
+                android:backgroundTint="@color/W1"
+                android:src="@drawable/showmorebtn" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_detail_course_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/G3"
+            android:scaleType="centerCrop"
+            app:imgUri="@{vm.mapImg}"
+            app:layout_constraintDimensionRatio="360:443"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_detail_course_image_edit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/G4"
+            android:visibility="visible"
+            android:scaleType="centerCrop"
+            app:imgUri="@{vm.mapImg}"
+            app:layout_constraintDimensionRatio="360:362"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_course_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/W1"
+            android:fontFamily="@font/pretendard_bold"
+            android:hint="@string/end_run_title_hint"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:text="@={vm.title}"
+            android:textColor="@color/G1"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/divider_course_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_course_title"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="56dp"
+            android:background="@color/G5"
+            app:layout_constraintTop_toBottomOf="@id/iv_detail_course_image" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_record_date_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/all_star"
+            app:layout_constraintStart_toStartOf="@id/divider_course_title"
+            app:layout_constraintTop_toBottomOf="@id/divider_course_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_record_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/end_run_date"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_record_date_indicator"
+            app:layout_constraintStart_toEndOf="@id/iv_record_date_indicator" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_date_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="@{vm.date}"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_record_date"
+            app:layout_constraintStart_toEndOf="@id/tv_record_date"
+            tools:text="2023.01.07" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_departure_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:src="@drawable/all_star"
+            app:layout_constraintStart_toStartOf="@id/iv_record_date_indicator"
+            app:layout_constraintTop_toBottomOf="@id/iv_record_date_indicator" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_departure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/end_run_departure"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_departure_indicator"
+            app:layout_constraintStart_toEndOf="@id/iv_departure_indicator" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_departure_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="@{vm.departure}"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_departure"
+            app:layout_constraintStart_toStartOf="@id/tv_date_record"
+            tools:text="서울시 영등포구" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_history_info"
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:layout_marginTop="80dp"
+            android:background="@color/G5"
+            app:layout_constraintTop_toBottomOf="@id/divider_course_title" />
+
+        <!--총 거리-->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_total_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/end_run_distance_title"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/divider_vertical_rightOfDistance"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_history_info" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_distance_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:text="@{vm.distance}"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
+            app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/tv_total_distance"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
+            tools:text="5.1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_distance_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/end_run_distance_unit"
+            android:textColor="@color/G1"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
+            app:layout_constraintEnd_toEndOf="@id/tv_total_distance"
+            app:layout_constraintStart_toEndOf="@id/tv_distance_data" />
+
+        <View
+            android:id="@+id/divider_vertical_rightOfDistance"
+            android:layout_width="0.5dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/G2"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
+            app:layout_constraintEnd_toStartOf="@id/tv_time_data"
+            app:layout_constraintTop_toTopOf="@id/tv_time" />
+
+
+        <!--이동시간-->
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/end_run_time_title"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_time_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:text="@{vm.time}"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/tv_time"
+            app:layout_constraintStart_toStartOf="@id/tv_time"
+            app:layout_constraintTop_toBottomOf="@id/tv_time"
+            tools:text="00:28:07" />
+
+        <View
+            android:id="@+id/divider_vertical_rightOfTime"
+            android:layout_width="0.5dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="20dp"
+            android:background="@color/G2"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
+            app:layout_constraintStart_toEndOf="@id/tv_time_data"
+            app:layout_constraintTop_toTopOf="@id/tv_time" />
+
+        <!--평균 페이스-->
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_pace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/end_run_pace_title"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/divider_vertical_rightOfTime"
+            app:layout_constraintTop_toTopOf="@id/tv_time" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_pace_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:text="@{vm.pace}"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
+            app:layout_constraintEnd_toEndOf="@id/tv_pace"
+            app:layout_constraintStart_toStartOf="@id/tv_pace"
+            app:layout_constraintTop_toBottomOf="@id/tv_pace"
+            tools:text="5’31’’" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_history_edit_finish"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/all_finish_btn_selector"
+            android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
+            android:text="@string/history_edit_finish"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="330:40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
