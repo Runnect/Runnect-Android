@@ -1,11 +1,9 @@
 package com.runnect.runnect.presentation.mypage.upload
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.presentation.mypage.history.MyHistoryViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -28,6 +26,28 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
     val editMode: LiveData<Boolean>
         get() = _editMode
 
+    private var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
+
+    private var _itemsToDelete: MutableList<Int> = mutableListOf()
+    val itemsToDelete: List<Int>
+        get() = _itemsToDelete
+
+    val selectCountMediator = MediatorLiveData<List<Int>>()
+
+    init {
+        selectCountMediator.addSource(itemsToDeleteLiveData) {
+            setSelectedItemsCount(_itemsToDelete.count())
+        }
+    }
+
+    private var _selectedItemsCount = MutableLiveData(MyHistoryViewModel.DEFAULT_SELECTED_COUNT)
+    val selectedItemsCount: LiveData<Int>
+        get() = _selectedItemsCount
+
+    private fun setSelectedItemsCount(count: Int) {
+        _selectedItemsCount.value = count
+    }
+
     fun getUserUploadCourse() {
         viewModelScope.launch {
             runCatching {
@@ -49,5 +69,14 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
 
     fun getCourseCount(): String {
         return "총 기록 ${_myUploadCourses.count()}개"
+    }
+
+    fun modifyItemsToDelete(id: Int) {
+        if (_itemsToDelete.contains(id)) {
+            _itemsToDelete.remove(id)
+        } else {
+            _itemsToDelete.add(id)
+        }
+        itemsToDeleteLiveData.value = _itemsToDelete
     }
 }

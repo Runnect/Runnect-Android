@@ -12,11 +12,13 @@ import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.callback.OnUploadItemClick
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload) {
+class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload), OnUploadItemClick {
     private val viewModel: MyUploadViewModel by viewModels()
 
     private lateinit var adapter: MyUploadAdapter
@@ -51,7 +53,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     private fun initAdapter() {
-        adapter = MyUploadAdapter(this).apply {
+        adapter = MyUploadAdapter(this,this).apply {
             submitList(
                 viewModel.myUploadCourses
             )
@@ -84,6 +86,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
                 exitEditMode()
             }
         }
+        viewModel.selectCountMediator.observe(this) {}
     }
     private fun enterEditMode() {
         with(binding) {
@@ -113,6 +116,16 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             indeterminateBar.isVisible = false
             constMyPageUploadEditBar.isVisible = false
             layoutMyPageUploadNoResult.isVisible = true
+        }
+    }
+    override fun selectItem(id: Int): Boolean {
+        return if (viewModel.editMode.value == true) {
+            viewModel.modifyItemsToDelete(id)
+            true
+        } else {
+            //매개변수로 아이템 정보를 넘겨받아 코스 상세 액티비티 이동
+            showToast("코스 상세 조회 액티비티 이동")
+            false
         }
     }
     companion object {
