@@ -38,6 +38,7 @@ import com.runnect.runnect.data.model.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
@@ -319,6 +320,8 @@ class DrawActivity :
             dialog.dismiss()
         }
         myLayout.btn_login.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
             dialog.dismiss()
         }
     }

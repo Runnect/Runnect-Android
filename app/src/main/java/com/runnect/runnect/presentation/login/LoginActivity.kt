@@ -31,7 +31,7 @@ class LoginActivity :
     override fun onStart() {
         super.onStart()
         val accessToken = PreferenceManager.getString(applicationContext, "access")
-        if (accessToken != "none") {
+        if (accessToken != "none" && accessToken != "visitor") {
             Timber.d("자동로그인 완료")
             moveToMain()
         }
