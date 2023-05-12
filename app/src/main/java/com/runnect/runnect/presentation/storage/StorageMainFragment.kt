@@ -2,12 +2,15 @@ package com.runnect.runnect.presentation.storage
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
 import timber.log.Timber
@@ -19,13 +22,47 @@ class StorageMainFragment :
 
     val viewModel: StorageViewModel by viewModels()
 
+    var isVisitorMode: Boolean = false;
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.lifecycleOwner = requireActivity()
-        initView()
-        tabLayoutAction()
 
+        checkVisitorMode()
+
+        if(isVisitorMode){
+            activateVisitorMode()
+        } else {
+            deactivateVisitorMode()
+        }
+    }
+
+    private fun checkVisitorMode() {
+        isVisitorMode =
+            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
+    }
+
+    private fun activateVisitorMode(){
+        with(binding){
+            ivVisitorMode.isVisible = true
+            tvVisitorMode.isVisible = true
+            btnVisitorMode.isVisible = true
+            storageTab.isVisible = false
+            tabUnderLine.isVisible = false
+        }
+    }
+
+    private fun deactivateVisitorMode(){
+        with(binding){
+            ivVisitorMode.isVisible = false
+            tvVisitorMode.isVisible = false
+            btnVisitorMode.isVisible = false
+            storageTab.isVisible = true
+            tabUnderLine.isVisible = true
+
+            binding.lifecycleOwner = requireActivity()
+            initView()
+            tabLayoutAction()
+        }
     }
 
 
