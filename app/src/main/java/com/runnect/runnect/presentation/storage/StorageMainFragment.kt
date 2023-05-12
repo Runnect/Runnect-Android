@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -13,6 +14,7 @@ import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
+import com.runnect.runnect.presentation.login.LoginActivity
 import timber.log.Timber
 
 
@@ -48,6 +50,11 @@ class StorageMainFragment :
             btnVisitorMode.isVisible = true
             storageTab.isVisible = false
             tabUnderLine.isVisible = false
+
+            btnVisitorMode.setOnClickListener {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

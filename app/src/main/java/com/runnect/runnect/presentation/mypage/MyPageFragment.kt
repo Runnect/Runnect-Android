@@ -14,6 +14,7 @@ import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
+import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
@@ -37,7 +38,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         super.onViewCreated(view, savedInstanceState)
         checkVisitorMode()
 
-        if(isVisitorMode){
+        if (isVisitorMode) {
             activateVisitorMode()
         } else {
             deactivateVisitorMode()
@@ -50,17 +51,22 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
-    private fun activateVisitorMode(){
-        with(binding){
+    private fun activateVisitorMode() {
+        with(binding) {
             ivVisitorMode.isVisible = true
             tvVisitorMode.isVisible = true
             btnVisitorMode.isVisible = true
             constraintInside.isVisible = false
+
+            btnVisitorMode.setOnClickListener {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
-    private fun deactivateVisitorMode(){
-        with(binding){
+    private fun deactivateVisitorMode() {
+        with(binding) {
             ivVisitorMode.isVisible = false
             tvVisitorMode.isVisible = false
             btnVisitorMode.isVisible = false
