@@ -91,6 +91,7 @@
             android:layout_marginBottom="22dp"
             android:fontFamily="@font/pretendard_medium"
             android:gravity="center"
+            android:lineSpacingExtra="5sp"
             android:text="러넥트에 가입하면 내가 그린 코스와\n스크랩 코스를 관리할 수 있어요!"
             android:textAlignment="center"
             android:textColor="@color/G2"

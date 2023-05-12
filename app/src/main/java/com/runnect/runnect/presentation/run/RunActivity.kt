@@ -67,8 +67,6 @@ class RunActivity :
         getCurrentLocation()
         showRecord()
         backButton()
-
-
     }
 
     override fun onBackPressed() {

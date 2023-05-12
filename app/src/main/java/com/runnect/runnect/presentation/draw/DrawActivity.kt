@@ -30,6 +30,8 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.data.model.UploadLatLng
@@ -39,6 +41,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
+import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -69,9 +72,12 @@ class DrawActivity :
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
 
+    var isVisitorMode: Boolean = false;
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkVisitorMode()
 
         binding.model = viewModel
         binding.lifecycleOwner = this
@@ -84,13 +90,18 @@ class DrawActivity :
                 Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
                 viewModel.searchResult.value = searchResult
                 initView()
-                courseFinish()
+                courseFinish() //여기야
                 addObserver()
                 backButton()
                 activateDrawCourse()
             }
         }
 
+    }
+
+    private fun checkVisitorMode() {
+        isVisitorMode =
+            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     override fun onBackPressed() {
@@ -129,14 +140,20 @@ class DrawActivity :
 
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
-            createMbr()
-            Handler(Looper.getMainLooper()).postDelayed( //이거 왜 콜백으로 안 되는 거지
-                {
-                    viewModel.uploadCourse()
-                }, 300
-            )
+
+            if (isVisitorMode) {
+                requireVisitorLogin(binding.root)
+            } else {
+                createMbr()
+                Handler(Looper.getMainLooper()).postDelayed( //이거 왜 콜백으로 안 되는 거지
+                    {
+                        viewModel.uploadCourse()
+                    }, 300
+                )
+            }
         }
     }
+
 
     private fun activateDrawCourse() {
         binding.btnPreStart.setOnClickListener {
@@ -147,11 +164,11 @@ class DrawActivity :
         }
     }
 
-    private fun showDrawGuide(){
-        with(binding){
+    private fun showDrawGuide() {
+        with(binding) {
             frameDrawGuide.isVisible = true
             ivGuideLogo.isVisible = true
-            tvDrawGuide.isVisible =  true
+            tvDrawGuide.isVisible = true
         }
     }
 
@@ -269,7 +286,8 @@ class DrawActivity :
         myLayout.btn_run.setOnClickListener {
             val intent = Intent(this, CountDownActivity::class.java)
 
-            intent.putExtra("DrawToRunData",
+            intent.putExtra(
+                "DrawToRunData",
                 DrawToRunData(
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = null,
@@ -277,12 +295,32 @@ class DrawActivity :
                     departureLatLng,
                     viewModel.distanceSum.value!!,
                     searchResult.name,
-                    captureUri.toString()))
+                    captureUri.toString()
+                )
+            )
 
             startActivity(intent)
             dialog.dismiss()
         }
+    }
 
+    private fun requireVisitorLogin(view: View) {
+        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
+
+        val build = AlertDialog.Builder(view.context).apply {
+            setView(myLayout)
+        }
+        val dialog = build.create()
+        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
+        dialog.show()
+
+        myLayout.btn_cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        myLayout.btn_login.setOnClickListener {
+            dialog.dismiss()
+        }
     }
 
     private fun backButton() {
@@ -322,8 +360,10 @@ class DrawActivity :
     }
 
     private fun setDepartureLatLng() {
-        departureLatLng = LatLng(searchResult.locationLatLng.latitude,
-            searchResult.locationLatLng.longitude)
+        departureLatLng = LatLng(
+            searchResult.locationLatLng.latitude,
+            searchResult.locationLatLng.longitude
+        )
     }
 
 
