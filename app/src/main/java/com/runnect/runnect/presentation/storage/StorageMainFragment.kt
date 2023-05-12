@@ -15,6 +15,7 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
 import com.runnect.runnect.presentation.login.LoginActivity
+import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
 import timber.log.Timber
 
 

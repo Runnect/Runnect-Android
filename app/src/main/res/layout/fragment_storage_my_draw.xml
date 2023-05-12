@@ -39,7 +39,7 @@
             android:text="@string/my_draw_edit"
             android:textColor="@color/M1"
             android:textSize="12sp"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/nestedScrollView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

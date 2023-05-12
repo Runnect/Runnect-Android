@@ -56,6 +56,8 @@ class StorageMyDrawFragment :
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
 
+    var availableEdit = false
+
 
     var isSelectAvailable = false
 
@@ -94,7 +96,6 @@ class StorageMyDrawFragment :
 
     @SuppressLint("SetTextI18n")
     private fun editCourse() {
-        var availableEdit = false
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
                 availableEdit = true
@@ -176,6 +177,7 @@ class StorageMyDrawFragment :
             addSelectionTracker()
             getMyDrawCourse()
             storageMyDrawAdapter.disableSelect()
+            availableEdit = false
             dialog.dismiss()
             isSelectAvailable = false
             hideDeleteCourseBtn()
