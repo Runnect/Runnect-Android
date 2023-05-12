@@ -98,6 +98,7 @@
     <string name="history_delete">삭제하기</string>
     <string name="my_page_upload_no_course">아직 업로드한 코스가 없어요!\n내가 그린 코스를 공유해보세요</string>
     <string name="my_page_upload">코스 업로드하기</string>
+    <string name="upload_delete">삭제하기</string>
 
 
 </resources>

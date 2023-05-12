@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.upload
 
 import android.content.ContentValues
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,9 +48,18 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.btnMyPageUploadEditCourse.setOnClickListener {
             handleEditClicked()
         }
+        binding.tvMyPageUploadDelete.setOnClickListener {
+            handleDeleteButtonClicked(it)
+        }
     }
     private fun handleEditClicked(){
         viewModel.convertMode()
+        binding.tvMyPageUploadDelete.isVisible = viewModel.editMode.value!!
+    }
+    private fun handleDeleteButtonClicked(it: View){
+        if (it.isActivated) {
+            showToast("Show Dialog")
+        }
     }
 
     private fun initAdapter() {
@@ -86,6 +96,11 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
                 exitEditMode()
             }
         }
+
+        viewModel.selectedItemsCount.observe(this) { count ->
+            updateDeleteButton(count)
+        }
+
         viewModel.selectCountMediator.observe(this) {}
     }
     private fun enterEditMode() {
@@ -99,6 +114,24 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         with(binding) {
             btnMyPageUploadEditCourse.text = EDIT_MODE
             tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
+            tvMyPageUploadDelete.isVisible = viewModel.editMode.value!!
+            if (::adapter.isInitialized) adapter.clearSelection()
+            viewModel.clearItemsToDelete()
+        }
+    }
+
+    private fun updateDeleteButton(count: Int) {
+        with(binding.tvMyPageUploadDelete) {
+            isActivated = count != 0
+            text = updateDeleteButtonLabel(count)
+        }
+    }
+
+    private fun updateDeleteButtonLabel(count: Int): String {
+        return if (count == 0) {
+            DELETE_BTN
+        } else {
+            "${DELETE_BTN}(${count})"
         }
     }
 
@@ -132,5 +165,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         const val CHOICE_MODE_DESC = "기록 선택"
         const val EDIT_CANCEL = "취소"
         const val EDIT_MODE = "편집"
+        const val DELETE_BTN = "삭제하기"
     }
 }

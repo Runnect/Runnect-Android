@@ -79,4 +79,8 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
         }
         itemsToDeleteLiveData.value = _itemsToDelete
     }
+    fun clearItemsToDelete() {
+        _itemsToDelete.clear()
+        itemsToDeleteLiveData.value = _itemsToDelete
+    }
 }

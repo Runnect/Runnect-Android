@@ -28,19 +28,23 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
     override fun onBindViewHolder(holder: MyUploadViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
-}
 
-class MyUploadViewHolder(private val binding: ItemMypageUploadBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-    fun onBind(data: UserUploadCourseDTO) {
-        with(binding) {
-            Glide.with(itemView).load(data.img).thumbnail(0.3f)
-                .format(DecodeFormat.PREFER_RGB_565).into(ivMyPageUploadCourse)
-            tvMyPageUploadCourseTitle.text = data.title
-            tvMyPageUploadCourseLocation.text = data.departure
+    fun clearSelection() {
+        selectedItems?.forEach {
+            it.isSelected = false
+        }
+        selectedItems?.clear()
+    }
+
+    fun removeItems(removedIds: List<Int>) {
+        if (currentList.isNotEmpty()) {
+            val newItems = currentList.filter { !removedIds.contains(it.id) }
+            submitList(newItems)
         }
     }
-}        RecyclerView.ViewHolder(binding.root) {
+
+    inner class MyUploadViewHolder(private val binding: ItemMypageUploadBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: UserUploadCourseDTO) {
             with(binding) {
                 Glide.with(itemView).load(data.img).thumbnail(0.3f)
