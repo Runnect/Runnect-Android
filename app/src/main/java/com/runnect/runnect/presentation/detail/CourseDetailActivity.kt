@@ -1,8 +1,11 @@
 package com.runnect.runnect.presentation.detail
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,18 +15,18 @@ import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
-import com.runnect.runnect.data.model.MyDrawToRunData
-import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
-import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.discover.DiscoverFragment
-import com.runnect.runnect.presentation.endrun.EndRunActivity
+import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -32,11 +35,16 @@ class CourseDetailActivity :
     private val viewModel: CourseDetailViewModel by viewModels()
     private var courseId: Int = 0
 
-    lateinit var departureLatLng : LatLng
+    lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
+
+    var isVisitorMode: Boolean = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        checkVisitorMode()
+
         courseId = intent.getIntExtra("courseId", 0)
         Timber.tag(ContentValues.TAG).d("상세페이지로 넘겨받은 courseId 값? : $courseId")
         addListener()
@@ -46,7 +54,10 @@ class CourseDetailActivity :
         showReportBottomSheet()
     }
 
-
+    private fun checkVisitorMode() {
+        isVisitorMode =
+            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
+    }
 
     private fun initView() {
         binding.vm = viewModel
@@ -72,23 +83,51 @@ class CourseDetailActivity :
             viewModel.postCourseScrap(id = courseId, it.isSelected)
         }
         binding.btnCourseDetailFinish.setOnClickListener {
-            val intent = Intent(this, CountDownActivity::class.java).apply {
-                putExtra("detailToRun",
-                DetailToRunData(
-                    viewModel.courseDetail.courseId,
-                    viewModel.courseDetail.id,
-                    touchList,
-                    departureLatLng,
-                    viewModel.courseDetail.departure,
-                    viewModel.courseDetail.distance.toFloat(),
-                    viewModel.courseDetail.image
-                ))
+
+            if (isVisitorMode) {
+                requireVisitorLogin(binding.root)
+            } else {
+                val intent = Intent(this, CountDownActivity::class.java).apply {
+                    putExtra(
+                        "detailToRun",
+                        DetailToRunData(
+                            viewModel.courseDetail.courseId,
+                            viewModel.courseDetail.id,
+                            touchList,
+                            departureLatLng,
+                            viewModel.courseDetail.departure,
+                            viewModel.courseDetail.distance.toFloat(),
+                            viewModel.courseDetail.image
+                        )
+                    )
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
     }
 
-    private fun getCourseDetail(){
+    private fun requireVisitorLogin(view: View) {
+        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
+
+        val build = AlertDialog.Builder(view.context).apply {
+            setView(myLayout)
+        }
+        val dialog = build.create()
+        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
+        dialog.show()
+
+        myLayout.btn_cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        myLayout.btn_login.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            dialog.dismiss()
+        }
+    }
+
+    private fun getCourseDetail() {
         viewModel.getCourseDetail(courseId)
     }
 
@@ -101,7 +140,12 @@ class CourseDetailActivity :
 
     private fun setTouchList() {
         for (i in 1 until viewModel.courseDetail.path.size) {
-            touchList.add(LatLng(viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]))
+            touchList.add(
+                LatLng(
+                    viewModel.courseDetail.path[i][0],
+                    viewModel.courseDetail.path[i][1]
+                )
+            )
         }
         Timber.tag(ContentValues.TAG).d("touchList 값 : $touchList")
     }
@@ -132,7 +176,7 @@ class CourseDetailActivity :
         }
     }
 
-    private fun showReportBottomSheet(){
+    private fun showReportBottomSheet() {
         binding.btnShowMore.setOnClickListener {
             bottomSheet()
         }
