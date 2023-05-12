@@ -55,10 +55,23 @@ class LoginActivity :
                 socialLogin = kakaoLogin
                 socialLogin.signIn()
             }
+            btnVisitorMode.setOnClickListener {
+                PreferenceManager.setString(
+                    applicationContext,
+                    "access",
+                    "visitor"
+                )
+                PreferenceManager.setString(
+                    applicationContext,
+                    "refresh",
+                    "null"
+                )
+                moveToMain()
+            }
         }
     }
 
-    private fun addObserver() {
+    private fun addObserver() { //방문자 모드는 여기 logic에 해당이 안 돼.
         viewModel.loginState.observe(this) {
             if (it == UiState.Success) {
                 if (viewModel.loginResult.value?.status == 200) {
