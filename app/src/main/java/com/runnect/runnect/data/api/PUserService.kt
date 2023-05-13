@@ -1,6 +1,7 @@
 package com.runnect.runnect.data.api
 
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
 import retrofit2.http.Body
@@ -34,4 +35,9 @@ interface PUserService {
     suspend fun putDeleteHistory(
         @Body requestDeleteHistory: RequestDeleteHistory
     ): ResponseDeleteHistory
+
+    @PUT("api/public-course")
+    suspend fun putDeleteUploadCourse(
+        @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
+    ): ResponseDeleteUploadCourse
 }

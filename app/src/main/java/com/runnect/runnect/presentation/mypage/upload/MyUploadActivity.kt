@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.mypage.upload
 
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.os.Bundle
 import android.view.View
@@ -14,16 +15,18 @@ import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnUploadItemClick
+import com.runnect.runnect.util.extension.setCustomDialog
+import com.runnect.runnect.util.extension.setDialogClickListener
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.custom_dialog_delete.*
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload), OnUploadItemClick {
     private val viewModel: MyUploadViewModel by viewModels()
-
     private lateinit var adapter: MyUploadAdapter
-
+    private lateinit var dialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         initLayout()
         addListener()
         addObserver()
+        initDialog()
     }
 
     private fun initLayout() {
@@ -58,7 +62,27 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
     private fun handleDeleteButtonClicked(it: View){
         if (it.isActivated) {
-            showToast("Show Dialog")
+            setDialogClickEvent()
+            dialog.show()
+        }
+    }
+    private fun initDialog() {
+        dialog = setCustomDialog(layoutInflater, binding.root,
+            DIALOG_DESC,
+            DELETE_BTN
+        )
+    }
+    private fun setDialogClickEvent() {
+        dialog.setDialogClickListener { which ->
+            when (which) {
+                dialog.btn_delete_yes -> {
+                    viewModel.deleteUploadCourse()
+                    dialog.dismiss()
+                }
+                dialog.btn_delete_no -> {
+                    dialog.dismiss()
+                }
+            }
         }
     }
 
@@ -75,20 +99,24 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
         viewModel.myUploadCourseState.observe(this) {
             when (it) {
-                UiState.Empty -> {
-                    handleEmptyUploadCourse()
-                }
+                UiState.Empty -> handleEmptyUploadCourse()
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    handleSuccessfulCourseLoad()
-                }
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                }
+                UiState.Success -> handleSuccessfulCourseLoad()
+                UiState.Failure -> handleUnsuccessfulUploadCall()
             }
         }
+
+        viewModel.myUloadDeleteState.observe(this) {
+            updateDeleteButton(viewModel.selectedItemsCount.value ?: 0)
+            when (it) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> handleSuccessfulUploadDeletion()
+                UiState.Failure -> handleUnsuccessfulUploadCall()
+                else -> binding.indeterminateBar.isVisible = false
+
+            }
+        }
+
         viewModel.editMode.observe(this){editMode ->
             if (editMode) {
                 enterEditMode()
@@ -109,6 +137,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             tvMyPageUploadTotalCourseCount.text = CHOICE_MODE_DESC
         }
     }
+
     /**편집 취소 버튼을 누르는 경우 or 모든 기록이 삭제된 경우*/
     private fun exitEditMode() {
         with(binding) {
@@ -144,6 +173,18 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         }
         initAdapter()
     }
+
+    private fun handleSuccessfulUploadDeletion() {
+        binding.indeterminateBar.isVisible = false
+        adapter.removeItems(viewModel.itemsToDelete)
+        adapter.clearSelection()
+        viewModel.clearItemsToDelete()
+    }
+    private fun handleUnsuccessfulUploadCall() {
+        binding.indeterminateBar.isVisible = false
+        Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+    }
+
     private fun handleEmptyUploadCourse(){
         with(binding) {
             indeterminateBar.isVisible = false
@@ -165,6 +206,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         const val CHOICE_MODE_DESC = "기록 선택"
         const val EDIT_CANCEL = "취소"
         const val EDIT_MODE = "편집"
+        const val DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
         const val DELETE_BTN = "삭제하기"
     }
 }

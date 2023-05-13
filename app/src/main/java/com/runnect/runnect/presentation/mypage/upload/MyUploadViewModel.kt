@@ -2,11 +2,14 @@ package com.runnect.runnect.presentation.mypage.upload
 
 import androidx.lifecycle.*
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.mypage.history.MyHistoryViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,6 +18,10 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
     private var _myUploadCourseState = MutableLiveData<UiState>()
     val myUploadCourseState: LiveData<UiState>
         get() = _myUploadCourseState
+
+    private var _myUploadDeleteState = MutableLiveData<UiState>()
+    val myUloadDeleteState: LiveData<UiState>
+        get() = _myUploadDeleteState
 
     private var _myUploadCourses = mutableListOf<UserUploadCourseDTO>()
     val myUploadCourses: List<UserUploadCourseDTO>
@@ -40,7 +47,7 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
         }
     }
 
-    private var _selectedItemsCount = MutableLiveData(MyHistoryViewModel.DEFAULT_SELECTED_COUNT)
+    private var _selectedItemsCount = MutableLiveData(DEFAULT_SELECTED_COUNT)
     val selectedItemsCount: LiveData<Int>
         get() = _selectedItemsCount
 
@@ -63,6 +70,29 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
         }
     }
 
+    fun deleteUploadCourse() {
+        viewModelScope.launch {
+            runCatching {
+                _myUploadDeleteState.value = UiState.Loading
+                setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
+                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(_itemsToDelete))
+            }.onSuccess {
+                _myUploadCourses =
+                    _myUploadCourses.filter { !itemsToDelete.contains(it.id) }.toMutableList()
+                _myUploadDeleteState.value = UiState.Success
+                //모든 기록 삭제 시, 편집 모드 취소
+                if (_myUploadCourses.isEmpty()) {
+                    _myUploadCourseState.value = UiState.Empty
+                    convertMode()
+                }
+            }.onFailure {
+                errorMessage.value = it.message
+                _myUploadDeleteState.value = UiState.Failure
+            }
+        }
+    }
+
+
     fun convertMode() {
         _editMode.value = !_editMode.value!!
     }
@@ -82,5 +112,8 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
     fun clearItemsToDelete() {
         _itemsToDelete.clear()
         itemsToDeleteLiveData.value = _itemsToDelete
+    }
+    companion object{
+        const val DEFAULT_SELECTED_COUNT = 0
     }
 }
