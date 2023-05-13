@@ -3,6 +3,10 @@ package com.runnect.runnect.data.repository
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
@@ -46,8 +50,11 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
         return userDataSource.putDeleteHistory(requestDeleteHistory)
     }
 
+    override suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse {
+        return userDataSource.putDeleteUploadCourse(requestDeleteUploadCourse)
+
     override suspend fun patchHistoryTitle(historyId:Int, requestEditHistoryTitle: RequestEditHistoryTitle): ResponseEditHistoryTitle {
         return userDataSource.patchHistoryTitle(historyId, requestEditHistoryTitle)
-    }
 
+    }
 }
