@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.upload
 
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
+import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
@@ -135,6 +137,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         with(binding) {
             btnMyPageUploadEditCourse.text = EDIT_CANCEL
             tvMyPageUploadTotalCourseCount.text = CHOICE_MODE_DESC
+            if (::adapter.isInitialized) adapter.handleCheckBoxVisibility(true)
         }
     }
 
@@ -144,7 +147,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             btnMyPageUploadEditCourse.text = EDIT_MODE
             tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
             tvMyPageUploadDelete.isVisible = viewModel.editMode.value!!
-            if (::adapter.isInitialized) adapter.clearSelection()
+            if (::adapter.isInitialized) {
+                adapter.clearSelection()
+                adapter.handleCheckBoxVisibility(false)
+            }
             viewModel.clearItemsToDelete()
         }
     }
