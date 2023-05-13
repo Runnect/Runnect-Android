@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.detail
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -8,26 +9,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
-import com.runnect.runnect.data.model.MyDrawToRunData
-import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
-import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.discover.DiscoverFragment
-import com.runnect.runnect.presentation.endrun.EndRunActivity
+import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.setEditBottomSheet
-import com.runnect.runnect.util.extension.setEditBottomSheetClickListener
-import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -36,8 +34,9 @@ class CourseDetailActivity :
     private val viewModel: CourseDetailViewModel by viewModels()
     private var courseId: Int = 0
     private var root: String = ""
-    lateinit var departureLatLng : LatLng
+    lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
+    private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +48,9 @@ class CourseDetailActivity :
         getCourseDetail()
         addObserver()
         initEditBottomSheet()
+        initDeleteDialog()
+        setDeleteDialogClickEvent()
     }
-
 
 
     private fun initView() {
@@ -71,30 +71,31 @@ class CourseDetailActivity :
         }
         binding.btnCourseDetailFinish.setOnClickListener {
             val intent = Intent(this, CountDownActivity::class.java).apply {
-                putExtra("detailToRun",
-                DetailToRunData(
-                    viewModel.courseDetail.courseId,
-                    viewModel.courseDetail.id,
-                    touchList,
-                    departureLatLng,
-                    viewModel.courseDetail.departure,
-                    viewModel.courseDetail.distance.toFloat(),
-                    viewModel.courseDetail.image
-                ))
+                putExtra(
+                    "detailToRun",
+                    DetailToRunData(
+                        viewModel.courseDetail.courseId,
+                        viewModel.courseDetail.id,
+                        touchList,
+                        departureLatLng,
+                        viewModel.courseDetail.departure,
+                        viewModel.courseDetail.distance.toFloat(),
+                        viewModel.courseDetail.image
+                    )
+                )
             }
             startActivity(intent)
         }
         binding.btnShowMore.setOnClickListener {
-            if(root == "upload"){
+            if (root == "upload") {
                 editBottomSheet.show()
-            }
-            else {
+            } else {
                 bottomSheet()
             }
         }
     }
 
-    private fun getCourseDetail(){
+    private fun getCourseDetail() {
         viewModel.getCourseDetail(courseId)
     }
 
@@ -105,7 +106,12 @@ class CourseDetailActivity :
 
     private fun setTouchList() {
         for (i in 1 until viewModel.courseDetail.path.size) {
-            touchList.add(LatLng(viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]))
+            touchList.add(
+                LatLng(
+                    viewModel.courseDetail.path[i][0],
+                    viewModel.courseDetail.path[i][1]
+                )
+            )
         }
     }
 
@@ -132,6 +138,26 @@ class CourseDetailActivity :
                 setTouchList()
             }
         }
+
+        viewModel.myUploadDeleteState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    if (root == "upload") {
+                        val intent = Intent(this, MyUploadActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else -> {}
+            }
+        }
     }
 
     private fun initEditBottomSheet() {
@@ -146,13 +172,31 @@ class CourseDetailActivity :
                     showToast("수정하기")
                 }
                 editBottomSheet.layout_delete_frame -> {
-                    showToast("삭제하기")
+                    deleteDialog.show()
                 }
             }
         }
     }
 
+    private fun initDeleteDialog() {
+        deleteDialog =
+            setCustomDialog(
+                layoutInflater, binding.root,
+                DELETE_DIALOG_DESC,
+                DELETE_DIALOG_YES_BTN
+            )
+    }
 
+    private fun setDeleteDialogClickEvent() {
+        deleteDialog.setDialogClickListener { which ->
+            when (which) {
+                deleteDialog.btn_delete_yes -> {
+                    viewModel.deleteUploadCourse(courseId)
+                }
+            }
+
+        }
+    }
 
 
     @SuppressLint("MissingInflatedId")
@@ -179,5 +223,10 @@ class CourseDetailActivity :
         bottomSheetDialog.setContentView(bottomSheetView)
         // bottomSheetDialog 호출
         bottomSheetDialog.show()
+    }
+
+    companion object {
+        const val DELETE_DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
+        const val DELETE_DIALOG_YES_BTN = "삭제하기"
     }
 }

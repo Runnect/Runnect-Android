@@ -2,14 +2,11 @@ package com.runnect.runnect.presentation.mypage.upload
 
 import androidx.lifecycle.*
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.domain.UserRepository
-import com.runnect.runnect.presentation.mypage.history.MyHistoryViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +17,7 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
         get() = _myUploadCourseState
 
     private var _myUploadDeleteState = MutableLiveData<UiState>()
-    val myUloadDeleteState: LiveData<UiState>
+    val myUploadDeleteState: LiveData<UiState>
         get() = _myUploadDeleteState
 
     private var _myUploadCourses = mutableListOf<UserUploadCourseDTO>()

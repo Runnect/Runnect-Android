@@ -7,18 +7,30 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.CourseDetailDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.presentation.mypage.upload.MyUploadViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CourseDetailViewModel @Inject constructor(private val courseRepository: CourseRepository) :
+class CourseDetailViewModel @Inject constructor(private val courseRepository: CourseRepository, private val userRepository: UserRepository) :
     ViewModel() {
     private var _courseDetailState = MutableLiveData<UiState>(UiState.Loading)
     val courseDetailState: LiveData<UiState>
         get() = _courseDetailState
+
+    private var _myUploadDeleteState = MutableLiveData<UiState>()
+    val myUploadDeleteState: LiveData<UiState>
+        get() = _myUploadDeleteState
+
+    private var _itemsToDelete: MutableList<Int> = mutableListOf()
+    val itemsToDelete: List<Int>
+        get() = _itemsToDelete
+
     private var _courseDetail = CourseDetailDTO(
         R.drawable.user_profile_basic,
         "1",
@@ -61,6 +73,21 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
             }.onSuccess {
             }.onFailure {
                 errorMessage.value = it.message
+            }
+        }
+    }
+
+    fun deleteUploadCourse(id: Int) {
+        _itemsToDelete = mutableListOf(id)
+        viewModelScope.launch {
+            runCatching {
+                _myUploadDeleteState.value = UiState.Loading
+                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(_itemsToDelete))
+            }.onSuccess {
+                _myUploadDeleteState.value = UiState.Success
+            }.onFailure {
+                errorMessage.value = it.message
+                _myUploadDeleteState.value = UiState.Failure
             }
         }
     }

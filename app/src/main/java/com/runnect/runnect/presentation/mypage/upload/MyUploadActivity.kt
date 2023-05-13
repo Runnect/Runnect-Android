@@ -12,14 +12,12 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
-import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnUploadItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
-import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
 import timber.log.Timber
@@ -108,7 +106,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             }
         }
 
-        viewModel.myUloadDeleteState.observe(this) {
+        viewModel.myUploadDeleteState.observe(this) {
             updateDeleteButton(viewModel.selectedItemsCount.value ?: 0)
             when (it) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
