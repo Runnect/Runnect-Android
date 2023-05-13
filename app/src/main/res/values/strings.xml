@@ -96,6 +96,7 @@
     <string name="discover_search_guide">지역과 키워드 위주로 검색해보세요</string>
     <string name="my_page_history_no_history">아직 러닝 기록이 없어요!\n코스를 그리고 달려보세요</string>
     <string name="history_delete">삭제하기</string>
+    <string name="login_visitor_mode"><u>회원가입 없이 둘러보기</u></string>
     <string name="my_page_upload_no_course">아직 업로드한 코스가 없어요!\n내가 그린 코스를 공유해보세요</string>
     <string name="my_page_upload">코스 업로드하기</string>
     <string name="upload_delete">삭제하기</string>
