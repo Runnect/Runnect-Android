@@ -27,9 +27,7 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
     val myUploadDeleteState: LiveData<UiState>
         get() = _myUploadDeleteState
 
-    private var _itemsToDelete: MutableList<Int> = mutableListOf()
-    val itemsToDelete: List<Int>
-        get() = _itemsToDelete
+    private lateinit var courseToDelete: List<Int>
 
     private var _courseDetail = CourseDetailDTO(
         R.drawable.user_profile_basic,
@@ -78,11 +76,11 @@ class CourseDetailViewModel @Inject constructor(private val courseRepository: Co
     }
 
     fun deleteUploadCourse(id: Int) {
-        _itemsToDelete = mutableListOf(id)
+        courseToDelete = listOf(id)
         viewModelScope.launch {
             runCatching {
                 _myUploadDeleteState.value = UiState.Loading
-                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(_itemsToDelete))
+                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(courseToDelete))
             }.onSuccess {
                 _myUploadDeleteState.value = UiState.Success
             }.onFailure {
