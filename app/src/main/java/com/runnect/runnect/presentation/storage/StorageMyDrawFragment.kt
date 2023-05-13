@@ -18,6 +18,8 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
@@ -30,6 +32,7 @@ import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
+import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
 import timber.log.Timber
 
 
@@ -53,21 +56,25 @@ class StorageMyDrawFragment :
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
 
+    var availableEdit = false
+
 
     var isSelectAvailable = false
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout()
-        binding.lifecycleOwner = requireActivity()
-        initAdapter()
-        editCourse()
-        getCourse()
-        requireCourse()
-        addObserver()
-        addSelectionTracker()
+
+            initLayout()
+            binding.lifecycleOwner = requireActivity()
+            initAdapter()
+            editCourse()
+            getCourse()
+            requireCourse()
+            addObserver()
+            addSelectionTracker()
     }
+
 
     private fun initLayout() {
         binding.recyclerViewStorageMyDraw
@@ -89,7 +96,6 @@ class StorageMyDrawFragment :
 
     @SuppressLint("SetTextI18n")
     private fun editCourse() {
-        var availableEdit = false
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
                 availableEdit = true
@@ -171,6 +177,7 @@ class StorageMyDrawFragment :
             addSelectionTracker()
             getMyDrawCourse()
             storageMyDrawAdapter.disableSelect()
+            availableEdit = false
             dialog.dismiss()
             isSelectAvailable = false
             hideDeleteCourseBtn()
@@ -210,7 +217,6 @@ class StorageMyDrawFragment :
             with(binding) {
                 ivStorageMyDrawNoCourse.isVisible = true
                 tvStorageMyDrawNoCourseGuide.isVisible = true
-                tvStorageMyDrawNoCourseGuide2.isVisible = true
                 btnStorageNoCourse.isVisible = true
                 recyclerViewStorageMyDraw.isVisible = false
                 btnEditCourse.isEnabled = false
@@ -221,7 +227,6 @@ class StorageMyDrawFragment :
             with(binding) {
                 ivStorageMyDrawNoCourse.isVisible = false
                 tvStorageMyDrawNoCourseGuide.isVisible = false
-                tvStorageMyDrawNoCourseGuide2.isVisible = false
                 btnStorageNoCourse.isVisible = false
                 recyclerViewStorageMyDraw.isVisible = true
                 btnEditCourse.isEnabled = true

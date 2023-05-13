@@ -10,8 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
+import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
@@ -19,6 +22,8 @@ import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_my_page.*
+import kotlinx.android.synthetic.main.fragment_my_page.view.*
 import timber.log.Timber
 
 
@@ -26,14 +31,54 @@ import timber.log.Timber
 class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
     private val viewModel: MyPageViewModel by activityViewModels()
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
+
+    var isVisitorMode: Boolean = false;
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.vm = viewModel
-        binding.lifecycleOwner = this.viewLifecycleOwner
-        viewModel.getUserInfo()
-        addListener()
-        addObserver()
-        setResultEditNameLauncher()
+        checkVisitorMode()
+
+        if (isVisitorMode) {
+            activateVisitorMode()
+        } else {
+            deactivateVisitorMode()
+        }
+
+    }
+
+    private fun checkVisitorMode() {
+        isVisitorMode =
+            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
+    }
+
+    private fun activateVisitorMode() {
+        with(binding) {
+            ivVisitorMode.isVisible = true
+            tvVisitorMode.isVisible = true
+            btnVisitorMode.isVisible = true
+            constraintInside.isVisible = false
+
+            btnVisitorMode.setOnClickListener {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun deactivateVisitorMode() {
+        with(binding) {
+            ivVisitorMode.isVisible = false
+            tvVisitorMode.isVisible = false
+            btnVisitorMode.isVisible = false
+            constraintInside.isVisible = true
+
+            binding.vm = viewModel
+            binding.lifecycleOwner = this.lifecycleOwner
+            viewModel.getUserInfo()
+            addListener()
+            addObserver()
+            setResultEditNameLauncher()
+        }
     }
 
     private fun setResultEditNameLauncher() {

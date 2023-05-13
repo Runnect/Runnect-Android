@@ -73,6 +73,50 @@
 
         </com.google.android.material.tabs.TabLayout>
 
+        <ImageView
+            android:id="@+id/iv_visitor_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="13dp"
+            android:background="@drawable/finish_run"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/tv_visitor_mode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_visitor_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:lineSpacingExtra="5sp"
+            android:text="러넥트에 가입하면 내가 그린 코스와\n스크랩 코스를 관리할 수 있어요!"
+            android:textAlignment="center"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/btn_visitor_mode"
+            app:layout_constraintEnd_toEndOf="@id/iv_visitor_mode"
+            app:layout_constraintStart_toStartOf="@id/iv_visitor_mode" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_visitor_mode"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="73dp"
+            android:layout_marginBottom="283dp"
+            android:background="@drawable/radius_10_m1_button"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="가입하기"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <View
             android:id="@+id/tab_under_line"
             android:layout_width="match_parent"
@@ -90,12 +134,10 @@
 
         <View
             android:id="@+id/view_empty"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/transparent_00"
             android:layout_width="match_parent"
-            android:layout_height="57dp"/>
-
-
+            android:layout_height="57dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
