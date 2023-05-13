@@ -18,29 +18,9 @@ import java.io.IOException
 
 object KApiCourse {
 
-    //헤더에 accessToken과 refreshToken을 넣어야 하는데 accessToken이 만료되면 api 통신을 통해 갱신도 시켜줘야 함
-
     private var retrofit: Retrofit? = null
     private val logger = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
-    }
-
-    //Machine ID를 헤더로 붙임
-    class AppInterceptor : Interceptor {
-        @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
-            val newRequest = request().newBuilder()
-                .addHeader(
-                    "accessToken",
-                    PreferenceManager.getString(ApplicationClass.appContext, "access")!!
-                )
-                .addHeader(
-                    "refreshToken",
-                    PreferenceManager.getString(ApplicationClass.appContext, "refresh")!!
-                )
-                .build()
-            proceed(newRequest)
-        }
     }
 
     private val client by lazy {
@@ -73,3 +53,5 @@ object KApiCourse {
 
     }
 }
+
+

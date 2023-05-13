@@ -19,51 +19,49 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="74dp"
-            android:layout_marginTop="31dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="61.79dp"
-            android:src="@drawable/alertdialog"
+            android:src="@drawable/finish_run"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:lineSpacingExtra="5sp"
-            android:gravity="center"
             android:id="@+id/tv_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
             android:fontFamily="@font/pretendard_medium"
-            android:text="코스를 만들었어요!\n저장한 코스는 보관함에서 볼 수 있어요."
+            android:text="가입 후 로그인 시 코스를 저장하고 달릴 수 있어요!"
             android:textColor="@color/G2"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@id/iv_dialog"
-            app:layout_constraintStart_toStartOf="@id/iv_dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_dialog" />
 
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_storage"
+            android:id="@+id/btn_cancel"
             android:layout_width="147dp"
             android:layout_height="45dp"
             android:layout_marginStart="13dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/radius_10_m3_button"
             android:fontFamily="@font/pretendard_semibold"
             android:stateListAnimator="@null"
-            android:text="@string/dialog_make_course_go_to_storage"
+            android:text="닫기"
             android:textAlignment="center"
             android:textColor="@color/M1"
             android:textSize="13.31sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_run"
+            app:layout_constraintEnd_toStartOf="@id/btn_login"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_run"
+            android:id="@+id/btn_login"
             android:layout_width="147dp"
             android:layout_height="45dp"
             android:layout_marginStart="6dp"
@@ -71,13 +69,13 @@
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
             android:stateListAnimator="@null"
-            android:text="@string/dialog_make_course_immediately_run"
+            android:text="가입하기"
             android:textColor="@color/W1"
             android:textSize="13.31sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_storage"
+            app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_storage"
-            app:layout_constraintTop_toTopOf="@id/btn_storage" />
+            app:layout_constraintStart_toEndOf="@id/btn_cancel"
+            app:layout_constraintTop_toTopOf="@id/btn_cancel" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
 

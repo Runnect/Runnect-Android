@@ -36,11 +36,11 @@
             app:layout_constraintTop_toTopOf="@id/btn_signIn_google" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_marginBottom="8dp"
             android:id="@+id/btn_signIn_google"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/radius_8_w1_button"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/login_signIn_google"
@@ -62,18 +62,31 @@
             app:layout_constraintTop_toTopOf="@id/btn_signIn_kakao" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_marginBottom="48dp"
             android:id="@+id/btn_signIn_kakao"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/radius_8_kakao_yellow_button"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/login_signIn_kakao"
             android:textSize="15.6sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_visitor_mode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/btn_visitor_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="39dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/login_visitor_mode"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/btn_signIn_kakao"
+            app:layout_constraintStart_toStartOf="@id/btn_signIn_kakao" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

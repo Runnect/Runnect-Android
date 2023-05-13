@@ -6,7 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -14,6 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
@@ -40,11 +44,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var scrollHandler: Handler
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
-    private lateinit var scrollPageRunnable:Runnable
+    private lateinit var scrollPageRunnable: Runnable
     private var currentPosition = PAGE_NUM / 2
+
+    var isVisitorMode: Boolean = false;
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        checkVisitorMode()
+
         val promotionImages = mutableListOf(
             DiscoverPromotionItemDTO(R.drawable.discover_promotion1),
             DiscoverPromotionItemDTO(R.drawable.discover_promotion2),
@@ -57,7 +66,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         setResultDetail()
-        setPromotion(binding.vpDiscoverPromotion,promotionImages)
+        setPromotion(binding.vpDiscoverPromotion, promotionImages)
+    }
+
+    private fun checkVisitorMode() {
+        isVisitorMode =
+            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     private fun initLayout() {
@@ -81,11 +95,22 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             )
         }
         binding.btnDiscoverUpload.setOnClickListener {
-            startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
+            if (isVisitorMode) {
+                val toast =
+                    Toast.makeText(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT)
+                toast.setGravity(
+                    Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM,
+                    0,
+                    350
+                ) // yOffset 숫자 높게 줄수록 위로 올라감
+                toast.show()
+            } else {
+                startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
+                requireActivity().overridePendingTransition(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
+            }
         }
     }
 
@@ -119,7 +144,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverRecommend.adapter = courseRecommendAdapter
 
     }
-    private fun setPromotion(vp:ViewPager2,vpList:MutableList<DiscoverPromotionItemDTO>){
+
+    private fun setPromotion(vp: ViewPager2, vpList: MutableList<DiscoverPromotionItemDTO>) {
         setPromotionAdapter(vpList)
         setPromotionIndicator(vp)
         setPromotionViewPager(vp)
@@ -132,11 +158,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vpDiscoverPromotion.adapter = promotionAdapter
         setPromotionIndicator(binding.vpDiscoverPromotion)
     }
+
     private fun setPromotionIndicator(vp: ViewPager2) {
         val indicator = binding.ciDiscoverPromotion
         indicator.setViewPager(vp)
         indicator.createIndicators(FRAME_NUM, PAGE_NUM / 2)
     }
+
     private fun setPromotionViewPager(vp: ViewPager2) {
         vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp.setCurrentItem(PAGE_NUM / 2, false)
@@ -146,6 +174,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 binding.ciDiscoverPromotion.animatePageSelected(position % FRAME_NUM)
                 currentPosition = position
             }
+
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -159,6 +188,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
         )
     }
+
     private fun setScrollHandler(vp: ViewPager2) {
         scrollHandler = Handler(Looper.getMainLooper())
         scrollPageRunnable = Runnable {
@@ -175,6 +205,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
         timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
     }
+
     private fun autoScrollStop() {
         timerTask.cancel()
     }
@@ -213,6 +244,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             R.anim.slide_out_left
         )
     }
+
     companion object {
         const val FRAME_NUM = 3
         const val PAGE_NUM = 900
