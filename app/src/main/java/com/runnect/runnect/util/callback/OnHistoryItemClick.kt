@@ -1,5 +1,7 @@
 package com.runnect.runnect.util.callback
 
+import com.runnect.runnect.data.dto.HistoryInfoDTO
+
 interface OnHistoryItemClick {
-    fun selectItem(id: Int): Boolean
+    fun selectItem(data: HistoryInfoDTO): Boolean
 }

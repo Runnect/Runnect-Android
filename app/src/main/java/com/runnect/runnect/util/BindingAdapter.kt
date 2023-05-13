@@ -10,4 +10,10 @@ object BindingAdapter {
     fun imgRes(imageView: ImageView, resId: Int) {
         imageView.load(resId)
     }
+
+    @BindingAdapter("imgUri")
+    @JvmStatic
+    fun imgUri(imageView: ImageView, uri: String) {
+        imageView.load(uri)
+    }
 }

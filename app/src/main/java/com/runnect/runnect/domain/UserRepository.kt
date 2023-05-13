@@ -7,6 +7,10 @@ import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponseEditHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponseUpdateNickName
 import com.runnect.runnect.data.dto.response.ResponseUser
 
@@ -18,4 +22,5 @@ interface UserRepository {
     suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO>
     suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): ResponseDeleteHistory
     suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse
+    suspend fun patchHistoryTitle(historyId:Int, requestEditHistoryTitle: RequestEditHistoryTitle): ResponseEditHistoryTitle
 }

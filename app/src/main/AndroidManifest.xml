@@ -21,9 +21,11 @@
         tools:targetApi="tiramisu"
         android:enableOnBackInvokedCallback="true">
         <activity
+            android:name=".presentation.mypage.history.detail.MyHistoryDetailActivity"
+            android:exported="false"/>
+        <activity
             android:name=".presentation.mypage.editname.MyPageEditNameActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true"
