@@ -15,32 +15,33 @@
         android:layout_height="match_parent"
         tools:context=".presentation.detail.CourseDetailActivity">
 
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_course_detail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:contentInsetStart="0dp"
             app:layout_constraintDimensionRatio="360:48"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="0dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_course_detail_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/start_margin_back_btn"
+                android:padding="15dp"
                 app:srcCompat="@drawable/all_back_arrow" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:layout_marginEnd="18dp"
                 android:id="@+id/btn_showMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:backgroundTint="@color/transparent_00"
+                android:layout_marginEnd="18dp"
+                android:backgroundTint="@color/W1"
                 android:src="@drawable/showmorebtn" />
 
         </androidx.appcompat.widget.Toolbar>
-
 
         <ScrollView
             android:id="@+id/sv_course_detail"

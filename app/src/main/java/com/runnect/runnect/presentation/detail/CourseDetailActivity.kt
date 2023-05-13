@@ -23,7 +23,11 @@ import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.setEditBottomSheet
+import com.runnect.runnect.util.extension.setEditBottomSheetClickListener
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -31,19 +35,20 @@ class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
     private var courseId: Int = 0
-
+    private var root: String = ""
     lateinit var departureLatLng : LatLng
     private val touchList = arrayListOf<LatLng>()
+    private lateinit var editBottomSheet: BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         courseId = intent.getIntExtra("courseId", 0)
-        Timber.tag(ContentValues.TAG).d("상세페이지로 넘겨받은 courseId 값? : $courseId")
+        root = intent.getStringExtra("root").toString()
         addListener()
         initView()
         getCourseDetail()
         addObserver()
-        showReportBottomSheet()
+        initEditBottomSheet()
     }
 
 
@@ -51,13 +56,6 @@ class CourseDetailActivity :
     private fun initView() {
         binding.vm = viewModel
         binding.lifecycleOwner = this
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, DiscoverFragment::class.java)
-        setResult(RESULT_OK, intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addListener() {
@@ -86,24 +84,29 @@ class CourseDetailActivity :
             }
             startActivity(intent)
         }
+        binding.btnShowMore.setOnClickListener {
+            if(root == "upload"){
+                editBottomSheet.show()
+            }
+            else {
+                bottomSheet()
+            }
+        }
     }
 
     private fun getCourseDetail(){
         viewModel.getCourseDetail(courseId)
     }
 
-    //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
     private fun setDepartureLatLng() {
         departureLatLng =
             LatLng(viewModel.courseDetail.path[0][0], viewModel.courseDetail.path[0][1])
-        Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
-    } //통신 결과가 세팅되기 전에 이 코드가 돌아버림. 그래서 뒤에 UiState가 success일 때 안으로 이 함수를 넣어줌
+    }
 
     private fun setTouchList() {
         for (i in 1 until viewModel.courseDetail.path.size) {
             touchList.add(LatLng(viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]))
         }
-        Timber.tag(ContentValues.TAG).d("touchList 값 : $touchList")
     }
 
 
@@ -112,7 +115,6 @@ class CourseDetailActivity :
             if (state == UiState.Success) {
                 with(binding) {
                     with(viewModel.courseDetail) {
-                        Timber.tag(ContentValues.TAG).d("화면에 바인딩할 image 값? : $image")
                         ivCourseDetailMap.load(image)
                         ivCourseDetailProfileStamp.load(stampId)
                         ivCourseDetailProfileNickname.text = nickname
@@ -132,11 +134,26 @@ class CourseDetailActivity :
         }
     }
 
-    private fun showReportBottomSheet(){
-        binding.btnShowMore.setOnClickListener {
-            bottomSheet()
+    private fun initEditBottomSheet() {
+        editBottomSheet = setEditBottomSheet()
+        setEditBottomSheetClickEvent()
+    }
+
+    private fun setEditBottomSheetClickEvent() {
+        editBottomSheet.setEditBottomSheetClickListener { which ->
+            when (which) {
+                editBottomSheet.layout_edit_frame -> {
+                    showToast("수정하기")
+                }
+                editBottomSheet.layout_delete_frame -> {
+                    showToast("삭제하기")
+                }
+            }
         }
     }
+
+
+
 
     @SuppressLint("MissingInflatedId")
     fun bottomSheet() {

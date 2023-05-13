@@ -203,8 +203,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             viewModel.modifyItemsToDelete(id)
             true
         } else {
-            //매개변수로 아이템 정보를 넘겨받아 코스 상세 액티비티 이동
-            showToast("코스 상세 조회 액티비티 이동")
+            val intent = Intent(this,CourseDetailActivity::class.java)
+            intent.putExtra("courseId",id)
+            intent.putExtra("root","upload")
+            startActivity(intent)
             false
         }
     }
