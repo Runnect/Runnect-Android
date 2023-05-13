@@ -18,7 +18,6 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -38,6 +37,7 @@ class CourseDetailActivity :
     private val touchList = arrayListOf<LatLng>()
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
+    private lateinit var editInterruptDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +50,8 @@ class CourseDetailActivity :
         initEditBottomSheet()
         initDeleteDialog()
         setDeleteDialogClickEvent()
+        initEditInterruptedDialog()
+        setEditInterruptedDialog()
     }
 
 
@@ -60,10 +62,22 @@ class CourseDetailActivity :
 
     private fun addListener() {
         binding.ivCourseDetailBack.setOnClickListener {
-            val intent = Intent(this, DiscoverFragment::class.java)
-            setResult(RESULT_OK, intent)
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            if (viewModel.editMode.value == true) {
+                editInterruptDialog.show()
+            } else {
+                if (!viewModel.isEdited) {
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                } else {
+                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                        val intent = Intent(this, MyUploadActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                        finish()
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    }
+                }
+            }
         }
         binding.ivCourseDetailScrap.setOnClickListener {
             it.isSelected = !it.isSelected
@@ -87,11 +101,44 @@ class CourseDetailActivity :
             startActivity(intent)
         }
         binding.btnShowMore.setOnClickListener {
-            if (root == "upload") {
+            if (root == MY_UPLOAD_ACTIVITY_TAG) {
                 editBottomSheet.show()
             } else {
                 bottomSheet()
             }
+        }
+        binding.tvCourseDetailEditFinish.setOnClickListener {
+            //수정 API 호출
+            viewModel.patchUpdatePublicCourse(courseId)
+        }
+    }
+
+    private fun enterEditMode() {
+        viewModel.convertMode()
+        viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
+        viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
+        updateLayoutForEditMode()
+    }
+
+    private fun updateLayoutForEditMode() {
+        with(binding) {
+            groupCourseDetailReadMode.isVisible = false
+            groupCourseDetailEditMode.isVisible = true
+            btnShowMore.isVisible = false
+        }
+        editBottomSheet.dismiss()
+    }
+
+    private fun enterReadMode() {
+        viewModel.convertMode()
+        updateLayoutForReadMode()
+    }
+
+    private fun updateLayoutForReadMode() {
+        with(binding) {
+            groupCourseDetailEditMode.isVisible = false
+            binding.groupCourseDetailReadMode.isVisible = true
+            btnShowMore.isVisible = true
         }
     }
 
@@ -115,7 +162,6 @@ class CourseDetailActivity :
         }
     }
 
-
     private fun addObserver() {
         viewModel.courseDetailState.observe(this) { state ->
             if (state == UiState.Success) {
@@ -125,10 +171,6 @@ class CourseDetailActivity :
                         ivCourseDetailProfileStamp.load(stampId)
                         ivCourseDetailProfileNickname.text = nickname
                         tvCourseDetailProfileLv.text = level
-                        tvCourseDetailTitle.text = title
-                        tvCourseDetailDistance.text = distance
-                        tvCourseDetailDeparture.text = departure
-                        tvCourseDetailDesc.text = description
                         ivCourseDetailScrap.isSelected = scrap
                     }
 
@@ -144,7 +186,7 @@ class CourseDetailActivity :
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    if (root == "upload") {
+                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
                         val intent = Intent(this, MyUploadActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
@@ -158,6 +200,34 @@ class CourseDetailActivity :
                 else -> {}
             }
         }
+        viewModel.editMediator.observe(this) {}
+        viewModel.isEditFinishEnable.observe(this) {
+            with(binding.tvCourseDetailEditFinish) {
+                isActivated = it
+                isClickable = it
+            }
+        }
+        viewModel.courseUpdateState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    handleSuccessfulCourseUpdate()
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun handleSuccessfulCourseUpdate() {
+        binding.indeterminateBar.isVisible = false
+        viewModel.editTitle.value = viewModel.titleForInterruption.value
+        viewModel.editContent.value = viewModel.contentForInterruption.value
+        viewModel.isEdited = true
+        enterReadMode()
     }
 
     private fun initEditBottomSheet() {
@@ -169,7 +239,7 @@ class CourseDetailActivity :
         editBottomSheet.setEditBottomSheetClickListener { which ->
             when (which) {
                 editBottomSheet.layout_edit_frame -> {
-                    showToast("수정하기")
+                    enterEditMode()
                 }
                 editBottomSheet.layout_delete_frame -> {
                     deleteDialog.show()
@@ -195,6 +265,26 @@ class CourseDetailActivity :
                 }
             }
 
+        }
+    }
+
+    private fun initEditInterruptedDialog() {
+        editInterruptDialog = setCustomDialog(
+            layoutInflater,
+            binding.root,
+            EDIT_INTERRUPT_DIALOG_DESC,
+            EDIT_INTERRUPT_DIALOG_YES_BTN,
+            EDIT_INTERRUPT_DIALOG_NO_BTN
+        )
+    }
+
+    private fun setEditInterruptedDialog() {
+        editInterruptDialog.setDialogClickListener { which ->
+            when (which) {
+                editInterruptDialog.btn_delete_yes -> {
+                    enterReadMode()
+                }
+            }
         }
     }
 
@@ -228,5 +318,9 @@ class CourseDetailActivity :
     companion object {
         const val DELETE_DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
         const val DELETE_DIALOG_YES_BTN = "삭제하기"
+        const val EDIT_INTERRUPT_DIALOG_DESC = "     게시글 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
+        const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
+        const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
+        const val MY_UPLOAD_ACTIVITY_TAG = "upload"
     }
 }
