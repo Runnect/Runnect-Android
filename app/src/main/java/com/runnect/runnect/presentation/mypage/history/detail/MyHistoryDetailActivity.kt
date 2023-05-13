@@ -39,6 +39,8 @@ class MyHistoryDetailActivity :
         setEditBottomSheetClickEvent()
         initDeleteDialog()
         setDeleteDialogClickEvent()
+        initEditInterruptedDialog()
+        setEditInterruptedDialog()
     }
 
     private fun initLayout() {
@@ -145,8 +147,6 @@ class MyHistoryDetailActivity :
         updateConstraintForEditMode()
         editBottomSheet.dismiss()
         binding.ivShowMore.isVisible = false
-        initEditInterruptedDialog()
-        setEditInterruptedDialog()
     }
 
     private fun enterReadMode() {
