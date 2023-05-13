@@ -4,15 +4,9 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
-import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
-import com.runnect.runnect.data.dto.response.ResponseEditHistoryTitle
-import com.runnect.runnect.data.dto.response.ResponseUpdateNickName
-import com.runnect.runnect.data.dto.response.ResponseUser
+import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.source.remote.UserDataSource
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.util.extension.toData
@@ -40,7 +34,7 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
 
     override suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO> {
         val userUploadCourseList = mutableListOf<UserUploadCourseDTO>()
-        for(i in userDataSource.getUserUploadCourse().data.publicCourses){
+        for (i in userDataSource.getUserUploadCourse().data.publicCourses) {
             userUploadCourseList.add(i.toData())
         }
         return userUploadCourseList
@@ -52,9 +46,12 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
 
     override suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse {
         return userDataSource.putDeleteUploadCourse(requestDeleteUploadCourse)
+    }
 
-    override suspend fun patchHistoryTitle(historyId:Int, requestEditHistoryTitle: RequestEditHistoryTitle): ResponseEditHistoryTitle {
+    override suspend fun patchHistoryTitle(
+        historyId: Int,
+        requestEditHistoryTitle: RequestEditHistoryTitle
+    ): ResponseEditHistoryTitle {
         return userDataSource.patchHistoryTitle(historyId, requestEditHistoryTitle)
-
     }
 }
