@@ -235,7 +235,7 @@
 
         <View
             android:id="@+id/divider_vertical_rightOfDistance"
-            android:layout_width="0.5dp"
+            android:layout_width="0.7dp"
             android:layout_height="44dp"
             android:layout_marginEnd="20dp"
             android:background="@color/G2"
@@ -275,7 +275,7 @@
 
         <View
             android:id="@+id/divider_vertical_rightOfTime"
-            android:layout_width="0.5dp"
+            android:layout_width="0.7dp"
             android:layout_height="44dp"
             android:layout_marginStart="20dp"
             android:background="@color/G2"
