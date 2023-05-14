@@ -86,6 +86,7 @@ class LoginActivity :
                         viewModel.loginResult.value?.refreshToken
                     )
                     moveToMain()
+                    showToast("로그인 되었습니다")
                 }
             }
         }
@@ -100,7 +101,6 @@ class LoginActivity :
         }
         startActivity(intent)
         finish()
-        showToast("로그인 되었습니다")
     }
 
     override fun onDestroy() {
