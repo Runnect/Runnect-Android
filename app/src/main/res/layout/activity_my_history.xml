@@ -50,7 +50,7 @@
                 android:id="@+id/tv_my_page_history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/start_margin_toolbar"
                 android:fontFamily="@font/pretendard_bold"
                 android:text="@string/my_page_history_title"
                 android:textColor="@color/G1"
