@@ -95,15 +95,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             )
         }
         binding.btnDiscoverUpload.setOnClickListener {
+
             if (isVisitorMode) {
-                val toast =
-                    Toast.makeText(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT)
-                toast.setGravity(
-                    Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM,
-                    0,
-                    350
-                ) // yOffset 숫자 높게 줄수록 위로 올라감
-                toast.show()
+                requireLogin()
             } else {
                 startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
                 requireActivity().overridePendingTransition(
@@ -112,6 +106,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 )
             }
         }
+    }
+
+    fun requireLogin() {
+        val toast = Toast.makeText(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT)
+        toast.setGravity(
+            Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM,
+            0,
+            350
+        ) // yOffset 숫자 높게 줄수록 위로 올라감
+        toast.show()
     }
 
     private fun addObserver() {
@@ -134,11 +138,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
 
     private fun setRecommendCourseAdapter() {
-        courseRecommendAdapter = CourseRecommendAdapter(requireContext(), this, this).apply {
-            submitList(
-                viewModel.recommendCourseList
-            )
-        }
+        courseRecommendAdapter =
+            CourseRecommendAdapter(requireContext(), this, this, isVisitorMode).apply {
+                submitList(
+                    viewModel.recommendCourseList
+                )
+            }
 
         binding.rvDiscoverRecommend.setHasFixedSize(true)
         binding.rvDiscoverRecommend.adapter = courseRecommendAdapter

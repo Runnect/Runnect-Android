@@ -1,8 +1,10 @@
 package com.runnect.runnect.presentation.discover.adapter
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -10,16 +12,27 @@ import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.RecommendCourseDiffUtilItemCallback
-import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.callback.OnHeartClick
+import com.runnect.runnect.util.callback.OnItemClick
 
-class CourseRecommendAdapter(context: Context, listener: OnHeartClick, dListener: OnItemClick) :
+class CourseRecommendAdapter(
+    context: Context,
+    listener: OnHeartClick,
+    dListener: OnItemClick,
+    isVisitorMode: Boolean
+) :
     ListAdapter<RecommendCourseDTO, CourseRecommendAdapter.CourseInfoViewHolder>(
         RecommendCourseDiffUtilItemCallback()
     ) {
     private var mCallback = listener
     private var dCallback = dListener
+    private var isVisitorMode = isVisitorMode
+
     private val inflater by lazy { LayoutInflater.from(context) }
+
+    private var discoverFragmentContext = context
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
             ItemDiscoverCourseInfoBinding.inflate(inflater, parent, false)
@@ -40,8 +53,12 @@ class CourseRecommendAdapter(context: Context, listener: OnHeartClick, dListener
                 tvItemDiscoverCourseInfoLocation.text = data.departure
                 ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
                 ivItemDiscoverCourseInfoScrap.setOnClickListener {
-                    it.isSelected = !it.isSelected
-                    mCallback.scrapCourse(data.id, it.isSelected)
+                    if (isVisitorMode) {
+                        requireLogin()
+                    } else {
+                        it.isSelected = !it.isSelected
+                        mCallback.scrapCourse(data.id, it.isSelected)
+                    }
                 }
                 root.setOnClickListener {
                     dCallback.selectItem(data.id)
@@ -49,5 +66,16 @@ class CourseRecommendAdapter(context: Context, listener: OnHeartClick, dListener
             }
         }
     }
+
+    private fun requireLogin() {
+        val toast = Toast.makeText(
+            discoverFragmentContext,
+            "러넥트에 가입하면 코스를 업로드할 수 있어요",
+            Toast.LENGTH_SHORT
+        )
+        toast.setMargin(0f,100f)
+        toast.show()
+    }
+
 }
 
