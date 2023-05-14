@@ -1,6 +1,7 @@
 package com.runnect.runnect.data.api
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.*
 import retrofit2.http.*
@@ -33,4 +34,10 @@ interface PCourseService {
     suspend fun postUploadMyCourse(
         @Body requestUploadMyCourse: RequestUploadMyCourse,
     ): ResponseUploadMyCourse
+
+    @PATCH("/api/public-course/{publicCourseId}")
+    suspend fun patchUpdatePublicCourse(
+        @Path("publicCourseId") publicCourseId: Int,
+        @Body requestUpdatePublicCourse: RequestUpdatePublicCourse
+    ): ResponseUpdatePublicCourse
 }

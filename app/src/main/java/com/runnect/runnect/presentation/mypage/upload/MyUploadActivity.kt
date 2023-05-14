@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.upload
 
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -10,14 +11,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
-import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
+import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnUploadItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
-import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
 import timber.log.Timber
@@ -106,7 +106,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             }
         }
 
-        viewModel.myUloadDeleteState.observe(this) {
+        viewModel.myUploadDeleteState.observe(this) {
             updateDeleteButton(viewModel.selectedItemsCount.value ?: 0)
             when (it) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
@@ -135,6 +135,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         with(binding) {
             btnMyPageUploadEditCourse.text = EDIT_CANCEL
             tvMyPageUploadTotalCourseCount.text = CHOICE_MODE_DESC
+            if (::adapter.isInitialized) adapter.handleCheckBoxVisibility(true)
         }
     }
 
@@ -144,7 +145,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             btnMyPageUploadEditCourse.text = EDIT_MODE
             tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
             tvMyPageUploadDelete.isVisible = viewModel.editMode.value!!
-            if (::adapter.isInitialized) adapter.clearSelection()
+            if (::adapter.isInitialized) {
+                adapter.clearSelection()
+                adapter.handleCheckBoxVisibility(false)
+            }
             viewModel.clearItemsToDelete()
         }
     }
@@ -197,8 +201,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             viewModel.modifyItemsToDelete(id)
             true
         } else {
-            //매개변수로 아이템 정보를 넘겨받아 코스 상세 액티비티 이동
-            showToast("코스 상세 조회 액티비티 이동")
+            val intent = Intent(this,CourseDetailActivity::class.java)
+            intent.putExtra("courseId",id)
+            intent.putExtra("root","upload")
+            startActivity(intent)
             false
         }
     }

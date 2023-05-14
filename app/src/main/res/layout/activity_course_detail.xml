@@ -15,32 +15,45 @@
         android:layout_height="match_parent"
         tools:context=".presentation.detail.CourseDetailActivity">
 
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_course_detail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:contentInsetStart="0dp"
             app:layout_constraintDimensionRatio="360:48"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="0dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_course_detail_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/start_margin_back_btn"
+                android:padding="15dp"
                 app:srcCompat="@drawable/all_back_arrow" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:layout_marginEnd="18dp"
                 android:id="@+id/btn_showMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:backgroundTint="@color/transparent_00"
+                android:layout_marginEnd="18dp"
+                android:backgroundTint="@color/W1"
                 android:src="@drawable/showmorebtn" />
 
         </androidx.appcompat.widget.Toolbar>
-
 
         <ScrollView
             android:id="@+id/sv_course_detail"
@@ -63,6 +76,7 @@
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
+                    app:imgUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:251"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -127,6 +141,7 @@
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_course_detail_map"
+                    android:text="@{vm.editTitle}"
                     tools:text="잠실 석촌호수 한바퀴 러닝" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -163,7 +178,8 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_distance_title"
                     app:layout_constraintStart_toEndOf="@id/tv_course_detail_distance_title"
                     app:layout_constraintTop_toTopOf="@id/tv_course_detail_distance_title"
-                    tools:text="2.3" />
+                    tools:text="2.3"
+                    android:text="@{vm.distance}"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_course_detail_distance_km"
@@ -213,6 +229,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_departure_title"
                     app:layout_constraintStart_toEndOf="@id/tv_course_detail_departure_title"
                     app:layout_constraintTop_toTopOf="@id/tv_course_detail_departure_title"
+                    android:text="@{vm.departure}"
                     tools:text="패스트파이브 을지로점" />
 
                 <View
@@ -238,11 +255,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/view_course_detail_line"
+                    android:text="@{vm.editContent}"
                     tools:text="석촌 호수 한 바퀴 뛰는 코스에요! 평탄한 길과 느린 페이스,난이도 하 코스입니다! 롯데월드 야경 감상 하면서 뛰기에 좋은 야간 코스에요! 석촌 호수 한 바퀴 뛰는 코스에요! 평탄한 길과 느린 페이스, 난이도 하 코스입니다! 롯데월드 야경 감상 하면서 뛰기에 좋은 야간 코스에요!" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
         <View
+            android:id="@+id/divider_course_detail_bottom"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
@@ -287,6 +306,228 @@
             app:layout_constraintEnd_toStartOf="@id/btn_course_detail_finish"
             app:layout_constraintTop_toTopOf="@id/btn_course_detail_finish"
             app:srcCompat="@drawable/course_detail_scrap_selector" />
+
+        <ScrollView
+            android:id="@+id/sv_course_detail_edit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="56dp"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_course_detail">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/const_course_detail_edit_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_course_detail_edit_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/G4"
+                    app:layout_constraintDimensionRatio="360:304"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:imgUri="@{vm.mapImage}"
+                    android:scaleType="centerCrop"/>
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_course_detail_edit_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="@color/W1"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:hint="@string/discover_upload_title"
+                    tools:text="제목"
+                    android:maxLength="20"
+                    android:paddingVertical="0dp"
+                    android:textColor="@color/G1"
+                    android:textColorHint="@color/G3"
+                    android:textCursorDrawable="@color/M1"
+                    android:text="@={vm.titleForInterruption}"
+                    android:textSize="18sp"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_course_detail_edit_map" />
+
+                <View
+                    android:id="@+id/line_course_detail_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="57dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@color/G5"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_course_detail_edit_map" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_course_detail_edit_distance_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/line_course_detail_edit"
+                    app:srcCompat="@drawable/all_star" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_course_detail_edit_distance_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="9dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@string/discover_upload_distance"
+                    android:textColor="@color/G1"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_course_detail_edit_distance_indicator"
+                    app:layout_constraintStart_toEndOf="@id/iv_course_detail_edit_distance_indicator"
+                    app:layout_constraintTop_toTopOf="@id/iv_course_detail_edit_distance_indicator" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_course_detail_edit_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:textColor="@color/G1"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_distance_title"
+                    app:layout_constraintStart_toEndOf="@id/tv_course_detail_edit_distance_title"
+                    app:layout_constraintTop_toTopOf="@id/tv_course_detail_edit_distance_title"
+                    android:text="@{vm.distance}"
+                    tools:text="2.3" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_course_detail_edit_distance_km"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:text="@string/discover_upload_distance_km"
+                    android:textColor="@color/G1"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_distance"
+                    app:layout_constraintStart_toEndOf="@id/tv_course_detail_edit_distance"
+                    app:layout_constraintTop_toTopOf="@id/tv_course_detail_edit_distance" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_course_detail_edit_departure_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_course_detail_edit_distance_indicator"
+                    app:srcCompat="@drawable/all_star" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_course_detail_edit_departure_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="9dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@string/discover_upload_departure_title"
+                    android:textColor="@color/G1"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_course_detail_edit_departure_indicator"
+                    app:layout_constraintStart_toEndOf="@id/iv_course_detail_edit_departure_indicator"
+                    app:layout_constraintTop_toTopOf="@id/iv_course_detail_edit_departure_indicator" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_course_detail_edit_departure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="23dp"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:textColor="@color/G1"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_departure_title"
+                    app:layout_constraintStart_toEndOf="@id/tv_course_detail_edit_departure_title"
+                    app:layout_constraintTop_toTopOf="@id/tv_course_detail_edit_departure_title"
+                    android:text="@{vm.departure}"
+                    tools:text="패스트파이브 을지로점" />
+
+                <View
+                    android:id="@+id/view_course_detail_edit_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="23dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="13dp"
+                    android:background="@color/M3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_course_detail_edit_departure_indicator" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_course_detail_edit_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/transparent_00"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:hint="@string/discover_upload_desc_hint"
+                    android:inputType="textMultiLine"
+                    android:lineHeight="24dp"
+                    android:maxLength="150"
+                    android:paddingBottom="20dp"
+                    android:scrollHorizontally="false"
+                    android:textColorHint="@color/G2"
+                    android:textCursorDrawable="@color/M1"
+                    android:textSize="14sp"
+                    tools:text="내용"
+                    android:text="@={vm.contentForInterruption}"
+                    app:layout_constraintEnd_toEndOf="@id/view_course_detail_edit_desc"
+                    app:layout_constraintStart_toStartOf="@id/view_course_detail_edit_desc"
+                    app:layout_constraintTop_toTopOf="@id/view_course_detail_edit_desc" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_course_detail_edit_finish"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/all_finish_btn_selector"
+            android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
+            android:text="@string/history_edit_finish"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="330:40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_course_detail_read_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="sv_course_detail,
+                btn_course_detail_finish,
+                tv_course_detail_finish,
+                iv_course_detail_scrap,
+                divider_course_detail_bottom" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_course_detail_edit_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:constraint_referenced_ids="sv_course_detail_edit,
+            tv_course_detail_edit_finish" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

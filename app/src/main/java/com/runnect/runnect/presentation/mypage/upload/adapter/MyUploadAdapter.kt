@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,6 +13,10 @@ import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemMypageUploadBinding
 import com.runnect.runnect.util.CourseUploadedDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnUploadItemClick
+import kotlinx.android.synthetic.main.item_mypage_upload.view.*
+import kotlinx.android.synthetic.main.item_mypage_upload.view.iv_checkbox
+import kotlinx.android.synthetic.main.item_storage_my_draw.view.*
+import timber.log.Timber
 
 class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
     ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(
@@ -19,6 +24,7 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
     ) {
     private val inflater by lazy { LayoutInflater.from(context) }
     private var selectedItems: MutableList<View>? = mutableListOf()
+    private var selectedBoxes: MutableList<View>? = mutableListOf()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyUploadViewHolder {
@@ -29,9 +35,19 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
         holder.onBind(currentList[position])
     }
 
+    fun handleCheckBoxVisibility(isEditMode: Boolean) {
+        selectedBoxes?.forEach {
+            it.isVisible = isEditMode
+        }
+    }
+
     fun clearSelection() {
         selectedItems?.forEach {
             it.isSelected = false
+        }
+        selectedBoxes?.forEach {
+            it.isSelected = false
+            it.isVisible = false
         }
         selectedItems?.clear()
     }
@@ -47,19 +63,23 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: UserUploadCourseDTO) {
             with(binding) {
+                selectedBoxes?.add(ivCheckbox)
                 Glide.with(itemView).load(data.img).thumbnail(0.3f)
                     .format(DecodeFormat.PREFER_RGB_565).into(ivMyPageUploadCourse)
                 tvMyPageUploadCourseTitle.text = data.title
                 tvMyPageUploadCourseLocation.text = data.departure
                 ivMyPageUploadCourseSelectBackground.setOnClickListener {
                     val isEditMode = listener.selectItem(data.id)
-                    if(isEditMode){
-                        if(it.isSelected){
+                    if (isEditMode) {
+                        if (it.isSelected) {
+                            ivCheckbox.isSelected = false
                             it.isSelected = false
+                            selectedBoxes?.remove(ivCheckbox)
                             selectedItems?.remove(it)
-                        }
-                        else{
+                        } else {
+                            ivCheckbox.isSelected = true
                             it.isSelected = true
+                            selectedBoxes?.add(ivCheckbox)
                             selectedItems?.add(it)
                         }
                     }

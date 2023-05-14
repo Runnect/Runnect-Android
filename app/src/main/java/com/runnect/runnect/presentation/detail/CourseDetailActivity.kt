@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
@@ -21,12 +22,15 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -34,9 +38,14 @@ class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
     private var courseId: Int = 0
+    private var root: String = ""
+
 
     lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
+    private lateinit var deleteDialog: AlertDialog
+    private lateinit var editBottomSheet: BottomSheetDialog
+    private lateinit var editInterruptDialog: AlertDialog
 
     var isVisitorMode: Boolean = false;
 
@@ -46,44 +55,54 @@ class CourseDetailActivity :
         checkVisitorMode()
 
         courseId = intent.getIntExtra("courseId", 0)
-        Timber.tag(ContentValues.TAG).d("상세페이지로 넘겨받은 courseId 값? : $courseId")
+        root = intent.getStringExtra("root").toString()
         addListener()
         initView()
         getCourseDetail()
         addObserver()
-        showReportBottomSheet()
+        initEditBottomSheet()
+        initDeleteDialog()
+        setDeleteDialogClickEvent()
+        initEditInterruptedDialog()
+        setEditInterruptedDialog()
     }
+
 
     private fun checkVisitorMode() {
         isVisitorMode =
             PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
+
     private fun initView() {
         binding.vm = viewModel
         binding.lifecycleOwner = this
     }
 
-    override fun onBackPressed() {
-        val intent = Intent(this, DiscoverFragment::class.java)
-        setResult(RESULT_OK, intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
     private fun addListener() {
         binding.ivCourseDetailBack.setOnClickListener {
-            val intent = Intent(this, DiscoverFragment::class.java)
-            setResult(RESULT_OK, intent)
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            if (viewModel.editMode.value == true) {
+                editInterruptDialog.show()
+            } else {
+                if (!viewModel.isEdited) {
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                } else {
+                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                        val intent = Intent(this, MyUploadActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                        finish()
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    }
+                }
+            }
         }
         binding.ivCourseDetailScrap.setOnClickListener {
             it.isSelected = !it.isSelected
             viewModel.postCourseScrap(id = courseId, it.isSelected)
         }
         binding.btnCourseDetailFinish.setOnClickListener {
-
             if (isVisitorMode) {
                 requireVisitorLogin(binding.root)
             } else {
@@ -103,6 +122,17 @@ class CourseDetailActivity :
                 }
                 startActivity(intent)
             }
+        }
+        binding.btnShowMore.setOnClickListener {
+            if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                editBottomSheet.show()
+            } else {
+                bottomSheet()
+            }
+        }
+        binding.tvCourseDetailEditFinish.setOnClickListener {
+            //수정 API 호출
+            viewModel.patchUpdatePublicCourse(courseId)
         }
     }
 
@@ -127,16 +157,43 @@ class CourseDetailActivity :
         }
     }
 
+    private fun enterEditMode() {
+        viewModel.convertMode()
+        viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
+        viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
+        updateLayoutForEditMode()
+    }
+
+    private fun updateLayoutForEditMode() {
+        with(binding) {
+            groupCourseDetailReadMode.isVisible = false
+            groupCourseDetailEditMode.isVisible = true
+            btnShowMore.isVisible = false
+        }
+        editBottomSheet.dismiss()
+    }
+
+    private fun enterReadMode() {
+        viewModel.convertMode()
+        updateLayoutForReadMode()
+    }
+
+    private fun updateLayoutForReadMode() {
+        with(binding) {
+            groupCourseDetailEditMode.isVisible = false
+            binding.groupCourseDetailReadMode.isVisible = true
+            btnShowMore.isVisible = true
+        }
+    }
+
     private fun getCourseDetail() {
         viewModel.getCourseDetail(courseId)
     }
 
-    //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
     private fun setDepartureLatLng() {
         departureLatLng =
             LatLng(viewModel.courseDetail.path[0][0], viewModel.courseDetail.path[0][1])
-        Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
-    } //통신 결과가 세팅되기 전에 이 코드가 돌아버림. 그래서 뒤에 UiState가 success일 때 안으로 이 함수를 넣어줌
+    }
 
     private fun setTouchList() {
         for (i in 1 until viewModel.courseDetail.path.size) {
@@ -147,24 +204,17 @@ class CourseDetailActivity :
                 )
             )
         }
-        Timber.tag(ContentValues.TAG).d("touchList 값 : $touchList")
     }
-
 
     private fun addObserver() {
         viewModel.courseDetailState.observe(this) { state ->
             if (state == UiState.Success) {
                 with(binding) {
                     with(viewModel.courseDetail) {
-                        Timber.tag(ContentValues.TAG).d("화면에 바인딩할 image 값? : $image")
                         ivCourseDetailMap.load(image)
                         ivCourseDetailProfileStamp.load(stampId)
                         ivCourseDetailProfileNickname.text = nickname
                         tvCourseDetailProfileLv.text = level
-                        tvCourseDetailTitle.text = title
-                        tvCourseDetailDistance.text = distance
-                        tvCourseDetailDeparture.text = departure
-                        tvCourseDetailDesc.text = description
                         ivCourseDetailScrap.isSelected = scrap
                     }
 
@@ -174,13 +224,114 @@ class CourseDetailActivity :
                 setTouchList()
             }
         }
-    }
 
-    private fun showReportBottomSheet() {
-        binding.btnShowMore.setOnClickListener {
-            bottomSheet()
+        viewModel.myUploadDeleteState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                        val intent = Intent(this, MyUploadActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else -> {}
+            }
+        }
+        viewModel.editMediator.observe(this) {}
+        viewModel.isEditFinishEnable.observe(this) {
+            with(binding.tvCourseDetailEditFinish) {
+                isActivated = it
+                isClickable = it
+            }
+        }
+        viewModel.courseUpdateState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
+                    handleSuccessfulCourseUpdate()
+                }
+                UiState.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                }
+                else -> {}
+            }
         }
     }
+
+    private fun handleSuccessfulCourseUpdate() {
+        binding.indeterminateBar.isVisible = false
+        viewModel.editTitle.value = viewModel.titleForInterruption.value
+        viewModel.editContent.value = viewModel.contentForInterruption.value
+        viewModel.isEdited = true
+        enterReadMode()
+    }
+
+    private fun initEditBottomSheet() {
+        editBottomSheet = setEditBottomSheet()
+        setEditBottomSheetClickEvent()
+    }
+
+    private fun setEditBottomSheetClickEvent() {
+        editBottomSheet.setEditBottomSheetClickListener { which ->
+            when (which) {
+                editBottomSheet.layout_edit_frame -> {
+                    enterEditMode()
+                }
+                editBottomSheet.layout_delete_frame -> {
+                    deleteDialog.show()
+                }
+            }
+        }
+    }
+
+    private fun initDeleteDialog() {
+        deleteDialog =
+            setCustomDialog(
+                layoutInflater, binding.root,
+                DELETE_DIALOG_DESC,
+                DELETE_DIALOG_YES_BTN
+            )
+    }
+
+    private fun setDeleteDialogClickEvent() {
+        deleteDialog.setDialogClickListener { which ->
+            when (which) {
+                deleteDialog.btn_delete_yes -> {
+                    viewModel.deleteUploadCourse(courseId)
+                }
+            }
+
+        }
+    }
+
+    private fun initEditInterruptedDialog() {
+        editInterruptDialog = setCustomDialog(
+            layoutInflater,
+            binding.root,
+            EDIT_INTERRUPT_DIALOG_DESC,
+            EDIT_INTERRUPT_DIALOG_YES_BTN,
+            EDIT_INTERRUPT_DIALOG_NO_BTN
+        )
+    }
+
+    private fun setEditInterruptedDialog() {
+        editInterruptDialog.setDialogClickListener { which ->
+            when (which) {
+                editInterruptDialog.btn_delete_yes -> {
+                    enterReadMode()
+                }
+            }
+        }
+    }
+
 
     @SuppressLint("MissingInflatedId")
     fun bottomSheet() {
@@ -206,5 +357,14 @@ class CourseDetailActivity :
         bottomSheetDialog.setContentView(bottomSheetView)
         // bottomSheetDialog 호출
         bottomSheetDialog.show()
+    }
+
+    companion object {
+        const val DELETE_DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
+        const val DELETE_DIALOG_YES_BTN = "삭제하기"
+        const val EDIT_INTERRUPT_DIALOG_DESC = "     게시글 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
+        const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
+        const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
+        const val MY_UPLOAD_ACTIVITY_TAG = "upload"
     }
 }

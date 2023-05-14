@@ -2,6 +2,7 @@ package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.api.PCourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseRecommendCourse
@@ -14,5 +15,11 @@ class CourseDataSource(private val courseService: PCourseService) {
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
     suspend fun getCourseDetail(publicCourseId: Int) = courseService.getCourseDetail(publicCourseId)
     suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()
-    suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse) = courseService.postUploadMyCourse(requestUploadMyCourse)
+    suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse) =
+        courseService.postUploadMyCourse(requestUploadMyCourse)
+
+    suspend fun patchUpdatePublicCourse(
+        publicCourseId: Int,
+        requestUpdatePublicCourse: RequestUpdatePublicCourse
+    ) = courseService.patchUpdatePublicCourse(publicCourseId, requestUpdatePublicCourse)
 }

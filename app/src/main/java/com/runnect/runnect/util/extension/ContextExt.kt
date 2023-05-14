@@ -97,9 +97,11 @@ fun BottomSheetDialog.setEditBottomSheetClickListener(listener:(which:LinearLayo
         val deleteButton = this.layout_delete_frame
         editButton.setOnClickListener {
             listener(editButton)
+            dismiss()
         }
         deleteButton.setOnClickListener {
             listener(deleteButton)
+            dismiss()
         }
     }
 }
