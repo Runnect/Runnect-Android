@@ -22,16 +22,15 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -104,21 +103,6 @@ class CourseDetailActivity :
             viewModel.postCourseScrap(id = courseId, it.isSelected)
         }
         binding.btnCourseDetailFinish.setOnClickListener {
-            val intent = Intent(this, CountDownActivity::class.java).apply {
-                putExtra(
-                    "detailToRun",
-                    DetailToRunData(
-                        viewModel.courseDetail.courseId,
-                        viewModel.courseDetail.id,
-                        touchList,
-                        departureLatLng,
-                        viewModel.courseDetail.departure,
-                        viewModel.courseDetail.distance.toFloat(),
-                        viewModel.courseDetail.image
-                    )
-                )
-
-
             if (isVisitorMode) {
                 requireVisitorLogin(binding.root)
             } else {
@@ -138,6 +122,17 @@ class CourseDetailActivity :
                 }
                 startActivity(intent)
             }
+        }
+        binding.btnShowMore.setOnClickListener {
+            if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                editBottomSheet.show()
+            } else {
+                bottomSheet()
+            }
+        }
+        binding.tvCourseDetailEditFinish.setOnClickListener {
+            //수정 API 호출
+            viewModel.patchUpdatePublicCourse(courseId)
         }
     }
 
@@ -159,17 +154,6 @@ class CourseDetailActivity :
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             dialog.dismiss()
-        }
-        binding.btnShowMore.setOnClickListener {
-            if (root == MY_UPLOAD_ACTIVITY_TAG) {
-                editBottomSheet.show()
-            } else {
-                bottomSheet()
-            }
-        }
-        binding.tvCourseDetailEditFinish.setOnClickListener {
-            //수정 API 호출
-            viewModel.patchUpdatePublicCourse(courseId)
         }
     }
 
@@ -305,10 +289,6 @@ class CourseDetailActivity :
                     deleteDialog.show()
                 }
             }
-
-    private fun showReportBottomSheet() {
-        binding.btnShowMore.setOnClickListener {
-            bottomSheet()
         }
     }
 
