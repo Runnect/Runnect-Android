@@ -14,6 +14,7 @@ import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
@@ -127,6 +128,9 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                 R.anim.slide_in_right,
                 R.anim.slide_out_left
             )
+        }
+        binding.viewMyPageMainSettingFrame.setOnClickListener {
+            (requireActivity() as MainActivity).moveToSettingFragment()
         }
     }
 
