@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_setting"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintDimensionRatio="360:48"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_setting_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/all_back_arrow" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/start_margin_toolbar"
+            android:fontFamily="@font/pretendard_bold"
+            android:text="@string/my_page_setting_title"
+            android:textColor="@color/G1"
+            android:textSize="18sp" />
+    </androidx.appcompat.widget.Toolbar>
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider_setting_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@color/G5"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_setting"/>
+    <View
+        android:id="@+id/view_setting_account_info_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/my_page_under_stroke"
+        app:layout_constraintTop_toBottomOf="@id/divider_setting_toolbar"
+        app:layout_constraintDimensionRatio="360:60"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_setting_account_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="@string/my_setting_account_info"
+        android:textColor="@color/G1"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/view_setting_account_info_frame"
+        app:layout_constraintStart_toStartOf="@id/view_setting_account_info_frame"
+        app:layout_constraintTop_toTopOf="@id/view_setting_account_info_frame" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_setting_account_info_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/all_front_arrow"
+        app:layout_constraintBottom_toBottomOf="@id/view_setting_account_info_frame"
+        app:layout_constraintEnd_toEndOf="@id/view_setting_account_info_frame"
+        app:layout_constraintTop_toTopOf="@id/view_setting_account_info_frame" />
+    <View
+        android:id="@+id/view_setting_report_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/my_page_under_stroke"
+        app:layout_constraintTop_toBottomOf="@id/view_setting_account_info_frame"
+        app:layout_constraintDimensionRatio="360:60"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_setting_report"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="@string/my_setting_report"
+        android:textColor="@color/G1"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/view_setting_report_frame"
+        app:layout_constraintStart_toStartOf="@id/view_setting_report_frame"
+        app:layout_constraintTop_toTopOf="@id/view_setting_report_frame" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_setting_report_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/all_front_arrow"
+        app:layout_constraintBottom_toBottomOf="@id/view_setting_report_frame"
+        app:layout_constraintEnd_toEndOf="@id/view_setting_report_frame"
+        app:layout_constraintTop_toTopOf="@id/view_setting_report_frame" />
+
+    <View
+        android:id="@+id/view_setting_terms_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/my_page_under_stroke"
+        app:layout_constraintTop_toBottomOf="@id/view_setting_report_frame"
+        app:layout_constraintDimensionRatio="360:60"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_setting_terms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="@string/my_setting_terms"
+        android:textColor="@color/G1"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/view_setting_terms_frame"
+        app:layout_constraintStart_toStartOf="@id/view_setting_terms_frame"
+        app:layout_constraintTop_toTopOf="@id/view_setting_terms_frame" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_setting_terms_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/all_front_arrow"
+        app:layout_constraintBottom_toBottomOf="@id/view_setting_terms_frame"
+        app:layout_constraintEnd_toEndOf="@id/view_setting_terms_frame"
+        app:layout_constraintTop_toTopOf="@id/view_setting_terms_frame" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
