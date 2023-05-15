@@ -153,6 +153,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                 UiState.Loading -> {
                     binding.indeterminateBar.isVisible = true
                     binding.ivMyPageEditFrame.isClickable = false
+                    binding.viewMyPageMainSettingFrame.isClickable = false
                 }
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
@@ -162,6 +163,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                     )
                     viewModel.setProfileImg(stampResId)
                     binding.ivMyPageEditFrame.isClickable = true
+                    binding.viewMyPageMainSettingFrame.isClickable = true
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
