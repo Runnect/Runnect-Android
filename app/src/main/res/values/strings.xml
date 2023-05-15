@@ -103,4 +103,7 @@
     <string name="history_edit_finish">완료</string>
     <string name="dialog_edit">수정하기</string>
     <string name="dialog_remove">삭제하기</string>
+    <string name="my_setting_account_info">계정 정보</string>
+    <string name="my_setting_report">문의 및 신고하기</string>
+    <string name="my_setting_terms">이용약관</string>
 </resources>
