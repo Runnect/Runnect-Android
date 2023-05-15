@@ -18,11 +18,36 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
 
     private fun addListener() {
         binding.ivSettingBack.setOnClickListener {
-            val fragmentManager = requireActivity().supportFragmentManager
-            fragmentManager.commit {
-                this.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                replace<MyPageFragment>(R.id.fl_main)
-            }
+            moveToMyPage()
         }
+        binding.viewSettingAccountInfoFrame.setOnClickListener {
+            moveToMySettingAccountInfo()
+        }
+    }
+
+    private fun moveToMyPage() {
+        val fragmentManager = requireActivity().supportFragmentManager
+        fragmentManager.commit {
+            this.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+            replace<MyPageFragment>(R.id.fl_main)
+        }
+    }
+
+    private fun moveToMySettingAccountInfo() {
+        val emailFromMyPage = getEmailFromMyPage()
+        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, emailFromMyPage) }
+        val fragmentManager = requireActivity().supportFragmentManager
+        fragmentManager.commit {
+            this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            replace<MySettingAccountInfoFragment>(R.id.fl_main, args = bundle)
+        }
+    }
+    private fun getEmailFromMyPage(): String? {
+        val bundleFromMyPage = arguments
+        return bundleFromMyPage?.getString(ACCOUNT_INFO_TAG)
+    }
+
+    companion object {
+        const val ACCOUNT_INFO_TAG = "accountInfo"
     }
 }

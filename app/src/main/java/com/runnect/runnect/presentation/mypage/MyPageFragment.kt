@@ -9,22 +9,22 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
+import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_my_page.*
-import kotlinx.android.synthetic.main.fragment_my_page.view.*
 import timber.log.Timber
 
 
@@ -130,7 +130,15 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             )
         }
         binding.viewMyPageMainSettingFrame.setOnClickListener {
-            (requireActivity() as MainActivity).moveToSettingFragment()
+            moveToSettingFragment()
+        }
+    }
+
+    private fun moveToSettingFragment() {
+        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, viewModel.email.value) }
+        requireActivity().supportFragmentManager.commit {
+            this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            replace<MySettingFragment>(R.id.fl_main, args = bundle)
         }
     }
 
@@ -169,5 +177,6 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         const val RES_STAMP_TYPE = "drawable"
         const val NICK_NAME = "nickname"
         const val PROFILE = "profile_img"
+        const val ACCOUNT_INFO_TAG = "accountInfo"
     }
 }

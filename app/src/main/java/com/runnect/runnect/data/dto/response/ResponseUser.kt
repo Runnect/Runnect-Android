@@ -17,6 +17,7 @@ data class Data(
 
 @Serializable
 data class User(
+    val email:String,
     val latestStamp: String,
     val level: Int,
     val levelPercent: Int,
