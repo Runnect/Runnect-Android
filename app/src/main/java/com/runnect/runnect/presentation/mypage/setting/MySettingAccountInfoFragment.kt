@@ -8,6 +8,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.runnect.runnect.R
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingAccountInfoBinding
 import com.runnect.runnect.presentation.login.LoginActivity
@@ -56,7 +57,10 @@ class MySettingAccountInfoFragment :
         logoutDialog.setDialogClickListener { which ->
             when (which) {
                 logoutDialog.btn_delete_yes -> {
+                    PreferenceManager.setString(requireContext(), "access","none")
+                    PreferenceManager.setString(requireContext(), "refresh","none")
                     val intent = Intent(requireActivity(),LoginActivity::class.java)
+                    intent.putExtra("isLogout",true)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
                     startActivity(intent)
                 }

@@ -72,6 +72,7 @@ class GoogleLogin(activity: LoginActivity, viewModel: LoginViewModel) : SocialLo
     }
 
     override fun clearSocialLogin() {
+        mGoogleSignInClient.revokeAccess()
         resultLauncher.unregister()
         activityRef.clear()
         viewModelRef.clear()
