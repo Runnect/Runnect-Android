@@ -61,7 +61,7 @@ class MySettingAccountInfoFragment :
                     PreferenceManager.setString(requireContext(), "refresh","none")
                     val intent = Intent(requireActivity(),LoginActivity::class.java)
                     intent.putExtra("isLogout",true)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                 }
             }
