@@ -25,6 +25,7 @@ class MySettingAccountInfoFragment :
         binding.ivSettingAccountInfoBack.setOnClickListener {
             moveToMySetting()
         }
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
     }
 
     private fun moveToMySetting() {

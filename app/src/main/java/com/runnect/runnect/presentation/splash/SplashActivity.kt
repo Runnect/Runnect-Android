@@ -21,6 +21,7 @@ class SplashActivity : AppCompatActivity() {
         handler.postDelayed({
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             startActivity(intent)
             finish()
         }, (1000 * sec).toLong())
