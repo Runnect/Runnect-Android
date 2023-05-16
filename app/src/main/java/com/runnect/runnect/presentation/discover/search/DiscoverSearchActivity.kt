@@ -27,7 +27,7 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverSearchActivity :
-    BindingActivity<ActivityDiscoverSearchBinding>(com.runnect.runnect.R.layout.activity_discover_search),
+    BindingActivity<ActivityDiscoverSearchBinding>(R.layout.activity_discover_search),
     OnItemClick, OnHeartClick {
     private val viewModel: DiscoverSearchViewModel by viewModels()
     private lateinit var adapter: DiscoverSearchAdapter
@@ -81,28 +81,33 @@ class DiscoverSearchActivity :
         viewModel.courseSearchState.observe(this) {
             Timber.d("${viewModel.courseSearchList.isEmpty()}")
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> {
+                    handleUnsuccessfulCourseSearch()
+                }
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    //검색 결과가 존재할 때
                     binding.svDiscoverSearch.isVisible = true
                     binding.constDiscoverSearchNoResult.isVisible = false
-                    //어댑터에 받아온 코스정보 리스트를 전달하는 submitList 작업
                     initAdapter()
                 }
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
+                    handleUnsuccessfulCourseSearch()
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
-                    //검색결과가 존재하지 않을 때
-                    binding.svDiscoverSearch.isVisible = false
-                    binding.constDiscoverSearchNoResult.isVisible = true
                 }
 
             }
         }
 
+    }
+
+    private fun handleUnsuccessfulCourseSearch(){
+        with(binding){
+            indeterminateBar.isVisible = false
+            svDiscoverSearch.isVisible = false
+            constDiscoverSearchNoResult.isVisible = true
+        }
     }
 
 
