@@ -9,22 +9,22 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
+import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_my_page.*
-import kotlinx.android.synthetic.main.fragment_my_page.view.*
 import timber.log.Timber
 
 
@@ -37,13 +37,19 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkVisitorMode()
+//        checkVisitorMode()
+        binding.vm = viewModel
+        binding.lifecycleOwner = this.viewLifecycleOwner
+        viewModel.getUserInfo()
+        addListener()
+        addObserver()
+        setResultEditNameLauncher()
 
-        if (isVisitorMode) {
-            activateVisitorMode()
-        } else {
-            deactivateVisitorMode()
-        }
+//        if (isVisitorMode) {
+//            activateVisitorMode()
+//        } else {
+//            deactivateVisitorMode()
+//        }
 
     }
 
@@ -74,7 +80,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             constraintInside.isVisible = true
 
             binding.vm = viewModel
-            binding.lifecycleOwner = this.lifecycleOwner
+            binding.lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
             viewModel.getUserInfo()
             addListener()
             addObserver()
@@ -130,7 +136,15 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             )
         }
         binding.viewMyPageMainSettingFrame.setOnClickListener {
-            (requireActivity() as MainActivity).moveToSettingFragment()
+            moveToSettingFragment()
+        }
+    }
+
+    private fun moveToSettingFragment() {
+        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, viewModel.email.value) }
+        requireActivity().supportFragmentManager.commit {
+            this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            replace<MySettingFragment>(R.id.fl_main, args = bundle)
         }
     }
 
@@ -145,6 +159,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                 UiState.Loading -> {
                     binding.indeterminateBar.isVisible = true
                     binding.ivMyPageEditFrame.isClickable = false
+                    binding.viewMyPageMainSettingFrame.isClickable = false
                 }
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
@@ -154,6 +169,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                     )
                     viewModel.setProfileImg(stampResId)
                     binding.ivMyPageEditFrame.isClickable = true
+                    binding.viewMyPageMainSettingFrame.isClickable = true
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
@@ -169,5 +185,6 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         const val RES_STAMP_TYPE = "drawable"
         const val NICK_NAME = "nickname"
         const val PROFILE = "profile_img"
+        const val ACCOUNT_INFO_TAG = "accountInfo"
     }
 }

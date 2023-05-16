@@ -109,9 +109,16 @@ fun BottomSheetDialog.setEditBottomSheetClickListener(listener:(which:LinearLayo
 
 fun Context.getStampResId(stampId: String?,resNameParam:String,resType:String,packageName:String):Int{
     with(this) {
-        val resName = "${resNameParam}$stampId"
-        return resources.getIdentifier(resName,
-            resType, packageName)
-
+        var resName = ""
+        if(stampId == "CSPR0"){
+            resName = "${resNameParam}basic"
+            return resources.getIdentifier(resName,
+                resType, packageName)
+        }
+        else{
+            resName = "${resNameParam}$stampId"
+            return resources.getIdentifier(resName,
+                resType, packageName)
+        }
     }
 }

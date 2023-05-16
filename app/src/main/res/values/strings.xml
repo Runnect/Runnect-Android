@@ -106,4 +106,7 @@
     <string name="my_setting_account_info">계정 정보</string>
     <string name="my_setting_report">문의 및 신고하기</string>
     <string name="my_setting_terms">이용약관</string>
+    <string name="account_info_id">아이디</string>
+    <string name="account_info_logout">로그아웃</string>
+    <string name="account_info_withdrawal">회원탈퇴</string>
 </resources>

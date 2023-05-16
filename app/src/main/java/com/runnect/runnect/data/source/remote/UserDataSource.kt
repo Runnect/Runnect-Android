@@ -21,4 +21,5 @@ class UserDataSource(private val userService: PUserService) {
         userService.putDeleteUploadCourse(requestDeleteUploadCourse)
     suspend fun patchHistoryTitle(historyId:Int, requestEditHistoryTitle: RequestEditHistoryTitle): ResponseEditHistoryTitle =
         userService.patchHistoryTitle(historyId, requestEditHistoryTitle)
+    suspend fun deleteUser():ResponseDeleteUser = userService.deleteUser()
 }

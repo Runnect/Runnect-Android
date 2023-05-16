@@ -54,4 +54,8 @@ class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepos
     ): ResponseEditHistoryTitle {
         return userDataSource.patchHistoryTitle(historyId, requestEditHistoryTitle)
     }
+
+    override suspend fun deleteUser(): ResponseDeleteUser {
+        return userDataSource.deleteUser()
+    }
 }

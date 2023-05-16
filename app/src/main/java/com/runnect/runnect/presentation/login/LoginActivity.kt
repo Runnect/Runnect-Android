@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -72,9 +73,10 @@ class LoginActivity :
     }
 
     private fun addObserver() { //방문자 모드는 여기 logic에 해당이 안 돼.
-        viewModel.loginState.observe(this) {
-            if (it == UiState.Success) {
-                if (viewModel.loginResult.value?.status == 200) {
+        viewModel.loginState.observe(this) { state ->
+            when (state) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> {
                     PreferenceManager.setString(
                         applicationContext,
                         "access",
@@ -86,7 +88,9 @@ class LoginActivity :
                         viewModel.loginResult.value?.refreshToken
                     )
                     moveToMain()
+                    binding.indeterminateBar.isVisible = false
                 }
+                else -> binding.indeterminateBar.isVisible = false
             }
         }
         viewModel.errorMessage.observe(this) {
@@ -105,7 +109,7 @@ class LoginActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        if(::socialLogin.isInitialized){
+        if (::socialLogin.isInitialized) {
             socialLogin.clearSocialLogin()
         }
     }

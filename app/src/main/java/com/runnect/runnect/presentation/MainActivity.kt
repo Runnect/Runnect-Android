@@ -11,7 +11,6 @@ import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainFragment
 import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.mypage.MyPageFragment
-import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.storage.StorageMainFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -45,15 +44,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     fun getBtnDeleteCourseMain(): View? {
         return findViewById(R.id.btn_delete_course_main)
     }
-
-    fun moveToSettingFragment() {
-        supportFragmentManager.commit {
-            this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            replace<MySettingFragment>(R.id.fl_main)
-        }
-
-    }
-
 
     private fun initView() {
         if (!isChangeToStorage && !isChangeToDiscover) {//1. 앱 처음 빌드
