@@ -41,9 +41,9 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
                 _userInfoState.value = UiState.Loading
                 userRepository.getUserInfo()
             }.onSuccess {
+                level.value = it.data.user.level.toString()
                 nickName.value = it.data.user.nickname
                 stampId.value = it.data.user.latestStamp
-                level.value = it.data.user.level.toString()
                 levelPercent.value = it.data.user.levelPercent
                 email.value = it.data.user.email
                 _userInfoState.value = UiState.Success

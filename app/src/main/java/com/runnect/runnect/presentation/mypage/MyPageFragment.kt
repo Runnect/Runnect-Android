@@ -37,13 +37,19 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkVisitorMode()
+//        checkVisitorMode()
+        binding.vm = viewModel
+        binding.lifecycleOwner = this.viewLifecycleOwner
+        viewModel.getUserInfo()
+        addListener()
+        addObserver()
+        setResultEditNameLauncher()
 
-        if (isVisitorMode) {
-            activateVisitorMode()
-        } else {
-            deactivateVisitorMode()
-        }
+//        if (isVisitorMode) {
+//            activateVisitorMode()
+//        } else {
+//            deactivateVisitorMode()
+//        }
 
     }
 
@@ -74,7 +80,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             constraintInside.isVisible = true
 
             binding.vm = viewModel
-            binding.lifecycleOwner = this.lifecycleOwner
+            binding.lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
             viewModel.getUserInfo()
             addListener()
             addObserver()
