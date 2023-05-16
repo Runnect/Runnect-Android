@@ -20,4 +20,6 @@ interface UserRepository {
         historyId: Int,
         requestEditHistoryTitle: RequestEditHistoryTitle
     ): ResponseEditHistoryTitle
+
+    suspend fun deleteUser(): ResponseDeleteUser
 }

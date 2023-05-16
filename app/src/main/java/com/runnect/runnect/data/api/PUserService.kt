@@ -45,4 +45,7 @@ interface PUserService {
         @Path("recordId") historyId: Int,
         @Body requestEditHistoryTitle: RequestEditHistoryTitle
     ): ResponseEditHistoryTitle
+
+    @DELETE("api/user")
+    suspend fun deleteUser(): ResponseDeleteUser
 }
