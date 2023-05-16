@@ -275,6 +275,7 @@ class CourseDetailActivity :
         viewModel.editContent.value = viewModel.contentForInterruption.value
         viewModel.isEdited = true
         enterReadMode()
+        showToast("수정이 완료되었습니다")
     }
 
     private fun initEditBottomSheet() {
