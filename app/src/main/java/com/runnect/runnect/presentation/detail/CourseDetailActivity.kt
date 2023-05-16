@@ -211,8 +211,11 @@ class CourseDetailActivity :
             if (state == UiState.Success) {
                 with(binding) {
                     with(viewModel.courseDetail) {
-                        ivCourseDetailMap.load(image)
-                        ivCourseDetailProfileStamp.load(stampId)
+                        val stampResId = this@CourseDetailActivity.getStampResId(
+                            viewModel.stampId.value,
+                            RES_NAME, RES_STAMP_TYPE, packageName
+                        )
+                        ivCourseDetailProfileStamp.load(stampResId)
                         ivCourseDetailProfileNickname.text = nickname
                         tvCourseDetailProfileLv.text = level
                         ivCourseDetailScrap.isSelected = scrap
@@ -366,5 +369,7 @@ class CourseDetailActivity :
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
         const val MY_UPLOAD_ACTIVITY_TAG = "upload"
+        const val RES_NAME = "mypage_img_stamp_"
+        const val RES_STAMP_TYPE = "drawable"
     }
 }

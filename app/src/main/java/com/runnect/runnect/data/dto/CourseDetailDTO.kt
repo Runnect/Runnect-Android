@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.dto
 
 data class CourseDetailDTO(
-    val stampId: Int,
+    val stampId: String,
     val level: String,
     val nickname: String,
     val courseId: Int,

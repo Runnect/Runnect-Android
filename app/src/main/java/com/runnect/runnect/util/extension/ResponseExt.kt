@@ -47,7 +47,7 @@ fun SearchPublicCourse.toData(): CourseSearchDTO {
 
 fun DetailData.toData(): CourseDetailDTO {
     return CourseDetailDTO(
-        stampId = getProfileStamp(user.image),
+        stampId = user.image,
         level = user.level.toString(),
         nickname = user.nickname,
         courseId = publicCourse.courseId,
@@ -105,23 +105,5 @@ private fun paceConvert(p: String): String {
         "${pace[0]}’${pace[1]}”"
     } else {
         "${pace[0]}’${pace[1]}”${pace[2]}”"
-    }
-}
-
-private fun getProfileStamp(stamp: String): Int {
-    return when (stamp) {
-        "c1" -> R.drawable.mypage_img_stamp_c1
-        "c2" -> R.drawable.mypage_img_stamp_c2
-        "c3" -> R.drawable.mypage_img_stamp_c3
-        "s1" -> R.drawable.mypage_img_stamp_s1
-        "s2" -> R.drawable.mypage_img_stamp_s2
-        "s3" -> R.drawable.mypage_img_stamp_s3
-        "u1" -> R.drawable.mypage_img_stamp_u1
-        "u2" -> R.drawable.mypage_img_stamp_u2
-        "u3" -> R.drawable.mypage_img_stamp_u3
-        "r1" -> R.drawable.mypage_img_stamp_r1
-        "r2" -> R.drawable.mypage_img_stamp_r2
-        "r3" -> R.drawable.mypage_img_stamp_r3
-        else -> R.drawable.user_profile_basic
     }
 }
