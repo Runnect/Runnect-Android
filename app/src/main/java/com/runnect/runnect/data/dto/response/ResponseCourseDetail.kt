@@ -60,7 +60,7 @@ data class DetailPublicCourse(
 @Serializable
 data class DetailDeparture(
     val city: String,
-    val name: String,
+    val name: String?,
     val region: String,
     val town: String
 )
