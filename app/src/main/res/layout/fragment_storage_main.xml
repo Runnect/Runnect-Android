@@ -19,7 +19,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/storage_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +55,7 @@
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/M1"
             app:tabTextAppearance="@style/tab_text"
-            app:tabTextColor="@color/G2"
-            tools:ignore="MissingConstraints">
+            app:tabTextColor="@color/G2">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tab_draw"

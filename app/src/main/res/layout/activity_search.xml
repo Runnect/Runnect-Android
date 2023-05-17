@@ -15,17 +15,25 @@
         android:layout_height="match_parent"
         tools:context=".presentation.search.SearchActivity">
 
+        <View
+            android:id="@+id/frame_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageButton
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
             android:background="@color/transparent_00"
             android:src="@drawable/backbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@id/frame_toolbar"
+            app:layout_constraintStart_toStartOf="@id/frame_toolbar"
+            app:layout_constraintTop_toTopOf="@id/frame_toolbar" />
 
         <EditText
             android:id="@+id/et_search"
@@ -62,7 +70,7 @@
             android:layout_height="6dp"
             android:layout_marginTop="12dp"
             android:background="@color/G5"
-            app:layout_constraintTop_toBottomOf="@id/imgBtn_back" />
+            app:layout_constraintBottom_toBottomOf="@id/frame_toolbar" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -75,7 +83,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_search"
+            app:layout_constraintTop_toBottomOf="@id/frame_toolbar"
             tools:listitem="@layout/item_search"
             tools:visibility="visible" />
 

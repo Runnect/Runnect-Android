@@ -88,7 +88,7 @@
         <View
             android:id="@+id/view_top_frame"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:background="@color/white"
             android:elevation="1dp"
             android:outlineProvider="none"
@@ -97,17 +97,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
+            app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
             android:background="@color/transparent_00"
             android:elevation="2dp"
             android:outlineProvider="none"
             android:src="@drawable/backbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/view_top_frame"
+            app:layout_constraintTop_toTopOf="@id/view_top_frame" />
 
         <TextView
             android:id="@+id/tv_departure"
