@@ -34,8 +34,8 @@
             android:id="@+id/toolbar_my_page_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:contentInsetStart="0dp"
             android:background="@color/W1"
+            app:contentInsetStart="0dp"
             app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/start_margin_back_btn"
-                app:srcCompat="@drawable/all_back_arrow"/>
+                app:srcCompat="@drawable/all_back_arrow" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_my_page_history_title"
@@ -64,36 +64,38 @@
             android:layout_height="wrap_content"
             android:background="@color/W1"
             android:paddingVertical="4dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_my_page_history">
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_my_page_history_total_course_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/pretendard_regular"
-            tools:text="총 기록 152개"
-            android:textColor="@color/G2"
-            android:layout_gravity="start|center_vertical"
-            android:textSize="12sp"
-            android:layout_marginStart="15dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_my_page_history_edit_history"
-            android:layout_width="50dp"
-            android:layout_height="28dp"
-            android:background="@drawable/radius_50_edit_course_button"
-            android:fontFamily="@font/pretendard_medium"
-            android:text="@string/my_draw_edit"
-            android:textColor="@color/M1"
-            android:layout_gravity="end|center_vertical"
-            android:textSize="12sp"
-            android:layout_marginEnd="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_history_total_course_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:textColor="@color/G2"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="총 기록 152개" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_my_page_history_edit_history"
+                android:layout_width="50dp"
+                android:layout_height="28dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/radius_50_edit_course_button"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="@string/my_draw_edit"
+                android:textColor="@color/M1"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -180,19 +182,19 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_history_delete"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/all_finish_btn_selector"
             android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
             android:text="@string/history_delete"
             android:textColor="@color/W1"
             android:textSize="15sp"
-            android:background="@drawable/all_finish_btn_selector"
-            android:gravity="center"
-            android:layout_marginHorizontal="15dp"
-            app:layout_constraintDimensionRatio="330:40"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="18dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_goneMarginBottom="18dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

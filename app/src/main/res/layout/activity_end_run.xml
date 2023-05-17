@@ -66,7 +66,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_endRun_capture"
             android:layout_width="match_parent"
-            android:layout_height="370dp"
+            android:layout_height="362dp"
             app:endRunImage="@{model.captureUri.toString()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +74,7 @@
             tools:background="@color/G3" />
 
         <EditText
+            android:inputType="text"
             android:id="@+id/et_title_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -172,16 +173,16 @@
             android:id="@+id/tv_total_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_distance_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/divider_vertical_rightOfDistance"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_endRun" />
+            app:layout_constraintTop_toTopOf="@id/tv_time" />
 
         <TextView
+            android:gravity="bottom"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -190,7 +191,6 @@
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
@@ -198,6 +198,7 @@
             tools:text="5.1" />
 
         <TextView
+            android:gravity="bottom"
             android:id="@+id/tv_distance_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -225,26 +226,31 @@
 
 
         <TextView
+            android:layout_marginBottom="7dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
+            app:layout_constraintTop_toBottomOf="@id/divider_endRun" />
 
         <TextView
+            android:gravity="bottom"
             android:id="@+id/tv_time_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginBottom="36dp"
             android:fontFamily="@font/pretendard_bold"
             android:text="@{model.timerHourMinSec}"
             android:textColor="@color/G1"
             android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/btn_endRun_save"
             app:layout_constraintEnd_toEndOf="@id/tv_time"
             app:layout_constraintStart_toStartOf="@id/tv_time"
             app:layout_constraintTop_toBottomOf="@id/tv_time"
@@ -281,6 +287,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
+            android:gravity="bottom"
             android:text="@{model.paceTotal}"
             android:textColor="@color/G1"
             android:textSize="20sp"
@@ -295,7 +302,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/radius_10_g3_button"
             android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"

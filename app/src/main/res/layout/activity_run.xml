@@ -212,9 +212,9 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_run_finish"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="40dp"
             android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
             android:text="@string/run_finish_run_button"

@@ -25,7 +25,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_delete_course_main"
             android:layout_width="match_parent"
-            android:layout_height="57dp"
+            android:layout_height="48dp"
             android:background="@color/G3"
             android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
