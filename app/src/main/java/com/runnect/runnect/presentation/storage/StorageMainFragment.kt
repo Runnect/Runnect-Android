@@ -25,12 +25,10 @@ class StorageMainFragment :
 
     val viewModel: StorageViewModel by viewModels()
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = LoginActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        checkVisitorMode()
 
         if(isVisitorMode){
             activateVisitorMode()
@@ -39,10 +37,7 @@ class StorageMainFragment :
         }
     }
 
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
-    }
+
 
     private fun activateVisitorMode(){
         with(binding){

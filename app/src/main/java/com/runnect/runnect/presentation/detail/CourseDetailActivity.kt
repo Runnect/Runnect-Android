@@ -38,12 +38,10 @@ class CourseDetailActivity :
     lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = LoginActivity.isVisitorMode;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        checkVisitorMode()
 
         courseId = intent.getIntExtra("courseId", 0)
         Timber.tag(ContentValues.TAG).d("상세페이지로 넘겨받은 courseId 값? : $courseId")
@@ -52,11 +50,6 @@ class CourseDetailActivity :
         getCourseDetail()
         addObserver()
         showReportBottomSheet()
-    }
-
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     private fun initView() {

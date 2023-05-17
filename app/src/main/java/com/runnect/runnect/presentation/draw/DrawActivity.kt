@@ -73,12 +73,11 @@ class DrawActivity :
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = LoginActivity.isVisitorMode
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkVisitorMode()
 
         binding.model = viewModel
         binding.lifecycleOwner = this
@@ -98,11 +97,6 @@ class DrawActivity :
             }
         }
 
-    }
-
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     override fun onBackPressed() {

@@ -109,13 +109,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     fun requireLogin() {
-        val toast = Toast.makeText(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT)
-        toast.setGravity(
-            Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM,
-            0,
-            350
-        ) // yOffset 숫자 높게 줄수록 위로 올라감
-        toast.show()
+        Toast.makeText(requireActivity(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
     }
 
     private fun addObserver() {

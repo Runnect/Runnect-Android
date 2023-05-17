@@ -68,13 +68,7 @@ class CourseRecommendAdapter(
     }
 
     private fun requireLogin() {
-        val toast = Toast.makeText(
-            discoverFragmentContext,
-            "러넥트에 가입하면 코스를 업로드할 수 있어요",
-            Toast.LENGTH_SHORT
-        )
-        toast.setMargin(0f,100f)
-        toast.show()
+        Toast.makeText(discoverFragmentContext, "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
     }
 
 }

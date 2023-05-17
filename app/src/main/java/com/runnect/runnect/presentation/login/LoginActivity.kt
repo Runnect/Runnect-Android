@@ -20,6 +20,7 @@ class LoginActivity :
     companion object {
         const val GOOGLE_SIGN = "GOOGLE"
         const val KAKAO_SIGN = "KAKAO"
+        var isVisitorMode = false
     }
 
     lateinit var socialLogin: SocialLogin
@@ -48,10 +49,14 @@ class LoginActivity :
     private fun addListener() {
         with(binding) {
             btnSignInGoogle.setOnClickListener {
+                isVisitorMode = false
+
                 socialLogin = googleLogin
                 socialLogin.signIn()
             }
             btnSignInKakao.setOnClickListener {
+                isVisitorMode = false
+
                 socialLogin = kakaoLogin
                 socialLogin.signIn()
             }
@@ -66,6 +71,7 @@ class LoginActivity :
                     "refresh",
                     "null"
                 )
+                isVisitorMode = true
                 moveToMain()
             }
         }
