@@ -56,6 +56,11 @@ jobs:
               env:
                   TMAP_API_KEY: ${{ secrets.TMAP_API_KEY }}
               run: echo "TMAP_API_KEY=\"$TMAP_API_KEY\"" >> local.properties
+              
+            - name: Access GOOGLE_CLIENT_ID
+              env:
+                  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+              run: echo "GOOGLE_CLIENT_ID=\"$GOOGLE_CLIENT_ID\"" >> local.properties
 
             -   name: Change gradlew permissions
                 run: chmod +x ./gradlew
