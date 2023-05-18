@@ -3,9 +3,12 @@ package com.runnect.runnect.presentation
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainFragment
@@ -24,11 +27,15 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var fromEndRunActivity: String? = ""
     var fromDeleteMyDraw: Boolean = false
     var fromDrawMyCourse: Boolean = false
+    var fromScrapFragment: Boolean = false
 
+    companion object {
+        var isVisitorMode = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        checkVisitorMode()
 
         binding.vm = viewModel
         binding.lifecycleOwner = this
@@ -37,12 +44,37 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         addListener() //이게 있어야 changeFragment를 돌릴 수 있음
     }
 
-    fun getBottomNavMain(): View? {
-        return findViewById(R.id.btm_navi_main)
+    private fun checkVisitorMode() {
+        isVisitorMode =
+            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
-    fun getBtnDeleteCourseMain(): View? {
-        return findViewById(R.id.btn_delete_course_main)
+    private fun CheckIntentValue() {
+
+        fromDeleteMyDraw = intent.getBooleanExtra("fromDeleteMyDraw", false)
+        fromDrawMyCourse = intent.getBooleanExtra("fromDrawActivity", false)
+
+        if (fromDeleteMyDraw) {
+            isChangeToStorage = true
+        }
+        if (fromDrawMyCourse) {
+            isChangeToStorage = true
+        }
+
+        fromScrapFragment = intent.getBooleanExtra("fromScrapFragment", false)
+
+        if (fromScrapFragment) {
+            isChangeToDiscover = true
+        }
+
+        fromEndRunActivity = intent.getStringExtra("dataFrom")
+
+        if (fromEndRunActivity == "myDraw") {
+            isChangeToStorage = true
+        }
+        if (fromEndRunActivity == "detail") {
+            isChangeToDiscover = true
+        }
     }
 
     private fun initView() {
@@ -62,45 +94,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         }
     }
 
-
-    private fun CheckIntentValue() {
-
-        fromDeleteMyDraw = intent.getBooleanExtra("fromDeleteMyDraw", false)
-        fromDrawMyCourse = intent.getBooleanExtra("fromDrawActivity", false)
-
-        if (fromDeleteMyDraw) {
-            isChangeToStorage = true
-        }
-
-        if (fromDrawMyCourse) {
-            isChangeToStorage = true
-        }
-
-        isChangeToDiscover =
-            intent.getBooleanExtra("fromScrapFragment", false)
-
-        fromEndRunActivity = intent.getStringExtra("dataFrom")
-        if (fromEndRunActivity == "myDraw") {
-            isChangeToStorage = true
-        }
-
-        if (fromEndRunActivity == "draw") {
-            //아무것도 안 해도 됨. (fromDrawActivity == false) && (fromScrapFragment == false)이기만하면 courseMain을 띄우니까
-        }
-
-
-    }
-
-    private fun addListener() {
-        binding.btmNaviMain.setOnItemSelectedListener {
-            changeFragment(it.itemId)
-            Timber.tag("hu").d("fromDrawActivity when touch : ${isChangeToStorage}")
-            true
-        }
-    }
-
     private fun changeFragment(menuItemId: Int) {
-
         when (menuItemId) {
             R.id.menu_main_drawing -> supportFragmentManager.commit {
                 isChangeToStorage = false
@@ -116,16 +110,28 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
                 isChangeToStorage = false
                 isChangeToDiscover = false
                 replace<DiscoverFragment>(R.id.fl_main)
-
             }
             R.id.menu_main_my_page -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
                 replace<MyPageFragment>(R.id.fl_main)
-
             }
-
             else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
         }
+    }
+    private fun addListener() {
+        binding.btmNaviMain.setOnItemSelectedListener {
+            changeFragment(it.itemId)
+            Timber.tag("hu").d("fromDrawActivity when touch : ${isChangeToStorage}")
+            true
+        }
+    }
+
+    fun getBottomNavMain(): View? {
+        return findViewById(R.id.btm_navi_main)
+    }
+
+    fun getBtnDeleteCourseMain(): View? {
+        return findViewById(R.id.btn_delete_course_main)
     }
 }

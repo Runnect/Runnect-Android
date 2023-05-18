@@ -35,10 +35,6 @@ class CourseMainFragment :
 
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
-    private var mainActivity: MainActivity? = null
-
-    var selectionTracker: SelectionTracker<Long>? = null
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

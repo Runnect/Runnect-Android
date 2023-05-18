@@ -73,6 +73,7 @@ class StorageScrapFragment :
             tvStorageNoScrapGuide2.isVisible = true
             btnStorageNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
+            tvTotalScrapCount.text = "총 코스 0개"
         }
     }
 
@@ -83,6 +84,7 @@ class StorageScrapFragment :
             tvStorageNoScrapGuide2.isVisible = false
             btnStorageNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
+            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.data.scraps.size}개"
         }
     }
 
@@ -108,6 +110,7 @@ class StorageScrapFragment :
             } else {
                 hideEmptyView()
             }
+            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개"
         }
     }
 

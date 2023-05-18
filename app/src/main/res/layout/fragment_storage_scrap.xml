@@ -15,24 +15,25 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tv_total_course_count"
+            android:id="@+id/tv_total_scrap_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="11dp"
             android:fontFamily="@font/pretendard_light"
-            android:paddingBottom="11dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/G2"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/scrollview_scrap"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="5개" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollview_scrap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_course_count">
+            app:layout_constraintTop_toBottomOf="@id/tv_total_scrap_count">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

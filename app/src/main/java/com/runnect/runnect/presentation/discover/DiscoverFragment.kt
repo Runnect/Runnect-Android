@@ -21,6 +21,7 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
@@ -47,12 +48,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var scrollPageRunnable: Runnable
     private var currentPosition = PAGE_NUM / 2
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        checkVisitorMode()
 
         val promotionImages = mutableListOf(
             DiscoverPromotionItemDTO(R.drawable.discover_promotion1),
@@ -67,11 +66,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addObserver()
         setResultDetail()
         setPromotion(binding.vpDiscoverPromotion, promotionImages)
-    }
-
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     private fun initLayout() {
@@ -95,15 +89,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             )
         }
         binding.btnDiscoverUpload.setOnClickListener {
+
             if (isVisitorMode) {
-                val toast =
-                    Toast.makeText(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT)
-                toast.setGravity(
-                    Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM,
-                    0,
-                    350
-                ) // yOffset 숫자 높게 줄수록 위로 올라감
-                toast.show()
+                requireLogin()
             } else {
                 startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
                 requireActivity().overridePendingTransition(
@@ -112,6 +100,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 )
             }
         }
+    }
+
+    fun requireLogin() {
+        Toast.makeText(requireActivity(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
     }
 
     private fun addObserver() {
@@ -134,11 +126,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
 
     private fun setRecommendCourseAdapter() {
-        courseRecommendAdapter = CourseRecommendAdapter(requireContext(), this, this).apply {
-            submitList(
-                viewModel.recommendCourseList
-            )
-        }
+        courseRecommendAdapter =
+            CourseRecommendAdapter(requireContext(), this, this, isVisitorMode).apply {
+                submitList(
+                    viewModel.recommendCourseList
+                )
+            }
 
         binding.rvDiscoverRecommend.setHasFixedSize(true)
         binding.rvDiscoverRecommend.adapter = courseRecommendAdapter

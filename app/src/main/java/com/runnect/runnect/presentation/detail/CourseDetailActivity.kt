@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,13 +14,10 @@ import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -39,20 +34,14 @@ class CourseDetailActivity :
     private val viewModel: CourseDetailViewModel by viewModels()
     private var courseId: Int = 0
     private var root: String = ""
-
-
     lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
     private lateinit var editInterruptDialog: AlertDialog
 
-    var isVisitorMode: Boolean = false;
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        checkVisitorMode()
 
         courseId = intent.getIntExtra("courseId", 0)
         root = intent.getStringExtra("root").toString()
@@ -65,12 +54,6 @@ class CourseDetailActivity :
         setDeleteDialogClickEvent()
         initEditInterruptedDialog()
         setEditInterruptedDialog()
-    }
-
-
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
 
@@ -103,25 +86,23 @@ class CourseDetailActivity :
             viewModel.postCourseScrap(id = courseId, it.isSelected)
         }
         binding.btnCourseDetailFinish.setOnClickListener {
-            if (isVisitorMode) {
-                requireVisitorLogin(binding.root)
-            } else {
-                val intent = Intent(this, CountDownActivity::class.java).apply {
-                    putExtra(
-                        "detailToRun",
-                        DetailToRunData(
-                            viewModel.courseDetail.courseId,
-                            viewModel.courseDetail.id,
-                            touchList,
-                            departureLatLng,
-                            viewModel.courseDetail.departure,
-                            viewModel.courseDetail.distance.toFloat(),
-                            viewModel.courseDetail.image
-                        )
+
+            val intent = Intent(this, CountDownActivity::class.java).apply {
+                putExtra(
+                    "detailToRun",
+                    DetailToRunData(
+                        viewModel.courseDetail.courseId,
+                        viewModel.courseDetail.id,
+                        touchList,
+                        departureLatLng,
+                        viewModel.courseDetail.departure,
+                        viewModel.courseDetail.distance.toFloat(),
+                        viewModel.courseDetail.image
                     )
-                }
-                startActivity(intent)
+                )
             }
+            startActivity(intent)
+
         }
         binding.btnShowMore.setOnClickListener {
             if (root == MY_UPLOAD_ACTIVITY_TAG) {
@@ -131,29 +112,7 @@ class CourseDetailActivity :
             }
         }
         binding.tvCourseDetailEditFinish.setOnClickListener {
-            //수정 API 호출
             viewModel.patchUpdatePublicCourse(courseId)
-        }
-    }
-
-    private fun requireVisitorLogin(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
-
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
-        }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
-        dialog.show()
-
-        myLayout.btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        myLayout.btn_login.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            dialog.dismiss()
         }
     }
 
@@ -357,6 +316,11 @@ class CourseDetailActivity :
         bottomSheetDialog.setContentView(bottomSheetView)
         // bottomSheetDialog 호출
         bottomSheetDialog.show()
+    }
+
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     companion object {

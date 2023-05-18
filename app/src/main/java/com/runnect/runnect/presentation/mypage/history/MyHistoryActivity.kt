@@ -215,6 +215,11 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
     }
 
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
     companion object {
         const val CHOICE_MODE_DESC = "기록 선택"
         const val EDIT_CANCEL = "취소"

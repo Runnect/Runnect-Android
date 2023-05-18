@@ -10,12 +10,10 @@ import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
-import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
 import timber.log.Timber
 
 
@@ -25,27 +23,21 @@ class StorageMainFragment :
 
     val viewModel: StorageViewModel by viewModels()
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        checkVisitorMode()
-
-        if(isVisitorMode){
+        if (isVisitorMode) {
             activateVisitorMode()
         } else {
             deactivateVisitorMode()
         }
     }
 
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
-    }
 
-    private fun activateVisitorMode(){
-        with(binding){
+    private fun activateVisitorMode() {
+        with(binding) {
             ivVisitorMode.isVisible = true
             tvVisitorMode.isVisible = true
             btnVisitorMode.isVisible = true
@@ -59,8 +51,8 @@ class StorageMainFragment :
         }
     }
 
-    private fun deactivateVisitorMode(){
-        with(binding){
+    private fun deactivateVisitorMode() {
+        with(binding) {
             ivVisitorMode.isVisible = false
             tvVisitorMode.isVisible = false
             btnVisitorMode.isVisible = false

@@ -17,26 +17,26 @@
             android:id="@+id/iv_count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="270dp"
+            android:layout_marginBottom="350dp"
             android:scaleX="0.4"
             android:scaleY="0.4"
             android:src="@drawable/anim_num3"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_count_down_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="265dp"
+            android:layout_marginBottom="280dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/count_down_desc"
             android:textColor="@color/white"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="@id/iv_count_down"
+            app:layout_constraintStart_toStartOf="@id/iv_count_down" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

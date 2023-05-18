@@ -12,10 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
@@ -33,29 +32,17 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private val viewModel: MyPageViewModel by activityViewModels()
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        checkVisitorMode()
-        binding.vm = viewModel
-        binding.lifecycleOwner = this.viewLifecycleOwner
-        viewModel.getUserInfo()
-        addListener()
-        addObserver()
-        setResultEditNameLauncher()
 
-//        if (isVisitorMode) {
-//            activateVisitorMode()
-//        } else {
-//            deactivateVisitorMode()
-//        }
+        if (isVisitorMode) {
+            activateVisitorMode()
+        } else {
+            deactivateVisitorMode()
+        }
 
-    }
-
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     private fun activateVisitorMode() {

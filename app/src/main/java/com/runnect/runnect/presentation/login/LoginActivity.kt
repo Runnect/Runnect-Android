@@ -4,6 +4,7 @@ package com.runnect.runnect.presentation.login
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.application.PreferenceManager
@@ -35,6 +36,7 @@ class LoginActivity :
         if (accessToken != "none" && accessToken != "visitor") {
             Timber.d("자동로그인 완료")
             moveToMain()
+            Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -88,6 +90,7 @@ class LoginActivity :
                         viewModel.loginResult.value?.refreshToken
                     )
                     moveToMain()
+                    Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
                     binding.indeterminateBar.isVisible = false
                 }
                 else -> binding.indeterminateBar.isVisible = false
@@ -104,7 +107,6 @@ class LoginActivity :
         }
         startActivity(intent)
         finish()
-        showToast("로그인 되었습니다")
     }
 
     override fun onDestroy() {

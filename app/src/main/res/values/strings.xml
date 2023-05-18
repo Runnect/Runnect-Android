@@ -2,7 +2,7 @@
     <string name="app_name">Runnect</string>
 
 
-    <string name="discover_title">코스발견</string>
+    <string name="discover_title">코스 발견</string>
     <string name="discover_recommend_title">코스 추천</string>
 
     <string name="discover_recommend_subtitle">새로운 코스를 발견해나가요</string>
@@ -39,10 +39,10 @@
     <string name="item_mypage_history_time">이동 시간</string>
     <string name="item_mypage_history_pace">평균 페이스</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="count_down_desc">잠시 후 러닝을 시작합니다.</string>
+    <string name="count_down_desc">잠시 후 러닝을 시작합니다</string>
     <string name="item_mypage_reward_course_count">코스 10개</string>
     <string name="draw_set_departure">출발지 설정하기</string>
-    <string name="end_run_page_title">러닝기록</string>
+    <string name="end_run_page_title">러닝 기록</string>
     <string name="end_run_distance_title">거리</string>
     <string name="end_run_departure">출발지</string>
     <string name="end_run_date">날짜</string>
@@ -54,7 +54,7 @@
     <string name="my_draw_distance_unit">km</string>
     <string name="my_draw_start_run_button">시작하기</string>
     <string name="scrap_detail_start_run_button">시작하기</string>
-    <string name="search_set_departure_hint">출발지를 설정해주세요</string>
+    <string name="search_set_departure_hint">지역과 키워드 중심으로 검색해보세요</string>
     <string name="search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
     <string name="dialog_finish_run_notify">수고하셨습니다! 러닝을 완료했어요!</string>
     <string name="dialog_finish_run_see_record">기록 보러 가기</string>
