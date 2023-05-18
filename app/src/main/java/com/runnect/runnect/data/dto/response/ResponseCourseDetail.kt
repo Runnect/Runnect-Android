@@ -30,7 +30,7 @@ data class CourseDetailUser(
     @SerializedName("isNowUser")
     val isNowUser: Boolean,
     @SerializedName("level")
-    val level: Int,
+    val level: String,
     @SerializedName("nickname")
     val nickname: String
 )

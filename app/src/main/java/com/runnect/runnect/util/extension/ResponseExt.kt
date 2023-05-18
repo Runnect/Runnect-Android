@@ -30,7 +30,7 @@ fun RecommendPublicCourse.toData(): RecommendCourseDTO {
         id = id,
         title = title,
         scrap = scrap,
-        image = image
+        image = image,
     )
 }
 
@@ -48,7 +48,7 @@ fun SearchPublicCourse.toData(): CourseSearchDTO {
 fun DetailData.toData(): CourseDetailDTO {
     return CourseDetailDTO(
         stampId = user.image,
-        level = user.level.toString(),
+        level = user.level,
         nickname = user.nickname,
         courseId = publicCourse.courseId,
         departure = publicCourse.departure.region + ' ' + publicCourse.departure.city + ' ' + publicCourse.departure.town + ' ' + ((publicCourse.departure.name)

@@ -217,8 +217,15 @@ class CourseDetailActivity :
                         )
                         ivCourseDetailProfileStamp.load(stampResId)
                         ivCourseDetailProfileNickname.text = nickname
-                        tvCourseDetailProfileLv.text = level
+                        if(level=="알 수 없음"){
+                            tvCourseDetailProfileLv.isVisible = false
+                            tvCourseDetailProfileLvIndicator.isVisible = false
+                        }
+                        else{
+                            tvCourseDetailProfileLv.text = level
+                        }
                         ivCourseDetailScrap.isSelected = scrap
+
                     }
 
                 }
