@@ -88,7 +88,7 @@
         <View
             android:id="@+id/view_top_frame"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:background="@color/white"
             android:elevation="1dp"
             android:outlineProvider="none"
@@ -97,17 +97,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
+            app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
             android:background="@color/transparent_00"
             android:elevation="2dp"
             android:outlineProvider="none"
             android:src="@drawable/backbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/view_top_frame"
+            app:layout_constraintTop_toTopOf="@id/view_top_frame" />
 
         <TextView
             android:id="@+id/tv_departure"
@@ -133,9 +133,9 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_draw"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="40dp"
             android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/radius_10_g3_button"
             android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
@@ -262,7 +262,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/radius_10_m1_button"
             android:fontFamily="@font/pretendard_semibold"
             android:text="@string/draw_set_departure"

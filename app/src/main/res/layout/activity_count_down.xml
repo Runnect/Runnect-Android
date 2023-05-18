@@ -10,34 +10,33 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".CountDownActivity"
-        android:background="@drawable/star_background">
+        android:background="@drawable/star_background"
+        tools:context=".CountDownActivity">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="270dp"
             android:scaleX="0.4"
             android:scaleY="0.4"
-            android:src="@drawable/anim_num3" />
+            android:src="@drawable/anim_num3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_count_down_desc"
-            android:fontFamily="@font/pretendard_medium"
-            android:textSize="17sp"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="265dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/count_down_desc"
+            android:textColor="@color/white"
+            android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="280dp"
-            app:layout_constraintStart_toStartOf="@id/iv_count_down"
-            app:layout_constraintEnd_toEndOf="@id/iv_count_down"
-            android:layout_marginTop="35dp"
-            android:text="@string/count_down_desc" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
