@@ -31,9 +31,13 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
             runCatching {
                 courseRepository.getCourseSearch(keyword)
             }.onSuccess {
-                Timber.d("검색 성공")
                 courseSearchList = it
-                _courseSearchState.value = UiState.Success
+                if(courseSearchList.isEmpty()){
+                    _courseSearchState.value = UiState.Empty
+                }
+                else{
+                    _courseSearchState.value = UiState.Success
+                }
             }.onFailure {
                 Timber.d("검색 실패 ${it.message} ${it.cause}")
                 errorMessage.value = it.message
