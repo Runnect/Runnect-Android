@@ -85,7 +85,7 @@
                     android:layout_width="34dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="22dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/course_detail_profile_circle_frame"
                     android:padding="1dp"
                     app:layout_constraintDimensionRatio="1:1"
@@ -121,7 +121,7 @@
                     android:id="@+id/tv_course_detail_profile_lv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginEnd="15dp"
                     android:fontFamily="@font/pretendard_semibold"
                     android:textColor="@color/M1"
@@ -130,12 +130,23 @@
                     app:layout_constraintTop_toBottomOf="@id/iv_course_detail_map"
                     tools:text="3" />
 
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider_course_detail_profile"
+                    android:layout_width="0dp"
+                    android:background="@color/G3"
+                    android:layout_height="0.7dp"
+                    android:layout_marginHorizontal="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/iv_course_detail_map"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="54dp"/>
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_course_detail_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="78dp"
+                    android:layout_marginTop="68dp"
                     android:fontFamily="@font/pretendard_bold"
                     android:textColor="@color/G1"
                     android:textSize="18sp"
@@ -236,7 +247,7 @@
                     android:id="@+id/view_course_detail_line"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:layout_marginTop="185dp"
+                    android:layout_marginTop="167dp"
                     android:background="@color/G5"
                     app:layout_constraintTop_toBottomOf="@id/iv_course_detail_map" />
 
