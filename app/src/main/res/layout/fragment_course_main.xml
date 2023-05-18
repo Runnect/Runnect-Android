@@ -36,21 +36,20 @@
             app:layout_constraintTop_toTopOf="@id/frame_main_guide" />
 
         <TextView
-            android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toEndOf="@id/frame_main_guide"
-            android:fontFamily="@font/pretendard_medium"
             android:id="@+id/tv_main_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:elevation="3dp"
+            android:fontFamily="@font/pretendard_medium"
             android:outlineProvider="none"
             android:text="코스그리기를 눌러 나만의 코스를 만들어봐요!"
             android:textColor="@color/black"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/frame_main_guide"
+            app:layout_constraintEnd_toEndOf="@id/frame_main_guide"
             app:layout_constraintStart_toEndOf="@id/iv_guide_logo"
             app:layout_constraintTop_toTopOf="@id/frame_main_guide" />
-
 
 
         <FrameLayout
@@ -70,7 +69,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_draw"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginHorizontal="64dp"
             android:layout_marginBottom="18dp"

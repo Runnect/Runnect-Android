@@ -36,7 +36,7 @@
             android:layout_height="0dp"
             android:background="@color/W1"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
+            app:layout_constraintDimensionRatio="360:56"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView

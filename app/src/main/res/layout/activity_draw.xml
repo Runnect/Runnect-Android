@@ -43,10 +43,10 @@
             tools:visibility="visible" />
 
         <TextView
-            android:layout_marginEnd="4dp"
             android:id="@+id/tv_draw_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:elevation="3dp"
             android:fontFamily="@font/pretendard_medium"
             android:outlineProvider="none"
@@ -87,17 +87,17 @@
 
         <View
             android:id="@+id/view_top_frame"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@color/white"
             android:elevation="1dp"
             android:outlineProvider="none"
+            app:layout_constraintDimensionRatio="360:56"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,6 +106,7 @@
             android:elevation="2dp"
             android:outlineProvider="none"
             android:src="@drawable/backbutton"
+            app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
             app:layout_constraintStart_toStartOf="@id/view_top_frame"
             app:layout_constraintTop_toTopOf="@id/view_top_frame" />
 
