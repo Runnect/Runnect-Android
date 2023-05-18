@@ -201,9 +201,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             viewModel.modifyItemsToDelete(id)
             true
         } else {
-            val intent = Intent(this,CourseDetailActivity::class.java)
-            intent.putExtra("courseId",id)
-            intent.putExtra("root","upload")
+            val intent = Intent(this,CourseDetailActivity::class.java).apply {
+                putExtra("courseId",id)
+                putExtra("root","upload")
+            }
             startActivity(intent)
             false
         }
