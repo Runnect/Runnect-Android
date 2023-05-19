@@ -105,6 +105,11 @@ class MyPageEditNameActivity :
         return super.dispatchTouchEvent(ev)
     }
 
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
     companion object {
         const val NICK_NAME = "nickname"
         const val PROFILE = "profile_img"

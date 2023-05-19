@@ -78,7 +78,7 @@ class CountDownActivity :
             viewModel.touchList.value = detailToRunData.touchList
             viewModel.startLatLng.value = detailToRunData.startLatLng
             viewModel.captureUri.value = detailToRunData.image
-            viewModel.dataFrom.value = "draw"
+            viewModel.dataFrom.value = "detail"
         }
 
 

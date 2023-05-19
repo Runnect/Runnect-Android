@@ -243,6 +243,7 @@ class StorageMyDrawFragment :
     private fun addObserver() {
         observeStorageState()
         observeGetMyDrawResult()
+        observeDeleteCount()
     }
 
     private fun observeStorageState() {
@@ -267,6 +268,17 @@ class StorageMyDrawFragment :
     fun observeGetMyDrawResult() {
         viewModel.getMyDrawResult.observe(viewLifecycleOwner) {
             storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
+        }
+    }
+
+    private fun observeDeleteCount(){
+        viewModel.deleteCount.observe(viewLifecycleOwner){
+            var count = viewModel.deleteCount.value
+            if(count!! > 0){
+                btnDeleteCourseMain.text = "삭제하기(${count})"
+            } else {
+                btnDeleteCourseMain.text = "삭제하기"
+            }
         }
     }
 
@@ -299,12 +311,14 @@ class StorageMyDrawFragment :
     }
 
     private fun setSelectionTrackerObserver() {
+
         selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
                 checkDisableSelection()
                 createSelectList()
                 manageSaveDeleteBtnCondition()
+                viewModel.deleteCount.value = selectionTracker.selection.size()
             }
         }))
     }

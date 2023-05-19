@@ -1,19 +1,14 @@
 package com.runnect.runnect.presentation.run
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
 import androidx.activity.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
@@ -21,10 +16,10 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.*
+import com.runnect.runnect.data.model.CountToRunData
+import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
-import kotlinx.android.synthetic.main.custom_dialog_finish_run.view.*
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -111,14 +106,14 @@ class RunActivity :
 
     }
 
-    private fun setLocationTrackingMode(){
+    private fun setLocationTrackingMode() {
         //네이버 맵 sdk에 위치 정보 제공
         locationSource = FusedLocationSource(this@RunActivity, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
     }
 
-    private fun addCurrentLocationChangeListener(map: NaverMap){
+    private fun addCurrentLocationChangeListener(map: NaverMap) {
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
             map.locationOverlay.run { //현재 위치 마커
@@ -128,17 +123,17 @@ class RunActivity :
         }
     }
 
-    private fun setZoomMinMax(){
+    private fun setZoomMinMax() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
     }
 
-    private fun hideZoomControl(){
+    private fun hideZoomControl() {
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
     }
 
-    private fun setCurrentLocationImage(){
+    private fun setCurrentLocationImage() {
         //현위치 커스텀 이미지
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
@@ -203,18 +198,27 @@ class RunActivity :
         }
     }
 
-    private fun setRouteMarker(countToRunData: CountToRunData, i : Int) { //여기도 create랑 set이랑 역할 표현이 모호함
+    private fun setRouteMarker(
+        countToRunData: CountToRunData,
+        i: Int
+    ) { //여기도 create랑 set이랑 역할 표현이 모호함
         val routeMarker = Marker()
-        routeMarker.position = LatLng(countToRunData.touchList[i - 1].latitude,
-            countToRunData.touchList[i - 1].longitude)
+        routeMarker.position = LatLng(
+            countToRunData.touchList[i - 1].latitude,
+            countToRunData.touchList[i - 1].longitude
+        )
         routeMarker.anchor = PointF(0.5f, 0.5f)
         routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
         routeMarker.map = naverMap
     }
 
-    private fun generateRouteLine(countToRunData: CountToRunData, i : Int) {
-        coords.add(LatLng(countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
-            countToRunData.touchList[i - 1].longitude)) // coords에 터치로 받아온 좌표값 추가
+    private fun generateRouteLine(countToRunData: CountToRunData, i: Int) {
+        coords.add(
+            LatLng(
+                countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
+                countToRunData.touchList[i - 1].longitude
+            )
+        ) // coords에 터치로 받아온 좌표값 추가
         path.coords = coords // 경로선 그리기
         path.color = Color.parseColor("#593EEC") // 경로선 색상
         path.outlineColor = Color.parseColor("#593EEC") // 경로선 테두리 색상
@@ -223,28 +227,10 @@ class RunActivity :
 
     private fun showRecord() {
         binding.btnRunFinish.setOnClickListener {
-            bottomSheet()
             stopTimer()
-        }
-    }
-
-    @SuppressLint("MissingInflatedId")
-    fun bottomSheet() {
-        // bottomSheetDialog 객체 생성
-        val bottomSheetDialog = BottomSheetDialog(
-            this@RunActivity, R.style.BottomSheetDialogTheme
-        )
-
-        // layout_bottom_sheet를 뷰 객체로 생성
-        val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
-            R.layout.custom_dialog_finish_run,
-            findViewById<LinearLayout>(R.id.bottomSheet)
-        )
-        // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
-        bottomSheetView.findViewById<View>(R.id.btn_see_record).setOnClickListener {
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
-
-                putExtra("RunToEndRunData",
+                putExtra(
+                    "RunToEndRunData",
                     RunToEndRunData(
                         courseId = viewModel.courseId.value!!,
                         publicCourseId = viewModel.publicCourseId.value,
@@ -254,18 +240,13 @@ class RunActivity :
                         timerHour,
                         timerMinute,
                         timerSecond,
-                        viewModel.dataFrom.value!!))
-
-                addFlags(FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
-
+                        viewModel.dataFrom.value!!
+                    )
+                )
             }
             startActivity(intent)
-            bottomSheetDialog.dismiss()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
-        // bottomSheetDialog 뷰 생성
-        bottomSheetDialog.setContentView(bottomSheetView)
-        // bottomSheetDialog 호출
-        bottomSheetDialog.show()
     }
 
     private fun startTimer() {
@@ -305,9 +286,12 @@ class RunActivity :
             Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
             Timber.tag(ContentValues.TAG).d("timerSecond 값 : $timerSecond")
 
-            Timber.tag(ContentValues.TAG).d("binding.tvTimeHour.text 값 : ${binding.tvTimeHour.text}")
-            Timber.tag(ContentValues.TAG).d("binding.tvTimeMinute.text 값 : ${binding.tvTimeMinute.text}")
-            Timber.tag(ContentValues.TAG).d("binding.tvTimeSecond.text 값 : ${binding.tvTimeSecond.text}")
+            Timber.tag(ContentValues.TAG)
+                .d("binding.tvTimeHour.text 값 : ${binding.tvTimeHour.text}")
+            Timber.tag(ContentValues.TAG)
+                .d("binding.tvTimeMinute.text 값 : ${binding.tvTimeMinute.text}")
+            Timber.tag(ContentValues.TAG)
+                .d("binding.tvTimeSecond.text 값 : ${binding.tvTimeSecond.text}")
 
 
         }

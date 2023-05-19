@@ -23,6 +23,7 @@ class StorageViewModel : ViewModel() {
     val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
+    val deleteCount = MutableLiveData<Int>()
 
 
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)

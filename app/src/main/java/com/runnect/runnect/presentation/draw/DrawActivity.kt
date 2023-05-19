@@ -30,8 +30,6 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.data.model.UploadLatLng
@@ -73,12 +71,11 @@ class DrawActivity :
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
 
-    var isVisitorMode: Boolean = false;
+    var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkVisitorMode()
 
         binding.model = viewModel
         binding.lifecycleOwner = this
@@ -98,11 +95,6 @@ class DrawActivity :
             }
         }
 
-    }
-
-    private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access")!! == "visitor"
     }
 
     override fun onBackPressed() {
