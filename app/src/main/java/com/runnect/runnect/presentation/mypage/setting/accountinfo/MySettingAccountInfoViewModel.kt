@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.mypage.setting
+package com.runnect.runnect.presentation.mypage.setting.accountinfo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

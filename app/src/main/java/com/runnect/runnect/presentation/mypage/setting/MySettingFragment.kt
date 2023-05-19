@@ -8,6 +8,8 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingBinding
 import com.runnect.runnect.presentation.mypage.MyPageFragment
+import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
+import com.runnect.runnect.util.extension.startWebView
 
 class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fragment_my_setting) {
 
@@ -22,6 +24,12 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         }
         binding.viewSettingAccountInfoFrame.setOnClickListener {
             moveToMySettingAccountInfo()
+        }
+        binding.viewSettingReportFrame.setOnClickListener {
+            requireContext().startWebView(REPORT_URL)
+        }
+        binding.viewSettingTermsFrame.setOnClickListener {
+            requireContext().startWebView(TERMS_URL)
         }
     }
 
@@ -42,6 +50,7 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
             replace<MySettingAccountInfoFragment>(R.id.fl_main, args = bundle)
         }
     }
+
     private fun getEmailFromMyPage(): String? {
         val bundleFromMyPage = arguments
         return bundleFromMyPage?.getString(ACCOUNT_INFO_TAG)
@@ -49,5 +58,8 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
 
     companion object {
         const val ACCOUNT_INFO_TAG = "accountInfo"
+        const val REPORT_URL =
+            "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
+        const val TERMS_URL = "https://www.notion.so/Runnect-5dfee19ccff04c388590e5ee335e77ed?pvs=4"
     }
 }
