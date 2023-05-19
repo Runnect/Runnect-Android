@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.mypage.MyPageViewModel" />
@@ -25,13 +26,13 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:lineSpacingExtra="5sp"
             android:id="@+id/tv_visitor_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="22dp"
             android:fontFamily="@font/pretendard_medium"
             android:gravity="center"
+            android:lineSpacingExtra="5sp"
             android:text="러넥트에 가입하고 나의 러닝 기록과\n스탬프를 확인해 보세요!"
             android:textAlignment="center"
             android:textColor="@color/G2"
@@ -66,9 +67,12 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_my_page"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@color/M4"
+                app:layout_constraintDimensionRatio="360:56"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/constraint_outside">
 
                 <androidx.appcompat.widget.AppCompatTextView

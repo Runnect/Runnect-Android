@@ -8,32 +8,33 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginHorizontal="34dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="34dp"
         android:background="@drawable/radius_10_custom_alert_dialog"
         tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/iv_dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="74dp"
             android:layout_marginTop="31dp"
             android:layout_marginEnd="61.79dp"
             android:src="@drawable/alertdialog"
+            app:layout_constraintDimensionRatio="176:147"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:lineSpacingExtra="5sp"
-            android:gravity="center"
             android:id="@+id/tv_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:lineSpacingExtra="5sp"
             android:text="코스를 만들었어요!\n저장한 코스는 보관함에서 볼 수 있어요."
             android:textColor="@color/G2"
             android:textSize="14sp"
@@ -44,8 +45,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_storage"
-            android:layout_width="147dp"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="13dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
@@ -57,6 +58,7 @@
             android:textColor="@color/M1"
             android:textSize="13.31sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="130:40"
             app:layout_constraintEnd_toStartOf="@id/btn_run"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +66,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_run"
-            android:layout_width="147dp"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="13dp"
             android:background="@drawable/radius_10_m1_button"
@@ -75,6 +77,7 @@
             android:textColor="@color/W1"
             android:textSize="13.31sp"
             app:layout_constraintBottom_toBottomOf="@id/btn_storage"
+            app:layout_constraintDimensionRatio="130:40"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_storage"
             app:layout_constraintTop_toTopOf="@id/btn_storage" />
