@@ -59,7 +59,11 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
                 userRepository.getUserUploadCourse()
             }.onSuccess {
                 _myUploadCourses = it
-                _myUploadCourseState.value = UiState.Success
+                if (_myUploadCourses.isEmpty()) {
+                    _myUploadCourseState.value = UiState.Empty
+                } else {
+                    _myUploadCourseState.value = UiState.Success
+                }
             }.onFailure {
                 errorMessage.value = it.message
                 _myUploadCourseState.value = UiState.Failure
@@ -77,7 +81,7 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
                 _myUploadCourses =
                     _myUploadCourses.filter { !itemsToDelete.contains(it.id) }.toMutableList()
                 _myUploadDeleteState.value = UiState.Success
-                //모든 기록 삭제 시, 편집 모드 취소
+                //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
                 if (_myUploadCourses.isEmpty()) {
                     _myUploadCourseState.value = UiState.Empty
                     convertMode()
@@ -106,11 +110,13 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
         }
         itemsToDeleteLiveData.value = _itemsToDelete
     }
+
     fun clearItemsToDelete() {
         _itemsToDelete.clear()
         itemsToDeleteLiveData.value = _itemsToDelete
     }
-    companion object{
+
+    companion object {
         const val DEFAULT_SELECTED_COUNT = 0
     }
 }

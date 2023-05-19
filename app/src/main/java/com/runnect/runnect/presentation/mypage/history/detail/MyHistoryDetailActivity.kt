@@ -130,6 +130,7 @@ class MyHistoryDetailActivity :
                     binding.indeterminateBar.isVisible = false
                     enterReadMode()
                     viewModel.titleForInterruption = viewModel.title.value.toString()
+                    showToast("수정이 완료되었습니다")
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false

@@ -210,11 +210,21 @@ class CourseDetailActivity :
             if (state == UiState.Success) {
                 with(binding) {
                     with(viewModel.courseDetail) {
-                        ivCourseDetailMap.load(image)
-                        ivCourseDetailProfileStamp.load(stampId)
+                        val stampResId = this@CourseDetailActivity.getStampResId(
+                            viewModel.stampId.value,
+                            RES_NAME, RES_STAMP_TYPE, packageName
+                        )
+                        ivCourseDetailProfileStamp.load(stampResId)
                         ivCourseDetailProfileNickname.text = nickname
-                        tvCourseDetailProfileLv.text = level
+                        if(level=="알 수 없음"){
+                            tvCourseDetailProfileLv.isVisible = false
+                            tvCourseDetailProfileLvIndicator.isVisible = false
+                        }
+                        else{
+                            tvCourseDetailProfileLv.text = level
+                        }
                         ivCourseDetailScrap.isSelected = scrap
+
                     }
 
                 }
@@ -271,6 +281,7 @@ class CourseDetailActivity :
         viewModel.editContent.value = viewModel.contentForInterruption.value
         viewModel.isEdited = true
         enterReadMode()
+        showToast("수정이 완료되었습니다")
     }
 
     private fun initEditBottomSheet() {
@@ -364,5 +375,7 @@ class CourseDetailActivity :
         const val MY_UPLOAD_ACTIVITY_TAG = "upload"
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
+        const val RES_NAME = "mypage_img_stamp_"
+        const val RES_STAMP_TYPE = "drawable"
     }
 }

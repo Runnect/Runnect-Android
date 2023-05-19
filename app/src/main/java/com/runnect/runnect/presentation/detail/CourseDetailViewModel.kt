@@ -34,6 +34,7 @@ class CourseDetailViewModel @Inject constructor(
 
     private lateinit var courseToDelete: List<Int>
 
+    var stampId: MutableLiveData<String> = MutableLiveData("CSPR0")
     var mapImage: MutableLiveData<String> = MutableLiveData(DEFAULT_MAP_IMAGE)
     var editTitle: MutableLiveData<String> = MutableLiveData("")
     var editContent: MutableLiveData<String> = MutableLiveData("")
@@ -62,7 +63,7 @@ class CourseDetailViewModel @Inject constructor(
         get() = _editMode
 
     private var _courseDetail = CourseDetailDTO(
-        R.drawable.user_profile_basic,
+        "CSPR0",
         "1",
         "1",
         1,
@@ -92,6 +93,7 @@ class CourseDetailViewModel @Inject constructor(
                 courseRepository.getCourseDetail(courseId)
             }.onSuccess {
                 _courseDetail = it
+                stampId.value = it.stampId
                 mapImage.value = it.image
                 editTitle.value = it.title
                 editContent.value = it.description
