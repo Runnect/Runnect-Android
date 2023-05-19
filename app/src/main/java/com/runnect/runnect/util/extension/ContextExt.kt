@@ -109,8 +109,6 @@ fun Context.getStampResId(
 ): Int {
     with(this) {
         var resName = ""
-        if (stampId == "CSPR0") {
-        lateinit var resName:String
         if(stampId == "CSPR0"){
             resName = "${resNameParam}basic"
             return resources.getIdentifier(
