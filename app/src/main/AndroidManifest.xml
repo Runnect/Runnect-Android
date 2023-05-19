@@ -45,9 +45,6 @@
             android:name=".presentation.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.report.ReportActivity"
-            android:exported="false" />
-        <activity
             android:name=".presentation.mydrawdetail.MyDrawDetailActivity"
             android:exported="false" />
         <activity

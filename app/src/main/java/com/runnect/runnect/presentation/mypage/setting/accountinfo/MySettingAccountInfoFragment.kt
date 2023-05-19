@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.mypage.setting
+package com.runnect.runnect.presentation.mypage.setting.accountinfo
 
 import android.app.AlertDialog
 import android.content.ContentValues
@@ -14,6 +14,7 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingAccountInfoBinding
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener

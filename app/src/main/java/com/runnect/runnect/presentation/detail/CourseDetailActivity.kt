@@ -19,7 +19,6 @@ import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.report.ReportActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -317,10 +316,7 @@ class CourseDetailActivity :
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.view_go_to_report_frame).setOnClickListener {
-            val intent = Intent(this@CourseDetailActivity, ReportActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
-            }
-            startActivity(intent)
+            startWebView(REPORT_URL)
             bottomSheetDialog.dismiss()
         }
         // bottomSheetDialog 뷰 생성
@@ -341,6 +337,8 @@ class CourseDetailActivity :
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
         const val MY_UPLOAD_ACTIVITY_TAG = "upload"
+        const val REPORT_URL =
+            "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
     }

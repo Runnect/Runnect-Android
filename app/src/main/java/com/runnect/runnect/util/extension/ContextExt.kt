@@ -2,30 +2,22 @@ package com.runnect.runnect.util.extension
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.view.LayoutInflater
-
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.LinearLayout
-
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.runnect.runnect.R
-import com.runnect.runnect.presentation.MainActivity
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
-import timber.log.Timber
-import com.runnect.runnect.presentation.mypage.MyPageFragment
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
 
 
 //확장할 클래스 - Context 클래스
@@ -49,11 +41,11 @@ fun Context.setCustomDialog(
     layoutInflater: LayoutInflater,
     view: View,
     desc: String,
-    yesBtnText:String,
-    noBtnText:String="취소"
+    yesBtnText: String,
+    noBtnText: String = "취소"
 ): AlertDialog {
     val dialogLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
-    with(dialogLayout){
+    with(dialogLayout) {
         tv_dialog.text = desc
         btn_delete_no.text = noBtnText
         btn_delete_yes.text = yesBtnText
@@ -66,7 +58,8 @@ fun Context.setCustomDialog(
     dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     return dialog
 }
-fun AlertDialog.setDialogClickListener(listener:(which: AppCompatButton)->Unit) {
+
+fun AlertDialog.setDialogClickListener(listener: (which: AppCompatButton) -> Unit) {
     this.setOnShowListener {
         val yesButton = this.btn_delete_yes
         val noButton = this.btn_delete_no
@@ -81,17 +74,18 @@ fun AlertDialog.setDialogClickListener(listener:(which: AppCompatButton)->Unit) 
     }
 }
 
-fun Context.setEditBottomSheet():BottomSheetDialog{
+fun Context.setEditBottomSheet(): BottomSheetDialog {
     val bottomSheetDialog = BottomSheetDialog(
         this, R.style.BottomSheetDialogTheme
     )
     val bottomSheetView = LayoutInflater.from(this).inflate(
-        R.layout.custom_dialog_edit_mode,null
+        R.layout.custom_dialog_edit_mode, null
     )
     bottomSheetDialog.setContentView(bottomSheetView)
     return bottomSheetDialog
 }
-fun BottomSheetDialog.setEditBottomSheetClickListener(listener:(which:LinearLayoutCompat)->Unit){
+
+fun BottomSheetDialog.setEditBottomSheetClickListener(listener: (which: LinearLayoutCompat) -> Unit) {
     this.setOnShowListener {
         val editButton = this.layout_edit_frame
         val deleteButton = this.layout_delete_frame
@@ -107,18 +101,33 @@ fun BottomSheetDialog.setEditBottomSheetClickListener(listener:(which:LinearLayo
 }
 
 
-fun Context.getStampResId(stampId: String?,resNameParam:String,resType:String,packageName:String):Int{
+fun Context.getStampResId(
+    stampId: String?,
+    resNameParam: String,
+    resType: String,
+    packageName: String
+): Int {
     with(this) {
+        var resName = ""
+        if (stampId == "CSPR0") {
         lateinit var resName:String
         if(stampId == "CSPR0"){
             resName = "${resNameParam}basic"
-            return resources.getIdentifier(resName,
-                resType, packageName)
-        }
-        else{
+            return resources.getIdentifier(
+                resName,
+                resType, packageName
+            )
+        } else {
             resName = "${resNameParam}$stampId"
-            return resources.getIdentifier(resName,
-                resType, packageName)
+            return resources.getIdentifier(
+                resName,
+                resType, packageName
+            )
         }
     }
+}
+
+fun Context.startWebView(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    startActivity(intent)
 }
