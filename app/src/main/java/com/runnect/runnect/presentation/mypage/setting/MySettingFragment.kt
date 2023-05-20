@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.setting
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
@@ -12,6 +13,11 @@ import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAcco
 import com.runnect.runnect.util.extension.startWebView
 
 class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fragment_my_setting) {
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveToMyPage()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,6 +37,10 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         binding.viewSettingTermsFrame.setOnClickListener {
             requireContext().startWebView(TERMS_URL)
         }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedCallback
+        )
     }
 
     private fun moveToMyPage() {

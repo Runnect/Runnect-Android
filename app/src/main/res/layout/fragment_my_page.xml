@@ -259,7 +259,6 @@
                 android:id="@+id/view_my_page_main_reward_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@drawable/my_page_under_stroke"
                 app:layout_constraintDimensionRatio="360:60"
                 app:layout_constraintTop_toBottomOf="@id/divider_my_page" />
 
@@ -300,7 +299,6 @@
                 android:id="@+id/view_my_page_main_history_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@drawable/my_page_under_stroke"
                 app:layout_constraintDimensionRatio="360:60"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
 
@@ -341,7 +339,6 @@
                 android:id="@+id/view_my_page_main_upload_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@drawable/my_page_under_stroke"
                 app:layout_constraintDimensionRatio="360:60"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame" />
 
@@ -382,7 +379,6 @@
                 android:id="@+id/view_my_page_main_setting_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@drawable/my_page_under_stroke"
                 app:layout_constraintDimensionRatio="360:60"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_upload_frame" />
 
@@ -454,6 +450,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_main_version_frame" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame"/>
+
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame"/>
+
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_upload_frame"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

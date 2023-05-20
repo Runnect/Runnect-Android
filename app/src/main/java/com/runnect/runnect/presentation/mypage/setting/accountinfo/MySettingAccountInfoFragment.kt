@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -29,6 +30,11 @@ class MySettingAccountInfoFragment :
     private lateinit var logoutDialog: AlertDialog
     private lateinit var withdrawalDialog: AlertDialog
     private val viewModel: MySettingAccountInfoViewModel by viewModels()
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveToMySetting()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +63,7 @@ class MySettingAccountInfoFragment :
         binding.viewSettingAccountInfoWithdrawalFrame.setOnClickListener {
             withdrawalDialog.show()
         }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,backPressedCallback)
     }
 
     private fun addObserver() {
