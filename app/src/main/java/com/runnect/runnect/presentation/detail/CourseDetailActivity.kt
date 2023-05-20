@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import coil.load
@@ -17,6 +18,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
+import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -38,7 +40,17 @@ class CourseDetailActivity :
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
     private lateinit var editInterruptDialog: AlertDialog
-
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            root = intent.getStringExtra("root").toString()
+            if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                handleReturnToMyUpload()
+            }
+            else if(root == COURSE_DISCOVER_TAG){
+                handleReturnToDiscover()
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -71,11 +83,10 @@ class CourseDetailActivity :
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 } else {
                     if (root == MY_UPLOAD_ACTIVITY_TAG) {
-                        val intent = Intent(this, MyUploadActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(intent)
-                        finish()
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                        handleReturnToMyUpload()
+                    }
+                    else if(root == COURSE_DISCOVER_TAG){
+                        handleReturnToDiscover()
                     }
                 }
             }
@@ -83,6 +94,7 @@ class CourseDetailActivity :
         binding.ivCourseDetailScrap.setOnClickListener {
             it.isSelected = !it.isSelected
             viewModel.postCourseScrap(id = courseId, it.isSelected)
+            viewModel.isEdited = true
         }
         binding.btnCourseDetailFinish.setOnClickListener {
 
@@ -113,6 +125,21 @@ class CourseDetailActivity :
         binding.tvCourseDetailEditFinish.setOnClickListener {
             viewModel.patchUpdatePublicCourse(courseId)
         }
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
+
+    private fun handleReturnToMyUpload(){
+        val intent = Intent(this, MyUploadActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun handleReturnToDiscover(){
+        MainActivity.updateDiscoverFragment()
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun enterEditMode() {
@@ -337,6 +364,7 @@ class CourseDetailActivity :
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
         const val MY_UPLOAD_ACTIVITY_TAG = "upload"
+        const val COURSE_DISCOVER_TAG = "discover"
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"

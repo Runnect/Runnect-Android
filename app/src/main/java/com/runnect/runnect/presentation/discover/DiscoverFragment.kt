@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.discover
 
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -61,11 +62,28 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
         initLayout()
-        viewModel.getRecommendCourse()
+        getRecommendCourses()
         addListener()
         addObserver()
         setResultDetail()
         setPromotion(binding.vpDiscoverPromotion, promotionImages)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is MainActivity){
+            MainActivity.discoverFragment = this
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MainActivity.discoverFragment = null
+    }
+
+    fun getRecommendCourses(){
+        viewModel.getRecommendCourse()
+        Timber.d("Discover is updated")
     }
 
     private fun initLayout() {
@@ -223,7 +241,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
-                viewModel.getRecommendCourse()
+                getRecommendCourses()
             }
         }
     }
@@ -231,6 +249,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun selectItem(id: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java)
         intent.putExtra("courseId", id)
+        intent.putExtra("root", COURSE_DISCOVER_TAG)
         startForResult.launch(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
@@ -242,5 +261,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val FRAME_NUM = 3
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
+        const val COURSE_DISCOVER_TAG = "discover"
     }
 }

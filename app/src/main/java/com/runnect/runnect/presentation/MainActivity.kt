@@ -31,6 +31,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     companion object {
         var isVisitorMode = false
+        var discoverFragment:DiscoverFragment? = null
+        fun updateDiscoverFragment(){
+            discoverFragment?.getRecommendCourses()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
