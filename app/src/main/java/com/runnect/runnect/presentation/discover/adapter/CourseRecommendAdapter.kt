@@ -54,7 +54,7 @@ class CourseRecommendAdapter(
                 ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
                 ivItemDiscoverCourseInfoScrap.setOnClickListener {
                     if (isVisitorMode) {
-                        requireLogin()
+                        Toast.makeText(discoverFragmentContext, "러넥트에 가입하면 코스를 스크랩할 수 있어요", Toast.LENGTH_SHORT).show()
                     } else {
                         it.isSelected = !it.isSelected
                         mCallback.scrapCourse(data.id, it.isSelected)
@@ -65,10 +65,6 @@ class CourseRecommendAdapter(
                 }
             }
         }
-    }
-
-    private fun requireLogin() {
-        Toast.makeText(discoverFragmentContext, "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
     }
 
 }

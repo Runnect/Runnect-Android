@@ -91,7 +91,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.btnDiscoverUpload.setOnClickListener {
 
             if (isVisitorMode) {
-                requireLogin()
+                Toast.makeText(requireActivity(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
             } else {
                 startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
                 requireActivity().overridePendingTransition(
@@ -100,10 +100,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 )
             }
         }
-    }
-
-    fun requireLogin() {
-        Toast.makeText(requireActivity(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
     }
 
     private fun addObserver() {
