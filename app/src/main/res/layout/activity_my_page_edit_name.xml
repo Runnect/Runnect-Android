@@ -31,9 +31,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_my_page_edit_name"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="56dp"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView

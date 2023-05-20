@@ -8,9 +8,9 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginHorizontal="34dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="34dp"
         android:background="@drawable/radius_10_custom_alert_dialog"
         tools:ignore="MissingConstraints">
 
@@ -30,6 +30,7 @@
             android:id="@+id/tv_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="19dp"
             android:layout_marginTop="14dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="가입 후 로그인 시 코스를 저장하고 달릴 수 있어요!"
@@ -42,7 +43,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
-            android:layout_width="147dp"
+            android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_marginStart="13dp"
             android:layout_marginTop="20dp"
@@ -62,7 +63,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_login"
-            android:layout_width="147dp"
+            android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="13dp"
