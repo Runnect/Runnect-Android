@@ -27,6 +27,11 @@ object KApiCourse {
         OkHttpClient.Builder()
             .addInterceptor(logger)
             .addInterceptor(AppInterceptor())
+            .authenticator(
+                TokenAuthenticator(
+                    ApplicationClass.appContext
+                )
+            )
             .build()
     }
 
