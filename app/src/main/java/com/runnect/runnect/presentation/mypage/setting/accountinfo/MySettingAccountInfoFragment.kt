@@ -96,6 +96,7 @@ class MySettingAccountInfoFragment :
         val intent = Intent(requireActivity(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun setLogoutDialogClickEvent() {
