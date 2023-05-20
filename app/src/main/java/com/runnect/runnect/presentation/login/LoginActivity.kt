@@ -11,7 +11,6 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -79,19 +78,15 @@ class LoginActivity :
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
-                    PreferenceManager.setString(
-                        applicationContext,
-                        "access",
-                        viewModel.loginResult.value?.accessToken
-                    )
-                    PreferenceManager.setString(
-                        applicationContext,
-                        "refresh",
-                        viewModel.loginResult.value?.refreshToken
-                    )
-                    moveToMain()
-                    Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
-                    binding.indeterminateBar.isVisible = false
+                    when (viewModel.loginResult.value?.type) {
+                        "Login" -> {
+                            handleSuccessfulLogin()
+                        }
+                        "Signup" -> {
+                            handleSuccessfulSignup()
+                        }
+                    }
+
                 }
                 else -> binding.indeterminateBar.isVisible = false
             }
@@ -99,6 +94,40 @@ class LoginActivity :
         viewModel.errorMessage.observe(this) {
             Timber.tag(ContentValues.TAG).d("로그인 통신 실패: $it")
         }
+    }
+
+    private fun handleSuccessfulLogin() {
+        saveSignTokenInfo()
+        moveToMain()
+        Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
+        binding.indeterminateBar.isVisible = false
+    }
+
+    private fun handleSuccessfulSignup() {
+        saveSignTokenInfo()
+        moveToGiveNickName()
+    }
+
+    private fun moveToGiveNickName() {
+        val intent = Intent(this, GiveNicknameActivity::class.java)
+        intent.putExtra("access", viewModel.loginResult.value?.accessToken)
+        intent.putExtra("refresh", viewModel.loginResult.value?.refreshToken)
+        startActivity(intent)
+        finish()
+    }
+
+
+    private fun saveSignTokenInfo() {
+        PreferenceManager.setString(
+            applicationContext,
+            "access",
+            viewModel.loginResult.value?.accessToken
+        )
+        PreferenceManager.setString(
+            applicationContext,
+            "refresh",
+            viewModel.loginResult.value?.refreshToken
+        )
     }
 
     private fun moveToMain() {

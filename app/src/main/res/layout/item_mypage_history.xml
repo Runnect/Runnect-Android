@@ -9,8 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="162dp"
-        app:layout_constraintDimensionRatio="330:166"
+        android:layout_height="wrap_content"
         tools:context=".presentation.mypage.history.MyHistoryActivity">
 
         <androidx.appcompat.widget.AppCompatImageView
