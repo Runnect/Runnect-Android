@@ -11,7 +11,6 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -79,7 +78,7 @@ class LoginActivity :
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
-                    when(viewModel.loginResult.value?.type){
+                    when (viewModel.loginResult.value?.type) {
                         "Login" -> {
                             handleSuccessfulLogin()
                         }
@@ -97,26 +96,28 @@ class LoginActivity :
         }
     }
 
-    private fun handleSuccessfulLogin(){
+    private fun handleSuccessfulLogin() {
         saveSignTokenInfo()
         moveToMain()
         Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
         binding.indeterminateBar.isVisible = false
     }
 
-    private fun handleSuccessfulSignup(){
+    private fun handleSuccessfulSignup() {
         saveSignTokenInfo()
         moveToGiveNickName()
     }
 
-    private fun moveToGiveNickName(){
-        val intent = Intent(this,GiveNicknameActivity::class.java)
+    private fun moveToGiveNickName() {
+        val intent = Intent(this, GiveNicknameActivity::class.java)
+        intent.putExtra("access", viewModel.loginResult.value?.accessToken)
+        intent.putExtra("refresh", viewModel.loginResult.value?.refreshToken)
         startActivity(intent)
         finish()
     }
 
 
-    private fun saveSignTokenInfo(){
+    private fun saveSignTokenInfo() {
         PreferenceManager.setString(
             applicationContext,
             "access",
