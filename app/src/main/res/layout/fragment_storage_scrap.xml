@@ -14,6 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_total_scrap_count"
             android:layout_width="wrap_content"
@@ -39,20 +52,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ProgressBar
-                    android:id="@+id/indeterminateBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:indeterminateTint="@color/G3"
-                    android:outlineProvider="none"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView_storage_scrap"
                     android:layout_width="0dp"
@@ -72,7 +71,7 @@
                     android:id="@+id/iv_storage_no_scrap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="147dp"
+                    android:layout_marginTop="130dp"
                     android:src="@drawable/no_course"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -85,25 +84,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:fontFamily="@font/pretendard_medium"
+                    android:gravity="center"
                     android:lineHeight="22sp"
-                    android:text="아직 스크랩한 코스가 없어요"
+                    android:lineSpacingExtra="5sp"
+                    android:text="아직 스크랩한 코스가 없어요\n 코스를 스크랩 해주세요"
                     android:textColor="@color/G2"
                     android:textSize="14sp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_storage_no_scrap" />
-
-                <TextView
-                    android:id="@+id/tv_storage_no_scrap_guide_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:text="코스를 스크랩 해주세요"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="@id/tv_storage_no_scrap_guide"
-                    app:layout_constraintStart_toStartOf="@id/tv_storage_no_scrap_guide"
-                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_storage_no_scrap"
@@ -119,7 +109,7 @@
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide_2" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

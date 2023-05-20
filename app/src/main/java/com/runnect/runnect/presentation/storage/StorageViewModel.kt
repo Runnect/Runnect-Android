@@ -1,14 +1,15 @@
 package com.runnect.runnect.presentation.storage
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponseGetScrapDto
-import com.runnect.runnect.data.model.ResponsePutMyDrawDto
 import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,7 +25,6 @@ class StorageViewModel : ViewModel() {
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
     val deleteCount = MutableLiveData<Int>()
-
 
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)
     val storageState: LiveData<UiState>
@@ -53,16 +53,13 @@ class StorageViewModel : ViewModel() {
     fun deleteMyDrawCourse(deleteList : MutableList<Long>) {
         viewModelScope.launch {
             runCatching {
-//                _storageState.value = UiState.Loading
                 service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
             }.onSuccess {
                 Timber.tag(ContentValues.TAG)
                     .d("삭제 성공입니다")
-//                _storageState.value = UiState.Success
             }.onFailure {
                 Timber.tag(ContentValues.TAG)
                     .d("실패했고 문제는 다음과 같습니다 $it")
-//                _storageState.value = UiState.Failure
             }
         }
     }

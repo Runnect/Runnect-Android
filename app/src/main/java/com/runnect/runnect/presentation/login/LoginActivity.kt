@@ -73,7 +73,7 @@ class LoginActivity :
         }
     }
 
-    private fun addObserver() { //방문자 모드는 여기 logic에 해당이 안 돼.
+    private fun addObserver() {
         viewModel.loginState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true

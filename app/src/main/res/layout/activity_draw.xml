@@ -19,8 +19,9 @@
             android:id="@+id/frame_draw_guide"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_marginHorizontal="48dp"
+            android:layout_marginStart="54dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="31dp"
             android:background="@drawable/radius_30_white_view"
             android:elevation="2dp"
             android:visibility="invisible"
@@ -46,11 +47,11 @@
             android:id="@+id/tv_draw_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="7dp"
             android:elevation="3dp"
             android:fontFamily="@font/pretendard_medium"
             android:outlineProvider="none"
-            android:text="지점과 지점을 연결해 코스를 완성하세요!"
+            android:text="지도를 눌러 코스를 그려주세요"
             android:textColor="@color/black"
             android:textSize="13sp"
             android:visibility="invisible"
@@ -84,7 +85,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <View
             android:id="@+id/view_top_frame"
             android:layout_width="match_parent"
@@ -100,14 +100,14 @@
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="17dp"
             android:background="@color/transparent_00"
             android:elevation="2dp"
             android:outlineProvider="none"
             android:src="@drawable/backbutton"
-            app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
-            app:layout_constraintStart_toStartOf="@id/view_top_frame"
-            app:layout_constraintTop_toTopOf="@id/view_top_frame" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_departure"
@@ -235,6 +235,7 @@
             android:text="@{model.searchResult.name}"
             android:textColor="@color/G1"
             android:textSize="17sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_place_address"
             app:layout_constraintStart_toStartOf="@id/view_bottomSheet_frame"
             app:layout_constraintTop_toTopOf="@id/view_bottomSheet_frame"
             tools:text="패스트파이브 을지로점" />

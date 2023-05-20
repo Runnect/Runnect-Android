@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-    </data>
+    <data></data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-
             android:id="@+id/frame_course_distance"
             android:layout_width="82dp"
             android:layout_height="40dp"
@@ -69,21 +67,22 @@
             android:id="@+id/imgBtn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="17dp"
             android:background="@color/transparent_00"
             android:src="@drawable/backbutton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:background="@color/transparent_00"
             android:id="@+id/imgBtn_delete"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginEnd="10dp"
+            android:background="@color/transparent_00"
             android:src="@drawable/ic_delete"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
             app:layout_constraintTop_toTopOf="@id/imgBtn_back" />
 
         <androidx.appcompat.widget.AppCompatButton

@@ -138,7 +138,7 @@ class DrawActivity :
                 requireVisitorLogin(binding.root)
             } else {
                 createMbr()
-                Handler(Looper.getMainLooper()).postDelayed( //이거 왜 콜백으로 안 되는 거지
+                Handler(Looper.getMainLooper()).postDelayed(
                     {
                         viewModel.uploadCourse()
                     }, 300

@@ -50,7 +50,7 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
                 tvMyPageHistoryCourseName.text = data.title
                 tvMyPageHistoryPlace.text = data.location
                 tvMyPageHistoryDate.text = data.date
-                tvMyPageHistoryDistanceData.text = data.distance + "km"
+                tvMyPageHistoryDistanceData.text = data.distance + " " + "km"
                 tvMyPageHistoryTimeData.text = data.time
                 tvMyPageHistoryPaceData.text = data.pace
                 ivMyPageHistoryFrame.setOnClickListener {

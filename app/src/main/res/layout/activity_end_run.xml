@@ -74,7 +74,6 @@
             tools:background="@color/G3" />
 
         <EditText
-            android:inputType="text"
             android:id="@+id/et_title_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,6 +82,7 @@
             android:backgroundTint="@color/G5"
             android:fontFamily="@font/pretendard_bold"
             android:hint="@string/end_run_title_hint"
+            android:inputType="text"
             android:maxLength="20"
             android:textColor="@color/G1"
             android:textSize="18sp"
@@ -182,12 +182,12 @@
             app:layout_constraintTop_toTopOf="@id/tv_time" />
 
         <TextView
-            android:gravity="bottom"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
+            android:gravity="bottom"
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
             android:textSize="20sp"
@@ -198,12 +198,12 @@
             tools:text="5.1" />
 
         <TextView
-            android:gravity="bottom"
             android:id="@+id/tv_distance_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:fontFamily="@font/pretendard_medium"
+            android:gravity="bottom"
             android:text="@string/end_run_distance_unit"
             android:textColor="@color/G1"
             android:textSize="14sp"
@@ -226,27 +226,27 @@
 
 
         <TextView
-            android:layout_marginBottom="7dp"
-            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="7dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_endRun" />
 
         <TextView
-            android:gravity="bottom"
             android:id="@+id/tv_time_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="36dp"
             android:fontFamily="@font/pretendard_bold"
+            android:gravity="bottom"
             android:text="@{model.timerHourMinSec}"
             android:textColor="@color/G1"
             android:textSize="20sp"

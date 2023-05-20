@@ -1,7 +1,9 @@
 package com.runnect.runnect.presentation.login
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
@@ -10,6 +12,7 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityGiveNicknameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -92,4 +95,20 @@ class GiveNicknameActivity :
         }
         binding.tvGiveNicknameFinish.isClickable = true
     }
+
+    //키보드 밖 터치 시, 키보드 내림
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val focusView = currentFocus
+        if (focusView != null) {
+            val rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = ev!!.x.toInt()
+            val y = ev.y.toInt()
+            if (!rect.contains(x, y)) {
+                clearFocus(focusView)
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
 }
+

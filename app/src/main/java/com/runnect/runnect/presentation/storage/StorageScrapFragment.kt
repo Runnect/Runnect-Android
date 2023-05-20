@@ -70,7 +70,6 @@ class StorageScrapFragment :
         with(binding) {
             ivStorageNoScrap.isVisible = true
             tvStorageNoScrapGuide.isVisible = true
-            tvStorageNoScrapGuide2.isVisible = true
             btnStorageNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
             tvTotalScrapCount.text = "총 코스 0개"
@@ -81,7 +80,6 @@ class StorageScrapFragment :
         with(binding) {
             ivStorageNoScrap.isVisible = false
             tvStorageNoScrapGuide.isVisible = false
-            tvStorageNoScrapGuide2.isVisible = false
             btnStorageNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
             tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.data.scraps.size}개"
@@ -96,12 +94,6 @@ class StorageScrapFragment :
     private fun hideLoadingBar() {
         binding.indeterminateBar.isVisible = false
     }
-
-    //지금 observeItemSize()랑 showScrapResult()가 기능이 비슷해서 헷갈려 중복되는 것 같기도 하고.
-    //아마 showScrapResult()는 list바당오는 최초 서버 통신 시 emptyView 띄우는 여부 check인 것 같고
-    //observeItemSize()는 scrap 통신으로 data가 다 날아가면 emptyView 띄우는 것임.
-    //이거 두개를 합쳐볼 수는 없을까. 아니면 함수명을 명확하게 하던가
-
 
     private fun observeItemSize() {
         viewModel.itemSize.observe(viewLifecycleOwner) {
