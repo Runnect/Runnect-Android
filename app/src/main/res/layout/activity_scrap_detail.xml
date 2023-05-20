@@ -18,9 +18,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_course_detail"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="56dp"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -244,7 +243,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_course_detail_finish"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="40dp"
             android:layout_marginStart="56dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="8dp"
@@ -252,7 +251,6 @@
             android:text="@string/scrap_detail_start_run_button"
             android:textColor="@color/W1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="330:40"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

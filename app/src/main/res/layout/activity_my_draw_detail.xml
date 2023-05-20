@@ -4,10 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <!--        <variable-->
-        <!--            name="model"-->
-        <!--            type="com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailViewModel" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

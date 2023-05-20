@@ -33,10 +33,9 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_history_detail"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="56dp"
             android:background="@color/W1"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView

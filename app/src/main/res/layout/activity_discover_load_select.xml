@@ -32,9 +32,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_discover_load_select"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="56dp"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -95,13 +94,12 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_discover_load_select_finish"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="40dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="18dp"
             android:background="@drawable/all_finish_btn_selector"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="330:40"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

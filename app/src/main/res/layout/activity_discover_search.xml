@@ -29,9 +29,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_discover_search"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="56dp"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -93,7 +92,7 @@
                 android:fontFamily="@font/pretendard_regular"
                 android:textColor="@color/G3"
                 android:gravity="center"
-                android:textSize="17sp"/>
+                android:textSize="14sp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

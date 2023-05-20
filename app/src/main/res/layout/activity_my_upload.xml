@@ -31,9 +31,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_my_page_upload"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="56dp"
             app:contentInsetStart="0dp"
-            app:layout_constraintDimensionRatio="360:48"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -179,7 +178,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_upload_delete"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="40dp"
             android:fontFamily="@font/pretendard_semibold"
             android:text="@string/upload_delete"
             android:textColor="@color/W1"
@@ -187,7 +186,6 @@
             android:background="@drawable/all_finish_btn_selector"
             android:gravity="center"
             android:layout_marginHorizontal="15dp"
-            app:layout_constraintDimensionRatio="330:40"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
