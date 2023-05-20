@@ -83,7 +83,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     fun getRecommendCourses(){
         viewModel.getRecommendCourse()
-        Timber.d("Discover is updated")
     }
 
     private fun initLayout() {
