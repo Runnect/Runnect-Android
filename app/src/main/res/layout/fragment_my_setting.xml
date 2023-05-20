@@ -48,7 +48,6 @@
             android:id="@+id/view_setting_account_info_frame"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/my_page_under_stroke"
             app:layout_constraintDimensionRatio="360:60"
             app:layout_constraintTop_toBottomOf="@id/divider_setting_toolbar" />
 
@@ -79,7 +78,6 @@
             android:id="@+id/view_setting_report_frame"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/my_page_under_stroke"
             app:layout_constraintDimensionRatio="360:60"
             app:layout_constraintTop_toBottomOf="@id/view_setting_account_info_frame" />
 
@@ -110,7 +108,6 @@
             android:id="@+id/view_setting_terms_frame"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/my_page_under_stroke"
             app:layout_constraintDimensionRatio="360:60"
             app:layout_constraintTop_toBottomOf="@id/view_setting_report_frame" />
 
@@ -136,5 +133,23 @@
             app:layout_constraintBottom_toBottomOf="@id/view_setting_terms_frame"
             app:layout_constraintEnd_toEndOf="@id/view_setting_terms_frame"
             app:layout_constraintTop_toTopOf="@id/view_setting_terms_frame" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/G4"
+            app:layout_constraintTop_toBottomOf="@id/view_setting_account_info_frame"/>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/G4"
+            app:layout_constraintTop_toBottomOf="@id/view_setting_report_frame"/>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/G4"
+            app:layout_constraintTop_toBottomOf="@id/view_setting_terms_frame"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
