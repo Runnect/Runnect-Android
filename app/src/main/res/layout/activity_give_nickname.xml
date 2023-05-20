@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="vm"
+            type="com.runnect.runnect.presentation.login.GiveNickNameViewModel" />
 
     </data>
 
@@ -11,15 +14,101 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.login.GiveNicknameActivity">
-
-        <androidx.appcompat.widget.AppCompatTextView
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="이름 짓기" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_give_nickname_title_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/give_nickname_title_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="83dp"
+            android:textColor="@color/M1"
+            android:textSize="22sp"
+            android:fontFamily="@font/pretendard_bold"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_give_nickname_title_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/give_nickname_title_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_give_nickname_title_1"
+            android:layout_marginTop="83dp"
+            android:textColor="@color/G1"
+            android:textSize="22sp"
+            android:fontFamily="@font/pretendard_medium"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_give_nickname_title_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/give_nickname_title_3"
+            app:layout_constraintTop_toBottomOf="@id/tv_give_nickname_title_1"
+            app:layout_constraintStart_toStartOf="@id/tv_give_nickname_title_1"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/G1"
+            android:textSize="22sp"
+            android:fontFamily="@font/pretendard_medium"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_give_nickname_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/user_profile_basic"
+            android:layout_marginTop="233dp"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_give_nickname_input"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="22dp"
+            android:layout_marginTop="48dp"
+            android:background="@drawable/my_page_edit_name_border"
+            android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
+            android:hint="@string/give_nickname_edit_input"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLength="7"
+            android:maxLines="1"
+            android:text="@={vm.nickName}"
+            android:textColor="@color/G1"
+            android:textColorHint="@color/G3"
+            android:textCursorDrawable="@color/M1"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/iv_give_nickname_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_give_nickname_finish"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/all_finish_btn_selector"
+            android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
+            android:text="@string/give_nickname_finish"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
