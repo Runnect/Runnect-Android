@@ -385,11 +385,6 @@ class CourseDetailActivity :
         bottomSheetDialog.show()
     }
 
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
     companion object {
         const val DELETE_DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
         const val DELETE_DIALOG_YES_BTN = "삭제하기"
