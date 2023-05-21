@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +26,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
+import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
@@ -107,22 +106,25 @@ class CourseDetailActivity :
         }
         binding.btnCourseDetailFinish.setOnClickListener {
 
-            val intent = Intent(this, CountDownActivity::class.java).apply {
-                putExtra(
-                    "detailToRun",
-                    DetailToRunData(
-                        viewModel.courseDetail.courseId,
-                        viewModel.courseDetail.id,
-                        touchList,
-                        departureLatLng,
-                        viewModel.courseDetail.departure,
-                        viewModel.courseDetail.distance.toFloat(),
-                        viewModel.courseDetail.image
+            if (isVisitorMode) {
+                requireLogin(binding.root)
+            } else {
+                val intent = Intent(this, CountDownActivity::class.java).apply {
+                    putExtra(
+                        "detailToRun",
+                        DetailToRunData(
+                            viewModel.courseDetail.courseId,
+                            viewModel.courseDetail.id,
+                            touchList,
+                            departureLatLng,
+                            viewModel.courseDetail.departure,
+                            viewModel.courseDetail.distance.toFloat(),
+                            viewModel.courseDetail.image
+                        )
                     )
-                )
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
-
         }
         binding.btnShowMore.setOnClickListener {
             if (root == MY_UPLOAD_ACTIVITY_TAG) {

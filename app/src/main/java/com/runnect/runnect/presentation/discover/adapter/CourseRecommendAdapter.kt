@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
+import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.RecommendCourseDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
@@ -54,7 +55,7 @@ class CourseRecommendAdapter(
                 ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
                 ivItemDiscoverCourseInfoScrap.setOnClickListener {
                     if (isVisitorMode) {
-                        requireLogin()
+                        CustomToast.createToast(discoverFragmentContext, "러넥트에 가입하면 코스를 스크랩할 수 있어요").show()
                     } else {
                         it.isSelected = !it.isSelected
                         mCallback.scrapCourse(data.id, it.isSelected)
@@ -65,10 +66,6 @@ class CourseRecommendAdapter(
                 }
             }
         }
-    }
-
-    private fun requireLogin() {
-        Toast.makeText(discoverFragmentContext, "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
     }
 
 }

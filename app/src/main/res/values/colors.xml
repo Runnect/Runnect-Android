@@ -29,4 +29,7 @@
     <color name="M1_transparent">#26593EEC</color>
 
     <color name="kakao_yellow">#FEE500</color>
+
+    <color name="custom_toast">#80313131</color>
+
 </resources>
