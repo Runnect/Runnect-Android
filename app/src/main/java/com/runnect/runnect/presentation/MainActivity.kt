@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
@@ -31,8 +30,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     companion object {
         var isVisitorMode = false
-        var discoverFragment:DiscoverFragment? = null
-        fun updateDiscoverFragment(){
+        var discoverFragment: DiscoverFragment? = null
+        fun updateDiscoverFragment() {
             discoverFragment?.getRecommendCourses()
         }
     }
@@ -103,7 +102,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             R.id.menu_main_drawing -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
-                replace<CourseMainFragment>(R.id.fl_main) //replace면 back stack에 안 쌓이는 건가?
+                replace<CourseMainFragment>(R.id.fl_main)
             }
             R.id.menu_main_storage -> supportFragmentManager.commit {
                 isChangeToStorage = false
@@ -123,6 +122,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
         }
     }
+
     private fun addListener() {
         binding.btmNaviMain.setOnItemSelectedListener {
             changeFragment(it.itemId)

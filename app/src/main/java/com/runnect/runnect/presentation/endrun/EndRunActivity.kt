@@ -17,8 +17,8 @@ import com.runnect.runnect.data.model.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.extension.clearFocus
-import com.runnect.runnect.util.extension.showToast
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -214,7 +214,7 @@ class EndRunActivity :
     }
 
     private fun notifyUploadFinish() {
-        showToast("저장한 러닝 기록은 마이페이지에서 볼 수 있어요")
+        CustomToast.createToast(this@EndRunActivity, "저장한 러닝 기록은 마이페이지에서 볼 수 있어요").show()
         Timber.tag(ContentValues.TAG).d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
     }
 

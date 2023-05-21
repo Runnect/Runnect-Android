@@ -11,6 +11,7 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.CustomToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -132,7 +133,7 @@ class LoginActivity :
 
     private fun moveToMain() {
         val intent = Intent(this, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         }
         startActivity(intent)
         finish()

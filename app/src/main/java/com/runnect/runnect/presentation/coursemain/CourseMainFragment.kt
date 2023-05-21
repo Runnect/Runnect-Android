@@ -71,7 +71,7 @@ class CourseMainFragment :
     private fun drawCourseButton() {
         binding.btnDraw.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)
         }
     }
@@ -119,7 +119,7 @@ class CourseMainFragment :
                 }
             })
             .setRationaleTitle("위치권한 요청")
-            .setRationaleMessage("현재 위치로 이동하기 위해 위치 권한이 필요합니다.")
+            .setRationaleMessage("코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.")
             .setDeniedMessage("권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]")
             .setPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,

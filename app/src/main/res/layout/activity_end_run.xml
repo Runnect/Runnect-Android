@@ -185,16 +185,15 @@
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
             android:gravity="bottom"
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
             tools:text="5.1" />
 
         <TextView
@@ -214,7 +213,7 @@
         <View
             android:id="@+id/divider_vertical_rightOfDistance"
             android:layout_width="1dp"
-            android:layout_height="44dp"
+            android:layout_height="0dp"
             android:layout_marginEnd="20dp"
             android:background="@color/G2"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
@@ -229,7 +228,7 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="7dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_time_title"
@@ -259,7 +258,7 @@
         <View
             android:id="@+id/divider_vertical_rightOfTime"
             android:layout_width="1dp"
-            android:layout_height="44dp"
+            android:layout_height="0dp"
             android:layout_marginStart="20dp"
             android:background="@color/G2"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
@@ -294,7 +293,6 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
             app:layout_constraintEnd_toEndOf="@id/tv_pace"
             app:layout_constraintStart_toStartOf="@id/tv_pace"
-            app:layout_constraintTop_toBottomOf="@id/tv_pace"
             tools:text="5'31''" />
 
         <androidx.appcompat.widget.AppCompatButton
