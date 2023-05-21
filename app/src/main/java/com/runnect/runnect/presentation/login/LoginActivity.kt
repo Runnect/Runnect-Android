@@ -49,11 +49,11 @@ class LoginActivity :
 
     private fun addListener() {
         with(binding) {
-            btnSignInGoogle.setOnClickListener {
+            cvGoogleLogin.setOnClickListener {
                 socialLogin = googleLogin
                 socialLogin.signIn()
             }
-            btnSignInKakao.setOnClickListener {
+            cvKakaoLogin.setOnClickListener {
                 socialLogin = kakaoLogin
                 socialLogin.signIn()
             }
