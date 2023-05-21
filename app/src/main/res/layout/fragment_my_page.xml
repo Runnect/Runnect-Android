@@ -247,11 +247,11 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_my_page_progress" />
 
             <com.google.android.material.divider.MaterialDivider
+                app:dividerColor="@color/G5"
                 android:id="@+id/divider_my_page"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="24dp"
-                android:background="@color/G5"
                 app:layout_constraintDimensionRatio="360:10"
                 app:layout_constraintTop_toBottomOf="@id/tv_my_page_progress_current" />
 
@@ -419,7 +419,6 @@
                 android:id="@+id/view_my_page_main_version_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-
                 android:background="@drawable/my_page_version_info_stroke"
                 app:layout_constraintDimensionRatio="360:60"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_setting_frame" />

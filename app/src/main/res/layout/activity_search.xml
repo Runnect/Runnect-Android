@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="6dp"
             android:layout_marginTop="12dp"
-            android:background="@color/G5"
+            app:dividerColor="@color/G5"
             app:layout_constraintBottom_toBottomOf="@id/frame_toolbar" />
 
 
