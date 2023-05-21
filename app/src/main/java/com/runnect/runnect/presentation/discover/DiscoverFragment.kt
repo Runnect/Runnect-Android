@@ -28,6 +28,7 @@ import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapte
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
@@ -91,7 +92,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.btnDiscoverUpload.setOnClickListener {
 
             if (isVisitorMode) {
-                Toast.makeText(requireActivity(), "러넥트에 가입하면 코스를 업로드할 수 있어요", Toast.LENGTH_SHORT).show()
+                CustomToast.createToast(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요").show()
             } else {
                 startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
                 requireActivity().overridePendingTransition(
