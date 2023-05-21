@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,7 @@ import com.runnect.runnect.data.model.DetailToRunData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.*
@@ -40,17 +43,20 @@ class CourseDetailActivity :
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
     private lateinit var editInterruptDialog: AlertDialog
+
+    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             root = intent.getStringExtra("root").toString()
             if (root == MY_UPLOAD_ACTIVITY_TAG) {
                 handleReturnToMyUpload()
-            }
-            else if(root == COURSE_DISCOVER_TAG){
+            } else if (root == COURSE_DISCOVER_TAG) {
                 handleReturnToDiscover()
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,17 +90,20 @@ class CourseDetailActivity :
                 } else {
                     if (root == MY_UPLOAD_ACTIVITY_TAG) {
                         handleReturnToMyUpload()
-                    }
-                    else if(root == COURSE_DISCOVER_TAG){
+                    } else if (root == COURSE_DISCOVER_TAG) {
                         handleReturnToDiscover()
                     }
                 }
             }
         }
         binding.ivCourseDetailScrap.setOnClickListener {
-            it.isSelected = !it.isSelected
-            viewModel.postCourseScrap(id = courseId, it.isSelected)
-            viewModel.isEdited = true
+            if (isVisitorMode) {
+                requireLogin(binding.root)
+            } else {
+                it.isSelected = !it.isSelected
+                viewModel.postCourseScrap(id = courseId, it.isSelected)
+                viewModel.isEdited = true
+            }
         }
         binding.btnCourseDetailFinish.setOnClickListener {
 
@@ -128,7 +137,28 @@ class CourseDetailActivity :
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
-    private fun handleReturnToMyUpload(){
+    private fun requireLogin(view: View) {
+        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
+
+        val build = AlertDialog.Builder(view.context).apply {
+            setView(myLayout)
+        }
+        val dialog = build.create()
+        dialog.setCancelable(false) // 외부 영역 터치 금지
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
+        dialog.show()
+
+        myLayout.btn_cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        myLayout.btn_login.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            dialog.dismiss()
+        }
+    }
+
+    private fun handleReturnToMyUpload() {
         val intent = Intent(this, MyUploadActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
@@ -136,7 +166,7 @@ class CourseDetailActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    private fun handleReturnToDiscover(){
+    private fun handleReturnToDiscover() {
         MainActivity.updateDiscoverFragment()
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
@@ -202,11 +232,10 @@ class CourseDetailActivity :
                         )
                         ivCourseDetailProfileStamp.load(stampResId)
                         ivCourseDetailProfileNickname.text = nickname
-                        if(level=="알 수 없음"){
+                        if (level == "알 수 없음") {
                             tvCourseDetailProfileLv.isVisible = false
                             tvCourseDetailProfileLvIndicator.isVisible = false
-                        }
-                        else{
+                        } else {
                             tvCourseDetailProfileLv.text = level
                         }
                         ivCourseDetailScrap.isSelected = scrap
