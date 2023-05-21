@@ -141,7 +141,7 @@ class DrawActivity :
                 Handler(Looper.getMainLooper()).postDelayed(
                     {
                         viewModel.uploadCourse()
-                    }, 300
+                    }, 400
                 )
             }
         }
@@ -510,9 +510,12 @@ class DrawActivity :
         naverMap.setContentPadding(100, 100, 100, 100)
         cameraUpdate(bounds)
         captureMap()
-//이 부분 setViewModelValue() 이런 함수로 빼고 인자를 input 받으면 뷰모델 liveData에 할당되는 멤버변수값 갱신하는 식으로 하면 될 듯? 그런데 distanceSum은 다른 데서 할당이 되니까 매개변수 갯수를 다르게 받을 수 있게.
-//        viewModel.path.value = calcDistanceList
-        val uploadLatLngList: List<UploadLatLng> = calcDistanceList.map { latLng ->
+
+        setViewModelValue(calcDistanceList)
+    }
+
+    private fun setViewModelValue(distanceList: List<LatLng>) {
+        val uploadLatLngList: List<UploadLatLng> = distanceList.map { latLng ->
             UploadLatLng(latLng.latitude, latLng.longitude)
         }
         viewModel.path.value = uploadLatLngList
