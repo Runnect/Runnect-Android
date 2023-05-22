@@ -46,7 +46,7 @@
             android:inputType="text"
             android:onTextChanged="@{model::getSearchKeyword}"
             android:textColor="@color/G1"
-            android:textSize="15sp"
+            android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
             app:layout_constraintStart_toEndOf="@id/imgBtn_back"
             app:layout_constraintTop_toTopOf="@id/imgBtn_back" />

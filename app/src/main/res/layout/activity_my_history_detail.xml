@@ -43,8 +43,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:padding="10dp"
                 android:background="@color/W1"
+                android:padding="10dp"
                 android:src="@drawable/backbutton"
                 app:layout_constraintStart_toStartOf="@id/toolbar_history_detail"
                 app:layout_constraintTop_toTopOf="@id/toolbar_history_detail" />
@@ -56,8 +56,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="18dp"
-                android:padding="10dp"
                 android:backgroundTint="@color/W1"
+                android:padding="10dp"
                 android:src="@drawable/showmorebtn" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -187,10 +187,21 @@
             android:layout_width="match_parent"
             android:layout_height="7dp"
             android:layout_marginTop="80dp"
-            android:background="@color/G5"
+            app:dividerColor="@color/G5"
             app:layout_constraintTop_toBottomOf="@id/divider_course_title" />
 
         <!--총 거리-->
+
+        <View
+            android:id="@+id/view_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/view_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_history_info" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_total_distance"
             android:layout_width="wrap_content"
@@ -200,9 +211,10 @@
             android:text="@string/end_run_distance_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/divider_vertical_rightOfDistance"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_history_info" />
+            app:layout_constraintBottom_toTopOf="@id/tv_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/view_1"
+            app:layout_constraintStart_toStartOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/view_1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_distance_data"
@@ -213,12 +225,11 @@
             android:text="@{vm.distance}"
             android:textColor="@color/G1"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
             app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
-            tools:text="5.1" />
+            tools:text="5.1 km" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_distance_unit"
@@ -229,22 +240,31 @@
             android:text="@string/end_run_distance_unit"
             android:textColor="@color/G1"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_data"
             app:layout_constraintEnd_toEndOf="@id/tv_total_distance"
             app:layout_constraintStart_toEndOf="@id/tv_distance_data" />
 
         <View
             android:id="@+id/divider_vertical_rightOfDistance"
             android:layout_width="0.7dp"
-            android:layout_height="44dp"
-            android:layout_marginEnd="20dp"
+            android:layout_height="0dp"
             android:background="@color/G2"
-            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
-            app:layout_constraintEnd_toStartOf="@id/tv_time_data"
-            app:layout_constraintTop_toTopOf="@id/tv_time" />
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
 
 
         <!--이동시간-->
+
+        <View
+            android:id="@+id/view_2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
+            app:layout_constraintEnd_toStartOf="@id/view_3"
+            app:layout_constraintStart_toEndOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/view_1" />
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -255,35 +275,44 @@
             android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
+            app:layout_constraintEnd_toEndOf="@id/view_2"
+            app:layout_constraintStart_toStartOf="@id/view_2"
             app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_time_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
             android:text="@{vm.time}"
             android:textColor="@color/G1"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
             app:layout_constraintEnd_toEndOf="@id/tv_time"
             app:layout_constraintStart_toStartOf="@id/tv_time"
-            app:layout_constraintTop_toBottomOf="@id/tv_time"
             tools:text="00:28:07" />
 
         <View
             android:id="@+id/divider_vertical_rightOfTime"
             android:layout_width="0.7dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="20dp"
+            android:layout_height="0dp"
             android:background="@color/G2"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
-            app:layout_constraintStart_toEndOf="@id/tv_time_data"
+            app:layout_constraintEnd_toEndOf="@id/view_2"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
 
         <!--평균 페이스-->
+
+        <View
+            android:id="@+id/view_3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/view_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view_2"
+            app:layout_constraintTop_toTopOf="@id/view_2" />
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -294,15 +323,15 @@
             android:text="@string/end_run_pace_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/divider_vertical_rightOfTime"
+            app:layout_constraintBottom_toTopOf="@id/tv_pace_data"
+            app:layout_constraintEnd_toEndOf="@id/view_3"
+            app:layout_constraintStart_toStartOf="@id/view_3"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_pace_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
             android:text="@{vm.pace}"
             android:textColor="@color/G1"
@@ -310,7 +339,6 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
             app:layout_constraintEnd_toEndOf="@id/tv_pace"
             app:layout_constraintStart_toStartOf="@id/tv_pace"
-            app:layout_constraintTop_toBottomOf="@id/tv_pace"
             tools:text="5’31’’" />
 
         <androidx.appcompat.widget.AppCompatTextView

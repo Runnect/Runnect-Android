@@ -47,7 +47,6 @@
             android:id="@+id/tv_draw_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="7dp"
             android:elevation="3dp"
             android:fontFamily="@font/pretendard_medium"
             android:outlineProvider="none"

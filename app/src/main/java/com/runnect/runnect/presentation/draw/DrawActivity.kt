@@ -88,7 +88,7 @@ class DrawActivity :
                 Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
                 viewModel.searchResult.value = searchResult
                 initView()
-                courseFinish() //여기야
+                courseFinish()
                 addObserver()
                 backButton()
                 activateDrawCourse()
@@ -141,7 +141,7 @@ class DrawActivity :
                 Handler(Looper.getMainLooper()).postDelayed(
                     {
                         viewModel.uploadCourse()
-                    }, 400
+                    }, 300
                 )
             }
         }
