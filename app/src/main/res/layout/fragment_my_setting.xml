@@ -41,7 +41,7 @@
             android:id="@+id/divider_setting_toolbar"
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:background="@color/G5"
+            app:dividerColor="@color/G5"
             app:layout_constraintTop_toBottomOf="@id/toolbar_setting" />
 
         <View
@@ -137,19 +137,19 @@
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/G4"
+            app:dividerColor="@color/G4"
             app:layout_constraintTop_toBottomOf="@id/view_setting_account_info_frame"/>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/G4"
+            app:dividerColor="@color/G4"
             app:layout_constraintTop_toBottomOf="@id/view_setting_report_frame"/>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/G4"
+            app:dividerColor="@color/G4"
             app:layout_constraintTop_toBottomOf="@id/view_setting_terms_frame"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
