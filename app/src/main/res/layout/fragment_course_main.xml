@@ -39,7 +39,6 @@
             android:id="@+id/tv_main_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="7dp"
             android:elevation="3dp"
             android:fontFamily="@font/pretendard_medium"
             android:outlineProvider="none"
@@ -54,9 +53,7 @@
         <FrameLayout
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="-46dp"
-            tools:layout_editor_absoluteY="0dp" />
+            android:layout_height="match_parent"  />
 
         <View
             android:id="@+id/view_empty"

@@ -119,7 +119,7 @@ class CourseMainFragment :
                 }
             })
             .setRationaleTitle("위치권한 요청")
-            .setRationaleMessage("코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.")
+            .setRationaleMessage("코스의 출발지 설정과 러닝 트래킹을 위해\n현재 위치 정보를 사용하도록 허용합니다.")
             .setDeniedMessage("권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]")
             .setPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,

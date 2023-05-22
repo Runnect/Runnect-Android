@@ -168,20 +168,32 @@
 
         <!--총 거리-->
 
+        <View
+            android:id="@+id/view_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toTopOf="@id/btn_endRun_save"
+            app:layout_constraintEnd_toStartOf="@id/view_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_endRun" />
 
         <TextView
             android:id="@+id/tv_total_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_distance_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/divider_vertical_rightOfDistance"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_time" />
+            app:layout_constraintBottom_toTopOf="@id/tv_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/view_1"
+            app:layout_constraintStart_toStartOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/view_1" />
 
         <TextView
+            android:layout_marginTop="7dp"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -190,10 +202,10 @@
             android:text="@{model.distanceSum.toString()}"
             android:textColor="@color/G1"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
             tools:text="5.1" />
 
         <TextView
@@ -206,7 +218,7 @@
             android:text="@string/end_run_distance_unit"
             android:textColor="@color/G1"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_data"
             app:layout_constraintEnd_toEndOf="@id/tv_total_distance"
             app:layout_constraintStart_toEndOf="@id/tv_distance_data" />
 
@@ -214,59 +226,69 @@
             android:id="@+id/divider_vertical_rightOfDistance"
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="20dp"
             android:background="@color/G2"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
-            app:layout_constraintEnd_toStartOf="@id/tv_time_data"
+            app:layout_constraintEnd_toEndOf="@id/view_1"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
 
 
         <!--이동시간-->
 
+        <View
+            android:id="@+id/view_2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
+            app:layout_constraintEnd_toStartOf="@id/view_3"
+            app:layout_constraintStart_toEndOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/view_1" />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="7dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_endRun" />
+            app:layout_constraintEnd_toEndOf="@id/view_2"
+            app:layout_constraintStart_toStartOf="@id/view_2"
+            app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
 
         <TextView
             android:id="@+id/tv_time_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="36dp"
             android:fontFamily="@font/pretendard_bold"
-            android:gravity="bottom"
             android:text="@{model.timerHourMinSec}"
             android:textColor="@color/G1"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@id/btn_endRun_save"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
             app:layout_constraintEnd_toEndOf="@id/tv_time"
             app:layout_constraintStart_toStartOf="@id/tv_time"
-            app:layout_constraintTop_toBottomOf="@id/tv_time"
             tools:text="00:28:07" />
 
         <View
             android:id="@+id/divider_vertical_rightOfTime"
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_marginStart="20dp"
             android:background="@color/G2"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
-            app:layout_constraintStart_toEndOf="@id/tv_time_data"
+            app:layout_constraintEnd_toEndOf="@id/view_2"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
 
         <!--평균 페이스-->
 
+        <View
+            android:id="@+id/view_3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/view_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view_2"
+            app:layout_constraintTop_toTopOf="@id/view_2" />
 
         <TextView
             android:id="@+id/tv_pace"
@@ -276,17 +298,15 @@
             android:text="@string/end_run_pace_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/divider_vertical_rightOfTime"
+            app:layout_constraintEnd_toEndOf="@id/view_3"
+            app:layout_constraintStart_toStartOf="@id/view_3"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
 
         <TextView
             android:id="@+id/tv_pace_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
             android:fontFamily="@font/pretendard_bold"
-            android:gravity="bottom"
             android:text="@{model.paceTotal}"
             android:textColor="@color/G1"
             android:textSize="20sp"
