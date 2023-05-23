@@ -153,7 +153,7 @@
             android:id="@+id/tv_my_page_history_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
             android:textSize="13sp"
