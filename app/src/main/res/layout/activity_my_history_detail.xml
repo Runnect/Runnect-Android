@@ -68,7 +68,7 @@
             android:background="@color/G3"
             android:scaleType="centerCrop"
             app:imgUri="@{vm.mapImg}"
-            app:layout_constraintDimensionRatio="360:410"
+            app:layout_constraintDimensionRatio="360:200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_history_detail" />
@@ -229,7 +229,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
             app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
-            tools:text="5.1 km" />
+            tools:text="5.1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_distance_unit"
@@ -275,7 +275,6 @@
             android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
             app:layout_constraintEnd_toEndOf="@id/view_2"
             app:layout_constraintStart_toStartOf="@id/view_2"
             app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
@@ -323,7 +322,6 @@
             android:text="@string/end_run_pace_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_pace_data"
             app:layout_constraintEnd_toEndOf="@id/view_3"
             app:layout_constraintStart_toStartOf="@id/view_3"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
