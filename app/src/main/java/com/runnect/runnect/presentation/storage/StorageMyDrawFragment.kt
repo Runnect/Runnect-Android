@@ -215,9 +215,7 @@ class StorageMyDrawFragment :
             .d("Success but emptyList : ${viewModel.getMyDrawResult.value!!.data.courses.isEmpty()}")
         if (viewModel.getMyDrawResult.value!!.data.courses.isEmpty()) {
             with(binding) {
-                ivStorageMyDrawNoCourse.isVisible = true
-                tvStorageMyDrawNoCourseGuide.isVisible = true
-                btnStorageNoCourse.isVisible = true
+                layoutMyDrawNoCourse.isVisible = true
                 recyclerViewStorageMyDraw.isVisible = false
                 btnEditCourse.isEnabled = false
                 tvTotalCourseCount.text =
@@ -225,9 +223,7 @@ class StorageMyDrawFragment :
             }
         } else {
             with(binding) {
-                ivStorageMyDrawNoCourse.isVisible = false
-                tvStorageMyDrawNoCourseGuide.isVisible = false
-                btnStorageNoCourse.isVisible = false
+                layoutMyDrawNoCourse.isVisible = false
                 recyclerViewStorageMyDraw.isVisible = true
                 btnEditCourse.isEnabled = true
                 tvTotalCourseCount.text =

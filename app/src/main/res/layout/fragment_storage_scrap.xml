@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ProgressBar
             android:id="@+id/indeterminateBar"
@@ -42,6 +42,60 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="5개" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_my_draw_no_scrap"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="64dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_storage_no_scrap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/no_course"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_storage_no_scrap_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="center"
+                android:lineHeight="22sp"
+                android:lineSpacingExtra="5sp"
+                android:text="아직 스크랩한 코스가 없어요\n 코스를 스크랩 해주세요"
+                android:textColor="@color/G2"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_storage_no_scrap" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_storage_no_scrap"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/radius_10_m1_button"
+                android:fontFamily="@font/pretendard_semibold"
+                android:text="@string/storage_scrap_make_scrap"
+                android:textColor="@color/W1"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollview_scrap"
             android:layout_width="match_parent"
@@ -66,51 +120,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:listitem="@layout/item_storage_my_draw" />
-
-                <ImageView
-                    android:id="@+id/iv_storage_no_scrap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="130dp"
-                    android:src="@drawable/no_course"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_storage_no_scrap_guide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:fontFamily="@font/pretendard_medium"
-                    android:gravity="center"
-                    android:lineHeight="22sp"
-                    android:lineSpacingExtra="5sp"
-                    android:text="아직 스크랩한 코스가 없어요\n 코스를 스크랩 해주세요"
-                    android:textColor="@color/G2"
-                    android:textSize="14sp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_storage_no_scrap" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_storage_no_scrap"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginHorizontal="64dp"
-                    android:layout_marginTop="22dp"
-                    android:background="@drawable/radius_10_m1_button"
-                    android:fontFamily="@font/pretendard_semibold"
-                    android:text="@string/storage_scrap_make_scrap"
-                    android:textColor="@color/W1"
-                    android:textSize="15sp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

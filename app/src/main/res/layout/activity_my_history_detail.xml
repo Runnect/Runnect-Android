@@ -206,7 +206,6 @@
             android:id="@+id/tv_total_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="@string/end_run_distance_title"
             android:textColor="@color/G2"
@@ -214,13 +213,15 @@
             app:layout_constraintBottom_toTopOf="@id/tv_distance_data"
             app:layout_constraintEnd_toEndOf="@id/view_1"
             app:layout_constraintStart_toStartOf="@id/view_1"
-            app:layout_constraintTop_toTopOf="@id/view_1" />
+            app:layout_constraintTop_toTopOf="@id/view_1"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_bold"
             android:text="@{vm.distance}"
             android:textColor="@color/G1"
@@ -229,7 +230,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
             app:layout_constraintTop_toBottomOf="@id/tv_total_distance"
-            tools:text="5.1 km" />
+            tools:text="5.1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_distance_unit"
@@ -275,7 +276,6 @@
             android:text="@string/end_run_time_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_time_data"
             app:layout_constraintEnd_toEndOf="@id/view_2"
             app:layout_constraintStart_toStartOf="@id/view_2"
             app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
@@ -323,7 +323,6 @@
             android:text="@string/end_run_pace_title"
             android:textColor="@color/G2"
             android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_pace_data"
             app:layout_constraintEnd_toEndOf="@id/view_3"
             app:layout_constraintStart_toStartOf="@id/view_3"
             app:layout_constraintTop_toTopOf="@id/tv_time" />
