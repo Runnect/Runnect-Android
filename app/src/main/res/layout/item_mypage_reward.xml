@@ -13,7 +13,7 @@
     <com.ssomai.android.scalablelayout.ScalableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:scale_base_height="98"
+        app:scale_base_height="102"
         app:scale_base_width="80">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -34,7 +34,7 @@
             android:textColor="@color/G1"
             app:scale_height="14"
             app:scale_textsize="12"
-            app:scale_top="84"
+            app:scale_top="88"
             app:scale_width="80" />
     </com.ssomai.android.scalablelayout.ScalableLayout>
 </layout>
