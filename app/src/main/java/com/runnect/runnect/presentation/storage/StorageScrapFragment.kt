@@ -68,9 +68,7 @@ class StorageScrapFragment :
 
     private fun showEmptyView() {
         with(binding) {
-            ivStorageNoScrap.isVisible = true
-            tvStorageNoScrapGuide.isVisible = true
-            btnStorageNoScrap.isVisible = true
+            layoutMyDrawNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
             tvTotalScrapCount.text = "총 코스 0개"
         }
@@ -78,9 +76,7 @@ class StorageScrapFragment :
 
     private fun hideEmptyView() {
         with(binding) {
-            ivStorageNoScrap.isVisible = false
-            tvStorageNoScrapGuide.isVisible = false
-            btnStorageNoScrap.isVisible = false
+            layoutMyDrawNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
             tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.data.scraps.size}개"
         }
