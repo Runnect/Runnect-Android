@@ -16,12 +16,12 @@
         tools:context=".presentation.mypage.upload.MyUploadActivity">
 
         <ProgressBar
-            android:outlineProvider="none"
-            android:elevation="2dp"
-            android:indeterminateTint="@color/G3"
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,43 +53,47 @@
                 android:textSize="18sp" />
 
         </androidx.appcompat.widget.Toolbar>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/const_my_page_upload_edit_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/W1"
             android:paddingVertical="4dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_my_page_upload">
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_my_page_upload_total_course_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pretendard_regular"
-                tools:text="총 기록 152개"
-                android:textColor="@color/G2"
                 android:layout_gravity="start|center_vertical"
-                android:textSize="12sp"
                 android:layout_marginStart="15dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:textColor="@color/G2"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                tools:text="총 기록 152개" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_my_page_upload_edit_course"
                 android:layout_width="50dp"
                 android:layout_height="28dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="15dp"
                 android:background="@drawable/radius_50_edit_course_button"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="@string/my_draw_edit"
                 android:textColor="@color/M1"
-                android:layout_gravity="end|center_vertical"
                 android:textSize="12sp"
-                android:layout_marginEnd="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/sv_my_page_upload"
             android:layout_width="match_parent"
@@ -128,10 +132,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="64dp"
-            android:layout_marginTop="158dp"
+            android:layout_marginBottom="30dp"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/toolbar_my_page_upload">
@@ -179,17 +184,17 @@
             android:id="@+id/tv_my_page_upload_delete"
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/all_finish_btn_selector"
             android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
             android:text="@string/upload_delete"
             android:textColor="@color/W1"
             android:textSize="15sp"
-            android:background="@drawable/all_finish_btn_selector"
-            android:gravity="center"
-            android:layout_marginHorizontal="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="18dp"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

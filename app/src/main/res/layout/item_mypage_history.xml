@@ -139,7 +139,6 @@
             android:id="@+id/tv_my_page_history_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:fontFamily="@font/pretendard_regular"
             android:text="@string/item_mypage_history_distance"
             android:textColor="@color/G2"
@@ -147,16 +146,19 @@
             app:layout_constraintBottom_toTopOf="@id/tv_my_page_history_distance_data"
             app:layout_constraintEnd_toEndOf="@id/view_1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/view_1" />
+            app:layout_constraintTop_toTopOf="@id/view_1"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_my_page_history_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="6dp"
             android:fontFamily="@font/pretendard_semibold"
             android:textColor="@color/G1"
             android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
             app:layout_constraintEnd_toEndOf="@id/tv_my_page_history_distance"
             app:layout_constraintStart_toStartOf="@id/tv_my_page_history_distance"
             app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance"
