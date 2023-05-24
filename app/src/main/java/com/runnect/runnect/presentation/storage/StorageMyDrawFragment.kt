@@ -62,6 +62,7 @@ class StorageMyDrawFragment :
         binding.lifecycleOwner = requireActivity()
         initAdapter()
         editCourse()
+        manageSaveDeleteBtnCondition()
         getCourse()
         requireCourse()
         addObserver()
@@ -110,6 +111,7 @@ class StorageMyDrawFragment :
                 )
                 binding.btnEditCourse.text = "편집"
                 isSelectAvailable = false
+                storageMyDrawAdapter.clearSelection()
                 hideDeleteCourseBtn()
                 showBottomNav()
                 binding.tvTotalCourseCount.text =
@@ -278,14 +280,14 @@ class StorageMyDrawFragment :
     }
 
 
-//    private fun manageSaveDeleteBtnCondition() {
-//        val selectedItems = selectionTracker.selection.size()
-//        if (selectedItems == 0) {
-//            disableSaveBtn()
-//        } else if (selectedItems >= 1) {
-//            enableDeleteBtn()
-//        }
-//    }
+    private fun manageSaveDeleteBtnCondition() {
+        val selectedItems = viewModel.itemsToDelete.size
+        if (selectedItems == 0) {
+            disableSaveBtn()
+        } else if (selectedItems >= 1) {
+            enableDeleteBtn()
+        }
+    }
 
     private fun disableSaveBtn() {
         btnDeleteCourseMain =
@@ -315,6 +317,7 @@ class StorageMyDrawFragment :
             })
             false
         } else {
+            viewModel.modifyItemsToDelete(id)
             true
         }
     }

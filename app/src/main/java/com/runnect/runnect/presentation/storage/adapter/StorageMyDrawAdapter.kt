@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.MyDrawCourse
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.OnMyDrawClick
+import timber.log.Timber
 
 
 class StorageMyDrawAdapter(
@@ -64,8 +65,9 @@ class StorageMyDrawAdapter(
 
                 storageItem = courseList
 
-                root.setOnClickListener {
+                ivMyPageUploadCourseSelectBackground.setOnClickListener {
                     val isEditMode = myDrawClickListener.selectItem(courseList.courseId!!)
+                    Timber.d("isEditMode값 : $isEditMode")
                     if (isEditMode) {
                         if (it.isSelected) {
                             ivCheckbox.isSelected = false
@@ -73,6 +75,7 @@ class StorageMyDrawAdapter(
                             selectedBoxes?.remove(ivCheckbox)
                             selectedItems?.remove(it)
                         } else {
+                            selected = true
                             ivCheckbox.isSelected = true
                             it.isSelected = true
                             selectedBoxes?.add(ivCheckbox)

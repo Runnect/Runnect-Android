@@ -31,6 +31,12 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
     val itemSize = MutableLiveData<Int>()
     val deleteCount = MutableLiveData<Int>()
 
+    private var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
+
+    private var _itemsToDelete: MutableList<Int> = mutableListOf()
+    val itemsToDelete: List<Int>
+        get() = _itemsToDelete
+
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)
     val storageState: LiveData<UiState>
         get() = _storageState
@@ -96,5 +102,19 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
                 Timber.d("onFailure 메세지 : $it")
             }
         }
+    }
+
+    fun modifyItemsToDelete(id: Int) {
+        if (_itemsToDelete.contains(id)) {
+            _itemsToDelete.remove(id)
+        } else {
+            _itemsToDelete.add(id)
+        }
+        itemsToDeleteLiveData.value = _itemsToDelete
+    }
+
+    fun clearItemsToDelete() {
+        _itemsToDelete.clear()
+        itemsToDeleteLiveData.value = _itemsToDelete
     }
 }
