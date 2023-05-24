@@ -28,7 +28,7 @@ class MyDrawDetailActivity :
 
     val viewModel: MyDrawDetailViewModel by viewModels()
 
-    val selectList = arrayListOf<Long>()
+    val selectList = arrayListOf<Int>()
 
     lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
@@ -92,7 +92,7 @@ class MyDrawDetailActivity :
         val courseId = intent.getIntExtra("fromStorageFragment", 0)
         Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
 
-        selectList.add(courseId.toLong()) //courseId를 지역변수로 선언해서 여기에 작성해주었음
+        selectList.add(courseId) //courseId를 지역변수로 선언해서 여기에 작성해주었음
         viewModel.getMyDrawDetail(courseId = courseId)
     }
 

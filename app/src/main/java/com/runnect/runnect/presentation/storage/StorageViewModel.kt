@@ -31,7 +31,7 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
     val itemSize = MutableLiveData<Int>()
     val deleteCount = MutableLiveData<Int>()
 
-    private var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
+    var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
 
     private var _itemsToDelete: MutableList<Int> = mutableListOf()
     val itemsToDelete: List<Int>
@@ -61,7 +61,7 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
         }
     }
 
-    fun deleteMyDrawCourse(deleteList: MutableList<Long>) {
+    fun deleteMyDrawCourse(deleteList: List<Int>) {
         viewModelScope.launch {
             runCatching {
                 storageRepository.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))

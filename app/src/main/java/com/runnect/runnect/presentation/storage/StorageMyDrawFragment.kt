@@ -62,7 +62,6 @@ class StorageMyDrawFragment :
         binding.lifecycleOwner = requireActivity()
         initAdapter()
         editCourse()
-        manageSaveDeleteBtnCondition()
         getCourse()
         requireCourse()
         addObserver()
@@ -173,6 +172,9 @@ class StorageMyDrawFragment :
 
         myLayout.btn_delete_yes.setOnClickListener {
             deleteCourse()
+            storageMyDrawAdapter.removeItems(viewModel.itemsToDelete)
+            storageMyDrawAdapter.clearSelection()
+            viewModel.clearItemsToDelete()
             availableEdit = false
             dialog.dismiss()
             isSelectAvailable = false
@@ -185,7 +187,7 @@ class StorageMyDrawFragment :
     }
 
     fun deleteCourse() {
-        viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
+        viewModel.deleteMyDrawCourse(viewModel.itemsToDelete)
         binding.btnEditCourse.text = "편집"
     }
 
@@ -228,6 +230,7 @@ class StorageMyDrawFragment :
         observeStorageState()
         observeGetMyDrawResult()
         observeDeleteCount()
+        manageSaveDeleteBtnCondition()
     }
 
     private fun observeStorageState() {
@@ -281,11 +284,13 @@ class StorageMyDrawFragment :
 
 
     private fun manageSaveDeleteBtnCondition() {
-        val selectedItems = viewModel.itemsToDelete.size
-        if (selectedItems == 0) {
-            disableSaveBtn()
-        } else if (selectedItems >= 1) {
-            enableDeleteBtn()
+        viewModel.itemsToDeleteLiveData.observe(viewLifecycleOwner) {
+            val selectedItems = viewModel.itemsToDeleteLiveData.value!!.size
+            if (selectedItems == 0) {
+                disableSaveBtn()
+            } else if (selectedItems >= 1) {
+                enableDeleteBtn()
+            }
         }
     }
 
