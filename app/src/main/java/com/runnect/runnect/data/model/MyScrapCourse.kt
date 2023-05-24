@@ -11,4 +11,5 @@ data class MyScrapCourse(
     val image: String?,
     val city: String,
     val region: String,
+    val title : String
 ) : Parcelable

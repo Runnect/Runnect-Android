@@ -7,7 +7,7 @@
 
         <variable
             name="storage_scrap"
-            type="com.runnect.runnect.data.model.ResponseGetScrapDto.Data.Scrap" />
+            type="com.runnect.runnect.data.model.MyScrapCourse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/pretendard_regular"
                 android:gravity="center_vertical"
-                android:text="@{storage_scrap.departure.city + storage_scrap.departure.region}"
+                android:text="@{storage_scrap.city + ' ' + storage_scrap.region}"
                 android:textColor="@color/G2"
                 app:scale_height="16"
                 app:scale_textsize="13"

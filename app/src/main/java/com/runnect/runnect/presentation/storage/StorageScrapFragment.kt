@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.model.ResponseGetScrapDto
+import com.runnect.runnect.data.model.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -44,7 +45,7 @@ class StorageScrapFragment :
 
     }
 
-    override fun scrapCourse(id: Int, scrapTF: Boolean) {
+    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
         viewModel.postCourseScrap(id, scrapTF)
     }
 
@@ -74,11 +75,12 @@ class StorageScrapFragment :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun hideEmptyView() {
         with(binding) {
             layoutMyDrawNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
-            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.data.scraps.size}개"
+            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.size}개"
         }
     }
 
@@ -91,6 +93,7 @@ class StorageScrapFragment :
         binding.indeterminateBar.isVisible = false
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeItemSize() {
         viewModel.itemSize.observe(viewLifecycleOwner) {
             if (viewModel.itemSize.value == 0) {
@@ -103,7 +106,7 @@ class StorageScrapFragment :
     }
 
     private fun showScarpResult() {
-        if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
+        if (viewModel.getScrapListResult.value!!.isEmpty()) {
             showEmptyView()
         } else {
             hideEmptyView()
@@ -111,7 +114,7 @@ class StorageScrapFragment :
     }
 
     private fun updateAdapterData() {
-        storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
+        storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!)
     }
 
     private fun observeStorageState() {
@@ -157,12 +160,12 @@ class StorageScrapFragment :
         binding.recyclerViewStorageScrap.adapter = storageScrapAdapter
     }
 
-    override fun selectItem(item: ResponseGetScrapDto.Data.Scrap) {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
+    override fun selectItem(item: MyScrapCourse) {
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicId}")
         startActivity(
             Intent(activity, CourseDetailActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("courseId", item.publicCourseId)
+                putExtra("courseId", item.publicId)
             },
         )
 

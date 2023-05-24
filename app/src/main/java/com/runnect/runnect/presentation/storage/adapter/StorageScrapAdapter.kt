@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.runnect.runnect.data.model.MyScrapCourse
 import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
@@ -16,18 +17,18 @@ class StorageScrapAdapter(
     val scrapClickListener: OnScrapCourseClick,
     val heartListener: OnHeartClick, val itemCount: ItemCount
 ) :
-    ListAdapter<ResponseGetScrapDto.Data.Scrap, StorageScrapAdapter.ItemViewHolder>(Differ()) {
+    ListAdapter<MyScrapCourse, StorageScrapAdapter.ItemViewHolder>(Differ()) {
 
 
     inner class ItemViewHolder(val binding: ItemStorageScrapBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data: ResponseGetScrapDto.Data.Scrap) {
+        fun onBind(data: MyScrapCourse) {
             with(binding) {
                 ivItemStorageScrapHeart.isSelected = true
                 ivItemStorageScrapHeart.setOnClickListener {
                     ivItemStorageScrapHeart.isSelected = false
                     deleteItem(absoluteAdapterPosition)
-                    heartListener.scrapCourse(data.publicCourseId, it.isSelected)
+                    heartListener.scrapCourse(data.publicId, it.isSelected)
                 }
 
                 root.setOnClickListener {
@@ -36,14 +37,14 @@ class StorageScrapAdapter(
             }
         }
 
-        fun bind(scrapList: ResponseGetScrapDto.Data.Scrap) {
+        fun bind(scrapList: MyScrapCourse) {
             binding.storageScrap = scrapList
         }
 
     }
 
     fun deleteItem(position: Int){
-        val itemList = mutableListOf<ResponseGetScrapDto.Data.Scrap>()
+        val itemList = mutableListOf<MyScrapCourse>()
         itemList.addAll(currentList)
         Timber.d("삭제 전 itemList? ${itemList.size}")
         itemList.removeAt(position)
@@ -65,17 +66,17 @@ class StorageScrapAdapter(
     }
 
 
-    class Differ : DiffUtil.ItemCallback<ResponseGetScrapDto.Data.Scrap>() {
+    class Differ : DiffUtil.ItemCallback<MyScrapCourse>() {
         override fun areItemsTheSame(
-            oldItem: ResponseGetScrapDto.Data.Scrap,
-            newItem: ResponseGetScrapDto.Data.Scrap,
+            oldItem: MyScrapCourse,
+            newItem: MyScrapCourse,
         ): Boolean {
-            return oldItem.courseId == newItem.courseId
+            return oldItem.privateCourseId == newItem.privateCourseId
         }
 
         override fun areContentsTheSame(
-            oldItem: ResponseGetScrapDto.Data.Scrap,
-            newItem: ResponseGetScrapDto.Data.Scrap,
+            oldItem: MyScrapCourse,
+            newItem: MyScrapCourse,
         ): Boolean {
             return oldItem == newItem
         }

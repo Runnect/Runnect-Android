@@ -86,10 +86,10 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
 
     }
 
-    fun postCourseScrap(id: Int, scrapTF: Boolean) {
+    fun postCourseScrap(id: Int?, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                storageRepository.postMyScrapCourse(RequestCourseScrap(id, scrapTF.toString()))
+                storageRepository.postMyScrapCourse(RequestCourseScrap(id!!, scrapTF.toString()))
             }.onSuccess {
                 Timber.d("onSuccess 메세지 : $it")
             }.onFailure {

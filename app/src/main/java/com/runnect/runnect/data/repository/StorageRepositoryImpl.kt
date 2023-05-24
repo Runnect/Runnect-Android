@@ -45,7 +45,8 @@ class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
                 privateCourseId = it.id,
                 image = it.image,
                 city = it.departure.city,
-                region = it.departure.region
+                region = it.departure.region,
+                title = it.title
             )
         }
         return changedData
