@@ -7,21 +7,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.model.MyDrawCourse
 import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponseGetScrapDto
+import com.runnect.runnect.domain.StorageMyDrawRepository
 import com.runnect.runnect.presentation.state.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class StorageViewModel : ViewModel() {
+@HiltViewModel
+class StorageViewModel @Inject constructor(private val storageMyDrawRepository: StorageMyDrawRepository) :
+    ViewModel() {
 
-    val service = KApiCourse.ServicePool.courseService //객체 생성
     val selectList = MutableLiveData<MutableList<Long>>()
-    val currentList =  MutableLiveData<MutableList<ResponseGetCourseDto.Data.Course>>()
+    val currentList = MutableLiveData<MutableList<ResponseGetCourseDto.Data.Course>>()
 
-    val getMyDrawResult = MutableLiveData<ResponseGetCourseDto>()
+    val getMyDrawResult = MutableLiveData<List<MyDrawCourse>>()
     val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
+
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
     val deleteCount = MutableLiveData<Int>()
@@ -35,9 +41,9 @@ class StorageViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 _storageState.value = UiState.Loading
-                service.getCourseList()
+                storageMyDrawRepository.getMyDrawCourseList()
             }.onSuccess {
-                getMyDrawResult.value = it.body()
+                getMyDrawResult.value = it
                 Timber.tag(ContentValues.TAG)
                     .d("데이터 수신 완료")
                 _storageState.value = UiState.Success
@@ -50,7 +56,7 @@ class StorageViewModel : ViewModel() {
         }
     }
 
-    fun deleteMyDrawCourse(deleteList : MutableList<Long>) {
+    fun deleteMyDrawCourse(deleteList: MutableList<Long>) {
         viewModelScope.launch {
             runCatching {
                 service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))

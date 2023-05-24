@@ -14,35 +14,31 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
+import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
-import com.runnect.runnect.presentation.storage.adapter.setSelectionTracker
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnMyDrawClick
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
     OnMyDrawClick {
 
     val viewModel: StorageViewModel by viewModels()
 
-    lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
 
 
@@ -57,22 +53,19 @@ class StorageMyDrawFragment :
     private lateinit var animUp: Animation
 
     var availableEdit = false
-
-
     var isSelectAvailable = false
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-            initLayout()
-            binding.lifecycleOwner = requireActivity()
-            initAdapter()
-            editCourse()
-            getCourse()
-            requireCourse()
-            addObserver()
-            addSelectionTracker()
+        initLayout()
+        binding.lifecycleOwner = requireActivity()
+        initAdapter()
+        editCourse()
+        getCourse()
+        requireCourse()
+        addObserver()
     }
 
 
@@ -90,7 +83,9 @@ class StorageMyDrawFragment :
     }
 
     private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this)
+        storageMyDrawAdapter = StorageMyDrawAdapter(this).apply {
+            submitList(viewModel.getMyDrawResult.value)
+        }
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
 
@@ -109,7 +104,6 @@ class StorageMyDrawFragment :
                 availableEdit = false
                 storageMyDrawAdapter.disableSelect()
                 binding.btnEditCourse.text = "편집"
-                selectionTracker.clearSelection()
                 isSelectAvailable = false
                 hideDeleteCourseBtn()
                 showBottomNav()
@@ -172,9 +166,7 @@ class StorageMyDrawFragment :
 
         myLayout.btn_delete_yes.setOnClickListener {
             deleteCourse()
-            clearSelection()
             initAdapter()
-            addSelectionTracker()
             getMyDrawCourse()
             storageMyDrawAdapter.disableSelect()
             availableEdit = false
@@ -191,10 +183,6 @@ class StorageMyDrawFragment :
     fun deleteCourse() {
         viewModel.deleteMyDrawCourse(viewModel.selectList.value!!)
         binding.btnEditCourse.text = "편집"
-    }
-
-    private fun clearSelection() {
-        selectionTracker.clearSelection()
     }
 
     private fun getMyDrawCourse() {
@@ -267,10 +255,10 @@ class StorageMyDrawFragment :
         }
     }
 
-    private fun observeDeleteCount(){
-        viewModel.deleteCount.observe(viewLifecycleOwner){
+    private fun observeDeleteCount() {
+        viewModel.deleteCount.observe(viewLifecycleOwner) {
             var count = viewModel.deleteCount.value
-            if(count!! > 0){
+            if (count!! > 0) {
                 btnDeleteCourseMain.text = "삭제하기(${count})"
             } else {
                 btnDeleteCourseMain.text = "삭제하기"
@@ -291,45 +279,6 @@ class StorageMyDrawFragment :
         viewModel.getMyDrawList()
     }
 
-    private fun addSelectionTracker() {
-        createSelectionTracker()
-        setSelectionTrackerObserver()
-        setTrackerInAdapter()
-    }
-
-    private fun createSelectionTracker() {
-        selectionTracker =
-            setSelectionTracker("StorageMyDrawSelectionTracker", binding.recyclerViewStorageMyDraw)
-    }
-
-    private fun setTrackerInAdapter() {
-        storageMyDrawAdapter.setSelectionTracker(selectionTracker)
-    }
-
-    private fun setSelectionTrackerObserver() {
-
-        selectionTracker.addObserver((object : SelectionTracker.SelectionObserver<Long>() {
-            override fun onSelectionChanged() {
-                super.onSelectionChanged()
-                checkDisableSelection()
-                createSelectList()
-                manageSaveDeleteBtnCondition()
-                viewModel.deleteCount.value = selectionTracker.selection.size()
-            }
-        }))
-    }
-
-    private fun checkDisableSelection() {
-        if (!isSelectAvailable) {
-            selectionTracker.clearSelection()
-        }
-    }
-
-    private fun createSelectList() {
-        viewModel.selectList.value = selectionTracker.selection.toMutableList()
-        Timber.tag(ContentValues.TAG)
-            .d("실시간 뷰모델 selectList 값 : ${viewModel.selectList.value}")
-    }
 
     private fun manageSaveDeleteBtnCondition() {
         val selectedItems = selectionTracker.selection.size()
@@ -358,14 +307,17 @@ class StorageMyDrawFragment :
         btnDeleteCourseMain.isEnabled = true
     }
 
-    override fun selectItem(item: ResponseGetCourseDto.Data.Course) {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.id}")
+    override fun selectItem(id: Int): Boolean {
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : $id")
 
-        if (!isSelectAvailable) {
+        return if (!isSelectAvailable) {
             startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("fromStorageFragment", item.id)
+                putExtra("fromStorageFragment", id)
             })
+            false
+        } else {
+            true
         }
     }
 }

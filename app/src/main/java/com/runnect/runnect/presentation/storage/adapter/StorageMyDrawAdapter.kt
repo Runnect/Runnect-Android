@@ -1,14 +1,13 @@
 package com.runnect.runnect.presentation.storage.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.databinding.library.baseAdapters.BR
-import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.runnect.runnect.data.model.MyDrawCourse
 import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.OnMyDrawClick
@@ -17,47 +16,11 @@ import com.runnect.runnect.util.callback.OnMyDrawClick
 class StorageMyDrawAdapter(
     val myDrawClickListener: OnMyDrawClick
 ) :
-    ListAdapter<ResponseGetCourseDto.Data.Course, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
+    ListAdapter<MyDrawCourse, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
-
-    private lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var binding: ItemStorageMyDrawBinding
-
-    var checkAvailable: Boolean = false
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-
-    init {
-        setHasStableIds(true)
-    }
-
-    override fun getItemId(position: Int): Long {
-        return currentList[position].id.toLong()
-    }
-
-    inner class ItemViewHolder(val binding: ItemStorageMyDrawBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
-            object : ItemDetailsLookup.ItemDetails<Long>() {
-                override fun getPosition(): Int = absoluteAdapterPosition
-                override fun getSelectionKey(): Long = itemId
-            }
-
-
-        fun bind(courseList: ResponseGetCourseDto.Data.Course) {
-            binding.storageItem = courseList
-        }
-
-    }
-
-    fun setSelectionTracker(selectionTracker: SelectionTracker<Long>) {
-        this.selectionTracker = selectionTracker //입력받은 걸 멤버변수 값에 할당, 즉 입력을 안 받으면 초기화 안 했다고 앱이 죽음
-    }
-
+    private var selectedItems: MutableList<View>? = mutableListOf()
+    private var selectedBoxes: MutableList<View>? = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -68,39 +31,65 @@ class StorageMyDrawAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(currentList[position])
+    }
 
-        with(holder) {
-            binding.setVariable(BR.storageItem, getItem(position))
-            binding.ivCheckbox.isVisible = checkAvailable
-            binding.root.setOnClickListener {
-                myDrawClickListener.selectItem(currentList[position])
-                selectionTracker.select(itemId) //이게 select을 실행시킴. 리사이클러뷰 아이템 고유 id 수집
-            }
-            binding.selected = selectionTracker.isSelected(itemId)
+    fun clearSelection() {
+        selectedItems?.forEach {
+            it.isSelected = false
         }
-
+        selectedBoxes?.forEach {
+            it.isSelected = false
+            it.isVisible = false
+        }
+        selectedItems?.clear()
     }
 
-    fun ableSelect() {
-        checkAvailable = true
+    fun removeItems(removedIds: List<Int>) {
+        if (currentList.isNotEmpty()) {
+            val newItems = currentList.filter { !removedIds.contains(it.courseId) }
+            submitList(newItems)
+        }
     }
 
-    fun disableSelect() {
-        checkAvailable = false
+    inner class ItemViewHolder(val binding: ItemStorageMyDrawBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(courseList: MyDrawCourse) {
+            with(binding) {
+                selectedBoxes?.add(ivCheckbox)
+
+                storageItem = courseList
+
+                root.setOnClickListener {
+                    val isEditMode = myDrawClickListener.selectItem(courseList.courseId!!)
+                    if (isEditMode) {
+                        if (it.isSelected) {
+                            ivCheckbox.isSelected = false
+                            it.isSelected = false
+                            selectedBoxes?.remove(ivCheckbox)
+                            selectedItems?.remove(it)
+                        } else {
+                            ivCheckbox.isSelected = true
+                            it.isSelected = true
+                            selectedBoxes?.add(ivCheckbox)
+                            selectedItems?.add(it)
+                        }
+                    }
+                }
+            }
+        }
     }
 
-
-    class Differ : DiffUtil.ItemCallback<ResponseGetCourseDto.Data.Course>() {
+    class Differ : DiffUtil.ItemCallback<MyDrawCourse>() {
         override fun areItemsTheSame(
-            oldItem: ResponseGetCourseDto.Data.Course,
-            newItem: ResponseGetCourseDto.Data.Course,
+            oldItem: MyDrawCourse,
+            newItem: MyDrawCourse,
         ): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.courseId == newItem.courseId
         }
 
         override fun areContentsTheSame(
-            oldItem: ResponseGetCourseDto.Data.Course,
-            newItem: ResponseGetCourseDto.Data.Course,
+            oldItem: MyDrawCourse,
+            newItem: MyDrawCourse,
         ): Boolean {
             return oldItem == newItem
         }
