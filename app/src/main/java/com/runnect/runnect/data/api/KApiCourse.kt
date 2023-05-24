@@ -3,18 +3,13 @@ package com.runnect.runnect.data.api
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
-import com.runnect.runnect.presentation.login.LoginActivity
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import java.io.IOException
 
 object KApiCourse {
 

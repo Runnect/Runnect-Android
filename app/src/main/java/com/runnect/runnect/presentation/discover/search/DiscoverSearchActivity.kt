@@ -146,6 +146,6 @@ class DiscoverSearchActivity :
     }
 
     override fun scrapCourse(id: Int?, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id, scrapTF)
+        viewModel.postCourseScrap(id!!, scrapTF)
     }
 }

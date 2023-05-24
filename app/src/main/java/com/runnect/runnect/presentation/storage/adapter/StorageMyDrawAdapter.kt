@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.MyDrawCourse
-import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.OnMyDrawClick
 
@@ -31,6 +30,12 @@ class StorageMyDrawAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(currentList[position])
+    }
+
+    fun handleCheckBoxVisibility(isEditMode: Boolean) {
+        selectedBoxes?.forEach {
+            it.isVisible = isEditMode
+        }
     }
 
     fun clearSelection() {

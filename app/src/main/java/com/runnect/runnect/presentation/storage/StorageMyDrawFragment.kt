@@ -21,7 +21,6 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
-import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
@@ -94,7 +93,10 @@ class StorageMyDrawFragment :
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
                 availableEdit = true
-                storageMyDrawAdapter.ableSelect()
+//                storageMyDrawAdapter.ableSelect()
+                if (::storageMyDrawAdapter.isInitialized) storageMyDrawAdapter.handleCheckBoxVisibility(
+                    true
+                )
                 hideBottomNav()
                 showDeleteCourseBtn()
                 binding.tvTotalCourseCount.text = "코스 선택"
@@ -102,13 +104,16 @@ class StorageMyDrawFragment :
                 isSelectAvailable = true
             } else {
                 availableEdit = false
-                storageMyDrawAdapter.disableSelect()
+//                storageMyDrawAdapter.disableSelect()
+                if (::storageMyDrawAdapter.isInitialized) storageMyDrawAdapter.handleCheckBoxVisibility(
+                    false
+                )
                 binding.btnEditCourse.text = "편집"
                 isSelectAvailable = false
                 hideDeleteCourseBtn()
                 showBottomNav()
                 binding.tvTotalCourseCount.text =
-                    "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
+                    "총 코스 ${viewModel.getMyDrawResult.value!!.size}개"
             }
         }
     }
@@ -166,9 +171,6 @@ class StorageMyDrawFragment :
 
         myLayout.btn_delete_yes.setOnClickListener {
             deleteCourse()
-            initAdapter()
-            getMyDrawCourse()
-            storageMyDrawAdapter.disableSelect()
             availableEdit = false
             dialog.dismiss()
             isSelectAvailable = false
@@ -185,10 +187,6 @@ class StorageMyDrawFragment :
         binding.btnEditCourse.text = "편집"
     }
 
-    private fun getMyDrawCourse() {
-        viewModel.getMyDrawList()
-    }
-
     private fun showLoadingBar() {
         binding.indeterminateBar.isVisible = true
     }
@@ -200,14 +198,14 @@ class StorageMyDrawFragment :
     @SuppressLint("SetTextI18n")
     private fun showMyDrawResult() {
         Timber.tag(ContentValues.TAG)
-            .d("Success but emptyList : ${viewModel.getMyDrawResult.value!!.data.courses.isEmpty()}")
-        if (viewModel.getMyDrawResult.value!!.data.courses.isEmpty()) {
+            .d("Success but emptyList : ${viewModel.getMyDrawResult.value!!.isEmpty()}")
+        if (viewModel.getMyDrawResult.value!!.isEmpty()) {
             with(binding) {
                 layoutMyDrawNoCourse.isVisible = true
                 recyclerViewStorageMyDraw.isVisible = false
                 btnEditCourse.isEnabled = false
                 tvTotalCourseCount.text =
-                    "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
+                    "총 코스 ${viewModel.getMyDrawResult.value!!.size}개"
             }
         } else {
             with(binding) {
@@ -215,13 +213,13 @@ class StorageMyDrawFragment :
                 recyclerViewStorageMyDraw.isVisible = true
                 btnEditCourse.isEnabled = true
                 tvTotalCourseCount.text =
-                    "총 코스 ${viewModel.getMyDrawResult.value!!.data.courses.size}개"
+                    "총 코스 ${viewModel.getMyDrawResult.value!!.size}개"
             }
         }
     }
 
     private fun updateAdapterData() {
-        storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
+        storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!)
     }
 
     private fun addObserver() {
@@ -251,7 +249,7 @@ class StorageMyDrawFragment :
 
     fun observeGetMyDrawResult() {
         viewModel.getMyDrawResult.observe(viewLifecycleOwner) {
-            storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!.data.courses)
+            storageMyDrawAdapter.submitList(viewModel.getMyDrawResult.value!!)
         }
     }
 
@@ -280,14 +278,14 @@ class StorageMyDrawFragment :
     }
 
 
-    private fun manageSaveDeleteBtnCondition() {
-        val selectedItems = selectionTracker.selection.size()
-        if (selectedItems == 0) {
-            disableSaveBtn()
-        } else if (selectedItems >= 1) {
-            enableDeleteBtn()
-        }
-    }
+//    private fun manageSaveDeleteBtnCondition() {
+//        val selectedItems = selectionTracker.selection.size()
+//        if (selectedItems == 0) {
+//            disableSaveBtn()
+//        } else if (selectedItems >= 1) {
+//            enableDeleteBtn()
+//        }
+//    }
 
     private fun disableSaveBtn() {
         btnDeleteCourseMain =

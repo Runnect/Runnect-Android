@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.MyScrapCourse
-import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnHeartClick
@@ -43,7 +42,7 @@ class StorageScrapAdapter(
 
     }
 
-    fun deleteItem(position: Int){
+    fun deleteItem(position: Int) {
         val itemList = mutableListOf<MyScrapCourse>()
         itemList.addAll(currentList)
         Timber.d("삭제 전 itemList? ${itemList.size}")

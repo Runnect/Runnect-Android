@@ -228,7 +228,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
 
     override fun scrapCourse(id: Int?, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id, scrapTF)
+        viewModel.postCourseScrap(id!!, scrapTF)
     }
 
     private fun setResultDetail() {
