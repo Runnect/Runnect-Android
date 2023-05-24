@@ -5,13 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.model.MyDrawCourse
+import com.runnect.runnect.data.model.MyScrapCourse
 import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.data.model.ResponseGetScrapDto
-import com.runnect.runnect.domain.StorageMyDrawRepository
+import com.runnect.runnect.domain.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,14 +18,14 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class StorageViewModel @Inject constructor(private val storageMyDrawRepository: StorageMyDrawRepository) :
+class StorageViewModel @Inject constructor(private val storageRepository: StorageRepository) :
     ViewModel() {
 
     val selectList = MutableLiveData<MutableList<Long>>()
     val currentList = MutableLiveData<MutableList<ResponseGetCourseDto.Data.Course>>()
 
     val getMyDrawResult = MutableLiveData<List<MyDrawCourse>>()
-    val getScrapListResult = MutableLiveData<ResponseGetScrapDto>()
+    val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
 
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
@@ -41,7 +40,7 @@ class StorageViewModel @Inject constructor(private val storageMyDrawRepository: 
         viewModelScope.launch {
             runCatching {
                 _storageState.value = UiState.Loading
-                storageMyDrawRepository.getMyDrawCourseList()
+                storageRepository.getMyDrawCourse()
             }.onSuccess {
                 getMyDrawResult.value = it
                 Timber.tag(ContentValues.TAG)
@@ -59,7 +58,7 @@ class StorageViewModel @Inject constructor(private val storageMyDrawRepository: 
     fun deleteMyDrawCourse(deleteList: MutableList<Long>) {
         viewModelScope.launch {
             runCatching {
-                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
+                storageRepository.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
             }.onSuccess {
                 Timber.tag(ContentValues.TAG)
                     .d("삭제 성공입니다")
@@ -74,10 +73,10 @@ class StorageViewModel @Inject constructor(private val storageMyDrawRepository: 
         viewModelScope.launch {
             runCatching {
                 _storageState.value = UiState.Loading
-                service.getScrapList()
+                storageRepository.getMyScrapCourse()
             }.onSuccess {
-                getScrapListResult.value = it.body()
-                Timber.tag(ContentValues.TAG).d("스크랩 리스트 사이즈 : ${it.body()!!.data.scraps.size}")
+                getScrapListResult.value = it
+                Timber.tag(ContentValues.TAG).d("스크랩 리스트 사이즈 : ${it!!.size}")
                 _storageState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
@@ -90,7 +89,7 @@ class StorageViewModel @Inject constructor(private val storageMyDrawRepository: 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                service.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
+                storageRepository.postMyScrapCourse(RequestCourseScrap(id, scrapTF.toString()))
             }.onSuccess {
                 Timber.d("onSuccess 메세지 : $it")
             }.onFailure {
