@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.model.MyDrawCourse
 import com.runnect.runnect.data.model.MyScrapCourse
@@ -21,36 +22,44 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor(private val storageRepository: StorageRepository) :
     ViewModel() {
 
-    val selectList = MutableLiveData<MutableList<Long>>()
-    val currentList = MutableLiveData<MutableList<ResponseGetCourseDto.Data.Course>>()
+    private var _myDrawCoursesDeleteState = MutableLiveData<UiState>()
+    val myDrawCourseDeleteState: LiveData<UiState>
+        get() = _myDrawCoursesDeleteState
 
-    val getMyDrawResult = MutableLiveData<List<MyDrawCourse>>()
+    private var _myDrawCourses = mutableListOf<MyDrawCourse>()
+    val myDrawCourses: List<MyDrawCourse>
+        get() = _myDrawCourses
+
     val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
+
+    val courseCount = MutableLiveData<Int>()
 
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
-    val deleteCount = MutableLiveData<Int>()
+
+    private var _editMode = MutableLiveData(false)
+    val editMode: LiveData<Boolean>
+        get() = _editMode
 
     var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
 
-    private var _itemsToDelete: MutableList<Int> = mutableListOf()
-    val itemsToDelete: List<Int>
-        get() = _itemsToDelete
+    var itemsToDelete: MutableList<Int> = mutableListOf()
 
     private var _storageState = MutableLiveData<UiState>(UiState.Empty)
     val storageState: LiveData<UiState>
         get() = _storageState
 
     fun getMyDrawList() {
-
         viewModelScope.launch {
             runCatching {
                 _storageState.value = UiState.Loading
                 storageRepository.getMyDrawCourse()
             }.onSuccess {
-                getMyDrawResult.value = it
+                _myDrawCourses = it!!
                 Timber.tag(ContentValues.TAG)
                     .d("데이터 수신 완료")
+                Timber.tag(ContentValues.TAG)
+                    .d("갱신전 myDrawCourses값 : ${myDrawCourses.map { it.courseId }}")
                 _storageState.value = UiState.Success
             }.onFailure {
                 Timber.tag(ContentValues.TAG)
@@ -61,16 +70,29 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
         }
     }
 
-    fun deleteMyDrawCourse(deleteList: List<Int>) {
+    fun convertMode() {
+        _editMode.value = !_editMode.value!!
+    }
+
+    fun deleteMyDrawCourse() {
         viewModelScope.launch {
             runCatching {
-                storageRepository.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
+                _myDrawCoursesDeleteState.value = UiState.Loading
+                storageRepository.deleteMyDrawCourse(RequestPutMyDrawDto(itemsToDelete))
             }.onSuccess {
                 Timber.tag(ContentValues.TAG)
                     .d("삭제 성공입니다")
+                _myDrawCourses = _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
+                _myDrawCoursesDeleteState.value = UiState.Success
+                //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
+                if (_myDrawCourses.isEmpty()) {
+                    convertMode()
+                }
+
             }.onFailure {
                 Timber.tag(ContentValues.TAG)
                     .d("실패했고 문제는 다음과 같습니다 $it")
+                _myDrawCoursesDeleteState.value = UiState.Failure
             }
         }
     }
@@ -104,17 +126,23 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
         }
     }
 
+    fun getCourseCount(): String {
+        Timber.d("총 기록 ${_myDrawCourses.count()}개")
+        courseCount.value = _myDrawCourses.count()
+        return "총 기록 ${courseCount.value}개"
+    }
+
     fun modifyItemsToDelete(id: Int) {
-        if (_itemsToDelete.contains(id)) {
-            _itemsToDelete.remove(id)
+        if (itemsToDelete.contains(id)) {
+            itemsToDelete.remove(id)
         } else {
-            _itemsToDelete.add(id)
+            itemsToDelete.add(id)
         }
-        itemsToDeleteLiveData.value = _itemsToDelete
+        itemsToDeleteLiveData.value = itemsToDelete
     }
 
     fun clearItemsToDelete() {
-        _itemsToDelete.clear()
-        itemsToDeleteLiveData.value = _itemsToDelete
+        itemsToDelete.clear()
+        itemsToDeleteLiveData.value = itemsToDelete
     }
 }

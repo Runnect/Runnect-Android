@@ -143,8 +143,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         viewModel.selectedItemsCount.observe(this) { count ->
             updateDeleteButton(count)
         }
-
-        viewModel.selectCountMediator.observe(this) {}
     }
 
     private fun enterEditMode() {

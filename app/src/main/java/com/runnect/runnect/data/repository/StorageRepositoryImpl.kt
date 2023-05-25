@@ -10,8 +10,8 @@ import retrofit2.Response
 class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
     StorageRepository {
 
-    override suspend fun getMyDrawCourse(): List<MyDrawCourse> {
-        return changeMyDrawData(storageDataSource.getMyDrawCourse().body()!!.data.courses)
+    override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
+        return changeMyDrawData(storageDataSource.getMyDrawCourse().body()!!.data.courses).toMutableList()
     }
 
     private fun changeMyDrawData(data: List<ResponseGetCourseDto.Data.Course>): List<MyDrawCourse> {
@@ -30,8 +30,8 @@ class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
         return storageDataSource.deleteMyDrawCourse(deleteCourseList)
     }
 
-    override suspend fun getMyScrapCourse(): List<MyScrapCourse> {
-        return changeMyScrapData(storageDataSource.getMyScrapCourse().body()!!.data.scraps)
+    override suspend fun getMyScrapCourse(): MutableList<MyScrapCourse> {
+        return changeMyScrapData(storageDataSource.getMyScrapCourse().body()!!.data.scraps).toMutableList()
     }
 
     override suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> {

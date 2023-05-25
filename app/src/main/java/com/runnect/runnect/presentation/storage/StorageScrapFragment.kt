@@ -142,7 +142,7 @@ class StorageScrapFragment :
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra("fromScrapFragment", true)
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            } //임의의 intent
+            }
             startActivity(intent)
         }
     }
