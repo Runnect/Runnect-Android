@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
@@ -29,6 +30,11 @@ class MyHistoryDetailActivity :
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editInterruptDialog: AlertDialog
     private val viewModel: MyHistoryDetailViewModel by viewModels()
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleIsEdited(viewModel.titleForInterruption.isEmpty())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,21 +81,27 @@ class MyHistoryDetailActivity :
             if (viewModel.editMode.value == EDIT_MODE) {
                 editInterruptDialog.show()
             } else {
-                if (viewModel.titleForInterruption.isEmpty()) {
-                    finish()
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                } else {
-                    val intent = Intent(this, MyHistoryActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    startActivity(intent)
-                    finish()
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                }
+                handleIsEdited(viewModel.titleForInterruption.isEmpty())
             }
         }
         binding.tvHistoryEditFinish.setOnClickListener {
             viewModel.editHistoryTitle()
         }
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
+
+    private fun handleIsEdited(isEdited: Boolean) {
+        if (isEdited) {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        } else {
+            val intent = Intent(this, MyHistoryActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
+
     }
 
     private fun addObserver() {
