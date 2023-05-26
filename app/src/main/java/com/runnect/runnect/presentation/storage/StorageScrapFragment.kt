@@ -72,7 +72,7 @@ class StorageScrapFragment :
         with(binding) {
             layoutMyDrawNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
-            tvTotalScrapCount.text = "총 코스 0개"
+            tvTotalScrapCount.isVisible = false
         }
     }
 
@@ -81,7 +81,8 @@ class StorageScrapFragment :
         with(binding) {
             layoutMyDrawNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
-            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.size}개"
+            tvTotalScrapCount.isVisible = true
+            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.size}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
@@ -102,7 +103,7 @@ class StorageScrapFragment :
             } else {
                 hideEmptyView()
             }
-            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개"
+            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 

@@ -25,6 +25,7 @@ import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -34,7 +35,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
-    OnMyDrawClick {
+    OnMyDrawClick, ItemCount {
 
     val viewModel: StorageViewModel by viewModels()
 
@@ -62,9 +63,6 @@ class StorageMyDrawFragment :
         binding.lifecycleOwner = requireActivity()
         initAdapter()
         editCourse()
-        binding.btnEditCourse.setOnClickListener {
-            handleEditClicked()
-        }
         getCourse()
         requireCourse()
         addObserver()
@@ -85,7 +83,7 @@ class StorageMyDrawFragment :
     }
 
     private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this).apply {
+        storageMyDrawAdapter = StorageMyDrawAdapter(this,this).apply {
             submitList(viewModel.myDrawCourses)
         }
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
@@ -143,7 +141,7 @@ class StorageMyDrawFragment :
         dialog.show()
 
         myLayout.btn_delete_yes.setOnClickListener {
-            deleteCourse() //통신으로 지우고
+            deleteCourse()
             dialog.dismiss()
             availableEdit = false
             isSelectAvailable = false
@@ -155,15 +153,6 @@ class StorageMyDrawFragment :
         }
     }
 
-    private fun observeEditMode() {
-        viewModel.editMode.observe(viewLifecycleOwner) { editMode ->
-            if (editMode) {
-                enterEditMode()
-            } else {
-                exitEditMode()
-            }
-        }
-    }
 
     @SuppressLint("SetTextI18n")
     private fun editCourse() {
@@ -176,9 +165,6 @@ class StorageMyDrawFragment :
         }
     }
 
-    private fun handleEditClicked() {
-        viewModel.convertMode()
-    }
 
     private fun enterEditMode() {
         availableEdit = true
@@ -192,7 +178,6 @@ class StorageMyDrawFragment :
         isSelectAvailable = true
     }
 
-    /**편집 취소 버튼을 누르는 경우 or 모든 기록이 삭제된 경우*/
     private fun exitEditMode() {
         availableEdit = false
         isSelectAvailable = false
@@ -204,8 +189,7 @@ class StorageMyDrawFragment :
             )
         }
         binding.btnEditCourse.text = "편집"
-        binding.tvTotalCourseCount.text =
-            viewModel.getCourseCount()
+        binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawSize.value}개"
 
         viewModel.clearItemsToDelete()
         hideDeleteCourseBtn()
@@ -239,7 +223,6 @@ class StorageMyDrawFragment :
     fun deleteCourse() {
         viewModel.deleteMyDrawCourse()
         binding.btnEditCourse.text = "편집"
-        binding.tvTotalCourseCount.text = viewModel.getCourseCount()
     }
 
     private fun showLoadingBar() {
@@ -255,21 +238,9 @@ class StorageMyDrawFragment :
         Timber.tag(ContentValues.TAG)
             .d("Success but emptyList : ${viewModel.myDrawCourses.isEmpty()}")
         if (viewModel.myDrawCourses.isEmpty()) {
-            with(binding) {
-                layoutMyDrawNoCourse.isVisible = true
-                recyclerViewStorageMyDraw.isVisible = false
-                btnEditCourse.isEnabled = false
-                tvTotalCourseCount.text =
-                    viewModel.getCourseCount()
-            }
+            showEmptyView()
         } else {
-            with(binding) {
-                layoutMyDrawNoCourse.isVisible = false
-                recyclerViewStorageMyDraw.isVisible = true
-                btnEditCourse.isEnabled = true
-                tvTotalCourseCount.text =
-                    viewModel.getCourseCount()
-            }
+            hideEmptyView()
         }
     }
 
@@ -281,7 +252,41 @@ class StorageMyDrawFragment :
         observeStorageState()
         manageSaveDeleteBtnCondition()
         observeDeleteState()
-        observeEditMode()
+        observeItemSize()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeItemSize() {
+        viewModel.myDrawSize.observe(viewLifecycleOwner) {
+            if (viewModel.myDrawSize.value == 0) {
+                showEmptyView()
+            } else {
+                hideEmptyView()
+            }
+            binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawSize.value}개"
+        }
+    }
+
+    private fun showEmptyView() {
+        with(binding) {
+            layoutMyDrawNoCourse.isVisible = true
+            recyclerViewStorageMyDraw.isVisible = false
+            btnEditCourse.isEnabled = false
+            btnEditCourse.isVisible = false
+            tvTotalCourseCount.isVisible = false
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun hideEmptyView() {
+        with(binding) {
+            layoutMyDrawNoCourse.isVisible = false
+            recyclerViewStorageMyDraw.isVisible = true
+            btnEditCourse.isEnabled = true
+            btnEditCourse.isVisible = true
+            tvTotalCourseCount.isVisible = true
+            binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawCourses.size}개"
+        }
     }
 
     private fun observeStorageState() {
@@ -364,6 +369,10 @@ class StorageMyDrawFragment :
             viewModel.modifyItemsToDelete(id)
             true
         }
+    }
+
+    override fun calcItemSize(itemCount: Int) {
+        viewModel.myDrawSize.value = itemCount
     }
 }
 

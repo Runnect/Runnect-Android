@@ -32,14 +32,9 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
 
     val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
 
-    val courseCount = MutableLiveData<Int>()
-
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
-
-    private var _editMode = MutableLiveData(false)
-    val editMode: LiveData<Boolean>
-        get() = _editMode
+    val myDrawSize = MutableLiveData<Int>()
 
     var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
 
@@ -58,20 +53,14 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
                 _myDrawCourses = it!!
                 Timber.tag(ContentValues.TAG)
                     .d("데이터 수신 완료")
-                Timber.tag(ContentValues.TAG)
-                    .d("갱신전 myDrawCourses값 : ${myDrawCourses.map { it.courseId }}")
                 _storageState.value = UiState.Success
             }.onFailure {
                 Timber.tag(ContentValues.TAG)
-                    .d("문제가 뭐냐 $it")
+                    .d("onFailure 메세지 : $it")
                 errorMessage.value = it.message
                 _storageState.value = UiState.Failure
             }
         }
-    }
-
-    fun convertMode() {
-        _editMode.value = !_editMode.value!!
     }
 
     fun deleteMyDrawCourse() {
@@ -84,10 +73,6 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
                     .d("삭제 성공입니다")
                 _myDrawCourses = _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
                 _myDrawCoursesDeleteState.value = UiState.Success
-                //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
-                if (_myDrawCourses.isEmpty()) {
-                    convertMode()
-                }
 
             }.onFailure {
                 Timber.tag(ContentValues.TAG)
@@ -124,12 +109,6 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
                 Timber.d("onFailure 메세지 : $it")
             }
         }
-    }
-
-    fun getCourseCount(): String {
-        Timber.d("총 기록 ${_myDrawCourses.count()}개")
-        courseCount.value = _myDrawCourses.count()
-        return "총 기록 ${courseCount.value}개"
     }
 
     fun modifyItemsToDelete(id: Int) {

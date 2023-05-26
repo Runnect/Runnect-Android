@@ -45,10 +45,8 @@ class StorageScrapAdapter(
     fun deleteItem(position: Int) {
         val itemList = mutableListOf<MyScrapCourse>()
         itemList.addAll(currentList)
-        Timber.d("삭제 전 itemList? ${itemList.size}")
         itemList.removeAt(position)
         submitList(itemList)
-        Timber.d("삭제 후 itemList? ${itemList.size}")
         itemCount.calcItemSize(itemList.size)
     }
 

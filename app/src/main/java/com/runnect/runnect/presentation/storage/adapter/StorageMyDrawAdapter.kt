@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.model.MyDrawCourse
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
+import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import timber.log.Timber
 
 
 class StorageMyDrawAdapter(
-    val myDrawClickListener: OnMyDrawClick
+    val myDrawClickListener: OnMyDrawClick, val itemCount: ItemCount
 ) :
     ListAdapter<MyDrawCourse, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
 
@@ -54,6 +55,7 @@ class StorageMyDrawAdapter(
         if (currentList.isNotEmpty()) {
             val newItems = currentList.filter { !removedIds.contains(it.courseId) }
             submitList(newItems)
+            itemCount.calcItemSize(newItems.size)
         }
     }
 
