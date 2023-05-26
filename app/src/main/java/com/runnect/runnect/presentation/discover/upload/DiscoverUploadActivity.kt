@@ -83,12 +83,7 @@ class DiscoverUploadActivity :
                 UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
-                    showToast("업로드 완료!")
-                    binding.indeterminateBar.isVisible = false
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    handleReturnToDiscover()
                 }
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
@@ -97,8 +92,17 @@ class DiscoverUploadActivity :
                 }
             }
         }
+    }
 
-
+    private fun handleReturnToDiscover() {
+        showToast("업로드 완료!")
+        binding.indeterminateBar.isVisible = false
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        MainActivity.updateDiscoverFragment()
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
 
