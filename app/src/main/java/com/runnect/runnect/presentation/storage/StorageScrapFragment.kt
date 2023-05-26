@@ -14,6 +14,7 @@ import com.runnect.runnect.data.model.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
@@ -33,6 +34,9 @@ class StorageScrapFragment :
     val viewModel: StorageViewModel by viewModels()
     lateinit var storageScrapAdapter: StorageScrapAdapter
 
+    companion object {
+        var isFromStorageNoScrap = false
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -82,7 +86,8 @@ class StorageScrapFragment :
             layoutMyDrawNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
             tvTotalScrapCount.isVisible = true
-            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.size}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
+            tvTotalScrapCount.text =
+                "총 코스 ${viewModel.getScrapListResult.value!!.size}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
@@ -103,7 +108,8 @@ class StorageScrapFragment :
             } else {
                 hideEmptyView()
             }
-            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
+            binding.tvTotalScrapCount.text =
+                "총 코스 ${viewModel.itemSize.value}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
@@ -140,16 +146,21 @@ class StorageScrapFragment :
 
     private fun toScrapCourseBtn() {
         binding.btnStorageNoScrap.setOnClickListener {
+            isFromStorageNoScrap = true
+
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra("fromScrapFragment", true)
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             }
             startActivity(intent)
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
     }
 
 
-    private fun getCourse() {
+    fun getCourse() {
         viewModel.getScrapList()
     }
 
@@ -163,15 +174,15 @@ class StorageScrapFragment :
     }
 
     override fun selectItem(item: MyScrapCourse) {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicId}")
-        startActivity(
-            Intent(activity, CourseDetailActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("courseId", item.publicId)
-            },
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
+
+        val intent = Intent(activity, CourseDetailActivity::class.java)
+        intent.putExtra("publicCourseId", item.publicCourseId)
+        intent.putExtra("root", "storageScrap")
+        startActivity(intent)
+        requireActivity().overridePendingTransition(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
         )
-
     }
-
-
 }

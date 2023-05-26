@@ -83,7 +83,7 @@ class StorageMyDrawFragment :
     }
 
     private fun initAdapter() {
-        storageMyDrawAdapter = StorageMyDrawAdapter(this,this).apply {
+        storageMyDrawAdapter = StorageMyDrawAdapter(this, this).apply {
             submitList(viewModel.myDrawCourses)
         }
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
@@ -310,10 +310,13 @@ class StorageMyDrawFragment :
 
     private fun requireCourse() {
         binding.btnStorageNoCourse.setOnClickListener {
-            val intent = Intent(activity, SearchActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            }
+            val intent = Intent(activity, SearchActivity::class.java)
+            intent.putExtra("root", "storageNoScrap")
             startActivity(intent)
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
     }
 
@@ -360,10 +363,13 @@ class StorageMyDrawFragment :
         Timber.tag(ContentValues.TAG).d("코스 아이디 : $id")
 
         return if (!isSelectAvailable) {
-            startActivity(Intent(activity, MyDrawDetailActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("fromStorageFragment", id)
-            })
+            val intent = Intent(activity, MyDrawDetailActivity::class.java)
+            intent.putExtra("fromStorageFragment", id)
+            startActivity(intent)
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
             false
         } else {
             viewModel.modifyItemsToDelete(id)

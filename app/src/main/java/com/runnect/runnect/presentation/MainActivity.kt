@@ -14,6 +14,7 @@ import com.runnect.runnect.presentation.coursemain.CourseMainFragment
 import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.mypage.MyPageFragment
 import com.runnect.runnect.presentation.storage.StorageMainFragment
+import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -31,9 +32,15 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     companion object {
         var isVisitorMode = false
         var discoverFragment: DiscoverFragment? = null
+
         fun updateDiscoverFragment() {
             discoverFragment?.getRecommendCourses()
         }
+
+//        fun updateStorageScrap() {
+//            var storageScrapFragment = StorageScrapFragment()
+//            storageScrapFragment.getCourse()
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

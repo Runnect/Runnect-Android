@@ -11,7 +11,9 @@ class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
     StorageRepository {
 
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
-        return changeMyDrawData(storageDataSource.getMyDrawCourse().body()!!.data.courses).toMutableList()
+        return changeMyDrawData(
+            storageDataSource.getMyDrawCourse().body()!!.data.courses
+        ).toMutableList()
     }
 
     private fun changeMyDrawData(data: List<ResponseGetCourseDto.Data.Course>): List<MyDrawCourse> {
@@ -31,7 +33,9 @@ class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
     }
 
     override suspend fun getMyScrapCourse(): MutableList<MyScrapCourse> {
-        return changeMyScrapData(storageDataSource.getMyScrapCourse().body()!!.data.scraps).toMutableList()
+        return changeMyScrapData(
+            storageDataSource.getMyScrapCourse().body()!!.data.scraps
+        ).toMutableList()
     }
 
     override suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> {
@@ -41,8 +45,9 @@ class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
     private fun changeMyScrapData(data: List<ResponseGetScrapDto.Data.Scrap>): List<MyScrapCourse> {
         val changedData = data.map {
             MyScrapCourse(
-                publicId = it.courseId,
-                privateCourseId = it.id,
+                courseId = it.courseId,
+                id = it.id,
+                publicCourseId = it.publicCourseId,
                 image = it.image,
                 city = it.departure.city,
                 region = it.departure.region,
