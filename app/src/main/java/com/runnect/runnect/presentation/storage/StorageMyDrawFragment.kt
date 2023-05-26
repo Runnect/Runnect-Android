@@ -189,7 +189,7 @@ class StorageMyDrawFragment :
             )
         }
         binding.btnEditCourse.text = "편집"
-        binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawSize.value}개"
+        binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawCourses.size}개"
 
         viewModel.clearItemsToDelete()
         hideDeleteCourseBtn()

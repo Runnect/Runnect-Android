@@ -272,6 +272,7 @@ class DrawActivity :
         myLayout.btn_storage.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra("fromDrawActivity", true)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
             startActivity(intent)
             dialog.dismiss()
