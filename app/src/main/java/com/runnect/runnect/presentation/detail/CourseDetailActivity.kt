@@ -33,12 +33,13 @@ import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
-    private var courseId: Int = 0
+    var publicCourseId by Delegates.notNull<Int>()
     private var root: String = ""
     lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
@@ -62,7 +63,8 @@ class CourseDetailActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        courseId = intent.getIntExtra("courseId", 0)
+        publicCourseId = intent.getIntExtra("publicCourseId", 0)
+        Timber.tag(ContentValues.TAG).d("상세페이지 코스 아이디 : ${publicCourseId}")
         root = intent.getStringExtra("root").toString()
         addListener()
         initView()
@@ -100,10 +102,11 @@ class CourseDetailActivity :
         }
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                CustomToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요").show()
+                CustomToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
+                    .show()
             } else {
                 it.isSelected = !it.isSelected
-                viewModel.postCourseScrap(id = courseId, it.isSelected)
+                viewModel.postCourseScrap(publicCourseId, it.isSelected)
                 viewModel.isEdited = true
             }
         }
@@ -137,7 +140,7 @@ class CourseDetailActivity :
             }
         }
         binding.tvCourseDetailEditFinish.setOnClickListener {
-            viewModel.patchUpdatePublicCourse(courseId)
+            viewModel.patchUpdatePublicCourse(publicCourseId)
         }
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
@@ -207,7 +210,7 @@ class CourseDetailActivity :
     }
 
     private fun getCourseDetail() {
-        viewModel.getCourseDetail(courseId)
+        viewModel.getCourseDetail(publicCourseId)
     }
 
     private fun setDepartureLatLng() {
@@ -335,7 +338,7 @@ class CourseDetailActivity :
         deleteDialog.setDialogClickListener { which ->
             when (which) {
                 deleteDialog.btn_delete_yes -> {
-                    viewModel.deleteUploadCourse(courseId)
+                    viewModel.deleteUploadCourse(publicCourseId)
                 }
             }
 

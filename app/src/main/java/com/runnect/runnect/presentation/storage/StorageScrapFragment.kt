@@ -33,7 +33,6 @@ class StorageScrapFragment :
     val viewModel: StorageViewModel by viewModels()
     lateinit var storageScrapAdapter: StorageScrapAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -82,7 +81,8 @@ class StorageScrapFragment :
             layoutMyDrawNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
             tvTotalScrapCount.isVisible = true
-            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.size}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
+            tvTotalScrapCount.text =
+                "총 코스 ${viewModel.getScrapListResult.value!!.size}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
@@ -103,7 +103,8 @@ class StorageScrapFragment :
             } else {
                 hideEmptyView()
             }
-            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
+            binding.tvTotalScrapCount.text =
+                "총 코스 ${viewModel.itemSize.value}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
@@ -163,12 +164,17 @@ class StorageScrapFragment :
     }
 
     override fun selectItem(item: MyScrapCourse) {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicId}")
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
         startActivity(
             Intent(activity, CourseDetailActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("courseId", item.publicId)
-            },
+                putExtra("publicCourseId", item.publicCourseId)
+
+                requireActivity().overridePendingTransition(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
+            }
+
         )
 
     }

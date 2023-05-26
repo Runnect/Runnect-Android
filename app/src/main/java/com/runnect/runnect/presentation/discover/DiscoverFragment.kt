@@ -241,9 +241,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    override fun selectItem(id: Int) {
+    override fun selectItem(publicCourseId: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java)
-        intent.putExtra("courseId", id)
+        intent.putExtra("publicCourseId", publicCourseId)
         intent.putExtra("root", COURSE_DISCOVER_TAG)
         startForResult.launch(intent)
         requireActivity().overridePendingTransition(

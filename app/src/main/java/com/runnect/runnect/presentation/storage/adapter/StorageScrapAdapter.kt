@@ -10,7 +10,6 @@ import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnScrapCourseClick
-import timber.log.Timber
 
 class StorageScrapAdapter(
     val scrapClickListener: OnScrapCourseClick,
@@ -27,7 +26,7 @@ class StorageScrapAdapter(
                 ivItemStorageScrapHeart.setOnClickListener {
                     ivItemStorageScrapHeart.isSelected = false
                     deleteItem(absoluteAdapterPosition)
-                    heartListener.scrapCourse(data.publicId, it.isSelected)
+                    heartListener.scrapCourse(data.publicCourseId, it.isSelected)
                 }
 
                 root.setOnClickListener {
@@ -68,7 +67,7 @@ class StorageScrapAdapter(
             oldItem: MyScrapCourse,
             newItem: MyScrapCourse,
         ): Boolean {
-            return oldItem.privateCourseId == newItem.privateCourseId
+            return oldItem.publicCourseId == newItem.publicCourseId
         }
 
         override fun areContentsTheSame(
