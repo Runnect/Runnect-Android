@@ -110,7 +110,7 @@
                 android:indeterminateTint="@color/G3"
                 android:outlineProvider="none"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@id/view_my_page_profile_frame"
+                app:layout_constraintBottom_toTopOf="@id/divider_my_page"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_profile_frame" />

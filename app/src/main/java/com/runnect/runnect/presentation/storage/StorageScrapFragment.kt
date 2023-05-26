@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.model.ResponseGetScrapDto
+import com.runnect.runnect.data.model.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -19,9 +20,10 @@ import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnScrapCourseClick
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class StorageScrapFragment :
     BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnHeartClick,
     OnScrapCourseClick,
@@ -44,7 +46,7 @@ class StorageScrapFragment :
 
     }
 
-    override fun scrapCourse(id: Int, scrapTF: Boolean) {
+    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
         viewModel.postCourseScrap(id, scrapTF)
     }
 
@@ -70,15 +72,17 @@ class StorageScrapFragment :
         with(binding) {
             layoutMyDrawNoScrap.isVisible = true
             recyclerViewStorageScrap.isVisible = false
-            tvTotalScrapCount.text = "총 코스 0개"
+            tvTotalScrapCount.isVisible = false
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun hideEmptyView() {
         with(binding) {
             layoutMyDrawNoScrap.isVisible = false
             recyclerViewStorageScrap.isVisible = true
-            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.data.scraps.size}개"
+            tvTotalScrapCount.isVisible = true
+            tvTotalScrapCount.text = "총 코스 ${viewModel.getScrapListResult.value!!.size}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
@@ -91,6 +95,7 @@ class StorageScrapFragment :
         binding.indeterminateBar.isVisible = false
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeItemSize() {
         viewModel.itemSize.observe(viewLifecycleOwner) {
             if (viewModel.itemSize.value == 0) {
@@ -98,12 +103,12 @@ class StorageScrapFragment :
             } else {
                 hideEmptyView()
             }
-            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개"
+            binding.tvTotalScrapCount.text = "총 코스 ${viewModel.itemSize.value}개" // 같은 기능에 대해 코드가 나눠져 있어서 하나로 처리할 수 있는 방법에 대해 고민중
         }
     }
 
     private fun showScarpResult() {
-        if (viewModel.getScrapListResult.value!!.data.scraps.isEmpty()) {
+        if (viewModel.getScrapListResult.value!!.isEmpty()) {
             showEmptyView()
         } else {
             hideEmptyView()
@@ -111,7 +116,7 @@ class StorageScrapFragment :
     }
 
     private fun updateAdapterData() {
-        storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!.data.scraps)
+        storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!)
     }
 
     private fun observeStorageState() {
@@ -138,7 +143,7 @@ class StorageScrapFragment :
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra("fromScrapFragment", true)
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            } //임의의 intent
+            }
             startActivity(intent)
         }
     }
@@ -157,12 +162,12 @@ class StorageScrapFragment :
         binding.recyclerViewStorageScrap.adapter = storageScrapAdapter
     }
 
-    override fun selectItem(item: ResponseGetScrapDto.Data.Scrap) {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
+    override fun selectItem(item: MyScrapCourse) {
+        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicId}")
         startActivity(
             Intent(activity, CourseDetailActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("courseId", item.publicCourseId)
+                putExtra("courseId", item.publicId)
             },
         )
 

@@ -1,23 +1,13 @@
 package com.runnect.runnect.di
 
 import com.runnect.runnect.data.api.*
-import com.runnect.runnect.data.repository.CourseRepositoryImpl
-import com.runnect.runnect.data.repository.DepartureSearchRepositoryImpl
-import com.runnect.runnect.data.repository.LoginRepositoryImpl
-import com.runnect.runnect.data.repository.UserRepositoryImpl
-import com.runnect.runnect.data.source.remote.CourseDataSource
-import com.runnect.runnect.data.source.remote.DepartureSearchDataSource
-import com.runnect.runnect.data.source.remote.LoginDataSource
-import com.runnect.runnect.data.source.remote.UserDataSource
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.DepartureSearchRepository
-import com.runnect.runnect.domain.LoginRepository
-import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.data.repository.*
+import com.runnect.runnect.data.source.remote.*
+import com.runnect.runnect.domain.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -35,7 +25,7 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideCourseRepository():CourseRepository{
+    fun provideCourseRepository(): CourseRepository {
         return CourseRepositoryImpl(
             CourseDataSource(
                 PApiClient.getApiClient()!!.create(PCourseService::class.java)
@@ -55,10 +45,20 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideLoginRepository():LoginRepository{
+    fun provideLoginRepository(): LoginRepository {
         return LoginRepositoryImpl(
             LoginDataSource(
                 PApiClient.getApiClient()!!.create(LoginService::class.java)
+            )
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideStorageRepository(): StorageRepository {
+        return StorageRepositoryImpl(
+            StorageDataSource(
+                KApiCourse.getApiClient()!!.create(KCourseService::class.java)
             )
         )
     }

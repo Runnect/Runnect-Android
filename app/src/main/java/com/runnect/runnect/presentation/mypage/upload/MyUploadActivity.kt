@@ -143,8 +143,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         viewModel.selectedItemsCount.observe(this) { count ->
             updateDeleteButton(count)
         }
-
-        viewModel.selectCountMediator.observe(this) {}
     }
 
     private fun enterEditMode() {
@@ -216,6 +214,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
     override fun selectItem(id: Int): Boolean {
         return if (viewModel.editMode.value == true) {
+            Timber.tag(ContentValues.TAG).d("코스 아이디 : $id")
             viewModel.modifyItemsToDelete(id)
             true
         } else {

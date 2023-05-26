@@ -9,20 +9,21 @@ import coil.load
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
 import com.runnect.runnect.util.CourseSearchDiffUtilItemCallback
-import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.callback.OnHeartClick
+import com.runnect.runnect.util.callback.OnItemClick
 
-class DiscoverSearchAdapter(context: Context, listener: OnItemClick,scrapListener:OnHeartClick) :
+class DiscoverSearchAdapter(context: Context, listener: OnItemClick, scrapListener: OnHeartClick) :
     ListAdapter<CourseSearchDTO, SearchViewHolder>(
         CourseSearchDiffUtilItemCallback()
     ) {
     private val inflater by lazy { LayoutInflater.from(context) }
     private val mCallback = listener
     private val sCallback = scrapListener
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
             ItemDiscoverCourseInfoBinding.inflate(inflater, parent, false),
-            mCallback,sCallback
+            mCallback, sCallback
         )
     }
 
@@ -44,7 +45,7 @@ class SearchViewHolder(
         binding.ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
         binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
             it.isSelected = !it.isSelected
-            sCallback.scrapCourse(data.id,it.isSelected)
+            sCallback.scrapCourse(data.id, it.isSelected)
         }
         binding.ivItemDiscoverCourseInfoMap.setOnClickListener {
             mCallback.selectItem(data.id)

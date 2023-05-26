@@ -14,9 +14,10 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class StorageMainFragment :
     BindingFragment<FragmentStorageMainBinding>(R.layout.fragment_storage_main) {
 

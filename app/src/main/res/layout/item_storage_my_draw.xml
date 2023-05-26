@@ -9,7 +9,7 @@
 
         <variable
             name="storageItem"
-            type="com.runnect.runnect.data.model.ResponseGetCourseDto.Data.Course" />
+            type="com.runnect.runnect.data.model.MyDrawCourse" />
 
         <variable
             name="selected"
@@ -23,7 +23,6 @@
         <com.ssomai.android.scalablelayout.ScalableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,46 +30,46 @@
             app:scale_base_width="162">
 
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cv_item_storage_scrap"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_my_page_upload_course"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/G4"
                 app:cardCornerRadius="5dp"
                 app:scale_height="114"
                 app:scale_width="162">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_item_storage_scrap_map"
+                    android:id="@+id/iv_my_page_upload_course"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    app:storageImage="@{storageItem.image}" />
+                    app:storageImage="@{storageItem.image}"
+                    android:scaleType="centerCrop" />
 
+            </androidx.cardview.widget.CardView>
 
-                <ImageView
-                    android:id="@+id/iv_select"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:elevation="3dp"
-                    android:outlineProvider="none"
-                    android:visibility="@{selected ? View.VISIBLE : View.GONE}"
-                    app:image_select="@{selected}" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="3dp"
                 android:outlineProvider="none"
                 android:visibility="invisible"
-                app:image_check="@{selected}"
+                app:srcCompat="@drawable/check_box_selector"
                 app:scale_height="20"
                 app:scale_left="8"
                 app:scale_top="8"
-                app:scale_width="20" />
+                app:scale_width="20"
+                />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_my_page_upload_course_select_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/discover_load_select_course_selector"
+                android:elevation="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:scale_height="114"
+                app:scale_width="162" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -81,7 +80,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center_vertical"
                 android:maxLength="13"
-                android:text="@{storageItem.departure.region + ' ' + storageItem.departure.city }"
+                android:text="@{storageItem.region + ' ' + storageItem.city }"
                 android:textColor="@color/G1"
                 app:scale_height="22"
                 app:scale_textsize="14"

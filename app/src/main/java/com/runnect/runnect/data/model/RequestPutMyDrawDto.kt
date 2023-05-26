@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RequestPutMyDrawDto(
     @SerialName("courseIdList")
-    val courseIdList: List<Long>
+    val courseIdList: List<Int>
 )

@@ -43,7 +43,7 @@ class MyDrawDetailViewModel : ViewModel() {
         }
     }
 
-    fun deleteMyDrawCourse(deleteList : MutableList<Long>) {
+    fun deleteMyDrawCourse(deleteList : MutableList<Int>) {
         viewModelScope.launch {
             runCatching {
 //                _storageState.value = UiState.Loading

@@ -25,6 +25,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
@@ -99,7 +100,7 @@ class CourseDetailActivity :
         }
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                requireLogin(binding.root)
+                CustomToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요").show()
             } else {
                 it.isSelected = !it.isSelected
                 viewModel.postCourseScrap(id = courseId, it.isSelected)
