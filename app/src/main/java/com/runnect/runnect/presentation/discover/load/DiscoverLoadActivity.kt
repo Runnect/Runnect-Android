@@ -55,22 +55,42 @@ class DiscoverLoadActivity :
         viewModel.courseLoadState.observe(this) {
             when (it) {
                 UiState.Empty -> {
-                    binding.indeterminateBar.isVisible = false
-                    binding.layoutDiscoverLoadSelect.isVisible = true
+                    handleEmptyCourseLoad()
                 }
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    initAdapter()
-                    binding.layoutDiscoverLoadSelect.isVisible = false
+                    handleSuccessfulCourseLoad()
                 }
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
+                    handleUnsuccessfulCourseLoad()
                 }
             }
         }
+    }
+
+    private fun handleEmptyCourseLoad() {
+        with(binding) {
+            indeterminateBar.isVisible = false
+            layoutDiscoverLoadSelect.isVisible = true
+            tvDiscoverLoadSelectFinish.isVisible = false
+            ivDiscoverLoadSelectFinish.isVisible = false
+        }
+    }
+
+    private fun handleSuccessfulCourseLoad() {
+        initAdapter()
+        with(binding) {
+            indeterminateBar.isVisible = false
+            layoutDiscoverLoadSelect.isVisible = false
+            tvDiscoverLoadSelectFinish.isVisible = true
+            ivDiscoverLoadSelectFinish.isVisible = true
+        }
+    }
+
+    private fun handleUnsuccessfulCourseLoad() {
+        binding.indeterminateBar.isVisible = false
+        Timber.tag(ContentValues.TAG)
+            .d("Failure : ${viewModel.errorMessage.value}")
     }
 
     override fun onBackPressed() {
