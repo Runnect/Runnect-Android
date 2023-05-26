@@ -56,6 +56,8 @@ class CourseDetailActivity :
                 handleReturnToMyUpload()
             } else if (root == COURSE_DISCOVER_TAG) {
                 handleReturnToDiscover()
+            } else if (root == "storageScrap") {
+                handleReturnToStorageScrap()
             }
         }
     }
@@ -96,6 +98,8 @@ class CourseDetailActivity :
                         handleReturnToMyUpload()
                     } else if (root == COURSE_DISCOVER_TAG) {
                         handleReturnToDiscover()
+                    } else if (root == "storageScrap") {
+                        handleReturnToStorageScrap()
                     }
                 }
             }
@@ -178,6 +182,17 @@ class CourseDetailActivity :
         MainActivity.updateDiscoverFragment()
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun handleReturnToStorageScrap() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("fromDrawActivity", true)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        //여기 해결을 못해서 임시방편으로 이렇게 해놓음
+
+        //finish()
+        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun enterEditMode() {

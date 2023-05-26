@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -16,8 +16,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
@@ -28,6 +26,7 @@ import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapte
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnHeartClick
@@ -48,6 +47,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
     private var currentPosition = PAGE_NUM / 2
+    private var root: String = ""
+
+    var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
 
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
@@ -67,11 +69,34 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addObserver()
         setResultDetail()
         setPromotion(binding.vpDiscoverPromotion, promotionImages)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (isFromStorageScrap) {
+                StorageScrapFragment.isFromStorageNoScrap = false
+                handleReturnToDiscover()
+            } else {
+                activity?.onBackPressed()
+            }
+        }
     }
+
+    private fun handleReturnToDiscover() {
+        val intent = Intent(requireActivity(), MainActivity::class.java)
+        intent.putExtra("fromDrawActivity", true)
+        startActivity(intent)
+        requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+
+        //여기 해결을 못해서 임시방편으로 이렇게 해놓음
+
+        //MainActivity.updateStorageScrap()
+        //requireActivity().finish()
+
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is MainActivity){
+        if (context is MainActivity) {
             MainActivity.discoverFragment = this
         }
     }
@@ -81,7 +106,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         MainActivity.discoverFragment = null
     }
 
-    fun getRecommendCourses(){
+    fun getRecommendCourses() {
         viewModel.getRecommendCourse()
     }
 

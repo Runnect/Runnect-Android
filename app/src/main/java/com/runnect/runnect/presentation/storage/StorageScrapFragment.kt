@@ -14,6 +14,7 @@ import com.runnect.runnect.data.model.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
@@ -32,6 +33,10 @@ class StorageScrapFragment :
 
     val viewModel: StorageViewModel by viewModels()
     lateinit var storageScrapAdapter: StorageScrapAdapter
+
+    companion object {
+        var isFromStorageNoScrap = false
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -141,16 +146,21 @@ class StorageScrapFragment :
 
     private fun toScrapCourseBtn() {
         binding.btnStorageNoScrap.setOnClickListener {
+            isFromStorageNoScrap = true
+
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra("fromScrapFragment", true)
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             }
             startActivity(intent)
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
     }
 
 
-    private fun getCourse() {
+    fun getCourse() {
         viewModel.getScrapList()
     }
 
@@ -165,19 +175,14 @@ class StorageScrapFragment :
 
     override fun selectItem(item: MyScrapCourse) {
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
-        startActivity(
-            Intent(activity, CourseDetailActivity::class.java).apply {
-                putExtra("publicCourseId", item.publicCourseId)
 
-                requireActivity().overridePendingTransition(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left
-                )
-            }
-
+        val intent = Intent(activity, CourseDetailActivity::class.java)
+        intent.putExtra("publicCourseId", item.publicCourseId)
+        intent.putExtra("root", "storageScrap")
+        startActivity(intent)
+        requireActivity().overridePendingTransition(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
         )
-
     }
-
-
 }
