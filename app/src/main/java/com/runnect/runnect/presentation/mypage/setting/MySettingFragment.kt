@@ -70,6 +70,6 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         const val ACCOUNT_INFO_TAG = "accountInfo"
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
-        const val TERMS_URL = "https://www.notion.so/Runnect-5dfee19ccff04c388590e5ee335e77ed?pvs=4"
+        const val TERMS_URL = "https://third-sight-046.notion.site/Runnect-5dfee19ccff04c388590e5ee335e77ed"
     }
 }
