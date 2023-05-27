@@ -153,6 +153,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center"
                 android:lineHeight="22dp"
+                android:lineSpacingExtra="5sp"
                 android:text="@string/my_page_upload_no_course"
                 android:textColor="@color/G2"
                 android:textSize="14sp" />

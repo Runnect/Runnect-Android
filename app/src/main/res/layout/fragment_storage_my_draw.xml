@@ -101,6 +101,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center"
                 android:lineHeight="22sp"
+                android:lineSpacingExtra="5sp"
                 android:text="아직 내가 그린 코스가 없어요\n직접 코스를 그려주세요"
                 android:textColor="@color/G2"
                 android:textSize="14sp"
@@ -138,12 +139,12 @@
                 android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:overScrollMode="never"
                     android:id="@+id/recyclerView_storage_my_draw"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="15dp"
                     android:orientation="vertical"
+                    android:overScrollMode="never"
                     android:paddingBottom="50dp"
                     android:visibility="visible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
