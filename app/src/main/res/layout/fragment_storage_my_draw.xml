@@ -53,6 +53,8 @@
                 tools:text="총 기록 152개" />
 
             <androidx.appcompat.widget.AppCompatButton
+                tools:visibility="visible"
+                android:visibility="invisible"
                 android:id="@+id/btn_edit_course"
                 android:layout_width="50dp"
                 android:layout_height="28dp"

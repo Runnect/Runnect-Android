@@ -219,7 +219,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             true
         } else {
             val intent = Intent(this,CourseDetailActivity::class.java).apply {
-                putExtra("courseId",id)
+                putExtra("publicCourseId",id)
                 putExtra("root","upload")
             }
             startActivity(intent)

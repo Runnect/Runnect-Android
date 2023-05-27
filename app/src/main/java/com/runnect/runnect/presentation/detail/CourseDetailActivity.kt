@@ -5,9 +5,11 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
@@ -402,6 +404,21 @@ class CourseDetailActivity :
         bottomSheetDialog.setContentView(bottomSheetView)
         // bottomSheetDialog 호출
         bottomSheetDialog.show()
+    }
+
+    //키보드 밖 터치 시, 키보드 내림
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val focusView = currentFocus
+        if (focusView != null) {
+            val rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = ev!!.x.toInt()
+            val y = ev.y.toInt()
+            if (!rect.contains(x, y)) {
+                clearFocus(focusView)
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     companion object {
