@@ -143,6 +143,8 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         viewModel.selectedItemsCount.observe(this) { count ->
             updateDeleteButton(count)
         }
+
+        viewModel.selectCountMediator.observe(this) {}
     }
 
     private fun enterEditMode() {
@@ -218,9 +220,9 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             viewModel.modifyItemsToDelete(id)
             true
         } else {
-            val intent = Intent(this,CourseDetailActivity::class.java).apply {
-                putExtra("publicCourseId",id)
-                putExtra("root","upload")
+            val intent = Intent(this, CourseDetailActivity::class.java).apply {
+                putExtra("publicCourseId", id)
+                putExtra("root", "upload")
             }
             startActivity(intent)
             false
