@@ -140,7 +140,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     fun getBottomNavMain(): View? {
         return findViewById(R.id.btm_navi_main)
-    }
+    } //R.id로 찾아오는 거면 굳이 여기서 함수로 호출하지 않고 StorageMyDrawFragment에서 바로 접근해도 되겠는데?
+    //그러면 MainActivity를 참조 안 해도 되니까 StorageMyDrawFragment에 작성된 참조 코드도 제거해줄 수 있을 듯.
 
     fun getBtnDeleteCourseMain(): View? {
         return findViewById(R.id.btn_delete_course_main)
