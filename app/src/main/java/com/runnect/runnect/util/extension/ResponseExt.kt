@@ -67,8 +67,7 @@ fun PrivateCourse.toData(): CourseLoadInfoDTO {
     return CourseLoadInfoDTO(
         id = id,
         img = image,
-        departure = departure.region + ' ' + departure.city + ' ' + departure.town + ' ' + (departure.name
-            ?: ""),
+        departure = departure.region + ' ' + departure.city,
         distance = distance.toString()
     )
 }
