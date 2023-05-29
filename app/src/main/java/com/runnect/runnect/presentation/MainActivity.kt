@@ -37,10 +37,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             discoverFragment?.getRecommendCourses()
         }
 
-//        fun updateStorageScrap() {
+        var storageScrapFragment: StorageScrapFragment? = null
+
+        fun updateStorageScrap() {
 //            var storageScrapFragment = StorageScrapFragment()
-//            storageScrapFragment.getCourse()
-//        }
+            storageScrapFragment?.getCourse()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,21 +111,25 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             R.id.menu_main_drawing -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
+                addToBackStack(null) // 이전 프래그먼트를 백 스택에 추가하지 않음
                 replace<CourseMainFragment>(R.id.fl_main)
             }
             R.id.menu_main_storage -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
+                addToBackStack(null) // 이전 프래그먼트를 백 스택에 추가하지 않음
                 replace<StorageMainFragment>(R.id.fl_main)
             }
             R.id.menu_main_discover -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
+                addToBackStack(null) // 이전 프래그먼트를 백 스택에 추가하지 않음
                 replace<DiscoverFragment>(R.id.fl_main)
             }
             R.id.menu_main_my_page -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
+                addToBackStack(null) // 이전 프래그먼트를 백 스택에 추가하지 않음
                 replace<MyPageFragment>(R.id.fl_main)
             }
             else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
