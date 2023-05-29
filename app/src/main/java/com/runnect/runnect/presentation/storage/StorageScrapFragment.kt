@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.storage
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -48,6 +49,18 @@ class StorageScrapFragment :
         toScrapCourseBtn()
         addObserver()
 
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            MainActivity.storageScrapFragment = this
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MainActivity.storageScrapFragment = null
     }
 
     override fun scrapCourse(id: Int?, scrapTF: Boolean) {

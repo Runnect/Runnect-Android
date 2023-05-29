@@ -21,10 +21,6 @@ class CountDownActivity :
 
     val viewModel: CountDownViewModel by viewModels()
 
-    //myDrawToRunData는 startLatLng이랑 touchList를 미리 쪼개서 보내도록 수정해줬는데
-    //detailToRunData는 서버에서 path까지 받아올 수 있게 api를 수정해주고난 다음에야 작업 가능.
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,6 +37,9 @@ class CountDownActivity :
     }
 
     fun setViewModelData() {
+        //생각해보니까 key값을 다르게 할 이유가 없겠는데
+        //어차피 셋 중 하나만 값이 null이 아니고 유효할 테니까
+        //data class도 하나로 통일해도 되겠는데.
 
         val drawToRunData: DrawToRunData? = intent.getParcelableExtra("DrawToRunData")
         val detailToRunData: DetailToRunData? = intent.getParcelableExtra("detailToRun")

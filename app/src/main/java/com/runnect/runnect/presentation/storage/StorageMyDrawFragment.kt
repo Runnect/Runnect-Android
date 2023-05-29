@@ -85,7 +85,7 @@ class StorageMyDrawFragment :
     private fun initAdapter() {
         storageMyDrawAdapter = StorageMyDrawAdapter(this, this).apply {
             submitList(viewModel.myDrawCourses)
-        }
+        } //지금 밑에 updateAdapterData()가 있는데 함수들 간 호출 시점만 잘 정해주면 둘 중 하나 없애도 될듯?
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
 
@@ -130,7 +130,7 @@ class StorageMyDrawFragment :
     }
 
 
-    fun customDialog(view: View) {
+    fun customDialog(view: View) { //확장함수로 빼주기
         val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
 
         val build = AlertDialog.Builder(view.context).apply {

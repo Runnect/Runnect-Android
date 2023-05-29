@@ -81,15 +81,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun handleReturnToDiscover() {
-        val intent = Intent(requireActivity(), MainActivity::class.java)
-        intent.putExtra("fromDrawActivity", true)
-        startActivity(intent)
+        MainActivity.updateStorageScrap()
+        requireActivity().finish()
         requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-
-        //여기 해결을 못해서 임시방편으로 이렇게 해놓음
-
-        //MainActivity.updateStorageScrap()
-        //requireActivity().finish()
 
     }
 

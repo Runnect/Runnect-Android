@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.detail
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
@@ -187,14 +188,9 @@ class CourseDetailActivity :
     }
 
     private fun handleReturnToStorageScrap() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("fromDrawActivity", true)
-        startActivity(intent)
+        MainActivity.updateStorageScrap()
+        finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        //여기 해결을 못해서 임시방편으로 이렇게 해놓음
-
-        //finish()
-        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun enterEditMode() {
