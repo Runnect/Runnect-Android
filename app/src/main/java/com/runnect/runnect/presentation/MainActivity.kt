@@ -139,7 +139,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
                 isChangeToStorage = false
                 isChangeToDiscover = false
-                addToBackStack(null) // 이전 프래그먼트를 백 스택에 추가하지 않음
                 replace<MyPageFragment>(R.id.fl_main)
             }
             else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
