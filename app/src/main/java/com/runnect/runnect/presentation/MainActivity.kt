@@ -40,7 +40,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         var storageScrapFragment: StorageScrapFragment? = null
 
         fun updateStorageScrap() {
-//            var storageScrapFragment = StorageScrapFragment()
             storageScrapFragment?.getCourse()
         }
     }
