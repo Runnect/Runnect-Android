@@ -220,7 +220,7 @@
             android:fontFamily="@font/pretendard_regular"
             android:text="@string/item_mypage_history_pace"
             android:textColor="@color/G2"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="@id/view_3"
             app:layout_constraintStart_toStartOf="@id/view_3"
             app:layout_constraintTop_toTopOf="@id/tv_my_page_history_time" />
