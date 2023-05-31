@@ -8,19 +8,19 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginHorizontal="34dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="34dp"
         android:background="@drawable/radius_10_custom_alert_dialog"
         tools:ignore="MissingConstraints">
 
         <ImageView
+            app:layout_constraintDimensionRatio="203:121"
+            android:layout_marginHorizontal="44dp"
             android:id="@+id/iv_dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="74dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="30dp"
-            android:layout_marginEnd="61.79dp"
             android:src="@drawable/finish_run"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_marginStart="13dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"
@@ -64,7 +64,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_login"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="13dp"
             android:background="@drawable/radius_10_m1_button"
