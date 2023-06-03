@@ -135,9 +135,9 @@ class DiscoverSearchActivity :
     }
 
     //코스 클릭 시 상세페이지로 이동
-    override fun selectItem(id: Int) {
+    override fun selectItem(publicCourseId: Int) {
         val intent = Intent(this, CourseDetailActivity::class.java)
-        intent.putExtra("courseId", id)
+        intent.putExtra("publicCourseId", publicCourseId)
         startActivity(intent)
         overridePendingTransition(
             R.anim.slide_in_right,
