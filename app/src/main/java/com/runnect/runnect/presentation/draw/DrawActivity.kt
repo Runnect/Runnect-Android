@@ -310,6 +310,7 @@ class DrawActivity :
         myLayout.btn_login.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
             dialog.dismiss()
         }
     }
