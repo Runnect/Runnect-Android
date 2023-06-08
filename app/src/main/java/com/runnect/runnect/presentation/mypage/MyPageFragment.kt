@@ -55,6 +55,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             btnVisitorMode.setOnClickListener {
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
+                requireActivity().finish()
             }
         }
     }

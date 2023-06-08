@@ -24,6 +24,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
         </androidx.cardview.widget.CardView>
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_checkbox"
             android:layout_width="wrap_content"
@@ -31,12 +32,12 @@
             android:elevation="3dp"
             android:outlineProvider="none"
             android:visibility="invisible"
-            app:srcCompat="@drawable/check_box_selector"
             app:scale_height="20"
             app:scale_left="8"
             app:scale_top="8"
             app:scale_width="20"
-            />
+            app:srcCompat="@drawable/check_box_selector" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_my_page_upload_course_select_background"
             android:layout_width="wrap_content"
@@ -52,8 +53,10 @@
             android:id="@+id/tv_my_page_upload_course_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="@font/pretendard_medium"
             android:gravity="center_vertical"
+            android:maxLength="13"
             android:textColor="@color/G1"
             app:scale_height="22"
             app:scale_textsize="14"

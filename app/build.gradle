@@ -21,7 +21,7 @@ android {
         applicationId "com.runnect.runnect"
         minSdk 28
         targetSdk 33
-        versionCode 7
+        versionCode 9
         versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -117,7 +117,7 @@ dependencies {
 
 
     // EncryptedSharedPreferences
-    implementation "androidx.security:security-crypto-ktx:1.1.0-alpha06"
+    implementation "androidx.security:security-crypto-ktx:1.1.0-alpha03"
 
     // kakao social login
     implementation 'com.kakao.sdk:v2-user:2.10.0'

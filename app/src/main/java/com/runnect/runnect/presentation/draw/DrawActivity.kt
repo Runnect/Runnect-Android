@@ -138,11 +138,6 @@ class DrawActivity :
                 requireVisitorLogin(binding.root)
             } else {
                 createMbr()
-                Handler(Looper.getMainLooper()).postDelayed(
-                    {
-                        viewModel.uploadCourse()
-                    }, 300
-                )
             }
         }
     }
@@ -315,6 +310,7 @@ class DrawActivity :
         myLayout.btn_login.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
             dialog.dismiss()
         }
     }
@@ -511,18 +507,8 @@ class DrawActivity :
         naverMap.setContentPadding(100, 100, 100, 100)
         cameraUpdate(bounds)
         captureMap()
-
-        setViewModelValue(calcDistanceList)
     }
 
-    private fun setViewModelValue(distanceList: List<LatLng>) {
-        val uploadLatLngList: List<UploadLatLng> = distanceList.map { latLng ->
-            UploadLatLng(latLng.latitude, latLng.longitude)
-        }
-        viewModel.path.value = uploadLatLngList
-        viewModel.departureAddress.value = searchResult.fullAddress
-        viewModel.departureName.value = searchResult.name
-    }
 
     private fun captureMap() {
         naverMap.takeSnapshot {
@@ -534,7 +520,17 @@ class DrawActivity :
                     captureUri
                 )
             ) //Uri -> RequestBody
+            setViewModelValue(calcDistanceList)
+            viewModel.uploadCourse()
         }
+    }
+    private fun setViewModelValue(distanceList: List<LatLng>) {
+        val uploadLatLngList: List<UploadLatLng> = distanceList.map { latLng ->
+            UploadLatLng(latLng.latitude, latLng.longitude)
+        }
+        viewModel.path.value = uploadLatLngList
+        viewModel.departureAddress.value = searchResult.fullAddress
+        viewModel.departureName.value = searchResult.name
     }
 
     // Get uri of images from camera function

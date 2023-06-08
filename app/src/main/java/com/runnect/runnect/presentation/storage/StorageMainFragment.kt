@@ -48,6 +48,7 @@ class StorageMainFragment :
             btnVisitorMode.setOnClickListener {
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
+                requireActivity().finish()
             }
         }
     }
