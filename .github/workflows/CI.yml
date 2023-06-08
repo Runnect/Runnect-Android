@@ -61,6 +61,17 @@ jobs:
               env:
                   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
               run: echo "GOOGLE_CLIENT_ID=\"$GOOGLE_CLIENT_ID\"" >> local.properties
+              
+            - name: Add kakao_strings.xml
+              env:
+                  KAKAO_NATIVE_APP_KEY: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
+                  KAKAO_REDIRECTION_SCHEME: ${{ secrets.KAKAO_REDIRECTION_SCHEME }}
+              run: |
+                  echo '<?xml version="1.0" encoding="utf-8"?>' > app/src/main/res/values/kakao_strings.xml
+                  echo '<resources>' >> app/src/main/res/values/kakao_strings.xml
+                  echo '    <string name="kakao_native_app_key">$KAKAO_NATIVE_APP_KEY</string>' >> app/src/main/res/values/kakao_strings.xml
+                  echo '    <string name="kakao_redirection_scheme">$KAKAO_REDIRECTION_SCHEME</string>' >> app/src/main/res/values/kakao_strings.xml
+                  echo '</resources>' >> app/src/main/res/values/kakao_strings.xml
 
             -   name: Change gradlew permissions
                 run: chmod +x ./gradlew
