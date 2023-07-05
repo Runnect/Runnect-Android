@@ -3,7 +3,7 @@ package com.runnect.runnect.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.data.api.*
+import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*

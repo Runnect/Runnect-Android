@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.api
+package com.runnect.runnect.data.service
 
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager

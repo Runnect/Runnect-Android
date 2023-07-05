@@ -3,17 +3,17 @@ package com.runnect.runnect.data.repository
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.model.*
-import com.runnect.runnect.data.source.remote.StorageDataSource
+import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
 import com.runnect.runnect.domain.StorageRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class StorageRepositoryImpl @Inject constructor(private val storageDataSource: StorageDataSource) :
+class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSource: RemoteStorageDataSource) :
     StorageRepository {
 
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
         return changeMyDrawData(
-            storageDataSource.getMyDrawCourse().body()!!.data.courses
+            remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses
         ).toMutableList()
     }
 
@@ -30,17 +30,17 @@ class StorageRepositoryImpl @Inject constructor(private val storageDataSource: S
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDto): Response<ResponsePutMyDrawDto> {
-        return storageDataSource.deleteMyDrawCourse(deleteCourseList)
+        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList)
     }
 
     override suspend fun getMyScrapCourse(): MutableList<MyScrapCourse> {
         return changeMyScrapData(
-            storageDataSource.getMyScrapCourse().body()!!.data.scraps
+            remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps
         ).toMutableList()
     }
 
     override suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> {
-        return storageDataSource.postMyScrapCourse(requestCourseScrap)
+        return remoteStorageDataSource.postMyScrapCourse(requestCourseScrap)
     }
 
     private fun changeMyScrapData(data: List<ResponseGetScrapDto.Data.Scrap>): List<MyScrapCourse> {

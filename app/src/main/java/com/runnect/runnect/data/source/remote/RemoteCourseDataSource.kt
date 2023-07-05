@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.source.remote
 
-import com.runnect.runnect.data.api.PCourseService
+import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
@@ -12,7 +12,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-class CourseDataSource @Inject constructor(private val courseService: PCourseService) {
+class RemoteCourseDataSource @Inject constructor(private val courseService: CourseService) {
     suspend fun getRecommendCourse(): ResponseRecommendCourse = courseService.getRecommendCourse()
     suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap =
         courseService.postCourseScrap(requestCourseScrap)

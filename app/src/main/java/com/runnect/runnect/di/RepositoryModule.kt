@@ -1,10 +1,9 @@
 package com.runnect.runnect.di
 
-import com.runnect.runnect.data.api.*
+import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

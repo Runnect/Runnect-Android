@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.api
+package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
@@ -10,7 +10,7 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
-interface PCourseService {
+interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
     ): ResponseRecommendCourse
