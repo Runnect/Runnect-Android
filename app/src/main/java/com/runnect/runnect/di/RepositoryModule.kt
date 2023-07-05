@@ -4,6 +4,7 @@ import com.runnect.runnect.data.api.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,21 +16,21 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Singleton
     @Provides
-    fun provideUserRepository(userRepositoryImpl: UserRepositoryImpl) = userRepositoryImpl
+    fun provideUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository = userRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideCourseRepository(courseRepositoryImpl: CourseRepositoryImpl) = courseRepositoryImpl
+    fun provideCourseRepository(courseRepositoryImpl: CourseRepositoryImpl): CourseRepository = courseRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideDepartureSearchRepository(departureSearchRepositoryImpl: DepartureSearchRepositoryImpl) = departureSearchRepositoryImpl
+    fun provideDepartureSearchRepository(departureSearchRepositoryImpl: DepartureSearchRepositoryImpl): DepartureSearchRepository = departureSearchRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideStorageRepository(storageRepositoryImpl: StorageRepositoryImpl) = storageRepositoryImpl
+    fun provideStorageRepository(storageRepositoryImpl: StorageRepositoryImpl): StorageRepository = storageRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideLoginRepository(loginRepositoryImpl: LoginRepositoryImpl) = loginRepositoryImpl
+    fun provideLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository = loginRepositoryImpl
 }

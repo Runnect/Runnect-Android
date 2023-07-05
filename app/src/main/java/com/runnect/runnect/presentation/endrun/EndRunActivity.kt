@@ -19,12 +19,14 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.extension.clearFocus
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
+@AndroidEntryPoint
 class EndRunActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
 

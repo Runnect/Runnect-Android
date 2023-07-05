@@ -49,6 +49,10 @@ object RetrofitModule {
 
     @Provides
     @Singleton
+    fun provideAppInterceptor(): AppInterceptor = AppInterceptor()
+
+    @Provides
+    @Singleton
     fun provideTokenAuthenticator(): TokenAuthenticator =
         TokenAuthenticator(ApplicationClass.appContext)
 
@@ -56,23 +60,27 @@ object RetrofitModule {
     @Provides
     @Singleton
     @Runnect
-    fun provideRunnectRetrofit(json: Json, client: OkHttpClient): Retrofit? =
+    fun provideRunnectRetrofit(json: Json, client: OkHttpClient): Retrofit {
         kotlinx.coroutines.internal.synchronized(this) {
-            Retrofit.Builder().baseUrl(BuildConfig.RUNNECT_BASE_URL).client(client)
+            val retrofit = Retrofit.Builder().baseUrl(BuildConfig.RUNNECT_BASE_URL).client(client)
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
+            return retrofit ?: throw RuntimeException("Retrofit creation failed.")
         }
+    }
 
     @OptIn(ExperimentalSerializationApi::class, InternalCoroutinesApi::class)
     @Provides
     @Singleton
     @Tmap
-    fun provideTmapRetrofit(json: Json, client: OkHttpClient): Retrofit? =
+    fun provideTmapRetrofit(json: Json, client: OkHttpClient): Retrofit {
         kotlinx.coroutines.internal.synchronized(this) {
-            Retrofit.Builder().baseUrl(BuildConfig.TMAP_BASE_URL).client(client)
+            val retrofit = Retrofit.Builder().baseUrl(BuildConfig.TMAP_BASE_URL).client(client)
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
+            return retrofit ?: throw RuntimeException("Retrofit creation failed.")
         }
+    }
 
     @Provides
     @Singleton

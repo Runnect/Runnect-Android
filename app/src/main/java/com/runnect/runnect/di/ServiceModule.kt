@@ -26,10 +26,6 @@ import javax.inject.Singleton
 object ServiceModule {
     @Singleton
     @Provides
-    fun provideKCourseService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) = runnectRetrofit.create(KCourseService::class.java)
-
-    @Singleton
-    @Provides
     fun providePCourseService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) = runnectRetrofit.create(PCourseService::class.java)
 
     @Singleton

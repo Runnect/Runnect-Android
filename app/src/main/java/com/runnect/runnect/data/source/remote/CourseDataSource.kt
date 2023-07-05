@@ -6,6 +6,10 @@ import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseRecommendCourse
+import com.runnect.runnect.data.model.RequestPostRecordDto
+import com.runnect.runnect.data.model.RequestPutMyDrawDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class CourseDataSource @Inject constructor(private val courseService: PCourseService) {
@@ -23,4 +27,16 @@ class CourseDataSource @Inject constructor(private val courseService: PCourseSer
         publicCourseId: Int,
         requestUpdatePublicCourse: RequestUpdatePublicCourse
     ) = courseService.patchUpdatePublicCourse(publicCourseId, requestUpdatePublicCourse)
+
+
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDto) =
+        courseService.deleteMyDrawCourse(deleteCourseList)
+    suspend fun getMyDrawDetail(courseId: Int) = courseService.getMyDrawDetail(courseId)
+    suspend fun postRecord(request: RequestPostRecordDto) = courseService.postRecord(request)
+    suspend fun uploadCourse(image: MultipartBody.Part, data: RequestBody) =
+        courseService.uploadCourse(image, data)
+
+    //   나중에 StorageRepository 없애고나서 살려줄 예정
+    suspend fun getCourseList() = courseService.getCourseList()
+    suspend fun getScrapList() = courseService.getScrapList()
 }
