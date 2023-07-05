@@ -6,8 +6,9 @@ import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseRecommendCourse
+import javax.inject.Inject
 
-class CourseDataSource(private val courseService: PCourseService) {
+class CourseDataSource @Inject constructor(private val courseService: PCourseService) {
     suspend fun getRecommendCourse(): ResponseRecommendCourse = courseService.getRecommendCourse()
     suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap =
         courseService.postCourseScrap(requestCourseScrap)

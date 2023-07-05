@@ -13,8 +13,9 @@ import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
 import com.runnect.runnect.data.source.remote.CourseDataSource
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.util.extension.toData
+import javax.inject.Inject
 
-class CourseRepositoryImpl(private val courseDataSource: CourseDataSource) : CourseRepository {
+class CourseRepositoryImpl @Inject constructor(private val courseDataSource: CourseDataSource) : CourseRepository {
     override suspend fun getRecommendCourse(): MutableList<RecommendCourseDTO> {
         val recommendCourse = mutableListOf<RecommendCourseDTO>()
         for (i in courseDataSource.getRecommendCourse().data.publicCourses) {

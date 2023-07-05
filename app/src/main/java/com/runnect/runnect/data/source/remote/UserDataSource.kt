@@ -6,8 +6,9 @@ import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
+import javax.inject.Inject
 
-class UserDataSource(private val userService: PUserService) {
+class UserDataSource @Inject constructor(private val userService: PUserService) {
     suspend fun getUserInfo(): ResponseUser = userService.getUserInfo()
     suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
         userService.updateNickName(requestUpdateNickName)

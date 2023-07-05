@@ -10,8 +10,9 @@ import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.source.remote.UserDataSource
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.util.extension.toData
+import javax.inject.Inject
 
-class UserRepositoryImpl(private val userDataSource: UserDataSource) : UserRepository {
+class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDataSource) : UserRepository {
     override suspend fun getUserInfo(): ResponseUser = userDataSource.getUserInfo()
     override suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
         userDataSource.updateNickName(requestUpdateNickName)

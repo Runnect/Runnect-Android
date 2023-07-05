@@ -6,8 +6,9 @@ import com.runnect.runnect.data.model.tmap.Poi
 import com.runnect.runnect.data.model.tmap.Pois
 import com.runnect.runnect.data.source.remote.DepartureSearchDataSource
 import com.runnect.runnect.domain.DepartureSearchRepository
+import javax.inject.Inject
 
-class DepartureSearchRepositoryImpl(private val departureSourceDataSource: DepartureSearchDataSource) :
+class DepartureSearchRepositoryImpl @Inject constructor(private val departureSourceDataSource: DepartureSearchDataSource) :
     DepartureSearchRepository {
     override suspend fun getSearchList(keyword: String): List<SearchResultEntity>? {
         return changeData(departureSourceDataSource.getSearchList(keyword)

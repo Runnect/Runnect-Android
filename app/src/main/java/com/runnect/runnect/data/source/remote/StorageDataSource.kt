@@ -8,8 +8,9 @@ import com.runnect.runnect.data.model.ResponseGetCourseDto
 import com.runnect.runnect.data.model.ResponseGetScrapDto
 import com.runnect.runnect.data.model.ResponsePutMyDrawDto
 import retrofit2.Response
+import javax.inject.Inject
 
-class StorageDataSource(private val courseService: KCourseService) {
+class StorageDataSource @Inject constructor(private val courseService: KCourseService) {
     suspend fun getMyDrawCourse(): Response<ResponseGetCourseDto> =
         courseService.getCourseList()
 

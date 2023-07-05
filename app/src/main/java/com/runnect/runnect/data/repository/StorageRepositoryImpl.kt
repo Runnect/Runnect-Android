@@ -6,8 +6,9 @@ import com.runnect.runnect.data.model.*
 import com.runnect.runnect.data.source.remote.StorageDataSource
 import com.runnect.runnect.domain.StorageRepository
 import retrofit2.Response
+import javax.inject.Inject
 
-class StorageRepositoryImpl(private val storageDataSource: StorageDataSource) :
+class StorageRepositoryImpl @Inject constructor(private val storageDataSource: StorageDataSource) :
     StorageRepository {
 
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {

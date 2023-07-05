@@ -38,6 +38,10 @@ object ServiceModule {
 
     @Singleton
     @Provides
+    fun provideLoginService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) = runnectRetrofit.create(LoginService::class.java)
+
+    @Singleton
+    @Provides
     fun provideKSearchService(@RetrofitModule.Tmap tmapRetrofit: Retrofit) = tmapRetrofit.create(KSearchService::class.java)
 
 }
