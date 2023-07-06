@@ -12,13 +12,11 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.MyDrawToRunData
+import com.runnect.runnect.data.model.CourseData
 import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.storage.StorageMainFragment
-import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
 
@@ -99,7 +97,7 @@ class MyDrawDetailActivity :
     fun toCountDownButton() {
         binding.btnMyDrawDetailRun.setOnClickListener {
             startActivity(Intent(this, CountDownActivity::class.java).apply {
-                putExtra("myDrawToRun", viewModel.myDrawToRunData.value)
+                putExtra("CourseData", viewModel.myDrawToRunData.value)
             })
         }
     }
@@ -135,14 +133,15 @@ class MyDrawDetailActivity :
     }
 
     private fun setPutExtraValue(src: ResponseGetMyDrawDetailDto) {
-        viewModel.myDrawToRunData.value = MyDrawToRunData(
+        viewModel.myDrawToRunData.value = CourseData(
             src.data.course.id,
             publicCourseId = null,
             touchList,
             departureLatLng,
-            src.data.course.distance,
             src.data.course.departure.name,
-            src.data.course.image
+            src.data.course.distance,
+            src.data.course.image,
+            "myDraw"
         )
     }
 

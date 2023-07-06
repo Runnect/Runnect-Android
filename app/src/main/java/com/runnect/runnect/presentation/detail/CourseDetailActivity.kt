@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.detail
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
@@ -21,7 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.DetailToRunData
+import com.runnect.runnect.data.model.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
@@ -124,15 +123,16 @@ class CourseDetailActivity :
             } else {
                 val intent = Intent(this, CountDownActivity::class.java).apply {
                     putExtra(
-                        "detailToRun",
-                        DetailToRunData(
+                        "CourseData",
+                        CourseData(
                             viewModel.courseDetail.courseId,
                             viewModel.courseDetail.id,
                             touchList,
                             departureLatLng,
                             viewModel.courseDetail.departure,
                             viewModel.courseDetail.distance.toFloat(),
-                            viewModel.courseDetail.image
+                            viewModel.courseDetail.image,
+                            "detail"
                         )
                     )
                 }

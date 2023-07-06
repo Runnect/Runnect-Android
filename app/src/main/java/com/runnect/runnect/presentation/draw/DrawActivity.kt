@@ -30,6 +30,7 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
+import com.runnect.runnect.data.model.CourseData
 import com.runnect.runnect.data.model.DrawToRunData
 import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.data.model.UploadLatLng
@@ -276,15 +277,16 @@ class DrawActivity :
             val intent = Intent(this, CountDownActivity::class.java)
 
             intent.putExtra(
-                "DrawToRunData",
-                DrawToRunData(
+                "CourseData",
+                CourseData(
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = null,
                     touchList,
                     departureLatLng,
-                    viewModel.distanceSum.value!!,
                     searchResult.name,
-                    captureUri.toString()
+                    viewModel.distanceSum.value!!,
+                    captureUri.toString(),
+                    "draw"
                 )
             )
 

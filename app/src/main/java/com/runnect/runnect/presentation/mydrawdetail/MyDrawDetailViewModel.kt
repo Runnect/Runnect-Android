@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
+import com.runnect.runnect.data.model.CourseData
 import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
@@ -18,7 +19,7 @@ class MyDrawDetailViewModel : ViewModel() {
 
     val distance = MutableLiveData<Float>()
     val image = MutableLiveData<Uri>()
-    val myDrawToRunData = MutableLiveData<MyDrawToRunData>()
+    val myDrawToRunData = MutableLiveData<CourseData>()
     val courseId = MutableLiveData<Int>()
 
 
