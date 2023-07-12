@@ -1,13 +1,14 @@
 package com.runnect.runnect.data.source.remote
 
-import com.runnect.runnect.data.api.PUserService
+import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
+import javax.inject.Inject
 
-class UserDataSource(private val userService: PUserService) {
+class RemoteUserDataSource @Inject constructor(private val userService: UserService) {
     suspend fun getUserInfo(): ResponseUser = userService.getUserInfo()
     suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
         userService.updateNickName(requestUpdateNickName)

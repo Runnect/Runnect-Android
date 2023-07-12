@@ -1,19 +1,53 @@
-package com.runnect.runnect.data.api
-
+package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.response.ResponseCourseScrap
+import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
+import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
+import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
+interface CourseService {
+    @GET("/api/public-course")
+    suspend fun getRecommendCourse(
+    ): ResponseRecommendCourse
 
-interface KCourseService {
-    //스크랩
     @POST("/api/scrap")
     suspend fun postCourseScrap(
+        @Body requestCourseScrap: RequestCourseScrap,
+    ): ResponseCourseScrap
+
+    @GET("/api/public-course/search?")
+    suspend fun getCourseSearch(
+        @Query("keyword") keyword: String,
+    ): ResponseCourseSearch
+
+    @GET("/api/public-course/detail/{publicCourseId}")
+    suspend fun getCourseDetail(
+        @Path("publicCourseId") publicCourseId: Int,
+    ): ResponseCourseDetail
+
+    @GET("/api/course/private/user")
+    suspend fun getMyCourseLoad(
+    ): ResponseMyCourseLoad
+
+    @POST("/api/public-course")
+    suspend fun postUploadMyCourse(
+        @Body requestUploadMyCourse: RequestUploadMyCourse,
+    ): ResponseUploadMyCourse
+
+    @PATCH("/api/public-course/{publicCourseId}")
+    suspend fun patchUpdatePublicCourse(
+        @Path("publicCourseId") publicCourseId: Int,
+        @Body requestUpdatePublicCourse: RequestUpdatePublicCourse
+    ): ResponseUpdatePublicCourse
+
+    //스크랩 - 지훈이랑 나랑 타입 통일이 안 돼있음. 일단 DataSource 통일부터하고 나중에 여기 타입 맞춰줘서 스크랩 함수 둘 중 하나 삭제해야 함.
+    @POST("/api/scrap")
+    suspend fun postScrap(
         @Body requestCourseScrap: RequestCourseScrap,
     ): Response<ResponseCourseScrap>
 

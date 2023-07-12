@@ -39,6 +39,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import timber.log.Timber
@@ -48,6 +49,7 @@ import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+@AndroidEntryPoint
 class DrawActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {

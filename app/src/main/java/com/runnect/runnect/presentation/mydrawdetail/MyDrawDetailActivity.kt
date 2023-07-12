@@ -19,9 +19,11 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.storage.StorageMainFragment
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import timber.log.Timber
 
+@AndroidEntryPoint
 class MyDrawDetailActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
 

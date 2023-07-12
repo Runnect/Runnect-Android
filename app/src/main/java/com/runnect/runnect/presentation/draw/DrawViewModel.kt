@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.ResponsePostCourseDto
 import com.runnect.runnect.data.model.SearchResultEntity
 import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -19,10 +20,10 @@ import kotlinx.serialization.json.put
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
+import javax.inject.Inject
 
-class DrawViewModel : ViewModel() {
-
-    val service = KApiCourse.ServicePool.courseService //객체 생성
+@HiltViewModel
+class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) : ViewModel() {
 
     private var _drawState = MutableLiveData<UiState>(UiState.Empty)
     val drawState: LiveData<UiState>
@@ -86,12 +87,14 @@ class DrawViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 _drawState.value = UiState.Loading
-                service.uploadCourse(_image.value!!.toFormData(), RequestBody(
-                    path.value!!,
-                    distanceSum.value!!,
-                    departureAddress.value!!,
-                    departureName.value!!
-                ))
+                courseRepository.uploadCourse(
+                    _image.value!!.toFormData(), RequestBody(
+                        path.value!!,
+                        distanceSum.value!!,
+                        departureAddress.value!!,
+                        departureName.value!!
+                    )
+                )
             }.onSuccess {
                 Timber.tag(ContentValues.TAG).d("통신success")
                 uploadResult.value = it.body()

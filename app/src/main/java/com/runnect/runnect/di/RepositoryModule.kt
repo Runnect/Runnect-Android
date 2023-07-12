@@ -1,6 +1,6 @@
 package com.runnect.runnect.di
 
-import com.runnect.runnect.data.api.*
+import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
@@ -15,51 +15,21 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Singleton
     @Provides
-    fun provideUserRepository(): UserRepository {
-        return UserRepositoryImpl(
-            UserDataSource(
-                PApiClient.getApiClient()!!.create(PUserService::class.java)
-            )
-        )
-    }
+    fun provideUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository = userRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideCourseRepository(): CourseRepository {
-        return CourseRepositoryImpl(
-            CourseDataSource(
-                PApiClient.getApiClient()!!.create(PCourseService::class.java)
-            )
-        )
-    }
+    fun provideCourseRepository(courseRepositoryImpl: CourseRepositoryImpl): CourseRepository = courseRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideDepartureSearchRepository(): DepartureSearchRepository {
-        return DepartureSearchRepositoryImpl(
-            DepartureSearchDataSource(
-                KApiSearch.getRetrofit().create(KSearchService::class.java)
-            )
-        )
-    }
+    fun provideDepartureSearchRepository(departureSearchRepositoryImpl: DepartureSearchRepositoryImpl): DepartureSearchRepository = departureSearchRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideLoginRepository(): LoginRepository {
-        return LoginRepositoryImpl(
-            LoginDataSource(
-                PApiClient.getApiClient()!!.create(LoginService::class.java)
-            )
-        )
-    }
+    fun provideStorageRepository(storageRepositoryImpl: StorageRepositoryImpl): StorageRepository = storageRepositoryImpl
 
     @Singleton
     @Provides
-    fun provideStorageRepository(): StorageRepository {
-        return StorageRepositoryImpl(
-            StorageDataSource(
-                KApiCourse.getApiClient()!!.create(KCourseService::class.java)
-            )
-        )
-    }
+    fun provideLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository = loginRepositoryImpl
 }

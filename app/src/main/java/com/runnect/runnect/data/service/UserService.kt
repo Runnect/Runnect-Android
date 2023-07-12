@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.api
+package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
@@ -7,7 +7,7 @@ import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
 import retrofit2.http.*
 
-interface PUserService {
+interface UserService {
     @GET("api/user")
     suspend fun getUserInfo(
     ): ResponseUser

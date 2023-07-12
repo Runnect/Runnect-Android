@@ -6,15 +6,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.MyDrawToRunData
 import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class MyDrawDetailViewModel : ViewModel() {
+@HiltViewModel
+class MyDrawDetailViewModel @Inject constructor(private val courseRepository: CourseRepository) :
+    ViewModel() {
 
     val distance = MutableLiveData<Float>()
     val image = MutableLiveData<Uri>()
@@ -26,15 +30,13 @@ class MyDrawDetailViewModel : ViewModel() {
     val courseInfoState: LiveData<UiState>
         get() = _courseInfoState
 
-    val service = KApiCourse.ServicePool.courseService //객체 생성
-
     val getResult = MutableLiveData<ResponseGetMyDrawDetailDto>()
     val errorMessage = MutableLiveData<String>()
 
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
             runCatching {
-                service.getMyDrawDetail(courseId)
+                courseRepository.getMyDrawDetail(courseId)
             }.onSuccess {
                 getResult.value = it.body()
             }.onFailure {
@@ -43,11 +45,11 @@ class MyDrawDetailViewModel : ViewModel() {
         }
     }
 
-    fun deleteMyDrawCourse(deleteList : MutableList<Int>) {
+    fun deleteMyDrawCourse(deleteList: MutableList<Int>) {
         viewModelScope.launch {
             runCatching {
 //                _storageState.value = UiState.Loading
-                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
+                courseRepository.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
             }.onSuccess {
                 Timber.tag(ContentValues.TAG)
                     .d("삭제 성공입니다")

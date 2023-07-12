@@ -5,15 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.api.KApiCourse
 import com.runnect.runnect.data.model.RequestPostRecordDto
 import com.runnect.runnect.data.model.ResponsePostRecordDto
+import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EndRunViewModel : ViewModel() {
-
-    val service = KApiCourse.ServicePool.courseService //객체 생성
+@HiltViewModel
+class EndRunViewModel @Inject constructor(private val courseRepository: CourseRepository) :
+    ViewModel() {
 
     val distanceSum = MutableLiveData<Double>()
     val captureUri = MutableLiveData<Uri>()
@@ -37,11 +39,15 @@ class EndRunViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 _endRunState.value = UiState.Loading
-                service.postRecord(RequestPostRecordDto(request.courseId,
-                    request.publicCourseId,
-                    request.title,
-                    request.time,
-                    request.pace))
+                courseRepository.postRecord(
+                    RequestPostRecordDto(
+                        request.courseId,
+                        request.publicCourseId,
+                        request.title,
+                        request.time,
+                        request.pace
+                    )
+                )
             }.onSuccess {
                 uploadResult.value = it.body()
                 _endRunState.value = UiState.Success

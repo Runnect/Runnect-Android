@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.api
+package com.runnect.runnect.data.service
 
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.data.model.tmap.SearchResponseTmapDto
@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
-interface KSearchService {
+interface SearchService {
 
     @GET("/tmap/pois")
     suspend fun getSearchLocation(

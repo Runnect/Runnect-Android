@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.api
+package com.runnect.runnect.data.service
 
 import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
