@@ -15,9 +15,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
+import com.runnect.runnect.data.model.BannerData
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -50,8 +53,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private var root: String = ""
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
-
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,6 +72,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addObserver()
         setResultDetail()
         setPromotion(binding.vpDiscoverPromotion, promotionImages)
+        getFirebaseData()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (isFromStorageScrap) {
@@ -78,6 +82,32 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 activity?.onBackPressed()
             }
         }
+    }
+
+    // Firestore에서 데이터를 받아오는 함수
+    fun getFirebaseData() {
+        db.collection("data")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Timber.tag("FirebaseData").d("fail : ${e.message}")
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    val bannerDataList = mutableListOf<BannerData>()
+                    for (document in snapshot) {
+                        val imageUrl = document.getString("imageUrl")
+                        val linkUrl = document.getString("linkUrl")
+                        val bannerData = BannerData(
+                            imageUrl = imageUrl.toString(),
+                            linkUrl = linkUrl.toString()
+                        )
+                        bannerDataList.add(
+                            bannerData
+                        )
+                    }
+                    Timber.tag("FirebaseData").d("bannerDataList : $bannerDataList")
+                }
+            }
     }
 
     private fun handleReturnToDiscover() {
