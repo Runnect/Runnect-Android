@@ -28,19 +28,22 @@ import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
+import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.callback.OnBannerClick
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.extension.startWebView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnItemClick, OnHeartClick {
+    OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var courseRecommendAdapter: CourseRecommendAdapter
     private lateinit var promotionAdapter: DiscoverPromotionAdapter
@@ -54,15 +57,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
+//    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val promotionImages = mutableListOf(
+            DiscoverPromotionItemDTO(R.drawable.discover_promotion4),
             DiscoverPromotionItemDTO(R.drawable.discover_promotion1),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion2),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion3)
+            DiscoverPromotionItemDTO(R.drawable.discover_promotion2)
         )
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
@@ -72,7 +75,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addObserver()
         setResultDetail()
         setPromotion(binding.vpDiscoverPromotion, promotionImages)
-        getFirebaseData()
+//        getFirebaseData()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (isFromStorageScrap) {
@@ -84,31 +87,31 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    // Firestore에서 데이터를 받아오는 함수
-    fun getFirebaseData() {
-        db.collection("data")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Timber.tag("FirebaseData").d("fail : ${e.message}")
-                    return@addSnapshotListener
-                }
-                if (snapshot != null) {
-                    val bannerDataList = mutableListOf<BannerData>()
-                    for (document in snapshot) {
-                        val imageUrl = document.getString("imageUrl")
-                        val linkUrl = document.getString("linkUrl")
-                        val bannerData = BannerData(
-                            imageUrl = imageUrl.toString(),
-                            linkUrl = linkUrl.toString()
-                        )
-                        bannerDataList.add(
-                            bannerData
-                        )
-                    }
-                    Timber.tag("FirebaseData").d("bannerDataList : $bannerDataList")
-                }
-            }
-    }
+//    // Firestore에서 데이터를 받아오는 함수
+//    fun getFirebaseData() {
+//        db.collection("data")
+//            .addSnapshotListener { snapshot, e ->
+//                if (e != null) {
+//                    Timber.tag("FirebaseData").d("fail : ${e.message}")
+//                    return@addSnapshotListener
+//                }
+//                if (snapshot != null) {
+//                    val bannerDataList = mutableListOf<BannerData>()
+//                    for (document in snapshot) {
+//                        val imageUrl = document.getString("imageUrl")
+//                        val linkUrl = document.getString("linkUrl")
+//                        val bannerData = BannerData(
+//                            imageUrl = imageUrl.toString(),
+//                            linkUrl = linkUrl.toString()
+//                        )
+//                        bannerDataList.add(
+//                            bannerData
+//                        )
+//                    }
+//                    Timber.tag("FirebaseData").d("bannerDataList : $bannerDataList")
+//                }
+//            }
+//    }
 
     private fun handleReturnToDiscover() {
         MainActivity.updateStorageScrap()
@@ -208,7 +211,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
-        promotionAdapter = DiscoverPromotionAdapter()
+        promotionAdapter = DiscoverPromotionAdapter(this@DiscoverFragment)
         promotionAdapter.submitList(vpList)
         binding.vpDiscoverPromotion.adapter = promotionAdapter
         setPromotionIndicator(binding.vpDiscoverPromotion)
@@ -301,10 +304,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         )
     }
 
+    override fun selectBanner(id: Int) {
+        Timber.tag("Banner").d("BannerResource : $id")
+        if(id == R.drawable.discover_promotion4){
+            requireContext().startWebView(SURVEY_URL)
+        }
+    }
+
     companion object {
         const val FRAME_NUM = 3
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
         const val COURSE_DISCOVER_TAG = "discover"
+        const val SURVEY_URL = "https://docs.google.com/forms/d/1cpgZHNNi1kIvi2ZCwCIcMJcI1PkHBz9a5vWJb7FfIbg/edit"
     }
 }

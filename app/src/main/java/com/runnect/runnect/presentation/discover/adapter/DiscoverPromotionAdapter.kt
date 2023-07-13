@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
+import com.runnect.runnect.util.callback.OnBannerClick
 
-class DiscoverPromotionAdapter:ListAdapter<DiscoverPromotionItemDTO,DiscoverPromotionAdapter.DiscoverPromotionViewHolder>(DiscoverPromotionDiff) {
+class DiscoverPromotionAdapter(val bannerClickListener: OnBannerClick):ListAdapter<DiscoverPromotionItemDTO,DiscoverPromotionAdapter.DiscoverPromotionViewHolder>(DiscoverPromotionDiff){
     lateinit var binding:ItemDiscoverPromotionBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverPromotionViewHolder {
         binding = ItemDiscoverPromotionBinding.inflate(LayoutInflater.from(parent.context),parent,false)
@@ -21,7 +22,12 @@ class DiscoverPromotionAdapter:ListAdapter<DiscoverPromotionItemDTO,DiscoverProm
     override fun getItemCount(): Int = PAGE_NUM
     inner class DiscoverPromotionViewHolder(private val binding:ItemDiscoverPromotionBinding):RecyclerView.ViewHolder(binding.root){
         fun onBind(item:DiscoverPromotionItemDTO){
-            binding.ivItemDiscoverPromotionBanner.setImageResource(item.img)
+            with(binding.ivItemDiscoverPromotionBanner){
+                setImageResource(item.img)
+                setOnClickListener {
+                    bannerClickListener.selectBanner(item.img)
+                }
+            }
         }
     }
     companion object{
