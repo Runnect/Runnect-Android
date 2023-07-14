@@ -38,7 +38,7 @@ class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: On
                     .centerCrop()
                     .into(binding.ivItemDiscoverPromotionBanner)
                 setOnClickListener {// 고유 식별이 될지 아직 모르겠음
-                    bannerClickListener.selectBanner(item.index)
+                    bannerClickListener.selectBanner(item)
                 }
             }
         }

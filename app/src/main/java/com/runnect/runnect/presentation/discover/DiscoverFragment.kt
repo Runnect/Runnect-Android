@@ -92,14 +92,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
                 if (snapshot != null) {
                     for (document in snapshot) {
-                        val index = document.getLong("index")
-                        val imageUrl = document.getString("imageUrl")
-                        val linkUrl = document.getString("linkUrl")
                         promotionImages.add(
                             DiscoverPromotionItemDTO(
-                                index = index!!.toInt(),
-                                imageUrl = imageUrl.toString(),
-                                linkUrl = linkUrl.toString()
+                                index = document.getLong("index")!!.toInt(),
+                                imageUrl = document.getString("imageUrl").toString(),
+                                linkUrl = document.getString("linkUrl").toString()
                             )
                         )
                     }
@@ -304,10 +301,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         )
     }
 
-    override fun selectBanner(index: Int) {
-        Timber.tag("Banner").d("index : $index")
-        if (id == R.drawable.discover_promotion4) {
-            requireContext().startWebView(SURVEY_URL)
+    override fun selectBanner(item: DiscoverPromotionItemDTO) {
+        Timber.tag("Banner").d("item_index : ${item.index}")
+
+        if(item.linkUrl.isNotEmpty()){
+            requireContext().startWebView(item.linkUrl)
         }
     }
 
@@ -316,7 +314,5 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
         const val COURSE_DISCOVER_TAG = "discover"
-        const val SURVEY_URL =
-            "https://docs.google.com/forms/d/1cpgZHNNi1kIvi2ZCwCIcMJcI1PkHBz9a5vWJb7FfIbg/edit"
     }
 }
