@@ -20,7 +20,6 @@ import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
-import com.runnect.runnect.data.model.BannerData
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -28,7 +27,6 @@ import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
-import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.CustomToast
@@ -39,7 +37,8 @@ import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.startWebView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
@@ -57,16 +56,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-//    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
+    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
+    val promotionImages = mutableListOf<DiscoverPromotionItemDTO>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val promotionImages = mutableListOf(
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion4),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion1),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion2)
-        )
+        getFirebaseData()
+
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
         initLayout()
@@ -74,8 +71,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         setResultDetail()
-        setPromotion(binding.vpDiscoverPromotion, promotionImages)
-//        getFirebaseData()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (isFromStorageScrap) {
@@ -87,31 +82,33 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-//    // Firestore에서 데이터를 받아오는 함수
-//    fun getFirebaseData() {
-//        db.collection("data")
-//            .addSnapshotListener { snapshot, e ->
-//                if (e != null) {
-//                    Timber.tag("FirebaseData").d("fail : ${e.message}")
-//                    return@addSnapshotListener
-//                }
-//                if (snapshot != null) {
-//                    val bannerDataList = mutableListOf<BannerData>()
-//                    for (document in snapshot) {
-//                        val imageUrl = document.getString("imageUrl")
-//                        val linkUrl = document.getString("linkUrl")
-//                        val bannerData = BannerData(
-//                            imageUrl = imageUrl.toString(),
-//                            linkUrl = linkUrl.toString()
-//                        )
-//                        bannerDataList.add(
-//                            bannerData
-//                        )
-//                    }
-//                    Timber.tag("FirebaseData").d("bannerDataList : $bannerDataList")
-//                }
-//            }
-//    }
+    // Firestore에서 데이터를 받아오는 함수
+    fun getFirebaseData() {
+        db.collection("data")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Timber.tag("FirebaseData").d("fail : ${e.message}")
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    for (document in snapshot) {
+                        val imageUrl = document.getString("imageUrl")
+                        val linkUrl = document.getString("linkUrl")
+                        promotionImages.add(
+                            DiscoverPromotionItemDTO(
+                                imageUrl = imageUrl.toString(),
+                                linkUrl = linkUrl.toString()
+                            )
+                        )
+                    }
+                    Timber.tag("FirebaseData").d("promotionImages : $promotionImages")
+                    setPromotion(
+                        binding.vpDiscoverPromotion,
+                        promotionImages
+                    )
+                }
+            }
+    }
 
     private fun handleReturnToDiscover() {
         MainActivity.updateStorageScrap()
@@ -180,6 +177,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     binding.indeterminateBar.isVisible = false
                     setRecommendCourseAdapter()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
@@ -211,7 +209,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
-        promotionAdapter = DiscoverPromotionAdapter(this@DiscoverFragment)
+        promotionAdapter = DiscoverPromotionAdapter(requireContext(), this)
         promotionAdapter.submitList(vpList)
         binding.vpDiscoverPromotion.adapter = promotionAdapter
         setPromotionIndicator(binding.vpDiscoverPromotion)
@@ -270,12 +268,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onResume() {
         super.onResume()
-        autoScrollStart()
+//        autoScrollStart()
     }
 
     override fun onPause() {
         super.onPause()
-        autoScrollStop()
+//        autoScrollStop()
     }
 
 
@@ -305,8 +303,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     override fun selectBanner(id: Int) {
-        Timber.tag("Banner").d("BannerResource : $id")
-        if(id == R.drawable.discover_promotion4){
+        Timber.tag("Banner").d("it.id : $id")
+        if (id == R.drawable.discover_promotion4) {
             requireContext().startWebView(SURVEY_URL)
         }
     }
@@ -316,6 +314,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
         const val COURSE_DISCOVER_TAG = "discover"
-        const val SURVEY_URL = "https://docs.google.com/forms/d/1cpgZHNNi1kIvi2ZCwCIcMJcI1PkHBz9a5vWJb7FfIbg/edit"
+        const val SURVEY_URL =
+            "https://docs.google.com/forms/d/1cpgZHNNi1kIvi2ZCwCIcMJcI1PkHBz9a5vWJb7FfIbg/edit"
     }
 }
