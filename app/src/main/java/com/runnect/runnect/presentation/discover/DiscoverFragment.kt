@@ -92,10 +92,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
                 if (snapshot != null) {
                     for (document in snapshot) {
+                        val index = document.getLong("index")
                         val imageUrl = document.getString("imageUrl")
                         val linkUrl = document.getString("linkUrl")
                         promotionImages.add(
                             DiscoverPromotionItemDTO(
+                                index = index!!.toInt(),
                                 imageUrl = imageUrl.toString(),
                                 linkUrl = linkUrl.toString()
                             )
@@ -302,8 +304,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         )
     }
 
-    override fun selectBanner(id: Int) {
-        Timber.tag("Banner").d("it.id : $id")
+    override fun selectBanner(index: Int) {
+        Timber.tag("Banner").d("index : $index")
         if (id == R.drawable.discover_promotion4) {
             requireContext().startWebView(SURVEY_URL)
         }

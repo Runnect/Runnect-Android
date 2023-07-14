@@ -27,6 +27,8 @@ class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: On
     }
 
     override fun getItemCount(): Int = PAGE_NUM
+
+
     inner class DiscoverPromotionViewHolder(private val binding: ItemDiscoverPromotionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(item: DiscoverPromotionItemDTO) {
@@ -36,7 +38,7 @@ class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: On
                     .centerCrop()
                     .into(binding.ivItemDiscoverPromotionBanner)
                 setOnClickListener {// 고유 식별이 될지 아직 모르겠음
-                    bannerClickListener.selectBanner(it.id)
+                    bannerClickListener.selectBanner(item.index)
                 }
             }
         }
