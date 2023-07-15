@@ -15,6 +15,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
@@ -29,15 +31,18 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.callback.OnBannerClick
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.extension.startWebView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnItemClick, OnHeartClick {
+    OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var courseRecommendAdapter: CourseRecommendAdapter
     private lateinit var promotionAdapter: DiscoverPromotionAdapter
@@ -50,17 +55,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private var root: String = ""
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
-
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
+    val promotionImages = mutableListOf<DiscoverPromotionItemDTO>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val promotionImages = mutableListOf(
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion1),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion2),
-            DiscoverPromotionItemDTO(R.drawable.discover_promotion3)
-        )
+        getFirebaseData()
+
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
         initLayout()
@@ -68,7 +71,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         setResultDetail()
-        setPromotion(binding.vpDiscoverPromotion, promotionImages)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (isFromStorageScrap) {
@@ -78,6 +80,33 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 activity?.onBackPressed()
             }
         }
+    }
+
+    // Firestore에서 데이터를 받아오는 함수
+    fun getFirebaseData() {
+        db.collection("data")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Timber.tag("FirebaseData").d("fail : ${e.message}")
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    for (document in snapshot) {
+                        promotionImages.add(
+                            DiscoverPromotionItemDTO(
+                                index = document.getLong("index")!!.toInt(),
+                                imageUrl = document.getString("imageUrl").toString(),
+                                linkUrl = document.getString("linkUrl").toString()
+                            )
+                        )
+                    }
+                    Timber.tag("FirebaseData").d("promotionImages : $promotionImages")
+                    setPromotion(
+                        binding.vpDiscoverPromotion,
+                        promotionImages
+                    )
+                }
+            }
     }
 
     private fun handleReturnToDiscover() {
@@ -147,6 +176,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     binding.indeterminateBar.isVisible = false
                     setRecommendCourseAdapter()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
@@ -178,7 +208,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
-        promotionAdapter = DiscoverPromotionAdapter()
+        promotionAdapter = DiscoverPromotionAdapter(requireContext(), this)
         promotionAdapter.submitList(vpList)
         binding.vpDiscoverPromotion.adapter = promotionAdapter
         setPromotionIndicator(binding.vpDiscoverPromotion)
@@ -223,6 +253,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun autoScrollStart() {
+        Timber.tag("lifeCycle").d("onCreate: ${getLifecycle().getCurrentState()}")
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)
@@ -237,7 +268,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onResume() {
         super.onResume()
-        autoScrollStart()
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                autoScrollStart()
+            }, 500
+        )
     }
 
     override fun onPause() {
@@ -269,6 +304,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             R.anim.slide_in_right,
             R.anim.slide_out_left
         )
+    }
+
+    override fun selectBanner(item: DiscoverPromotionItemDTO) {
+        Timber.tag("Banner").d("item_index : ${item.index}")
+
+        if (item.linkUrl.isNotEmpty()) {
+            requireContext().startWebView(item.linkUrl)
+        }
     }
 
     companion object {

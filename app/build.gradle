@@ -10,6 +10,9 @@ plugins {
     id 'kotlin-kapt'
     //for hiding keys used in manifest
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
 }
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -21,7 +24,7 @@ android {
         applicationId "com.runnect.runnect"
         minSdk 28
         targetSdk 33
-        versionCode 9
+        versionCode 14
         versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -61,6 +64,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.core:core:1.9.0'
+    implementation 'com.google.firebase:firebase-common-ktx:20.1.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -131,4 +135,20 @@ dependencies {
     // view Pager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'me.relex:circleindicator:2.1.6'
+
+    //Firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database-ktx'
+
+    //Cloud Firestore
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    // Firebase Storage SDK
+    implementation 'com.google.firebase:firebase-storage-ktx'
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
 }
