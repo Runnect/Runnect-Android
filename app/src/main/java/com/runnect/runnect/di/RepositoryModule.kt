@@ -32,4 +32,9 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository = loginRepositoryImpl
+
+    @Singleton
+    @Provides
+    fun provideBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository = bannerRepositoryImpl
+
 }

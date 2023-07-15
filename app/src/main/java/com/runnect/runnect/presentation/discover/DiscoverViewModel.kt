@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.domain.BannerRepository
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +16,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class DiscoverViewModel @Inject constructor(private val courseRepository: CourseRepository) :
+class DiscoverViewModel @Inject constructor(
+    private val courseRepository: CourseRepository,
+    private val bannerRepository: BannerRepository
+) :
     ViewModel() {
     private var _courseInfoState = MutableLiveData<UiState>(UiState.Empty)
     val courseInfoState: LiveData<UiState>
@@ -25,6 +30,14 @@ class DiscoverViewModel @Inject constructor(private val courseRepository: Course
         get() = _recommendCourseList
 
     val errorMessage = MutableLiveData<String>()
+
+    val bannerData = MutableLiveData<MutableList<DiscoverPromotionItemDTO>>()
+
+    fun getBannerData() {
+        viewModelScope.launch {
+            bannerData.value = bannerRepository.getBannerData()
+        }
+    }
 
     fun getRecommendCourse() {
         viewModelScope.launch {
@@ -41,10 +54,10 @@ class DiscoverViewModel @Inject constructor(private val courseRepository: Course
         }
     }
 
-    fun postCourseScrap(id:Int,scrapTF:Boolean) {
+    fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             kotlin.runCatching {
-                courseRepository.postCourseScrap(RequestCourseScrap(id,scrapTF.toString()))
+                courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
             }.onSuccess {
                 Timber.d("스크랩 성공")
             }.onFailure {

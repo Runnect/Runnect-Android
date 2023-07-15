@@ -66,6 +66,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
+
+        viewModel.getBannerData()
         initLayout()
         getRecommendCourses()
         addListener()
