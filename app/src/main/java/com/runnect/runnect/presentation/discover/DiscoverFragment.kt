@@ -253,6 +253,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun autoScrollStart() {
+        Timber.tag("lifeCycle").d("onCreate: ${getLifecycle().getCurrentState()}")
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)
@@ -267,12 +268,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onResume() {
         super.onResume()
-//        autoScrollStart()
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                autoScrollStart()
+            }, 500
+        )
     }
 
     override fun onPause() {
         super.onPause()
-//        autoScrollStop()
+        autoScrollStop()
     }
 
 
@@ -304,7 +309,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun selectBanner(item: DiscoverPromotionItemDTO) {
         Timber.tag("Banner").d("item_index : ${item.index}")
 
-        if(item.linkUrl.isNotEmpty()){
+        if (item.linkUrl.isNotEmpty()) {
             requireContext().startWebView(item.linkUrl)
         }
     }
