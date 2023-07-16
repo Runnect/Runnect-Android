@@ -11,6 +11,7 @@ import com.runnect.runnect.domain.BannerRepository
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,17 +26,30 @@ class DiscoverViewModel @Inject constructor(
     val courseInfoState: LiveData<UiState>
         get() = _courseInfoState
 
-    private var _recommendCourseList = mutableListOf<RecommendCourseDTO>() //여긴 왜 LiveData로 안 만들어줬지?
+    private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
     val recommendCourseList: List<RecommendCourseDTO>
         get() = _recommendCourseList
 
     val errorMessage = MutableLiveData<String>()
 
-    val bannerData = MutableLiveData<MutableList<DiscoverPromotionItemDTO>>()
+    var bannerData = mutableListOf<DiscoverPromotionItemDTO>()
+
+    private var _bannerState = MutableLiveData<UiState>(UiState.Empty)
+    val bannerState: LiveData<UiState>
+        get() = _bannerState
+
 
     fun getBannerData() {
         viewModelScope.launch {
-            bannerData.value = bannerRepository.getBannerData()
+            runCatching {
+                _bannerState.value = UiState.Loading
+                bannerRepository.getBannerData()
+            }.onSuccess {
+                bannerData = it
+                _bannerState.value = UiState.Success
+            }.onFailure {
+                _bannerState.value = UiState.Failure
+            }
         }
     }
 
@@ -56,7 +70,7 @@ class DiscoverViewModel @Inject constructor(
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
-            kotlin.runCatching {
+            runCatching {
                 courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
             }.onSuccess {
                 Timber.d("스크랩 성공")

@@ -52,23 +52,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
     private var currentPosition = PAGE_NUM / 2
-    private var root: String = ""
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
-    val promotionImages = mutableListOf<DiscoverPromotionItemDTO>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getFirebaseData()
-
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-
-        viewModel.getBannerData()
         initLayout()
+        getBannerData()
         getRecommendCourses()
         addListener()
         addObserver()
@@ -84,31 +78,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    // Firestore에서 데이터를 받아오는 함수
-    fun getFirebaseData() {
-        db.collection("data")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Timber.tag("FirebaseData").d("fail : ${e.message}")
-                    return@addSnapshotListener
-                }
-                if (snapshot != null) {
-                    for (document in snapshot) {
-                        promotionImages.add(
-                            DiscoverPromotionItemDTO(
-                                index = document.getLong("index")!!.toInt(),
-                                imageUrl = document.getString("imageUrl").toString(),
-                                linkUrl = document.getString("linkUrl").toString()
-                            )
-                        )
-                    }
-                    Timber.tag("FirebaseData").d("promotionImages : $promotionImages")
-                    setPromotion(
-                        binding.vpDiscoverPromotion,
-                        promotionImages
-                    )
-                }
-            }
+    private fun getBannerData(){
+        viewModel.getBannerData()
+
     }
 
     private fun handleReturnToDiscover() {
@@ -172,7 +144,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         viewModel.courseInfoState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
@@ -181,6 +153,26 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
+            }
+        }
+
+        viewModel.bannerState.observe(viewLifecycleOwner){
+            when (it) {
+                UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
+                UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBarBanner.isVisible = false
+                    setPromotion( //submitList만 새로 해주면 되는데 이것 외 여러 코드들도 다시 돌리는 건 비효율적이라 리팩토링이 필요합니다.
+                        binding.vpDiscoverPromotion,
+                        viewModel.bannerData
+                    )
+                }
+
+                UiState.Failure -> {
+                    binding.indeterminateBarBanner.isVisible = false
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
                 }
