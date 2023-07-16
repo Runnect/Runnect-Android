@@ -11,7 +11,6 @@ import com.runnect.runnect.domain.BannerRepository
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,10 +42,10 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 _bannerState.value = UiState.Loading
-                bannerRepository.getBannerData()
-            }.onSuccess {
-                bannerData = it
-                _bannerState.value = UiState.Success
+                bannerRepository.getBannerData().collect { bannerList ->
+                    bannerData = bannerList
+                    _bannerState.value = UiState.Success
+                }
             }.onFailure {
                 _bannerState.value = UiState.Failure
             }

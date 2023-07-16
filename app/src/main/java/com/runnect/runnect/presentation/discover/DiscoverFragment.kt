@@ -265,7 +265,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         Handler(Looper.getMainLooper()).postDelayed(
             {
                 autoScrollStart()
-            }, 500
+            }, 600
         )
     }
 
