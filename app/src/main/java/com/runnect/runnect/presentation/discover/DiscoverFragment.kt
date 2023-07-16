@@ -13,10 +13,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
@@ -36,6 +35,8 @@ import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.startWebView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
@@ -78,7 +79,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun getBannerData(){
+    private fun getBannerData() {
         viewModel.getBannerData()
 
     }
@@ -159,7 +160,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             }
         }
 
-        viewModel.bannerState.observe(viewLifecycleOwner){
+        viewModel.bannerState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
                 UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
@@ -262,11 +263,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onResume() {
         super.onResume()
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                autoScrollStart()
-            }, 600
-        )
+        lifecycleScope.launch {
+            delay(600)
+            autoScrollStart()
+        }
     }
 
     override fun onPause() {
