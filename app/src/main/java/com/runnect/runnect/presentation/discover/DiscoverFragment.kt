@@ -13,10 +13,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
@@ -36,6 +35,8 @@ import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.startWebView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
@@ -52,21 +53,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
     private var currentPosition = PAGE_NUM / 2
-    private var root: String = ""
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    val db = Firebase.firestore // Cloud Firestore 인스턴스 초기화
-    val promotionImages = mutableListOf<DiscoverPromotionItemDTO>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getFirebaseData()
-
         binding.vm = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
         initLayout()
+        getBannerData()
         getRecommendCourses()
         addListener()
         addObserver()
@@ -82,31 +79,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    // Firestore에서 데이터를 받아오는 함수
-    fun getFirebaseData() {
-        db.collection("data")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Timber.tag("FirebaseData").d("fail : ${e.message}")
-                    return@addSnapshotListener
-                }
-                if (snapshot != null) {
-                    for (document in snapshot) {
-                        promotionImages.add(
-                            DiscoverPromotionItemDTO(
-                                index = document.getLong("index")!!.toInt(),
-                                imageUrl = document.getString("imageUrl").toString(),
-                                linkUrl = document.getString("linkUrl").toString()
-                            )
-                        )
-                    }
-                    Timber.tag("FirebaseData").d("promotionImages : $promotionImages")
-                    setPromotion(
-                        binding.vpDiscoverPromotion,
-                        promotionImages
-                    )
-                }
-            }
+    private fun getBannerData() {
+        viewModel.getBannerData()
+
     }
 
     private fun handleReturnToDiscover() {
@@ -170,7 +145,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         viewModel.courseInfoState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
@@ -179,6 +154,26 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
+            }
+        }
+
+        viewModel.bannerState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
+                UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBarBanner.isVisible = false
+                    setPromotion( //submitList만 새로 해주면 되는데 이것 외 여러 코드들도 다시 돌리는 건 비효율적이라 리팩토링이 필요합니다.
+                        binding.vpDiscoverPromotion,
+                        viewModel.bannerData
+                    )
+                }
+
+                UiState.Failure -> {
+                    binding.indeterminateBarBanner.isVisible = false
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
                 }
@@ -268,11 +263,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onResume() {
         super.onResume()
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                autoScrollStart()
-            }, 500
-        )
+        lifecycleScope.launch {
+            delay(600)
+            autoScrollStart()
+        }
     }
 
     override fun onPause() {

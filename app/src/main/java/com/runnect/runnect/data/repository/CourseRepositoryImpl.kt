@@ -10,7 +10,12 @@ import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseUpdatePublicCourse
 import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
-import com.runnect.runnect.data.model.*
+import com.runnect.runnect.data.model.RequestPostRecordDto
+import com.runnect.runnect.data.model.RequestPutMyDrawDto
+import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.model.ResponsePostCourseDto
+import com.runnect.runnect.data.model.ResponsePostRecordDto
+import com.runnect.runnect.data.model.ResponsePutMyDrawDto
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.util.extension.toData
@@ -19,7 +24,8 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import javax.inject.Inject
 
-class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) : CourseRepository {
+class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
+    CourseRepository {
     override suspend fun getRecommendCourse(): MutableList<RecommendCourseDTO> {
         val recommendCourse = mutableListOf<RecommendCourseDTO>()
         for (i in remoteCourseDataSource.getRecommendCourse().data.publicCourses) {
@@ -60,7 +66,10 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         publicCourseId: Int,
         requestUpdatePublicCourse: RequestUpdatePublicCourse
     ): ResponseUpdatePublicCourse {
-        return remoteCourseDataSource.patchUpdatePublicCourse(publicCourseId, requestUpdatePublicCourse)
+        return remoteCourseDataSource.patchUpdatePublicCourse(
+            publicCourseId,
+            requestUpdatePublicCourse
+        )
     }
 
 
@@ -80,7 +89,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         image: MultipartBody.Part,
         data: RequestBody
     ): Response<ResponsePostCourseDto> {
-        return remoteCourseDataSource.uploadCourse(image,data)
+        return remoteCourseDataSource.uploadCourse(image, data)
     }
 
     // 나중에 StorageRepository 없애고나서 살려줄 예정

@@ -1,7 +1,9 @@
 package com.runnect.runnect.di
 
-import com.runnect.runnect.data.service.*
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.data.repository.*
+import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
 import dagger.Module
@@ -16,18 +18,25 @@ import javax.inject.Singleton
 object ServiceModule {
     @Singleton
     @Provides
-    fun providePCourseService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) = runnectRetrofit.create(CourseService::class.java)
+    fun providePCourseService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
+        runnectRetrofit.create(CourseService::class.java)
 
     @Singleton
     @Provides
-    fun providePUserService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) = runnectRetrofit.create(UserService::class.java)
+    fun providePUserService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
+        runnectRetrofit.create(UserService::class.java)
 
     @Singleton
     @Provides
-    fun provideLoginService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) = runnectRetrofit.create(LoginService::class.java)
+    fun provideLoginService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
+        runnectRetrofit.create(LoginService::class.java)
 
     @Singleton
     @Provides
-    fun provideKSearchService(@RetrofitModule.Tmap tmapRetrofit: Retrofit) = tmapRetrofit.create(SearchService::class.java)
+    fun provideKSearchService(@RetrofitModule.Tmap tmapRetrofit: Retrofit) =
+        tmapRetrofit.create(SearchService::class.java)
 
+    @Singleton
+    @Provides
+    fun provideBannerService() = Firebase.firestore
 }

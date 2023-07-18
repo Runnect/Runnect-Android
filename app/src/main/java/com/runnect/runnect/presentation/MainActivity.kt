@@ -1,19 +1,14 @@
 package com.runnect.runnect.presentation
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.BannerData
 import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainFragment
 import com.runnect.runnect.presentation.discover.DiscoverFragment
