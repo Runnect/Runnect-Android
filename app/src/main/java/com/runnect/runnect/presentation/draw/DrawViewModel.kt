@@ -87,11 +87,11 @@ class DrawViewModel : ViewModel() {
             runCatching {
                 _drawState.value = UiState.Loading
                 service.uploadCourse(
-                    _image.value!!.toFormData(), RequestBody(
-                        path.value!!,
-                        distanceSum.value!!,
-                        departureAddress.value!!,
-                        departureName.value!!
+                    image = _image.value!!.toFormData(), data = RequestBody(
+                        path = path.value!!,
+                        distance = distanceSum.value!!,
+                        departureAddress = departureAddress.value!!,
+                        departureName = departureName.value!!
                     )
                 )
             }.onSuccess {
@@ -112,14 +112,13 @@ class DrawViewModel : ViewModel() {
         distance: Float,
         departureAddress: String,
         departureName: String,
-    ) =
-        buildJsonObject {
-            val jsonElement = Json.encodeToJsonElement(path)
-            put("path", jsonElement)
-            put("distance", distance)
-            put("departureAddress", departureAddress)
-            put("departureName", departureName)
-        }.toString().toRequestBody("application/json".toMediaType())
+    ) = buildJsonObject {
+        val jsonElement = Json.encodeToJsonElement(path)
+        put("path", jsonElement)
+        put("distance", distance)
+        put("departureAddress", departureAddress)
+        put("departureName", departureName)
+    }.toString().toRequestBody("application/json".toMediaType())
 
 }
 

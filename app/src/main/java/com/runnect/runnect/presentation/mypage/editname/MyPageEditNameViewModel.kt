@@ -36,7 +36,11 @@ class MyPageEditNameViewModel @Inject constructor(private val userRepository: Us
         viewModelScope.launch {
             runCatching {
                 _uiState.value = UiState.Loading
-                userRepository.updateNickName(RequestUpdateNickName(nickName.value.toString()))
+                userRepository.updateNickName(
+                    RequestUpdateNickName(
+                        nickname = nickName.value.toString()
+                    )
+                )
             }.onSuccess {
                 _uiState.value = UiState.Success
             }.onFailure {

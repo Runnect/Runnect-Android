@@ -104,8 +104,14 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
         viewModelScope.launch {
             runCatching {
                 _historyDeleteState.value = UiState.Loading
-                setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
-                userRepository.putDeleteHistory(RequestDeleteHistory(_itemsToDelete))
+                setSelectedItemsCount(
+                    count = DEFAULT_SELECTED_COUNT
+                )
+                userRepository.putDeleteHistory(
+                    RequestDeleteHistory(
+                        recordIdList = _itemsToDelete
+                    )
+                )
             }.onSuccess {
                 _historyItems =
                     _historyItems.filter { !itemsToDelete.contains(it.id) }.toMutableList()

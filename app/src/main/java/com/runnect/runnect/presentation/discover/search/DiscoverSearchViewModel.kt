@@ -28,7 +28,9 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
         viewModelScope.launch {
             _courseSearchState.value = UiState.Loading
             runCatching {
-                courseRepository.getCourseSearch(keyword)
+                courseRepository.getCourseSearch(
+                    keyword = keyword
+                )
             }.onSuccess {
                 courseSearchList = it
                 if (courseSearchList.isEmpty()) {
@@ -47,10 +49,12 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
-            }.onSuccess {
-            }.onFailure {
-            }
+                courseRepository.postCourseScrap(
+                    RequestCourseScrap(
+                        publicCourseId = id, scrapTF = scrapTF.toString()
+                    )
+                )
+            }.onSuccess {}.onFailure {}
         }
     }
 }

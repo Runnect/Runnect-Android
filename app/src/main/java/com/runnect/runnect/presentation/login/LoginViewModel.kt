@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
                 _loginState.value = UiState.Loading
                 loginRepository.postLogin(
                     RequestLogin(
-                        request.token, request.provider
+                        token = request.token, provider = request.provider
                     )
                 )
             }.onSuccess {

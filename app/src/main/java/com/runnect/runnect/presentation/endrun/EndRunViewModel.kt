@@ -39,11 +39,11 @@ class EndRunViewModel : ViewModel() {
                 _endRunState.value = UiState.Loading
                 service.postRecord(
                     RequestPostRecordDto(
-                        request.courseId,
-                        request.publicCourseId,
-                        request.title,
-                        request.time,
-                        request.pace
+                        courseId = request.courseId,
+                        publicCourseId = request.publicCourseId,
+                        title = request.title,
+                        time = request.time,
+                        pace = request.pace
                     )
                 )
             }.onSuccess {

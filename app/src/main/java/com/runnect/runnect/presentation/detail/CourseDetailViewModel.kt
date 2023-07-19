@@ -19,10 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CourseDetailViewModel @Inject constructor(
-    private val courseRepository: CourseRepository,
-    private val userRepository: UserRepository
-) :
-    ViewModel() {
+    private val courseRepository: CourseRepository, private val userRepository: UserRepository
+) : ViewModel() {
     private var _courseDetailState = MutableLiveData<UiState>(UiState.Loading)
     val courseDetailState: LiveData<UiState>
         get() = _courseDetailState
@@ -66,18 +64,7 @@ class CourseDetailViewModel @Inject constructor(
         get() = _editMode
 
     private var _courseDetail = CourseDetailDTO(
-        "CSPR0",
-        "1",
-        "1",
-        1,
-        "1",
-        "1",
-        "1",
-        1,
-        "1",
-        false,
-        "1",
-        listOf(listOf(1.1))
+        "CSPR0", "1", "1", 1, "1", "1", "1", 1, "1", false, "1", listOf(listOf(1.1))
     )
 
     val courseDetail: CourseDetailDTO
@@ -93,7 +80,9 @@ class CourseDetailViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 _courseDetailState.value = UiState.Loading
-                courseRepository.getCourseDetail(courseId)
+                courseRepository.getCourseDetail(
+                    publicCourseId = courseId
+                )
             }.onSuccess {
                 _courseDetail = it
                 stampId.value = it.stampId
@@ -113,9 +102,12 @@ class CourseDetailViewModel @Inject constructor(
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
-            }.onSuccess {
-            }.onFailure {
+                courseRepository.postCourseScrap(
+                    RequestCourseScrap(
+                        publicCourseId = id, scrapTF = scrapTF.toString()
+                    )
+                )
+            }.onSuccess {}.onFailure {
                 errorMessage.value = it.message
             }
         }
@@ -126,7 +118,11 @@ class CourseDetailViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 _myUploadDeleteState.value = UiState.Loading
-                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(courseToDelete))
+                userRepository.putDeleteUploadCourse(
+                    RequestDeleteUploadCourse(
+                        publicCourseIdList = courseToDelete
+                    )
+                )
             }.onSuccess {
                 _myUploadDeleteState.value = UiState.Success
             }.onFailure {
@@ -141,10 +137,9 @@ class CourseDetailViewModel @Inject constructor(
             runCatching {
                 _courseUpdateState.value = UiState.Loading
                 courseRepository.patchUpdatePublicCourse(
-                    id,
-                    RequestUpdatePublicCourse(
-                        contentForInterruption.value!!,
-                        titleForInterruption.value!!
+                    id, RequestUpdatePublicCourse(
+                        description = contentForInterruption.value!!,
+                        title = titleForInterruption.value!!
                     )
                 )
             }.onSuccess {

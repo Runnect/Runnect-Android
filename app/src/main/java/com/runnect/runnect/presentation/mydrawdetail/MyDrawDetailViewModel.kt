@@ -34,7 +34,9 @@ class MyDrawDetailViewModel : ViewModel() {
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
             runCatching {
-                service.getMyDrawDetail(courseId)
+                service.getMyDrawDetail(
+                    courseId = courseId
+                )
             }.onSuccess {
                 getResult.value = it.body()
             }.onFailure {
@@ -47,14 +49,16 @@ class MyDrawDetailViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
 //                _storageState.value = UiState.Loading
-                service.deleteMyDrawCourse(RequestPutMyDrawDto(deleteList))
+                service.deleteMyDrawCourse(
+                    RequestPutMyDrawDto(
+                        courseIdList = deleteList
+                    )
+                )
             }.onSuccess {
-                Timber.tag(ContentValues.TAG)
-                    .d("삭제 성공입니다")
+                Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
 //                _storageState.value = UiState.Success
             }.onFailure {
-                Timber.tag(ContentValues.TAG)
-                    .d("실패했고 문제는 다음과 같습니다 $it")
+                Timber.tag(ContentValues.TAG).d("실패했고 문제는 다음과 같습니다 $it")
 //                _storageState.value = UiState.Failure
             }
         }
