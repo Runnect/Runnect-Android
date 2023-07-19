@@ -36,17 +36,33 @@ fun Context.clearFocus(view: View) {
     view.clearFocus()
 }
 
+fun Context.setAlertDialog(
+    layoutInflater: LayoutInflater,
+    view: View,
+    resId: Int,
+): Pair<AlertDialog, View> {
+    val dialogLayout = layoutInflater.inflate(resId, null)
+    val build = AlertDialog.Builder(view.context).apply {
+        setView(dialogLayout)
+    }
+    val dialog = build.create()
+    dialog.setCancelable(false) // 외부 영역 터치 금지
+    dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    return Pair(dialog, dialogLayout)
+}
+
+
 
 fun Context.setCustomDialog(
     layoutInflater: LayoutInflater,
     view: View,
-    desc: String,
+    description: String,
     yesBtnText: String,
     noBtnText: String = "취소"
 ): AlertDialog {
     val dialogLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
     with(dialogLayout) {
-        tv_dialog.text = desc
+        tv_dialog.text = description
         btn_delete_no.text = noBtnText
         btn_delete_yes.text = yesBtnText
     }

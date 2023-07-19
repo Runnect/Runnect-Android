@@ -37,6 +37,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
+import com.runnect.runnect.util.extension.setAlertDialog
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
@@ -72,6 +73,8 @@ class DrawActivity :
     private var isMarkerAvailable: Boolean = false
 
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
+
+    lateinit var dialog: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -243,7 +246,7 @@ class DrawActivity :
                 UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
                     hideLoadingBar()
-                    notifyCreateFinish(binding.root)
+                    notifyCreateFinish()
                 }
 
                 UiState.Failure -> {
@@ -253,43 +256,43 @@ class DrawActivity :
         }
     }
 
-    private fun notifyCreateFinish(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_make_course, null)
+    private fun notifyCreateFinish() {
+        val (dialog, dialogLayout) = setAlertDialog(
+            layoutInflater,
+            binding.root,
+            R.layout.custom_dialog_make_course
+        )
 
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
-        }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
-        dialog.show()
+        with(dialogLayout) {
+            this.btn_run.setOnClickListener {
+                val intent = Intent(this@DrawActivity, CountDownActivity::class.java).apply {
+                    putExtra(
+                        "CourseData", CourseData(
+                            courseId = viewModel.courseId.value!!,
+                            publicCourseId = null,
+                            touchList = touchList,
+                            startLatLng = departureLatLng,
+                            departure = searchResult.name,
+                            distance = viewModel.distanceSum.value!!,
+                            image = captureUri.toString(),
+                            dataFrom = "draw"
+                        )
+                    )
+                }
+                startActivity(intent)
+                dialog.dismiss()
 
-        myLayout.btn_storage.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("fromDrawActivity", true)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                this.btn_storage.setOnClickListener {
+                    val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
+                        putExtra("fromDrawActivity", true)
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    }
+                    startActivity(intent)
+                    dialog.dismiss()
+                }
             }
-            startActivity(intent)
-            dialog.dismiss()
         }
-        myLayout.btn_run.setOnClickListener {
-            val intent = Intent(this, CountDownActivity::class.java)
-
-            intent.putExtra(
-                "CourseData", CourseData(
-                    courseId = viewModel.courseId.value!!,
-                    publicCourseId = null,
-                    touchList = touchList,
-                    startLatLng = departureLatLng,
-                    departure = searchResult.name,
-                    distance = viewModel.distanceSum.value!!,
-                    image = captureUri.toString(),
-                    dataFrom = "draw"
-                )
-            )
-            startActivity(intent)
-            dialog.dismiss()
-        }
+        dialog.show()
     }
 
     private fun requireVisitorLogin(view: View) {
