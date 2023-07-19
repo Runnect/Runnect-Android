@@ -6,10 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -37,7 +35,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
-import com.runnect.runnect.util.extension.setAlertDialog
+import com.runnect.runnect.util.extension.setActivityDialog
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
@@ -137,7 +135,7 @@ class DrawActivity :
         binding.btnDraw.setOnClickListener {
 
             if (isVisitorMode) {
-                requireVisitorLogin(binding.root)
+                requireVisitorLogin()
             } else {
                 createMbr()
             }
@@ -257,10 +255,11 @@ class DrawActivity :
     }
 
     private fun notifyCreateFinish() {
-        val (dialog, dialogLayout) = setAlertDialog(
-            layoutInflater,
-            binding.root,
-            R.layout.custom_dialog_make_course
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_make_course,
+            cancel = false
         )
 
         with(dialogLayout) {
@@ -281,40 +280,40 @@ class DrawActivity :
                 }
                 startActivity(intent)
                 dialog.dismiss()
+            }
 
-                this.btn_storage.setOnClickListener {
-                    val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
-                        putExtra("fromDrawActivity", true)
-                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    }
-                    startActivity(intent)
-                    dialog.dismiss()
+            this.btn_storage.setOnClickListener {
+                val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
+                    putExtra("fromDrawActivity", true)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
+                startActivity(intent)
+                dialog.dismiss()
             }
         }
         dialog.show()
     }
 
-    private fun requireVisitorLogin(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
+    private fun requireVisitorLogin() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_require_login,
+            cancel = false
+        )
 
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
+        with(dialogLayout) {
+            this.btn_login.setOnClickListener {
+                val intent = Intent(this@DrawActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+                dialog.dismiss()
+            }
+            this.btn_cancel.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
-
-        myLayout.btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        myLayout.btn_login.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            dialog.dismiss()
-        }
     }
 
     private fun backButton() {

@@ -1,12 +1,8 @@
 package com.runnect.runnect.presentation.mydrawdetail
 
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -17,6 +13,7 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.util.extension.setActivityDialog
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
 import timber.log.Timber
@@ -44,34 +41,32 @@ class MyDrawDetailActivity :
 
     }
 
-    fun customDialog(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
-
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
-        }
-        val dialog = build.create()
-//        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
-        dialog.show()
-
-        myLayout.btn_delete_yes.setOnClickListener {
-            deleteCourse()
-            dialog.dismiss()
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("fromDeleteMyDraw", true)
+    private fun deletingDialog() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_delete,
+            cancel = true
+        )
+        with(dialogLayout) {
+            this.btn_delete_yes.setOnClickListener {
+                deleteCourse()
+                dialog.dismiss()
+                val intent = Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
+                    putExtra("fromDeleteMyDraw", true)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
+            this.btn_delete_no.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        myLayout.btn_delete_no.setOnClickListener {
-            dialog.dismiss()
-        }
-
+        dialog.show()
     }
 
     private fun deleteButton() {
         binding.imgBtnDelete.setOnClickListener {
-            customDialog(binding.root)
+            deletingDialog()
         }
     }
 

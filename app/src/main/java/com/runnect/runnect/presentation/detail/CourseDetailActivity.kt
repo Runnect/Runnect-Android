@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -119,7 +117,7 @@ class CourseDetailActivity :
         binding.btnCourseDetailFinish.setOnClickListener {
 
             if (isVisitorMode) {
-                requireLogin(binding.root)
+                requireLogin()
             } else {
                 val intent = Intent(this, CountDownActivity::class.java).apply {
                     putExtra(
@@ -151,27 +149,27 @@ class CourseDetailActivity :
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
-    private fun requireLogin(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
-
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
+    private fun requireLogin() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_require_login,
+            cancel = false
+        )
+        with(dialogLayout) {
+            this.btn_login.setOnClickListener {
+                val intent = Intent(this@CourseDetailActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+                dialog.dismiss()
+            }
+            this.btn_cancel.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
-
-        myLayout.btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        myLayout.btn_login.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            dialog.dismiss()
-        }
     }
+
 
     private fun handleReturnToMyUpload() {
         val intent = Intent(this, MyUploadActivity::class.java)

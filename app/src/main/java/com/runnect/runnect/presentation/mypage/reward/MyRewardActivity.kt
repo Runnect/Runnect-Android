@@ -84,8 +84,7 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
 
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
             }
         }
@@ -99,10 +98,8 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
             for (i in viewModel.stampList) {
                 index = stampListForIndex.indexOf(i)
                 val stampResId = this.getStampResId(
-                    stampId =
-                    i,
-                    resNameParam =
-                    RES_NAME,
+                    stampId = i,
+                    resNameParam = RES_NAME,
                     resType = RES_STAMP_TYPE,
                     packageName = this.packageName
                 )

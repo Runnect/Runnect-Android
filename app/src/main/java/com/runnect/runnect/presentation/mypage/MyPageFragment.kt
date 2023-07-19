@@ -91,8 +91,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
             intent.putExtra(NICK_NAME, "${viewModel.nickName.value}")
             val stampResId = requireContext().getStampResId(
-                stampId =
-                viewModel.stampId.value,
+                stampId = viewModel.stampId.value,
                 resNameParam = RES_NAME,
                 resType = RES_STAMP_TYPE,
                 packageName = requireContext().packageName
@@ -100,30 +99,26 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             intent.putExtra(PROFILE, stampResId)
             resultEditNameLauncher.launch(intent)
             requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
+                R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
 
         binding.viewMyPageMainRewardFrame.setOnClickListener {
             startActivity(Intent(requireContext(), MyRewardActivity::class.java))
             requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
+                R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
         binding.viewMyPageMainHistoryFrame.setOnClickListener {
             startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
             requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
+                R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
         binding.viewMyPageMainUploadFrame.setOnClickListener {
             startActivity(Intent(requireContext(), MyUploadActivity::class.java))
             requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
+                R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
         binding.viewMyPageMainSettingFrame.setOnClickListener {
@@ -157,7 +152,9 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                     binding.indeterminateBar.isVisible = false
                     val stampResId = requireContext().getStampResId(
                         viewModel.stampId.value,
-                        RES_NAME, RES_STAMP_TYPE, requireContext().packageName
+                        RES_NAME,
+                        RES_STAMP_TYPE,
+                        requireContext().packageName
                     )
                     viewModel.setProfileImg(stampResId)
                     binding.ivMyPageEditFrame.isClickable = true
@@ -166,8 +163,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
+                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
             }
         }
