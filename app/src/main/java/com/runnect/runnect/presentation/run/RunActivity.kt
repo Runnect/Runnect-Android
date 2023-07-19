@@ -20,7 +20,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
-import com.runnect.runnect.data.dto.CountToRunData
+import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
@@ -38,7 +38,7 @@ class RunActivity :
     private lateinit var locationSource: FusedLocationSource
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private lateinit var departureLatLng: LatLng
-    private lateinit var countToRunData: CountToRunData
+    private lateinit var courseData: CourseData
 
     private val path = PathOverlay()
 
@@ -52,14 +52,14 @@ class RunActivity :
     private var timerMinute: Int = 0
     private var timerHour: Int = 0
 
-    var courseId : Int? = null
-    var publicCourseId : Int? = null
-    lateinit var departure : String
-    lateinit var startLatLng : LatLng
-    lateinit var touchList : ArrayList<LatLng>
-    lateinit var captureUri : String
-    lateinit var dataFrom : String
-    var distanceSum : Double = 0.0
+    var courseId: Int? = null
+    var publicCourseId: Int? = null
+    lateinit var departure: String
+    lateinit var startLatLng: LatLng
+    lateinit var touchList: ArrayList<LatLng>
+    lateinit var captureUri: String
+    lateinit var dataFrom: String
+    var distanceSum: Double = 0.0
 
 
     private val viewModel: RunViewModel by viewModels()
@@ -174,25 +174,25 @@ class RunActivity :
     }
 
     private fun getIntentValue() {
-        countToRunData = intent.getParcelableExtra("CountToRunData")!!
+        courseData = intent.getParcelableExtra("CountToRunData")!!
 
-        courseId = countToRunData.courseId
-        publicCourseId = countToRunData.publicCourseId
-        departure = countToRunData.departure
-        startLatLng = countToRunData.startLatLng
-        touchList = countToRunData.touchList
-        captureUri = countToRunData.image
-        dataFrom = countToRunData.dataFrom
+        courseId = courseData.courseId
+        publicCourseId = courseData.publicCourseId
+        departure = courseData.departure
+        startLatLng = courseData.startLatLng
+        touchList = courseData.touchList
+        captureUri = courseData.image
+        dataFrom = courseData.dataFrom
 
         val distanceCut =
-            BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+            BigDecimal(courseData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
                 .toDouble()
         distanceSum = distanceCut
     }
 
     private fun createDepartureMarker() {
         val departureMarker = Marker()
-        departureLatLng = countToRunData.startLatLng
+        departureLatLng = courseData.startLatLng
 
         departureMarker.position =
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
@@ -206,31 +206,31 @@ class RunActivity :
     }
 
     private fun createRouteMarker() {
-        for (i in 1..countToRunData.touchList.size) {
-            setRouteMarker(countToRunData, i)
-            generateRouteLine(countToRunData, i)
+        for (i in 1..courseData.touchList.size) {
+            setRouteMarker(courseData, i)
+            generateRouteLine(courseData, i)
         }
     }
 
     private fun setRouteMarker(
-        countToRunData: CountToRunData,
+        courseData: CourseData,
         i: Int
     ) { //여기도 create랑 set이랑 역할 표현이 모호함
         val routeMarker = Marker()
         routeMarker.position = LatLng(
-            countToRunData.touchList[i - 1].latitude,
-            countToRunData.touchList[i - 1].longitude
+            courseData.touchList[i - 1].latitude,
+            courseData.touchList[i - 1].longitude
         )
         routeMarker.anchor = PointF(0.5f, 0.5f)
         routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
         routeMarker.map = naverMap
     }
 
-    private fun generateRouteLine(countToRunData: CountToRunData, i: Int) {
+    private fun generateRouteLine(courseData: CourseData, i: Int) {
         coords.add(
             LatLng(
-                countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
-                countToRunData.touchList[i - 1].longitude
+                courseData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
+                courseData.touchList[i - 1].longitude
             )
         ) // coords에 터치로 받아온 좌표값 추가
         path.coords = coords // 경로선 그리기

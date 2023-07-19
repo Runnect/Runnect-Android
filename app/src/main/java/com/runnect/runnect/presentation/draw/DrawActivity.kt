@@ -82,8 +82,8 @@ class DrawActivity :
 
         if (::searchResult.isInitialized.not()) {
             intent?.let {
-                searchResult = intent.getParcelableExtra("searchResult")
-                    ?: throw Exception("데이터가 존재하지 않습니다.")
+                searchResult =
+                    intent.getParcelableExtra("searchResult") ?: throw Exception("데이터가 존재하지 않습니다.")
 
                 Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
                 viewModel.searchResult.value = searchResult
@@ -104,14 +104,13 @@ class DrawActivity :
 
     private fun initView() {
         val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
-            ?: MapFragment.newInstance().also {
+        val mapFragment =
+            fm.findFragmentById(R.id.mapView) as MapFragment? ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapView, it).commit()
             }
         mapFragment.getMapAsync(this)
         locationSource = FusedLocationSource(
-            this,
-            LOCATION_PERMISSION_REQUEST_CODE
+            this, LOCATION_PERMISSION_REQUEST_CODE
         )
     }
 
@@ -277,8 +276,7 @@ class DrawActivity :
             val intent = Intent(this, CountDownActivity::class.java)
 
             intent.putExtra(
-                "CourseData",
-                CourseData(
+                "CourseData", CourseData(
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = null,
                     touchList = touchList,
@@ -286,7 +284,7 @@ class DrawActivity :
                     departure = searchResult.name,
                     distance = viewModel.distanceSum.value!!,
                     image = captureUri.toString(),
-                    "draw"
+                    dataFrom = "draw"
                 )
             )
             startActivity(intent)
@@ -354,16 +352,14 @@ class DrawActivity :
 
     private fun setDepartureLatLng() {
         departureLatLng = LatLng(
-            searchResult.locationLatLng.latitude,
-            searchResult.locationLatLng.longitude
+            searchResult.locationLatLng.latitude, searchResult.locationLatLng.longitude
         )
     }
 
 
     private fun setDepartureMarker() {
         val departureMarker = Marker()
-        departureMarker.position =
-            LatLng(departureLatLng.latitude, departureLatLng.longitude)
+        departureMarker.position = LatLng(departureLatLng.latitude, departureLatLng.longitude)
         departureMarker.anchor = PointF(0.5f, 0.7f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
@@ -379,8 +375,7 @@ class DrawActivity :
     private fun addDepartureToCalcDistanceList() {
         calcDistanceList.add(
             LatLng(
-                departureLatLng.latitude,
-                departureLatLng.longitude
+                departureLatLng.latitude, departureLatLng.longitude
             )
         )
     }
@@ -405,8 +400,7 @@ class DrawActivity :
     private fun addCoordsToTouchList(coord: LatLng) {
         touchList.add(
             LatLng(
-                coord.latitude,
-                coord.longitude
+                coord.latitude, coord.longitude
             )
         )
     }
@@ -414,8 +408,7 @@ class DrawActivity :
     private fun setRouteMarker(coord: LatLng) {
         val routeMarker = Marker()
         routeMarker.position = LatLng(
-            coord.latitude,
-            coord.longitude
+            coord.latitude, coord.longitude
         )
         routeMarker.anchor = PointF(0.5f, 0.5f)
         routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
@@ -502,8 +495,7 @@ class DrawActivity :
 
     private fun createMbr() {
         val bounds = LatLngBounds.Builder()
-            .include(LatLng(departureLatLng.latitude, departureLatLng.longitude))
-            .include(touchList)
+            .include(LatLng(departureLatLng.latitude, departureLatLng.longitude)).include(touchList)
             .build()
         naverMap.setContentPadding(100, 100, 100, 100)
         cameraUpdate(bounds)
@@ -517,8 +509,7 @@ class DrawActivity :
 
             viewModel.setRequestBody(
                 ContentUriRequestBody(
-                    this,
-                    captureUri
+                    this, captureUri
                 )
             ) //Uri -> RequestBody
             setViewModelValue(calcDistanceList)
@@ -548,8 +539,7 @@ class DrawActivity :
         fileOutPut.flush()
         fileOutPut.close()
         val uri = FileProvider.getUriForFile(
-            this,
-            BuildConfig.APPLICATION_ID + ".fileprovider", tempFile
+            this, BuildConfig.APPLICATION_ID + ".fileprovider", tempFile
         )
         captureUri = uri
         return uri

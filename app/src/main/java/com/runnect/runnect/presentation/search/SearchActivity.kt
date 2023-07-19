@@ -97,7 +97,7 @@ class SearchActivity :
         with(binding) {
             ivNoSearchResult.isVisible = true
             emptyResultTextView.isVisible = true
-            recyclerViewSearch.isVisible = false //지훈이는 이거 말고 스크롤뷰를 가지고 visible을 처리해줬음
+            recyclerViewSearch.isVisible = false
         }
     }
 
