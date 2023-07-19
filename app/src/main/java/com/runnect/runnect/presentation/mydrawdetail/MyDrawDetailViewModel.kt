@@ -7,10 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
-import com.runnect.runnect.data.model.CourseData
-import com.runnect.runnect.data.model.MyDrawToRunData
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
-import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.response.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -44,7 +43,7 @@ class MyDrawDetailViewModel : ViewModel() {
         }
     }
 
-    fun deleteMyDrawCourse(deleteList : MutableList<Int>) {
+    fun deleteMyDrawCourse(deleteList: MutableList<Int>) {
         viewModelScope.launch {
             runCatching {
 //                _storageState.value = UiState.Loading

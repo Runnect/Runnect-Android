@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.model.SearchResultEntity
+import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.domain.DepartureSearchRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,8 @@ class SearchViewModel @Inject constructor(private val departureSearchRepository:
             }.onSuccess {
                 if (it != null) {
                     dataList.value = it
-                    Timber.tag(ContentValues.TAG).d("SuccessNotNull : getSearchList body is not null")
+                    Timber.tag(ContentValues.TAG)
+                        .d("SuccessNotNull : getSearchList body is not null")
                 } else {
                     dataList.value = null
                     Timber.tag(ContentValues.TAG).d("SuccessButNull : getSearchList body is null")

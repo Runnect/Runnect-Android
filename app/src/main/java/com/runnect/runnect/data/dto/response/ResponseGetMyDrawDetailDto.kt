@@ -1,13 +1,13 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto.response
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetCourseDto(
+data class ResponseGetMyDrawDetailDto(
     @SerialName("data")
-    val `data`: Data,
+    val data: Data,
     @SerialName("message")
     val message: String,
     @SerialName("status")
@@ -17,8 +17,8 @@ data class ResponseGetCourseDto(
 ) {
     @Serializable
     data class Data(
-        @SerialName("courses")
-        val courses: List<Course>,
+        @SerialName("course")
+        val course: Course,
         @SerialName("user")
         val user: User,
     ) {
@@ -28,17 +28,25 @@ data class ResponseGetCourseDto(
             val createdAt: String,
             @SerialName("departure")
             val departure: Departure,
+            @SerialName("distance")
+            val distance: Float,
             @SerialName("id")
             val id: Int,
             @SerialName("image")
             val image: String,
+            @SerialName("path")
+            val path: List<List<Double>>,
         ) {
             @Serializable
             data class Departure(
                 @SerialName("city")
                 val city: String,
+                @SerialName("name")
+                val name: String,
                 @SerialName("region")
                 val region: String,
+                @SerialName("town")
+                val town: String,
             )
         }
 

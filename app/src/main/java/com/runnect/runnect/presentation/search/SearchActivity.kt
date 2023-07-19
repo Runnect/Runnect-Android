@@ -16,7 +16,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.SearchResultEntity
+import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
@@ -54,8 +54,10 @@ class SearchActivity :
     }
 
     private fun initDivider() {
-        val dividerItemDecoration = DividerItemDecoration(this,
-            LinearLayoutManager(this).orientation)
+        val dividerItemDecoration = DividerItemDecoration(
+            this,
+            LinearLayoutManager(this).orientation
+        )
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider)!!)
         binding.recyclerViewSearch.apply {
             addItemDecoration(dividerItemDecoration)
@@ -140,6 +142,7 @@ class SearchActivity :
                     hideLoadingBar()
                     showSearchResult()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()

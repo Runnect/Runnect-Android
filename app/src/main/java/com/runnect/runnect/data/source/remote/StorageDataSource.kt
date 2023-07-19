@@ -3,10 +3,10 @@ package com.runnect.runnect.data.source.remote
 import com.runnect.runnect.data.api.KCourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
-import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.data.model.ResponseGetScrapDto
-import com.runnect.runnect.data.model.ResponsePutMyDrawDto
+import com.runnect.runnect.data.dto.response.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.response.ResponseGetScrapDto
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
 import retrofit2.Response
 
 class StorageDataSource(private val courseService: KCourseService) {

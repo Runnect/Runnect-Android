@@ -1,9 +1,9 @@
 package com.runnect.runnect.data.repository
 
 import com.naver.maps.geometry.LatLng
-import com.runnect.runnect.data.model.SearchResultEntity
-import com.runnect.runnect.data.model.tmap.Poi
-import com.runnect.runnect.data.model.tmap.Pois
+import com.runnect.runnect.data.dto.SearchResultEntity
+import com.runnect.runnect.data.dto.tmap.Poi
+import com.runnect.runnect.data.dto.tmap.Pois
 import com.runnect.runnect.data.source.remote.DepartureSearchDataSource
 import com.runnect.runnect.domain.DepartureSearchRepository
 

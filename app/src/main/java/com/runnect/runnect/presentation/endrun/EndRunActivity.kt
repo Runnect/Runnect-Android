@@ -12,8 +12,8 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.RequestPostRecordDto
-import com.runnect.runnect.data.model.RunToEndRunData
+import com.runnect.runnect.data.dto.RunToEndRunData
+import com.runnect.runnect.data.dto.response.RequestPostRecordDto
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -197,6 +197,7 @@ class EndRunActivity :
                     hideLoadingBar()
                     notifyUploadFinish()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()

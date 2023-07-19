@@ -149,6 +149,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                     binding.ivMyPageEditFrame.isClickable = false
                     binding.viewMyPageMainSettingFrame.isClickable = false
                 }
+
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     val stampResId = requireContext().getStampResId(
@@ -159,6 +160,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                     binding.ivMyPageEditFrame.isClickable = true
                     binding.viewMyPageMainSettingFrame.isClickable = true
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)

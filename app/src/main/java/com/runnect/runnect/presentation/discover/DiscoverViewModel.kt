@@ -41,10 +41,10 @@ class DiscoverViewModel @Inject constructor(private val courseRepository: Course
         }
     }
 
-    fun postCourseScrap(id:Int,scrapTF:Boolean) {
+    fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             kotlin.runCatching {
-                courseRepository.postCourseScrap(RequestCourseScrap(id,scrapTF.toString()))
+                courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
             }.onSuccess {
                 Timber.d("스크랩 성공")
             }.onFailure {

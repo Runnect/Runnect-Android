@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
-import com.runnect.runnect.data.model.ResponsePostCourseDto
-import com.runnect.runnect.data.model.SearchResultEntity
-import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.data.dto.SearchResultEntity
+import com.runnect.runnect.data.dto.UploadLatLng
+import com.runnect.runnect.data.dto.response.ResponsePostCourseDto
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ import timber.log.Timber
 
 class DrawViewModel : ViewModel() {
 
-    val service = KApiCourse.ServicePool.courseService //객체 생성
+    val service = KApiCourse.ServicePool.courseService
 
     private var _drawState = MutableLiveData<UiState>(UiState.Empty)
     val drawState: LiveData<UiState>
@@ -86,12 +86,14 @@ class DrawViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 _drawState.value = UiState.Loading
-                service.uploadCourse(_image.value!!.toFormData(), RequestBody(
-                    path.value!!,
-                    distanceSum.value!!,
-                    departureAddress.value!!,
-                    departureName.value!!
-                ))
+                service.uploadCourse(
+                    _image.value!!.toFormData(), RequestBody(
+                        path.value!!,
+                        distanceSum.value!!,
+                        departureAddress.value!!,
+                        departureName.value!!
+                    )
+                )
             }.onSuccess {
                 Timber.tag(ContentValues.TAG).d("통신success")
                 uploadResult.value = it.body()

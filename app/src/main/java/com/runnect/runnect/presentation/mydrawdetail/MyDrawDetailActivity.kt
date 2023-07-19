@@ -12,12 +12,13 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.CourseData
-import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
 import timber.log.Timber
 
 class MyDrawDetailActivity :

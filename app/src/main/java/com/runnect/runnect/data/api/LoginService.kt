@@ -4,7 +4,6 @@ package com.runnect.runnect.data.api
 import com.runnect.runnect.data.dto.request.RequestLogin
 import com.runnect.runnect.data.dto.response.ResponseLogin
 import com.runnect.runnect.data.dto.response.ResponseRefreshToken
-import com.runnect.runnect.data.model.*
 import retrofit2.http.*
 
 interface LoginService {

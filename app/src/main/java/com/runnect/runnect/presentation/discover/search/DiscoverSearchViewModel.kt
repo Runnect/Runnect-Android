@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.response.ResponseCourseSearch
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,10 +31,9 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
                 courseRepository.getCourseSearch(keyword)
             }.onSuccess {
                 courseSearchList = it
-                if(courseSearchList.isEmpty()){
+                if (courseSearchList.isEmpty()) {
                     _courseSearchState.value = UiState.Empty
-                }
-                else{
+                } else {
                     _courseSearchState.value = UiState.Success
                 }
             }.onFailure {
@@ -45,10 +43,11 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
             }
         }
     }
-    fun postCourseScrap(id:Int,scrapTF:Boolean) {
+
+    fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                courseRepository.postCourseScrap(RequestCourseScrap(id,scrapTF.toString()))
+                courseRepository.postCourseScrap(RequestCourseScrap(id, scrapTF.toString()))
             }.onSuccess {
             }.onFailure {
             }

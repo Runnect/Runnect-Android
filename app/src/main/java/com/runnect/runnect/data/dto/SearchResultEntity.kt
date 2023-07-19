@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto
 
 import android.os.Parcelable
 import com.naver.maps.geometry.LatLng

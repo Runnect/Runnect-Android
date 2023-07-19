@@ -15,10 +15,10 @@ class MyRewardViewModel @Inject constructor(private val userRepository: UserRepo
     ViewModel() {
 
     private val _stampState = MutableLiveData<UiState>(UiState.Loading)
-    val stampState:LiveData<UiState>
+    val stampState: LiveData<UiState>
         get() = _stampState
 
-    var stampList:MutableList<String> = mutableListOf()
+    var stampList: MutableList<String> = mutableListOf()
 
     val errorMessage = MutableLiveData<String>()
 

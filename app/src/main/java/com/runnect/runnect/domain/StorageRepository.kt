@@ -1,13 +1,11 @@
 package com.runnect.runnect.domain
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
-import com.runnect.runnect.data.model.MyDrawCourse
-import com.runnect.runnect.data.model.MyScrapCourse
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
-import com.runnect.runnect.data.model.ResponsePutMyDrawDto
+import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.data.dto.MyScrapCourse
+import com.runnect.runnect.data.dto.response.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
 import retrofit2.Response
 
 interface StorageRepository {

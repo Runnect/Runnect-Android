@@ -11,7 +11,6 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.CustomToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -83,12 +82,14 @@ class LoginActivity :
                         "Login" -> {
                             handleSuccessfulLogin()
                         }
+
                         "Signup" -> {
                             handleSuccessfulSignup()
                         }
                     }
 
                 }
+
                 else -> binding.indeterminateBar.isVisible = false
             }
         }

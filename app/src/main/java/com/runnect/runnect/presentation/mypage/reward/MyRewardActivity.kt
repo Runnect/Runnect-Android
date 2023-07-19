@@ -81,6 +81,7 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
                     initAdapter()
 
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)

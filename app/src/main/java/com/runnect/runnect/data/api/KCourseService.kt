@@ -2,8 +2,15 @@ package com.runnect.runnect.data.api
 
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.response.RequestPostRecordDto
+import com.runnect.runnect.data.dto.response.RequestPutMyDrawDto
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.model.*
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.dto.response.ResponseGetScrapDto
+import com.runnect.runnect.data.dto.response.ResponsePostCourseDto
+import com.runnect.runnect.data.dto.response.ResponsePostRecordDto
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response

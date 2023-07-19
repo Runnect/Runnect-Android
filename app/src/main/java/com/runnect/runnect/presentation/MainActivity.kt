@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.runnect.runnect.R
@@ -30,13 +29,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     var fromDrawMyCourse: Boolean = false
     var fromScrapFragment: Boolean = false
 
-//    var backStackCount: Int = 0
-
     companion object {
         var isVisitorMode = false
         var discoverFragment: DiscoverFragment? = null
         var storageScrapFragment: StorageScrapFragment? = null
-//        const val MAX_BACKSTACK_SIZE = 30
 
         fun updateDiscoverFragment() {
             discoverFragment?.getRecommendCourses()
@@ -110,37 +106,32 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun changeFragment(menuItemId: Int) {
-//        backStackCount = supportFragmentManager.backStackEntryCount
 
         when (menuItemId) {
             R.id.menu_main_drawing -> supportFragmentManager.commit {
-//                clearBackStackIfFull()
-
                 isChangeToStorage = false
                 isChangeToDiscover = false
                 replace<CourseMainFragment>(R.id.fl_main)
             }
-            R.id.menu_main_storage -> supportFragmentManager.commit {
-//                clearBackStackIfFull()
 
+            R.id.menu_main_storage -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
                 replace<StorageMainFragment>(R.id.fl_main)
             }
-            R.id.menu_main_discover -> supportFragmentManager.commit {
-//                clearBackStackIfFull()
 
+            R.id.menu_main_discover -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
                 replace<DiscoverFragment>(R.id.fl_main)
             }
-            R.id.menu_main_my_page -> supportFragmentManager.commit {
-//                clearBackStackIfFull()
 
+            R.id.menu_main_my_page -> supportFragmentManager.commit {
                 isChangeToStorage = false
                 isChangeToDiscover = false
                 replace<MyPageFragment>(R.id.fl_main)
             }
+
             else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
         }
     }
@@ -152,15 +143,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             true
         }
     }
-
-//    private fun clearBackStackIfFull() {
-//        if (backStackCount >= MAX_BACKSTACK_SIZE) {
-//            supportFragmentManager.popBackStackImmediate(
-//                null,
-//                FragmentManager.POP_BACK_STACK_INCLUSIVE
-//            )
-//        }
-//    }
 
     fun getBottomNavMain(): View? {
         return findViewById(R.id.btm_navi_main)

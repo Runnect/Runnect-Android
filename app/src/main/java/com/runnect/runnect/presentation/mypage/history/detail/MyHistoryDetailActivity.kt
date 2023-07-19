@@ -16,10 +16,16 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.*
+import com.runnect.runnect.util.extension.customGetSerializable
+import com.runnect.runnect.util.extension.setCustomDialog
+import com.runnect.runnect.util.extension.setDialogClickListener
+import com.runnect.runnect.util.extension.setEditBottomSheet
+import com.runnect.runnect.util.extension.setEditBottomSheetClickListener
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -128,10 +134,12 @@ class MyHistoryDetailActivity :
                     finish()
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -144,10 +152,12 @@ class MyHistoryDetailActivity :
                     viewModel.titleForInterruption = viewModel.title.value.toString()
                     showToast("수정이 완료되었습니다")
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -228,6 +238,7 @@ class MyHistoryDetailActivity :
                 editBottomSheet.layout_edit_frame -> {
                     enterEditMode()
                 }
+
                 editBottomSheet.layout_delete_frame -> {
                     editBottomSheet.dismiss()
                     deleteDialog.show()

@@ -14,7 +14,7 @@ import com.runnect.runnect.databinding.ItemMypageHistoryBinding
 import com.runnect.runnect.util.HistoryInfoDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnHistoryItemClick
 
-class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
+class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
     ListAdapter<HistoryInfoDTO, MyHistoryAdapter.MyHistoryViewHolder>(
         HistoryInfoDiffUtilItemCallback()
     ) {
@@ -28,23 +28,27 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
     override fun onBindViewHolder(holder: MyHistoryViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
-    fun clearSelection(){
+
+    fun clearSelection() {
         selectedItems?.forEach {
             it.isSelected = false
         }
         selectedItems?.clear()
     }
-    fun removeItems(removedIds:List<Int>){
-        if(currentList.isNotEmpty()){
+
+    fun removeItems(removedIds: List<Int>) {
+        if (currentList.isNotEmpty()) {
             val newItems = currentList.filter { !removedIds.contains(it.id) }
             submitList(newItems)
         }
     }
+
     inner class MyHistoryViewHolder(private val binding: ItemMypageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: HistoryInfoDTO) {
             with(binding) {
-                Glide.with(itemView).load(data.img).thumbnail(0.3f).format(DecodeFormat.PREFER_RGB_565)
+                Glide.with(itemView).load(data.img).thumbnail(0.3f)
+                    .format(DecodeFormat.PREFER_RGB_565)
                     .into(ivMyPageHistoryCourse)
                 ivMyPageHistoryCourse.load(data.img)
                 tvMyPageHistoryCourseName.text = data.title
@@ -55,12 +59,11 @@ class MyHistoryAdapter(context: Context,val listener:OnHistoryItemClick) :
                 tvMyPageHistoryPaceData.text = data.pace
                 ivMyPageHistoryFrame.setOnClickListener {
                     val isEditMode = listener.selectItem(data)
-                    if(isEditMode){
-                        if(it.isSelected){
+                    if (isEditMode) {
+                        if (it.isSelected) {
                             it.isSelected = false
                             selectedItems?.remove(it)
-                        }
-                        else{
+                        } else {
                             it.isSelected = true
                             selectedItems?.add(it)
                         }

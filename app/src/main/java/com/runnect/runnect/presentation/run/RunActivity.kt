@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.run
 
 import android.content.ContentValues
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -10,20 +9,25 @@ import androidx.activity.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.CountToRunData
-import com.runnect.runnect.data.model.RunToEndRunData
+import com.runnect.runnect.data.dto.CountToRunData
+import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.timer
 
 class RunActivity :

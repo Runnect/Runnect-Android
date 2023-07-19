@@ -1,10 +1,8 @@
 package com.runnect.runnect.presentation.discover.adapter
 
 import android.content.Context
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -55,7 +53,8 @@ class CourseRecommendAdapter(
                 ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
                 ivItemDiscoverCourseInfoScrap.setOnClickListener {
                     if (isVisitorMode) {
-                        CustomToast.createToast(discoverFragmentContext, "러넥트에 가입하면 코스를 스크랩할 수 있어요").show()
+                        CustomToast.createToast(discoverFragmentContext, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
+                            .show()
                     } else {
                         it.isSelected = !it.isSelected
                         mCallback.scrapCourse(data.id, it.isSelected)

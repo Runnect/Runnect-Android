@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.api
 
 import com.runnect.runnect.BuildConfig
-import com.runnect.runnect.data.model.tmap.SearchResponseTmapDto
+import com.runnect.runnect.data.dto.tmap.SearchResponseTmapDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header

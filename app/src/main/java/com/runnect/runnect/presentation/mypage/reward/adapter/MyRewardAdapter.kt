@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.bumptech.glide.Glide
 import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ItemMypageRewardBinding

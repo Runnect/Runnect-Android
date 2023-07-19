@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.api.KApiCourse
-import com.runnect.runnect.data.model.RequestPostRecordDto
-import com.runnect.runnect.data.model.ResponsePostRecordDto
+import com.runnect.runnect.data.dto.response.RequestPostRecordDto
+import com.runnect.runnect.data.dto.response.ResponsePostRecordDto
 import com.runnect.runnect.presentation.state.UiState
 import kotlinx.coroutines.launch
 
@@ -37,11 +37,15 @@ class EndRunViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 _endRunState.value = UiState.Loading
-                service.postRecord(RequestPostRecordDto(request.courseId,
-                    request.publicCourseId,
-                    request.title,
-                    request.time,
-                    request.pace))
+                service.postRecord(
+                    RequestPostRecordDto(
+                        request.courseId,
+                        request.publicCourseId,
+                        request.title,
+                        request.time,
+                        request.pace
+                    )
+                )
             }.onSuccess {
                 uploadResult.value = it.body()
                 _endRunState.value = UiState.Success

@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
-import androidx.activity.viewModels
 import androidx.appcompat.content.res.AppCompatResources
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.*
+import com.runnect.runnect.data.dto.CountToRunData
+import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCountDownBinding
 import com.runnect.runnect.presentation.run.RunActivity
 
@@ -53,7 +53,8 @@ class CountDownActivity :
                 counter += 1
                 if (counter == 2) {
                     intentToRun.apply {
-                        putExtra("CountToRunData",
+                        putExtra(
+                            "CountToRunData",
                             CountToRunData(
                                 courseData.courseId,
                                 courseData.publicCourseId,
@@ -63,7 +64,8 @@ class CountDownActivity :
                                 courseData.startLatLng,
                                 courseData.image,
                                 courseData.dataFrom
-                            ))
+                            )
+                        )
                     }
                     startActivity(intentToRun)
                     finish()

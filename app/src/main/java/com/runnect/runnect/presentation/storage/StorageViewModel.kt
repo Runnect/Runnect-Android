@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.UserUploadCourseDTO
+import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.model.MyDrawCourse
-import com.runnect.runnect.data.model.MyScrapCourse
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
-import com.runnect.runnect.data.model.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.response.RequestPutMyDrawDto
 import com.runnect.runnect.domain.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,7 +69,8 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
             }.onSuccess {
                 Timber.tag(ContentValues.TAG)
                     .d("삭제 성공입니다")
-                _myDrawCourses = _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
+                _myDrawCourses =
+                    _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
                 _myDrawCoursesDeleteState.value = UiState.Success
 
             }.onFailure {

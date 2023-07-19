@@ -20,7 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.CourseData
+import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
@@ -283,10 +283,12 @@ class CourseDetailActivity :
                         finish()
                     }
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -303,10 +305,12 @@ class CourseDetailActivity :
                 UiState.Success -> {
                     handleSuccessfulCourseUpdate()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -332,6 +336,7 @@ class CourseDetailActivity :
                 editBottomSheet.layout_edit_frame -> {
                     enterEditMode()
                 }
+
                 editBottomSheet.layout_delete_frame -> {
                     deleteDialog.show()
                 }

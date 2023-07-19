@@ -1,8 +1,13 @@
 package com.runnect.runnect.data.repository
 
+import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.data.dto.MyScrapCourse
+import com.runnect.runnect.data.dto.response.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.response.ResponseGetScrapDto
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.model.*
 import com.runnect.runnect.data.source.remote.StorageDataSource
 import com.runnect.runnect.domain.StorageRepository
 import retrofit2.Response

@@ -9,8 +9,6 @@ import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -30,18 +28,19 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.CourseData
-import com.runnect.runnect.data.model.DrawToRunData
-import com.runnect.runnect.data.model.SearchResultEntity
-import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.SearchResultEntity
+import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
+import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
+import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
+import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
+import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -247,6 +246,7 @@ class DrawActivity :
                     hideLoadingBar()
                     notifyCreateFinish(binding.root)
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                 }
@@ -526,6 +526,7 @@ class DrawActivity :
             viewModel.uploadCourse()
         }
     }
+
     private fun setViewModelValue(distanceList: List<LatLng>) {
         val uploadLatLngList: List<UploadLatLng> = distanceList.map { latLng ->
             UploadLatLng(latLng.latitude, latLng.longitude)

@@ -18,8 +18,8 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.callback.OnHeartClick
+import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,6 +84,7 @@ class DiscoverSearchActivity :
                 UiState.Empty -> {
                     handleUnsuccessfulCourseSearch()
                 }
+
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
@@ -91,6 +92,7 @@ class DiscoverSearchActivity :
                     binding.constDiscoverSearchNoResult.isVisible = false
                     initAdapter()
                 }
+
                 UiState.Failure -> {
                     handleUnsuccessfulCourseSearch()
                     Timber.tag(ContentValues.TAG)
@@ -102,8 +104,8 @@ class DiscoverSearchActivity :
 
     }
 
-    private fun handleUnsuccessfulCourseSearch(){
-        with(binding){
+    private fun handleUnsuccessfulCourseSearch() {
+        with(binding) {
             indeterminateBar.isVisible = false
             svDiscoverSearch.isVisible = false
             constDiscoverSearchNoResult.isVisible = true

@@ -299,6 +299,7 @@ class StorageMyDrawFragment :
                     showMyDrawResult()
                     updateAdapterData()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)

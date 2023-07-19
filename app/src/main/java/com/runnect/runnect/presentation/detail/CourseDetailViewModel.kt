@@ -1,7 +1,10 @@
 package com.runnect.runnect.presentation.detail
 
-import androidx.lifecycle.*
-import com.runnect.runnect.R
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseDetailDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
@@ -133,11 +136,17 @@ class CourseDetailViewModel @Inject constructor(
         }
     }
 
-    fun patchUpdatePublicCourse(id:Int){
+    fun patchUpdatePublicCourse(id: Int) {
         viewModelScope.launch {
             runCatching {
                 _courseUpdateState.value = UiState.Loading
-                courseRepository.patchUpdatePublicCourse(id, RequestUpdatePublicCourse(contentForInterruption.value!!,titleForInterruption.value!!))
+                courseRepository.patchUpdatePublicCourse(
+                    id,
+                    RequestUpdatePublicCourse(
+                        contentForInterruption.value!!,
+                        titleForInterruption.value!!
+                    )
+                )
             }.onSuccess {
                 _courseUpdateState.value = UiState.Success
             }.onFailure {

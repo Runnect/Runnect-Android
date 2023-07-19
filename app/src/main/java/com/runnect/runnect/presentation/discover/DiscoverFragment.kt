@@ -33,7 +33,8 @@ import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
@@ -147,6 +148,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     binding.indeterminateBar.isVisible = false
                     setRecommendCourseAdapter()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
