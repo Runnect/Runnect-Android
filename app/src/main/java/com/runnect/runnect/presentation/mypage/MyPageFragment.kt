@@ -91,8 +91,11 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
             intent.putExtra(NICK_NAME, "${viewModel.nickName.value}")
             val stampResId = requireContext().getStampResId(
+                stampId =
                 viewModel.stampId.value,
-                RES_NAME, RES_STAMP_TYPE, requireContext().packageName
+                resNameParam = RES_NAME,
+                resType = RES_STAMP_TYPE,
+                packageName = requireContext().packageName
             )
             intent.putExtra(PROFILE, stampResId)
             resultEditNameLauncher.launch(intent)

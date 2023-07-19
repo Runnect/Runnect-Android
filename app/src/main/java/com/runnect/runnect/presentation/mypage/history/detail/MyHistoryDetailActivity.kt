@@ -57,7 +57,7 @@ class MyHistoryDetailActivity :
 
     private fun initLayout() {
         val bundle = intent.getBundleExtra(HISTORY_INTENT_KEY)
-        historyData = bundle?.customGetSerializable<HistoryInfoDTO>(HISTORY_BUNDLE_KEY)!!
+        historyData = bundle?.customGetSerializable(HISTORY_BUNDLE_KEY)!!
         with(binding) {
             vm = viewModel
             viewModel.mapImg.value = historyData.img
@@ -248,8 +248,12 @@ class MyHistoryDetailActivity :
     }
 
     private fun initDeleteDialog() {
-        deleteDialog =
-            setCustomDialog(layoutInflater, binding.root, DELETE_DIALOG_DESC, DELETE_DIALOG_YES_BTN)
+        deleteDialog = setCustomDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            desc = DELETE_DIALOG_DESC,
+            yesBtnText = DELETE_DIALOG_YES_BTN
+        )
     }
 
     private fun setDeleteDialogClickEvent() {
@@ -265,11 +269,11 @@ class MyHistoryDetailActivity :
 
     private fun initEditInterruptedDialog() {
         editInterruptDialog = setCustomDialog(
-            layoutInflater,
-            binding.root,
-            EDIT_INTERRUPT_DIALOG_DESC,
-            EDIT_INTERRUPT_DIALOG_YES_BTN,
-            EDIT_INTERRUPT_DIALOG_NO_BTN
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            desc = EDIT_INTERRUPT_DIALOG_DESC,
+            yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
+            noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
         )
     }
 

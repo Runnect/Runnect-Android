@@ -54,16 +54,15 @@ class CountDownActivity :
                 if (counter == 2) {
                     intentToRun.apply {
                         putExtra(
-                            "CountToRunData",
-                            CountToRunData(
-                                courseData.courseId,
-                                courseData.publicCourseId,
-                                courseData.departure,
-                                courseData.distance,
-                                courseData.touchList,
-                                courseData.startLatLng,
-                                courseData.image,
-                                courseData.dataFrom
+                            "CountToRunData", CountToRunData(
+                                courseId = courseData.courseId,
+                                publicCourseId = courseData.publicCourseId,
+                                departure = courseData.departure,
+                                distance = courseData.distance,
+                                touchList = courseData.touchList,
+                                startLatLng = courseData.startLatLng,
+                                image = courseData.image,
+                                dataFrom = courseData.dataFrom
                             )
                         )
                     }

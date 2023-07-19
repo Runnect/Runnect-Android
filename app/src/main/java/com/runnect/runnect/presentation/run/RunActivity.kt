@@ -52,6 +52,15 @@ class RunActivity :
     private var timerMinute: Int = 0
     private var timerHour: Int = 0
 
+    var courseId : Int? = null
+    var publicCourseId : Int? = null
+    lateinit var departure : String
+    lateinit var startLatLng : LatLng
+    lateinit var touchList : ArrayList<LatLng>
+    lateinit var captureUri : String
+    lateinit var dataFrom : String
+    var distanceSum : Double = 0.0
+
 
     private val viewModel: RunViewModel by viewModels()
 
@@ -159,25 +168,26 @@ class RunActivity :
 
 
     private fun setCourse() {
-        setViewModelValue()
+        getIntentValue()
         createDepartureMarker()
         createRouteMarker()
     }
 
-    private fun setViewModelValue() {
+    private fun getIntentValue() {
         countToRunData = intent.getParcelableExtra("CountToRunData")!!
-        viewModel.courseId.value = countToRunData.courseId
-        viewModel.publicCourseId.value = countToRunData.publicCourseId
-        viewModel.departure.value = countToRunData.departure
-        viewModel.startLatLng.value = countToRunData.startLatLng
-        viewModel.touchList.value = countToRunData.touchList
-        viewModel.captureUri.value = countToRunData.image
-        viewModel.dataFrom.value = countToRunData.dataFrom
+
+        courseId = countToRunData.courseId
+        publicCourseId = countToRunData.publicCourseId
+        departure = countToRunData.departure
+        startLatLng = countToRunData.startLatLng
+        touchList = countToRunData.touchList
+        captureUri = countToRunData.image
+        dataFrom = countToRunData.dataFrom
 
         val distanceCut =
             BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
                 .toDouble()
-        viewModel.distanceSum.value = distanceCut
+        distanceSum = distanceCut
     }
 
     private fun createDepartureMarker() {
@@ -236,15 +246,15 @@ class RunActivity :
                 putExtra(
                     "RunToEndRunData",
                     RunToEndRunData(
-                        courseId = viewModel.courseId.value!!,
-                        publicCourseId = viewModel.publicCourseId.value,
-                        viewModel.distanceSum.value,
-                        viewModel.captureUri.value,
-                        viewModel.departure.value,
-                        timerHour,
-                        timerMinute,
-                        timerSecond,
-                        viewModel.dataFrom.value!!
+                        courseId = courseId!!,
+                        publicCourseId = publicCourseId,
+                        totalDistance = distanceSum,
+                        captureUri = captureUri,
+                        departure = departure,
+                        timerHour = timerHour,
+                        timerMinute = timerMinute,
+                        timerSecond = timerSecond,
+                        dataFrom = dataFrom
                     )
                 )
             }
@@ -262,7 +272,7 @@ class RunActivity :
             val minute = time / 60 //60이 되는 순간 몫이 1이 돼서 1로 표기
             val second = time % 60 //60이 되는순간 나머지가 0이라 0으로 표기
 
-            runOnUiThread { //더 좋은 방법이 있나.
+            runOnUiThread {
                 if (hour < 10) {
                     binding.tvTimeHour.text = "0$hour"
                 } else {

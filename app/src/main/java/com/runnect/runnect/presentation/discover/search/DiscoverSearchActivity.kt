@@ -68,7 +68,9 @@ class DiscoverSearchActivity :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
-                    viewModel.getCourseSearch(binding.etDiscoverSearchTitle.text.toString())
+                    viewModel.getCourseSearch(
+                        keyword = binding.etDiscoverSearchTitle.text.toString()
+                    )
                     clearFocus(binding.etDiscoverSearchTitle)
                     return true
                 }

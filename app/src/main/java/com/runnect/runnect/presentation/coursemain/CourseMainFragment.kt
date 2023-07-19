@@ -34,14 +34,12 @@ class CourseMainFragment :
 
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
         getCurrentLocation()
         drawCourseButton()
     }
-
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())

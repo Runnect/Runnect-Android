@@ -135,14 +135,14 @@ class MyDrawDetailActivity :
 
     private fun setPutExtraValue(src: ResponseGetMyDrawDetailDto) {
         viewModel.myDrawToRunData.value = CourseData(
-            src.data.course.id,
+            courseId = src.data.course.id,
             publicCourseId = null,
-            touchList,
-            departureLatLng,
-            src.data.course.departure.name,
-            src.data.course.distance,
-            src.data.course.image,
-            "myDraw"
+            touchList = touchList,
+            startLatLng = departureLatLng,
+            departure = src.data.course.departure.name,
+            distance = src.data.course.distance,
+            image = src.data.course.image,
+            dataFrom = "myDraw"
         )
     }
 

@@ -281,15 +281,14 @@ class DrawActivity :
                 CourseData(
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = null,
-                    touchList,
-                    departureLatLng,
-                    searchResult.name,
-                    viewModel.distanceSum.value!!,
-                    captureUri.toString(),
+                    touchList = touchList,
+                    startLatLng = departureLatLng,
+                    departure = searchResult.name,
+                    distance = viewModel.distanceSum.value!!,
+                    image = captureUri.toString(),
                     "draw"
                 )
             )
-
             startActivity(intent)
             dialog.dismiss()
         }

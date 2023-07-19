@@ -55,7 +55,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initDialog() {
-        dialog = setCustomDialog(layoutInflater, binding.root, DIALOG_DESC, DELETE_BTN)
+        dialog = setCustomDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            desc = DIALOG_DESC,
+            yesBtnText = DELETE_BTN
+        )
     }
 
     private fun setDialogClickEvent() {
@@ -163,7 +168,9 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun handleSuccessfulHistoryDeletion() {
         binding.indeterminateBar.isVisible = false
-        adapter.removeItems(viewModel.itemsToDelete)
+        adapter.removeItems(
+            removedIds = viewModel.itemsToDelete
+        )
         adapter.clearSelection()
         viewModel.clearItemsToDelete()
     }
@@ -209,7 +216,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     override fun selectItem(data: HistoryInfoDTO): Boolean {
         return if (viewModel.editMode.value == true) {
-            viewModel.modifyItemsToDelete(data.id)
+            viewModel.modifyItemsToDelete(
+                id = data.id)
             true
         } else {
             //매개변수로 아이템 정보를 넘겨받아 기록 조회 액티비티 이동

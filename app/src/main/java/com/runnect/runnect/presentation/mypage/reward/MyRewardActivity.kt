@@ -99,8 +99,12 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
             for (i in viewModel.stampList) {
                 index = stampListForIndex.indexOf(i)
                 val stampResId = this.getStampResId(
+                    stampId =
                     i,
-                    RES_NAME, RES_STAMP_TYPE, this.packageName
+                    resNameParam =
+                    RES_NAME,
+                    resType = RES_STAMP_TYPE,
+                    packageName = this.packageName
                 )
                 stampImgList[index].img = stampResId
             }

@@ -123,16 +123,15 @@ class CourseDetailActivity :
             } else {
                 val intent = Intent(this, CountDownActivity::class.java).apply {
                     putExtra(
-                        "CourseData",
-                        CourseData(
-                            viewModel.courseDetail.courseId,
-                            viewModel.courseDetail.id,
-                            touchList,
-                            departureLatLng,
-                            viewModel.courseDetail.departure,
-                            viewModel.courseDetail.distance.toFloat(),
-                            viewModel.courseDetail.image,
-                            "detail"
+                        "CourseData", CourseData(
+                            courseId = viewModel.courseDetail.courseId,
+                            publicCourseId = viewModel.courseDetail.id,
+                            touchList = touchList,
+                            startLatLng = departureLatLng,
+                            departure = viewModel.courseDetail.departure,
+                            distance = viewModel.courseDetail.distance.toFloat(),
+                            image = viewModel.courseDetail.image,
+                            dataFrom = "detail"
                         )
                     )
                 }
@@ -236,8 +235,7 @@ class CourseDetailActivity :
         for (i in 1 until viewModel.courseDetail.path.size) {
             touchList.add(
                 LatLng(
-                    viewModel.courseDetail.path[i][0],
-                    viewModel.courseDetail.path[i][1]
+                    viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]
                 )
             )
         }
@@ -249,8 +247,10 @@ class CourseDetailActivity :
                 with(binding) {
                     with(viewModel.courseDetail) {
                         val stampResId = this@CourseDetailActivity.getStampResId(
-                            viewModel.stampId.value,
-                            RES_NAME, RES_STAMP_TYPE, packageName
+                            stampId = viewModel.stampId.value,
+                            resNameParam = RES_NAME,
+                            resType = RES_STAMP_TYPE,
+                            packageName = packageName
                         )
                         ivCourseDetailProfileStamp.load(stampResId)
                         ivCourseDetailProfileNickname.text = nickname
@@ -345,12 +345,9 @@ class CourseDetailActivity :
     }
 
     private fun initDeleteDialog() {
-        deleteDialog =
-            setCustomDialog(
-                layoutInflater, binding.root,
-                DELETE_DIALOG_DESC,
-                DELETE_DIALOG_YES_BTN
-            )
+        deleteDialog = setCustomDialog(
+            layoutInflater, binding.root, DELETE_DIALOG_DESC, DELETE_DIALOG_YES_BTN
+        )
     }
 
     private fun setDeleteDialogClickEvent() {
@@ -366,11 +363,11 @@ class CourseDetailActivity :
 
     private fun initEditInterruptedDialog() {
         editInterruptDialog = setCustomDialog(
-            layoutInflater,
-            binding.root,
-            EDIT_INTERRUPT_DIALOG_DESC,
-            EDIT_INTERRUPT_DIALOG_YES_BTN,
-            EDIT_INTERRUPT_DIALOG_NO_BTN
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            desc = EDIT_INTERRUPT_DIALOG_DESC,
+            yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
+            noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
         )
     }
 
@@ -394,8 +391,7 @@ class CourseDetailActivity :
 
         // layout_bottom_sheet를 뷰 객체로 생성
         val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
-            R.layout.custom_dialog_report,
-            findViewById<LinearLayout>(R.id.bottomSheet)
+            R.layout.custom_dialog_report, findViewById<LinearLayout>(R.id.bottomSheet)
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.view_go_to_report_frame).setOnClickListener {
