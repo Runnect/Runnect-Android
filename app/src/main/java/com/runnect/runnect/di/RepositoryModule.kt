@@ -36,6 +36,6 @@ interface RepositoryModule {
 
     @Singleton
     @Binds
-    fun bindBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository = bannerRepositoryImpl
+    fun bindBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository
 
 }
