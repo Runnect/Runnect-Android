@@ -58,7 +58,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         dialog = setCustomDialog(
             layoutInflater = layoutInflater,
             view = binding.root,
-            desc = DIALOG_DESC,
+            description = DIALOG_DESC,
             yesBtnText = DELETE_BTN
         )
     }

@@ -365,7 +365,7 @@ class CourseDetailActivity :
         editInterruptDialog = setCustomDialog(
             layoutInflater = layoutInflater,
             view = binding.root,
-            desc = EDIT_INTERRUPT_DIALOG_DESC,
+            description = EDIT_INTERRUPT_DIALOG_DESC,
             yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
             noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
         )
