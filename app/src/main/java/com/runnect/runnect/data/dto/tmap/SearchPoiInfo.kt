@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.model.tmap
+package com.runnect.runnect.data.dto.tmap
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

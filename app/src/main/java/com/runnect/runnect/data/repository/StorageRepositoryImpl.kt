@@ -1,19 +1,25 @@
 package com.runnect.runnect.data.repository
 
+import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.model.*
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.response.ResponseGetScrapDto
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
 import com.runnect.runnect.domain.StorageRepository
 import retrofit2.Response
 import javax.inject.Inject
+
 
 class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSource: RemoteStorageDataSource) :
     StorageRepository {
 
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
         return changeMyDrawData(
-            remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses
+            data = remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses
         ).toMutableList()
     }
 
@@ -30,17 +36,21 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDto): Response<ResponsePutMyDrawDto> {
-        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList)
+        return remoteStorageDataSource.deleteMyDrawCourse(
+            deleteCourseList = deleteCourseList
+        )
     }
 
     override suspend fun getMyScrapCourse(): MutableList<MyScrapCourse> {
         return changeMyScrapData(
-            remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps
+            data = remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps
         ).toMutableList()
     }
 
     override suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> {
-        return remoteStorageDataSource.postMyScrapCourse(requestCourseScrap)
+        return remoteStorageDataSource.postMyScrapCourse(
+            requestCourseScrap = requestCourseScrap
+        )
     }
 
     private fun changeMyScrapData(data: List<ResponseGetScrapDto.Data.Scrap>): List<MyScrapCourse> {

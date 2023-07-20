@@ -3,10 +3,10 @@ package com.runnect.runnect.data.source.remote
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
-import com.runnect.runnect.data.model.ResponseGetCourseDto
-import com.runnect.runnect.data.model.ResponseGetScrapDto
-import com.runnect.runnect.data.model.ResponsePutMyDrawDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.response.ResponseGetScrapDto
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
 import retrofit2.Response
 import javax.inject.Inject
 

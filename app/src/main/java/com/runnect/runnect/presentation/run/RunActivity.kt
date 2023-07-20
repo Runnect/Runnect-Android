@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.run
 
 import android.content.ContentValues
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -10,20 +9,25 @@ import androidx.activity.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.CountToRunData
-import com.runnect.runnect.data.model.RunToEndRunData
+import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.timer
 
 class RunActivity :
@@ -34,7 +38,7 @@ class RunActivity :
     private lateinit var locationSource: FusedLocationSource
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
     private lateinit var departureLatLng: LatLng
-    private lateinit var countToRunData: CountToRunData
+    private lateinit var courseData: CourseData
 
     private val path = PathOverlay()
 
@@ -47,6 +51,15 @@ class RunActivity :
     private var timerSecond: Int = 0
     private var timerMinute: Int = 0
     private var timerHour: Int = 0
+
+    var courseId: Int? = null
+    var publicCourseId: Int? = null
+    lateinit var departure: String
+    lateinit var startLatLng: LatLng
+    lateinit var touchList: ArrayList<LatLng>
+    lateinit var captureUri: String
+    lateinit var dataFrom: String
+    var distanceSum: Double = 0.0
 
 
     private val viewModel: RunViewModel by viewModels()
@@ -155,30 +168,31 @@ class RunActivity :
 
 
     private fun setCourse() {
-        setViewModelValue()
+        getIntentValue()
         createDepartureMarker()
         createRouteMarker()
     }
 
-    private fun setViewModelValue() {
-        countToRunData = intent.getParcelableExtra("CountToRunData")!!
-        viewModel.courseId.value = countToRunData.courseId
-        viewModel.publicCourseId.value = countToRunData.publicCourseId
-        viewModel.departure.value = countToRunData.departure
-        viewModel.startLatLng.value = countToRunData.startLatLng
-        viewModel.touchList.value = countToRunData.touchList
-        viewModel.captureUri.value = countToRunData.image
-        viewModel.dataFrom.value = countToRunData.dataFrom
+    private fun getIntentValue() {
+        courseData = intent.getParcelableExtra("CountToRunData")!!
+
+        courseId = courseData.courseId
+        publicCourseId = courseData.publicCourseId
+        departure = courseData.departure
+        startLatLng = courseData.startLatLng
+        touchList = courseData.touchList
+        captureUri = courseData.image
+        dataFrom = courseData.dataFrom
 
         val distanceCut =
-            BigDecimal(countToRunData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
+            BigDecimal(courseData.distance.toDouble()).setScale(1, RoundingMode.FLOOR)
                 .toDouble()
-        viewModel.distanceSum.value = distanceCut
+        distanceSum = distanceCut
     }
 
     private fun createDepartureMarker() {
         val departureMarker = Marker()
-        departureLatLng = countToRunData.startLatLng
+        departureLatLng = courseData.startLatLng
 
         departureMarker.position =
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
@@ -192,31 +206,31 @@ class RunActivity :
     }
 
     private fun createRouteMarker() {
-        for (i in 1..countToRunData.touchList.size) {
-            setRouteMarker(countToRunData, i)
-            generateRouteLine(countToRunData, i)
+        for (i in 1..courseData.touchList.size) {
+            setRouteMarker(courseData, i)
+            generateRouteLine(courseData, i)
         }
     }
 
     private fun setRouteMarker(
-        countToRunData: CountToRunData,
+        courseData: CourseData,
         i: Int
     ) { //여기도 create랑 set이랑 역할 표현이 모호함
         val routeMarker = Marker()
         routeMarker.position = LatLng(
-            countToRunData.touchList[i - 1].latitude,
-            countToRunData.touchList[i - 1].longitude
+            courseData.touchList[i - 1].latitude,
+            courseData.touchList[i - 1].longitude
         )
         routeMarker.anchor = PointF(0.5f, 0.5f)
         routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
         routeMarker.map = naverMap
     }
 
-    private fun generateRouteLine(countToRunData: CountToRunData, i: Int) {
+    private fun generateRouteLine(courseData: CourseData, i: Int) {
         coords.add(
             LatLng(
-                countToRunData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
-                countToRunData.touchList[i - 1].longitude
+                courseData.touchList[i - 1].latitude, // coords에 터치로 받아온 좌표값을 추가
+                courseData.touchList[i - 1].longitude
             )
         ) // coords에 터치로 받아온 좌표값 추가
         path.coords = coords // 경로선 그리기
@@ -232,15 +246,15 @@ class RunActivity :
                 putExtra(
                     "RunToEndRunData",
                     RunToEndRunData(
-                        courseId = viewModel.courseId.value!!,
-                        publicCourseId = viewModel.publicCourseId.value,
-                        viewModel.distanceSum.value,
-                        viewModel.captureUri.value,
-                        viewModel.departure.value,
-                        timerHour,
-                        timerMinute,
-                        timerSecond,
-                        viewModel.dataFrom.value!!
+                        courseId = courseId!!,
+                        publicCourseId = publicCourseId,
+                        totalDistance = distanceSum,
+                        captureUri = captureUri,
+                        departure = departure,
+                        timerHour = timerHour,
+                        timerMinute = timerMinute,
+                        timerSecond = timerSecond,
+                        dataFrom = dataFrom
                     )
                 )
             }
@@ -258,7 +272,7 @@ class RunActivity :
             val minute = time / 60 //60이 되는 순간 몫이 1이 돼서 1로 표기
             val second = time % 60 //60이 되는순간 나머지가 0이라 0으로 표기
 
-            runOnUiThread { //더 좋은 방법이 있나.
+            runOnUiThread {
                 if (hour < 10) {
                     binding.tvTimeHour.text = "0$hour"
                 } else {

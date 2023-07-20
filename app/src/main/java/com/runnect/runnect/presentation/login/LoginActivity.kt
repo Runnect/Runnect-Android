@@ -11,7 +11,6 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.CustomToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -42,8 +41,14 @@ class LoginActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        googleLogin = GoogleLogin(this@LoginActivity, viewModel)
-        kakaoLogin = KakaoLogin(this@LoginActivity, viewModel)
+        googleLogin = GoogleLogin(
+            activity = this@LoginActivity,
+            viewModel = viewModel
+        )
+        kakaoLogin = KakaoLogin(
+            context = this@LoginActivity,
+            viewModel = viewModel
+        )
         addObserver()
         addListener()
     }
@@ -60,14 +65,14 @@ class LoginActivity :
             }
             btnVisitorMode.setOnClickListener {
                 PreferenceManager.setString(
-                    applicationContext,
-                    "access",
-                    "visitor"
+                    context = applicationContext,
+                    key = "access",
+                    value = "visitor"
                 )
                 PreferenceManager.setString(
-                    applicationContext,
-                    "refresh",
-                    "null"
+                    context = applicationContext,
+                    key = "refresh",
+                    value = "null"
                 )
                 moveToMain()
             }
@@ -83,12 +88,14 @@ class LoginActivity :
                         "Login" -> {
                             handleSuccessfulLogin()
                         }
+
                         "Signup" -> {
                             handleSuccessfulSignup()
                         }
                     }
 
                 }
+
                 else -> binding.indeterminateBar.isVisible = false
             }
         }
@@ -120,14 +127,14 @@ class LoginActivity :
 
     private fun saveSignTokenInfo() {
         PreferenceManager.setString(
-            applicationContext,
-            "access",
-            viewModel.loginResult.value?.accessToken
+            context = applicationContext,
+            key = "access",
+            value = viewModel.loginResult.value?.accessToken
         )
         PreferenceManager.setString(
-            applicationContext,
-            "refresh",
-            viewModel.loginResult.value?.refreshToken
+            context = applicationContext,
+            key = "refresh",
+            value = viewModel.loginResult.value?.refreshToken
         )
     }
 

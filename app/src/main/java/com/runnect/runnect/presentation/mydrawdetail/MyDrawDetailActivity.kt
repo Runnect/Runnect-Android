@@ -1,26 +1,22 @@
 package com.runnect.runnect.presentation.mydrawdetail
 
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.MyDrawToRunData
-import com.runnect.runnect.data.model.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.storage.StorageMainFragment
-import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
+import com.runnect.runnect.util.extension.setActivityDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -47,34 +43,32 @@ class MyDrawDetailActivity :
 
     }
 
-    fun customDialog(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
-
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
-        }
-        val dialog = build.create()
-//        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
-        dialog.show()
-
-        myLayout.btn_delete_yes.setOnClickListener {
-            deleteCourse()
-            dialog.dismiss()
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("fromDeleteMyDraw", true)
+    private fun deletingDialog() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_delete,
+            cancel = true
+        )
+        with(dialogLayout) {
+            this.btn_delete_yes.setOnClickListener {
+                deleteCourse()
+                dialog.dismiss()
+                val intent = Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
+                    putExtra("fromDeleteMyDraw", true)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
+            this.btn_delete_no.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        myLayout.btn_delete_no.setOnClickListener {
-            dialog.dismiss()
-        }
-
+        dialog.show()
     }
 
     private fun deleteButton() {
         binding.imgBtnDelete.setOnClickListener {
-            customDialog(binding.root)
+            deletingDialog()
         }
     }
 
@@ -101,7 +95,7 @@ class MyDrawDetailActivity :
     fun toCountDownButton() {
         binding.btnMyDrawDetailRun.setOnClickListener {
             startActivity(Intent(this, CountDownActivity::class.java).apply {
-                putExtra("myDrawToRun", viewModel.myDrawToRunData.value)
+                putExtra("CourseData", viewModel.myDrawToRunData.value)
             })
         }
     }
@@ -137,14 +131,15 @@ class MyDrawDetailActivity :
     }
 
     private fun setPutExtraValue(src: ResponseGetMyDrawDetailDto) {
-        viewModel.myDrawToRunData.value = MyDrawToRunData(
-            src.data.course.id,
+        viewModel.myDrawToRunData.value = CourseData(
+            courseId = src.data.course.id,
             publicCourseId = null,
-            touchList,
-            departureLatLng,
-            src.data.course.distance,
-            src.data.course.departure.name,
-            src.data.course.image
+            touchList = touchList,
+            startLatLng = departureLatLng,
+            departure = src.data.course.departure.name,
+            distance = src.data.course.distance,
+            image = src.data.course.image,
+            dataFrom = "myDraw"
         )
     }
 

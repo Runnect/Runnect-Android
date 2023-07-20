@@ -9,7 +9,6 @@ import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +19,7 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
     val profileImg: MutableLiveData<Int> = MutableLiveData<Int>(R.drawable.user_profile_basic)
     val level: MutableLiveData<String> = MutableLiveData<String>()
     val levelPercent: MutableLiveData<Int> = MutableLiveData<Int>()
-    val email:MutableLiveData<String> = MutableLiveData<String>()
+    val email: MutableLiveData<String> = MutableLiveData<String>()
 
     private val _userInfoState = MutableLiveData<UiState>(UiState.Loading)
     val userInfoState: LiveData<UiState>

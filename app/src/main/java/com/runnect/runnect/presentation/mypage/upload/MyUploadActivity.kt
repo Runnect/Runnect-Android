@@ -20,7 +20,8 @@ import com.runnect.runnect.util.callback.OnUploadItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -94,6 +95,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
                     viewModel.deleteUploadCourse()
                     dialog.dismiss()
                 }
+
                 dialog.btn_delete_no -> {
                     dialog.dismiss()
                 }

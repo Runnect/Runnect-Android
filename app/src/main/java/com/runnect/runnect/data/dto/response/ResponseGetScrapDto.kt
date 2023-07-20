@@ -1,11 +1,11 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto.response
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetMyDrawDetailDto(
+data class ResponseGetScrapDto(
     @SerialName("data")
     val data: Data,
     @SerialName("message")
@@ -17,36 +17,32 @@ data class ResponseGetMyDrawDetailDto(
 ) {
     @Serializable
     data class Data(
-        @SerialName("course")
-        val course: Course,
+        @SerialName("Scraps")
+        val scraps: List<Scrap>,
         @SerialName("user")
         val user: User,
     ) {
         @Serializable
-        data class Course(
-            @SerialName("createdAt")
-            val createdAt: String,
+        data class Scrap(
+            @SerialName("courseId")
+            val courseId: Int,
             @SerialName("departure")
             val departure: Departure,
-            @SerialName("distance")
-            val distance: Float,
             @SerialName("id")
             val id: Int,
             @SerialName("image")
             val image: String,
-            @SerialName("path")
-            val path: List<List<Double>>,
+            @SerialName("publicCourseId")
+            val publicCourseId: Int,
+            @SerialName("title")
+            val title: String,
         ) {
             @Serializable
             data class Departure(
                 @SerialName("city")
                 val city: String,
-                @SerialName("name")
-                val name: String,
                 @SerialName("region")
                 val region: String,
-                @SerialName("town")
-                val town: String,
             )
         }
 

@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto
 
 
 import android.os.Parcelable
@@ -6,12 +6,13 @@ import com.naver.maps.geometry.LatLng
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class DrawToRunData(
-    val courseId : Int,
-    val publicCourseId : Int? = null,
+data class CourseData(
+    val courseId: Int?,
+    val publicCourseId: Int?,
     val touchList: ArrayList<LatLng>,
     val startLatLng: LatLng,
-    val totalDistance: Float,
     val departure: String,
-    val captureUri: String,
+    val distance: Float,
+    val image: String,
+    val dataFrom: String
 ) : Parcelable

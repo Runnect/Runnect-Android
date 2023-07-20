@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto.request
 
 
 import kotlinx.serialization.SerialName

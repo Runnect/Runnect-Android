@@ -9,7 +9,7 @@
 
         <variable
             name="storageItem"
-            type="com.runnect.runnect.data.model.MyDrawCourse" />
+            type="com.runnect.runnect.data.dto.MyDrawCourse" />
 
         <variable
             name="selected"

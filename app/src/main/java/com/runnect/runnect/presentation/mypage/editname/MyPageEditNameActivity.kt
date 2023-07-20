@@ -68,6 +68,7 @@ class MyPageEditNameActivity :
                     setResult(RESULT_OK, Intent().putExtra(NICK_NAME, viewModel.nickName.value))
                     finish()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     if (viewModel.statusCode.value == 400) {
@@ -77,12 +78,11 @@ class MyPageEditNameActivity :
             }
         }
         viewModel.nickName.observe(this) {
-            with(binding.tvMyPageEditNameFinish){
-                if(it.isNullOrEmpty()){
+            with(binding.tvMyPageEditNameFinish) {
+                if (it.isNullOrEmpty()) {
                     isActivated = false
                     isClickable = false
-                }
-                else{
+                } else {
                     isActivated = true
                     isClickable = true
                 }

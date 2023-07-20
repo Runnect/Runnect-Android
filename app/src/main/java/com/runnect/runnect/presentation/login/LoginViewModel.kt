@@ -4,14 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.dto.request.RequestLogin
 import com.runnect.runnect.data.dto.response.LoginDTO
 import com.runnect.runnect.domain.LoginRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,7 +31,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
                 _loginState.value = UiState.Loading
                 loginRepository.postLogin(
                     RequestLogin(
-                        request.token, request.provider
+                        token = request.token, provider = request.provider
                     )
                 )
             }.onSuccess {

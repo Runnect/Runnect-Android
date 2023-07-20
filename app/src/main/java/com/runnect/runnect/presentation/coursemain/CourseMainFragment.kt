@@ -1,26 +1,25 @@
 package com.runnect.runnect.presentation.coursemain
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.selection.SelectionPredicates
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentCourseMainBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 
 
@@ -35,14 +34,12 @@ class CourseMainFragment :
 
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
         getCurrentLocation()
         drawCourseButton()
     }
-
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -86,8 +83,10 @@ class CourseMainFragment :
 
 
         //네이버 맵 sdk에 위치 정보 제공
-        locationSource = FusedLocationSource(this,
-            LOCATION_PERMISSION_REQUEST_CODE)
+        locationSource = FusedLocationSource(
+            this,
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
         naverMap.locationSource = locationSource
 
         naverMap.addOnLocationChangeListener { location ->
@@ -134,6 +133,7 @@ class CourseMainFragment :
         naverMap.moveCamera(cameraUpdate)
 
     }
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }

@@ -31,11 +31,12 @@ class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCou
     override fun onBindViewHolder(holder: DiscoverLoadViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
+
     fun clearSelection() {
         if (beforeSelected != null) {
             beforeSelected!!.isSelected = false
             beforeSelected = null
-            listener.selectCourse(0,"","","")
+            listener.selectCourse(0, "", "", "")
         }
     }
 
@@ -49,11 +50,11 @@ class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCou
                 Timber.d("1. Adapter에서 Activity에 정의된 콜백함수 호출")
                 //오직 하나의 코스만 선택되도록 함
                 if (it.isSelected) {
-                    listener.selectCourse(0,"","","")
+                    listener.selectCourse(0, "", "", "")
                     it.isSelected = false
                     beforeSelected = null
                 } else if (!it.isSelected) {
-                    if(beforeSelected != null){
+                    if (beforeSelected != null) {
                         beforeSelected!!.isSelected = false
                     }
                     beforeSelected = it

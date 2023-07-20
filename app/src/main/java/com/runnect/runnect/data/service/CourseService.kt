@@ -1,14 +1,16 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostRecordDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.*
-import com.runnect.runnect.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
+
 
 interface CourseService {
     @GET("/api/public-course")

@@ -13,10 +13,6 @@ import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemMypageUploadBinding
 import com.runnect.runnect.util.CourseUploadedDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnUploadItemClick
-import kotlinx.android.synthetic.main.item_mypage_upload.view.*
-import kotlinx.android.synthetic.main.item_mypage_upload.view.iv_checkbox
-import kotlinx.android.synthetic.main.item_storage_my_draw.view.*
-import timber.log.Timber
 
 class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
     ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(

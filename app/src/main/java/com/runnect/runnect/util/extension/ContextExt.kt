@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.runnect.runnect.R
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
@@ -36,17 +37,49 @@ fun Context.clearFocus(view: View) {
     view.clearFocus()
 }
 
+fun Context.setActivityDialog(
+    layoutInflater: LayoutInflater,
+    view: View,
+    resId: Int,
+    cancel: Boolean
+): Pair<AlertDialog, View> {
+    val dialogLayout = layoutInflater.inflate(resId, null)
+    val build = AlertDialog.Builder(view.context).apply {
+        setView(dialogLayout)
+    }
+    val dialog = build.create()
+    dialog.setCancelable(cancel) // 외부 영역 터치 금지
+    dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    return Pair(dialog, dialogLayout)
+}
+
+fun Fragment.setFragmentDialog(
+    layoutInflater: LayoutInflater,
+    resId: Int,
+    cancel: Boolean,
+): Pair<AlertDialog, View> {
+    val dialogLayout = layoutInflater.inflate(resId, null)
+    val build = AlertDialog.Builder(requireContext()).apply {
+        setView(dialogLayout)
+    }
+    val dialog = build.create()
+    dialog.setCancelable(cancel) // 외부 영역 터치 금지
+    dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    return Pair(dialog, dialogLayout)
+}
+
+
 
 fun Context.setCustomDialog(
     layoutInflater: LayoutInflater,
     view: View,
-    desc: String,
+    description: String,
     yesBtnText: String,
     noBtnText: String = "취소"
 ): AlertDialog {
     val dialogLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
     with(dialogLayout) {
-        tv_dialog.text = desc
+        tv_dialog.text = description
         btn_delete_no.text = noBtnText
         btn_delete_yes.text = yesBtnText
     }

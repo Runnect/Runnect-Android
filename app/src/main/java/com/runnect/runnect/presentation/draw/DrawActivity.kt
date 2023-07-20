@@ -6,12 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -30,18 +26,21 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.DrawToRunData
-import com.runnect.runnect.data.model.SearchResultEntity
-import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.SearchResultEntity
+import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
+import com.runnect.runnect.util.extension.setActivityDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
+import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
+import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
+import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
+import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -75,6 +74,8 @@ class DrawActivity :
 
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
+    lateinit var dialog: AlertDialog
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +85,8 @@ class DrawActivity :
 
         if (::searchResult.isInitialized.not()) {
             intent?.let {
-                searchResult = intent.getParcelableExtra("searchResult")
-                    ?: throw Exception("데이터가 존재하지 않습니다.")
+                searchResult =
+                    intent.getParcelableExtra("searchResult") ?: throw Exception("데이터가 존재하지 않습니다.")
 
                 Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
                 viewModel.searchResult.value = searchResult
@@ -106,14 +107,13 @@ class DrawActivity :
 
     private fun initView() {
         val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
-            ?: MapFragment.newInstance().also {
+        val mapFragment =
+            fm.findFragmentById(R.id.mapView) as MapFragment? ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapView, it).commit()
             }
         mapFragment.getMapAsync(this)
         locationSource = FusedLocationSource(
-            this,
-            LOCATION_PERMISSION_REQUEST_CODE
+            this, LOCATION_PERMISSION_REQUEST_CODE
         )
     }
 
@@ -137,7 +137,7 @@ class DrawActivity :
         binding.btnDraw.setOnClickListener {
 
             if (isVisitorMode) {
-                requireVisitorLogin(binding.root)
+                requireVisitorLogin()
             } else {
                 createMbr()
             }
@@ -246,8 +246,9 @@ class DrawActivity :
                 UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
                     hideLoadingBar()
-                    notifyCreateFinish(binding.root)
+                    notifyCreateFinish()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                 }
@@ -255,66 +256,66 @@ class DrawActivity :
         }
     }
 
-    private fun notifyCreateFinish(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_make_course, null)
+    private fun notifyCreateFinish() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_make_course,
+            cancel = false
+        )
 
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
-        }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
-        dialog.show()
-
-        myLayout.btn_storage.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("fromDrawActivity", true)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        with(dialogLayout) {
+            this.btn_run.setOnClickListener {
+                val intent = Intent(this@DrawActivity, CountDownActivity::class.java).apply {
+                    putExtra(
+                        "CourseData", CourseData(
+                            courseId = viewModel.courseId.value!!,
+                            publicCourseId = null,
+                            touchList = touchList,
+                            startLatLng = departureLatLng,
+                            departure = searchResult.name,
+                            distance = viewModel.distanceSum.value!!,
+                            image = captureUri.toString(),
+                            dataFrom = "draw"
+                        )
+                    )
+                }
+                startActivity(intent)
+                dialog.dismiss()
             }
-            startActivity(intent)
-            dialog.dismiss()
-        }
-        myLayout.btn_run.setOnClickListener {
-            val intent = Intent(this, CountDownActivity::class.java)
 
-            intent.putExtra(
-                "DrawToRunData",
-                DrawToRunData(
-                    courseId = viewModel.courseId.value!!,
-                    publicCourseId = null,
-                    touchList,
-                    departureLatLng,
-                    viewModel.distanceSum.value!!,
-                    searchResult.name,
-                    captureUri.toString()
-                )
-            )
-
-            startActivity(intent)
-            dialog.dismiss()
+            this.btn_storage.setOnClickListener {
+                val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
+                    putExtra("fromDrawActivity", true)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                }
+                startActivity(intent)
+                dialog.dismiss()
+            }
         }
+        dialog.show()
     }
 
-    private fun requireVisitorLogin(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
+    private fun requireVisitorLogin() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_require_login,
+            cancel = false
+        )
 
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
+        with(dialogLayout) {
+            this.btn_login.setOnClickListener {
+                val intent = Intent(this@DrawActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+                dialog.dismiss()
+            }
+            this.btn_cancel.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
-
-        myLayout.btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        myLayout.btn_login.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            dialog.dismiss()
-        }
     }
 
     private fun backButton() {
@@ -355,16 +356,14 @@ class DrawActivity :
 
     private fun setDepartureLatLng() {
         departureLatLng = LatLng(
-            searchResult.locationLatLng.latitude,
-            searchResult.locationLatLng.longitude
+            searchResult.locationLatLng.latitude, searchResult.locationLatLng.longitude
         )
     }
 
 
     private fun setDepartureMarker() {
         val departureMarker = Marker()
-        departureMarker.position =
-            LatLng(departureLatLng.latitude, departureLatLng.longitude)
+        departureMarker.position = LatLng(departureLatLng.latitude, departureLatLng.longitude)
         departureMarker.anchor = PointF(0.5f, 0.7f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
@@ -380,8 +379,7 @@ class DrawActivity :
     private fun addDepartureToCalcDistanceList() {
         calcDistanceList.add(
             LatLng(
-                departureLatLng.latitude,
-                departureLatLng.longitude
+                departureLatLng.latitude, departureLatLng.longitude
             )
         )
     }
@@ -406,8 +404,7 @@ class DrawActivity :
     private fun addCoordsToTouchList(coord: LatLng) {
         touchList.add(
             LatLng(
-                coord.latitude,
-                coord.longitude
+                coord.latitude, coord.longitude
             )
         )
     }
@@ -415,8 +412,7 @@ class DrawActivity :
     private fun setRouteMarker(coord: LatLng) {
         val routeMarker = Marker()
         routeMarker.position = LatLng(
-            coord.latitude,
-            coord.longitude
+            coord.latitude, coord.longitude
         )
         routeMarker.anchor = PointF(0.5f, 0.5f)
         routeMarker.icon = OverlayImage.fromResource(R.drawable.marker_route)
@@ -503,8 +499,7 @@ class DrawActivity :
 
     private fun createMbr() {
         val bounds = LatLngBounds.Builder()
-            .include(LatLng(departureLatLng.latitude, departureLatLng.longitude))
-            .include(touchList)
+            .include(LatLng(departureLatLng.latitude, departureLatLng.longitude)).include(touchList)
             .build()
         naverMap.setContentPadding(100, 100, 100, 100)
         cameraUpdate(bounds)
@@ -518,14 +513,14 @@ class DrawActivity :
 
             viewModel.setRequestBody(
                 ContentUriRequestBody(
-                    this,
-                    captureUri
+                    this, captureUri
                 )
             ) //Uri -> RequestBody
             setViewModelValue(calcDistanceList)
             viewModel.uploadCourse()
         }
     }
+
     private fun setViewModelValue(distanceList: List<LatLng>) {
         val uploadLatLngList: List<UploadLatLng> = distanceList.map { latLng ->
             UploadLatLng(latLng.latitude, latLng.longitude)
@@ -548,8 +543,7 @@ class DrawActivity :
         fileOutPut.flush()
         fileOutPut.close()
         val uri = FileProvider.getUriForFile(
-            this,
-            BuildConfig.APPLICATION_ID + ".fileprovider", tempFile
+            this, BuildConfig.APPLICATION_ID + ".fileprovider", tempFile
         )
         captureUri = uri
         return uri

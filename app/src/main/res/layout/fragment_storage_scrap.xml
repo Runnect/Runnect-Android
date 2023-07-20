@@ -7,7 +7,7 @@
 
         <variable
             name="storage_scrap"
-            type="com.runnect.runnect.data.model.ResponseGetScrapDto.Data.Scrap" />
+            type="com.runnect.runnect.data.dto.response.ResponseGetScrapDto" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

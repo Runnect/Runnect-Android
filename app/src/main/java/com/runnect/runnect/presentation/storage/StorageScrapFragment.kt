@@ -11,11 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.model.MyScrapCourse
+import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
-import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
@@ -148,6 +147,7 @@ class StorageScrapFragment :
                     showScarpResult()
                     updateAdapterData()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)

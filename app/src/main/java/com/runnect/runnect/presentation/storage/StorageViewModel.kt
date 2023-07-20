@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.UserUploadCourseDTO
+import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.model.MyDrawCourse
-import com.runnect.runnect.data.model.MyScrapCourse
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
-import com.runnect.runnect.data.model.ResponseGetCourseDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
 import com.runnect.runnect.domain.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,12 +49,10 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
                 storageRepository.getMyDrawCourse()
             }.onSuccess {
                 _myDrawCourses = it!!
-                Timber.tag(ContentValues.TAG)
-                    .d("데이터 수신 완료")
+                Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
                 _storageState.value = UiState.Success
             }.onFailure {
-                Timber.tag(ContentValues.TAG)
-                    .d("onFailure 메세지 : $it")
+                Timber.tag(ContentValues.TAG).d("onFailure 메세지 : $it")
                 errorMessage.value = it.message
                 _storageState.value = UiState.Failure
             }
@@ -67,16 +63,19 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
         viewModelScope.launch {
             runCatching {
                 _myDrawCoursesDeleteState.value = UiState.Loading
-                storageRepository.deleteMyDrawCourse(RequestPutMyDrawDto(itemsToDelete))
+                storageRepository.deleteMyDrawCourse(
+                    RequestPutMyDrawDto(
+                        courseIdList = itemsToDelete
+                    )
+                )
             }.onSuccess {
-                Timber.tag(ContentValues.TAG)
-                    .d("삭제 성공입니다")
-                _myDrawCourses = _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
+                Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
+                _myDrawCourses =
+                    _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
                 _myDrawCoursesDeleteState.value = UiState.Success
 
             }.onFailure {
-                Timber.tag(ContentValues.TAG)
-                    .d("실패했고 문제는 다음과 같습니다 $it")
+                Timber.tag(ContentValues.TAG).d("실패했고 문제는 다음과 같습니다 $it")
                 _myDrawCoursesDeleteState.value = UiState.Failure
             }
         }
@@ -102,7 +101,11 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
     fun postCourseScrap(id: Int?, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                storageRepository.postMyScrapCourse(RequestCourseScrap(id!!, scrapTF.toString()))
+                storageRepository.postMyScrapCourse(
+                    RequestCourseScrap(
+                        publicCourseId = id!!, scrapTF = scrapTF.toString()
+                    )
+                )
             }.onSuccess {
                 Timber.d("onSuccess 메세지 : $it")
             }.onFailure {

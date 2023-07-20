@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.model.RequestPostRecordDto
-import com.runnect.runnect.data.model.ResponsePostRecordDto
+import com.runnect.runnect.data.dto.request.RequestPostRecordDto
+import com.runnect.runnect.data.dto.response.ResponsePostRecordDto
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +27,7 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
     val editTextValue = MutableLiveData<String>()
     val uploadResult = MutableLiveData<ResponsePostRecordDto>()
     val errorMessage = MutableLiveData<String>()
-    val currentTime = MutableLiveData<String>() //현재 시간
+    val currentTime = MutableLiveData<String>()
     val dataFrom = MutableLiveData<String>()
 
     private val _endRunState = MutableLiveData<UiState>(UiState.Empty)
@@ -41,11 +41,12 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
                 _endRunState.value = UiState.Loading
                 courseRepository.postRecord(
                     RequestPostRecordDto(
-                        request.courseId,
-                        request.publicCourseId,
-                        request.title,
-                        request.time,
-                        request.pace
+                        courseId = request.courseId,
+                        publicCourseId = request.publicCourseId,
+                        title = request.title,
+                        time = request.time,
+                        pace = request.pace
+
                     )
                 )
             }.onSuccess {

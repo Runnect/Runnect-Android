@@ -1,11 +1,8 @@
 package com.runnect.runnect.presentation.storage
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -27,6 +24,7 @@ import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.util.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnMyDrawClick
+import com.runnect.runnect.util.extension.setFragmentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
@@ -125,32 +123,31 @@ class StorageMyDrawFragment :
         btnDeleteCourseMain.isEnabled = true
 
         btnDeleteCourseMain.setOnClickListener {
-            customDialog(binding.root)
+            deletingDialog()
         }
     }
 
+    private fun deletingDialog() {
+        val (dialog, dialogLayout) = setFragmentDialog(
+            layoutInflater = layoutInflater,
+            resId = R.layout.custom_dialog_delete,
+            cancel = true
+        )
 
-    fun customDialog(view: View) { //확장함수로 빼주기
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
-
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
+        with(dialogLayout) {
+            this.btn_delete_yes.setOnClickListener {
+                deleteCourse()
+                dialog.dismiss()
+                availableEdit = false
+                isSelectAvailable = false
+                hideDeleteCourseBtn()
+                showBottomNav()
+            }
+            this.btn_delete_no.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        val dialog = build.create()
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
-
-        myLayout.btn_delete_yes.setOnClickListener {
-            deleteCourse()
-            dialog.dismiss()
-            availableEdit = false
-            isSelectAvailable = false
-            hideDeleteCourseBtn()
-            showBottomNav()
-        }
-        myLayout.btn_delete_no.setOnClickListener {
-            dialog.dismiss()
-        }
     }
 
 
@@ -299,6 +296,7 @@ class StorageMyDrawFragment :
                     showMyDrawResult()
                     updateAdapterData()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.response.ResponseCourseSearch
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,13 +28,14 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
         viewModelScope.launch {
             _courseSearchState.value = UiState.Loading
             runCatching {
-                courseRepository.getCourseSearch(keyword)
+                courseRepository.getCourseSearch(
+                    keyword = keyword
+                )
             }.onSuccess {
                 courseSearchList = it
-                if(courseSearchList.isEmpty()){
+                if (courseSearchList.isEmpty()) {
                     _courseSearchState.value = UiState.Empty
-                }
-                else{
+                } else {
                     _courseSearchState.value = UiState.Success
                 }
             }.onFailure {
@@ -45,13 +45,16 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
             }
         }
     }
-    fun postCourseScrap(id:Int,scrapTF:Boolean) {
+
+    fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             runCatching {
-                courseRepository.postCourseScrap(RequestCourseScrap(id,scrapTF.toString()))
-            }.onSuccess {
-            }.onFailure {
-            }
+                courseRepository.postCourseScrap(
+                    RequestCourseScrap(
+                        publicCourseId = id, scrapTF = scrapTF.toString()
+                    )
+                )
+            }.onSuccess {}.onFailure {}
         }
     }
 }

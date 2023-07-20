@@ -57,10 +57,12 @@ class DiscoverLoadActivity :
                 UiState.Empty -> {
                     handleEmptyCourseLoad()
                 }
+
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     handleSuccessfulCourseLoad()
                 }
+
                 UiState.Failure -> {
                     handleUnsuccessfulCourseLoad()
                 }

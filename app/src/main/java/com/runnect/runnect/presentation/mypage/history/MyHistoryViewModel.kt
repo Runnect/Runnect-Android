@@ -1,13 +1,16 @@
 package com.runnect.runnect.presentation.mypage.history
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -101,8 +104,14 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
         viewModelScope.launch {
             runCatching {
                 _historyDeleteState.value = UiState.Loading
-                setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
-                userRepository.putDeleteHistory(RequestDeleteHistory(_itemsToDelete))
+                setSelectedItemsCount(
+                    count = DEFAULT_SELECTED_COUNT
+                )
+                userRepository.putDeleteHistory(
+                    RequestDeleteHistory(
+                        recordIdList = _itemsToDelete
+                    )
+                )
             }.onSuccess {
                 _historyItems =
                     _historyItems.filter { !itemsToDelete.contains(it.id) }.toMutableList()
@@ -118,7 +127,8 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
             }
         }
     }
-    companion object{
+
+    companion object {
         const val DEFAULT_SELECTED_COUNT = 0
     }
 

@@ -22,7 +22,7 @@ import com.runnect.runnect.util.callback.OnHistoryItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -55,7 +55,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initDialog() {
-        dialog = setCustomDialog(layoutInflater, binding.root, DIALOG_DESC, DELETE_BTN)
+        dialog = setCustomDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            description = DIALOG_DESC,
+            yesBtnText = DELETE_BTN
+        )
     }
 
     private fun setDialogClickEvent() {
@@ -84,17 +89,20 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
-    private fun startSearchActivity(){
+
+    private fun startSearchActivity() {
         val intent = Intent(this, SearchActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
         startActivity(intent)
         finish()
     }
-    private fun handleEditClicked(){
+
+    private fun handleEditClicked() {
         viewModel.convertMode()
         binding.tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
     }
-    private fun handleDeleteButtonClicked(it: View){
+
+    private fun handleDeleteButtonClicked(it: View) {
         if (it.isActivated) {
             setDialogClickEvent()
             dialog.show()
@@ -139,7 +147,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
         viewModel.selectCountMediator.observe(this) {}
     }
-    private fun handleEmptyHistoryLoad(){
+
+    private fun handleEmptyHistoryLoad() {
         with(binding) {
             indeterminateBar.isVisible = false
             layoutMyPageHistoryNoResult.isVisible = true
@@ -159,20 +168,25 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun handleSuccessfulHistoryDeletion() {
         binding.indeterminateBar.isVisible = false
-        adapter.removeItems(viewModel.itemsToDelete)
+        adapter.removeItems(
+            removedIds = viewModel.itemsToDelete
+        )
         adapter.clearSelection()
         viewModel.clearItemsToDelete()
     }
+
     private fun handleUnsuccessfulHistoryCall() {
         binding.indeterminateBar.isVisible = false
         Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
     }
+
     private fun enterEditMode() {
         with(binding) {
             btnMyPageHistoryEditHistory.text = EDIT_CANCEL
             tvMyPageHistoryTotalCourseCount.text = CHOICE_MODE_DESC
         }
     }
+
     /**편집 취소 버튼을 누르는 경우 or 모든 기록이 삭제된 경우*/
     private fun exitEditMode() {
         with(binding) {
@@ -202,13 +216,15 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     override fun selectItem(data: HistoryInfoDTO): Boolean {
         return if (viewModel.editMode.value == true) {
-            viewModel.modifyItemsToDelete(data.id)
+            viewModel.modifyItemsToDelete(
+                id = data.id
+            )
             true
         } else {
             //매개변수로 아이템 정보를 넘겨받아 기록 조회 액티비티 이동
-            val intent = Intent(this,MyHistoryDetailActivity::class.java)
+            val intent = Intent(this, MyHistoryDetailActivity::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("historyDataBundle",data)
+            bundle.putSerializable("historyDataBundle", data)
             intent.putExtra("historyData", bundle)
             startActivity(intent)
             false

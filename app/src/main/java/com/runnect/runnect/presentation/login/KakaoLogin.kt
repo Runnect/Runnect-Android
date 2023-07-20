@@ -49,7 +49,7 @@ class KakaoLogin(context: Context, viewModel: LoginViewModel) : SocialLogin {
                     instance.loginWithKakaoAccount(contextRef.get()!!, callback = callback)
                 } else if (token != null) {
                     Timber.d("카카오톡 로그인")
-                    instance.loginWithKakaoTalk(contextRef.get()!!,callback = callback)
+                    instance.loginWithKakaoTalk(contextRef.get()!!, callback = callback)
                 }
             }
         } else {

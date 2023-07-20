@@ -12,8 +12,8 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.runnect.runnect.R
-import com.runnect.runnect.data.model.RequestPostRecordDto
-import com.runnect.runnect.data.model.RunToEndRunData
+import com.runnect.runnect.data.dto.RunToEndRunData
+import com.runnect.runnect.data.dto.request.RequestPostRecordDto
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -176,11 +176,11 @@ class EndRunActivity :
         binding.btnEndRunSave.setOnClickListener {
             viewModel.postRecord(
                 RequestPostRecordDto(
-                    viewModel.courseId.value!!,
-                    viewModel.publicCourseId.value,
-                    viewModel.editTextValue.value!!,
-                    viewModel.timerHourMinSec.value!!,
-                    "0:$paceMinute:$paceSecond" //평균 페이스 표기법에서는 '시간'을 안 쓰지만 서버에서 요구하는 형식에 맞춰주기 위해 앞에 "0:"을 붙어야 함
+                    courseId = viewModel.courseId.value!!,
+                    publicCourseId = viewModel.publicCourseId.value,
+                    title = viewModel.editTextValue.value!!,
+                    time = viewModel.timerHourMinSec.value!!,
+                    pace = "0:$paceMinute:$paceSecond" //평균 페이스 표기법에서는 '시간'을 안 쓰지만 서버에서 요구하는 형식에 맞춰주기 위해 앞에 "0:"을 붙어야 함
                 )
             )
             val intent = Intent(this, MainActivity::class.java).apply {
@@ -199,6 +199,7 @@ class EndRunActivity :
                     hideLoadingBar()
                     notifyUploadFinish()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()

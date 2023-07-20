@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.model
+package com.runnect.runnect.data.dto
 
 import androidx.annotation.Keep
 import kotlinx.serialization.SerialName

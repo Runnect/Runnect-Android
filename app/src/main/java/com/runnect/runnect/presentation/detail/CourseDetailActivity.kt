@@ -3,11 +3,8 @@ package com.runnect.runnect.presentation.detail
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -21,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.data.model.DetailToRunData
+import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
@@ -120,19 +117,19 @@ class CourseDetailActivity :
         binding.btnCourseDetailFinish.setOnClickListener {
 
             if (isVisitorMode) {
-                requireLogin(binding.root)
+                requireLogin()
             } else {
                 val intent = Intent(this, CountDownActivity::class.java).apply {
                     putExtra(
-                        "detailToRun",
-                        DetailToRunData(
-                            viewModel.courseDetail.courseId,
-                            viewModel.courseDetail.id,
-                            touchList,
-                            departureLatLng,
-                            viewModel.courseDetail.departure,
-                            viewModel.courseDetail.distance.toFloat(),
-                            viewModel.courseDetail.image
+                        "CourseData", CourseData(
+                            courseId = viewModel.courseDetail.courseId,
+                            publicCourseId = viewModel.courseDetail.id,
+                            touchList = touchList,
+                            startLatLng = departureLatLng,
+                            departure = viewModel.courseDetail.departure,
+                            distance = viewModel.courseDetail.distance.toFloat(),
+                            image = viewModel.courseDetail.image,
+                            dataFrom = "detail"
                         )
                     )
                 }
@@ -152,27 +149,27 @@ class CourseDetailActivity :
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
-    private fun requireLogin(view: View) {
-        val myLayout = layoutInflater.inflate(R.layout.custom_dialog_require_login, null)
-
-        val build = AlertDialog.Builder(view.context).apply {
-            setView(myLayout)
+    private fun requireLogin() {
+        val (dialog, dialogLayout) = setActivityDialog(
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            resId = R.layout.custom_dialog_require_login,
+            cancel = false
+        )
+        with(dialogLayout) {
+            this.btn_login.setOnClickListener {
+                val intent = Intent(this@CourseDetailActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+                dialog.dismiss()
+            }
+            this.btn_cancel.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        val dialog = build.create()
-        dialog.setCancelable(false) // 외부 영역 터치 금지
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 내가 짠 layout 외의 영역 투명 처리
         dialog.show()
-
-        myLayout.btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        myLayout.btn_login.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            dialog.dismiss()
-        }
     }
+
 
     private fun handleReturnToMyUpload() {
         val intent = Intent(this, MyUploadActivity::class.java)
@@ -236,8 +233,7 @@ class CourseDetailActivity :
         for (i in 1 until viewModel.courseDetail.path.size) {
             touchList.add(
                 LatLng(
-                    viewModel.courseDetail.path[i][0],
-                    viewModel.courseDetail.path[i][1]
+                    viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]
                 )
             )
         }
@@ -249,8 +245,10 @@ class CourseDetailActivity :
                 with(binding) {
                     with(viewModel.courseDetail) {
                         val stampResId = this@CourseDetailActivity.getStampResId(
-                            viewModel.stampId.value,
-                            RES_NAME, RES_STAMP_TYPE, packageName
+                            stampId = viewModel.stampId.value,
+                            resNameParam = RES_NAME,
+                            resType = RES_STAMP_TYPE,
+                            packageName = packageName
                         )
                         ivCourseDetailProfileStamp.load(stampResId)
                         ivCourseDetailProfileNickname.text = nickname
@@ -283,10 +281,12 @@ class CourseDetailActivity :
                         finish()
                     }
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -303,10 +303,12 @@ class CourseDetailActivity :
                 UiState.Success -> {
                     handleSuccessfulCourseUpdate()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -332,6 +334,7 @@ class CourseDetailActivity :
                 editBottomSheet.layout_edit_frame -> {
                     enterEditMode()
                 }
+
                 editBottomSheet.layout_delete_frame -> {
                     deleteDialog.show()
                 }
@@ -340,12 +343,9 @@ class CourseDetailActivity :
     }
 
     private fun initDeleteDialog() {
-        deleteDialog =
-            setCustomDialog(
-                layoutInflater, binding.root,
-                DELETE_DIALOG_DESC,
-                DELETE_DIALOG_YES_BTN
-            )
+        deleteDialog = setCustomDialog(
+            layoutInflater, binding.root, DELETE_DIALOG_DESC, DELETE_DIALOG_YES_BTN
+        )
     }
 
     private fun setDeleteDialogClickEvent() {
@@ -361,11 +361,11 @@ class CourseDetailActivity :
 
     private fun initEditInterruptedDialog() {
         editInterruptDialog = setCustomDialog(
-            layoutInflater,
-            binding.root,
-            EDIT_INTERRUPT_DIALOG_DESC,
-            EDIT_INTERRUPT_DIALOG_YES_BTN,
-            EDIT_INTERRUPT_DIALOG_NO_BTN
+            layoutInflater = layoutInflater,
+            view = binding.root,
+            description = EDIT_INTERRUPT_DIALOG_DESC,
+            yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
+            noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
         )
     }
 
@@ -389,8 +389,7 @@ class CourseDetailActivity :
 
         // layout_bottom_sheet를 뷰 객체로 생성
         val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
-            R.layout.custom_dialog_report,
-            findViewById<LinearLayout>(R.id.bottomSheet)
+            R.layout.custom_dialog_report, findViewById<LinearLayout>(R.id.bottomSheet)
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.view_go_to_report_frame).setOnClickListener {

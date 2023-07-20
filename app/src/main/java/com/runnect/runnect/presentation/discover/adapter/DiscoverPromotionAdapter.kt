@@ -12,6 +12,7 @@ import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
 import com.runnect.runnect.util.callback.OnBannerClick
 
 class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: OnBannerClick) :
+
     ListAdapter<DiscoverPromotionItemDTO, DiscoverPromotionAdapter.DiscoverPromotionViewHolder>(
         DiscoverPromotionDiff
     ) {
@@ -28,7 +29,6 @@ class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: On
 
     override fun getItemCount(): Int = PAGE_NUM
 
-
     inner class DiscoverPromotionViewHolder(private val binding: ItemDiscoverPromotionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(item: DiscoverPromotionItemDTO) {
@@ -37,7 +37,7 @@ class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: On
                     .load(item.imageUrl)
                     .centerCrop()
                     .into(binding.ivItemDiscoverPromotionBanner)
-                setOnClickListener {// 고유 식별이 될지 아직 모르겠음
+                setOnClickListener {
                     bannerClickListener.selectBanner(item)
                 }
             }

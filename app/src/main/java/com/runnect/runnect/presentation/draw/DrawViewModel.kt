@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.model.ResponsePostCourseDto
-import com.runnect.runnect.data.model.SearchResultEntity
-import com.runnect.runnect.data.model.UploadLatLng
+import com.runnect.runnect.data.dto.SearchResultEntity
+import com.runnect.runnect.data.dto.UploadLatLng
+import com.runnect.runnect.data.dto.response.ResponsePostCourseDto
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
@@ -88,11 +88,12 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
             runCatching {
                 _drawState.value = UiState.Loading
                 courseRepository.uploadCourse(
-                    _image.value!!.toFormData(), RequestBody(
-                        path.value!!,
-                        distanceSum.value!!,
-                        departureAddress.value!!,
-                        departureName.value!!
+                    image = _image.value!!.toFormData(),
+                    data = RequestBody(
+                        path = path.value!!,
+                        distance = distanceSum.value!!,
+                        departureAddress = departureAddress.value!!,
+                        departureName = departureName.value!!
                     )
                 )
             }.onSuccess {
@@ -113,14 +114,13 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
         distance: Float,
         departureAddress: String,
         departureName: String,
-    ) =
-        buildJsonObject {
-            val jsonElement = Json.encodeToJsonElement(path)
-            put("path", jsonElement)
-            put("distance", distance)
-            put("departureAddress", departureAddress)
-            put("departureName", departureName)
-        }.toString().toRequestBody("application/json".toMediaType())
+    ) = buildJsonObject {
+        val jsonElement = Json.encodeToJsonElement(path)
+        put("path", jsonElement)
+        put("distance", distance)
+        put("departureAddress", departureAddress)
+        put("departureName", departureName)
+    }.toString().toRequestBody("application/json".toMediaType())
 
 }
 

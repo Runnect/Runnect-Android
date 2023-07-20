@@ -1,6 +1,10 @@
 package com.runnect.runnect.presentation.discover.upload
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -40,8 +44,13 @@ class DiscoverUploadViewModel @Inject constructor(private val courseRepository: 
             Timber.d("업로드 호출")
             runCatching {
                 _courseUpLoadState.value = UiState.Loading
-                courseRepository.postUploadMyCourse(RequestUploadMyCourse(id,
-                    desc.value.toString(), title.value.toString()))
+                courseRepository.postUploadMyCourse(
+                    RequestUploadMyCourse(
+                        courseId = id,
+                        description = desc.value.toString(),
+                        title = title.value.toString()
+                    )
+                )
             }.onSuccess {
                 Timber.d("업로드 성공")
                 _courseUpLoadState.value = UiState.Success

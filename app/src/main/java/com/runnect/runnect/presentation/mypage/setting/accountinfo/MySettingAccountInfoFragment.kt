@@ -21,7 +21,7 @@ import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -63,7 +63,10 @@ class MySettingAccountInfoFragment :
         binding.viewSettingAccountInfoWithdrawalFrame.setOnClickListener {
             withdrawalDialog.show()
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,backPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedCallback
+        )
     }
 
     private fun addObserver() {
@@ -74,6 +77,7 @@ class MySettingAccountInfoFragment :
                 UiState.Failure -> {
                     handleUnsuccessfulUserDeletion()
                 }
+
                 else -> {}
             }
         }
@@ -97,7 +101,7 @@ class MySettingAccountInfoFragment :
         )
     }
 
-    private fun moveToLogin(){
+    private fun moveToLogin() {
         PreferenceManager.setString(requireContext(), "access", "none")
         PreferenceManager.setString(requireContext(), "refresh", "none")
         val intent = Intent(requireActivity(), LoginActivity::class.java)
