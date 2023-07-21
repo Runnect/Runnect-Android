@@ -24,8 +24,8 @@ class CountDownActivity :
 
         val intentToRun = Intent(this, RunActivity::class.java)
         val numList = arrayListOf(
-            AppCompatResources.getDrawable(this, R.drawable.anim_num2),
-            AppCompatResources.getDrawable(this, R.drawable.anim_num1)
+            AppCompatResources.getDrawable(this, R.drawable.anim_num1),
+            AppCompatResources.getDrawable(this, R.drawable.anim_num2)
         )
         val anim = AnimationUtils.loadAnimation(this, R.anim.anim_count)
         setAnimationListener(anim, numList, intentToRun)
@@ -42,15 +42,15 @@ class CountDownActivity :
         numList: ArrayList<Drawable?>,
         intentToRun: Intent,
     ) {
-        var counter = -1
+        var counter = COUNT_START
 
         anim.setAnimationListener(object : AnimationListener {
             override fun onAnimationStart(animation: Animation) {
             }
 
             override fun onAnimationEnd(animation: Animation) {
-                counter += 1
-                if (counter == 2) {
+                counter -= COUNT_DECREASE_UNIT
+                if (counter == COUNT_END) {
                     intentToRun.apply {
                         putExtra(
                             "CountToRunData", CourseData(
@@ -77,5 +77,11 @@ class CountDownActivity :
 
             override fun onAnimationRepeat(animation: Animation) {}
         })
+    }
+
+    companion object {
+        const val COUNT_START = 2
+        const val COUNT_END = -1
+        const val COUNT_DECREASE_UNIT = 1   
     }
 }
