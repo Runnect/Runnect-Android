@@ -2,12 +2,12 @@ package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostRecordDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseRecommendCourse
-import com.runnect.runnect.data.model.RequestPostRecordDto
-import com.runnect.runnect.data.model.RequestPutMyDrawDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
