@@ -66,8 +66,6 @@ class DrawActivity :
     private val touchList = arrayListOf<LatLng>()
     private val markerList = mutableListOf<Marker>()
     private val viewModel: DrawViewModel by viewModels()
-    private val maxMarkerNum: Int = 20
-
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
@@ -388,7 +386,7 @@ class DrawActivity :
         naverMap.setOnMapClickListener { _, coord ->
             if (isMarkerAvailable) {
                 viewModel.isBtnAvailable.value = true
-                if (touchList.size < maxMarkerNum) {
+                if (touchList.size < MAX_MARKER_NUM) {
                     addCoordsToTouchList(coord)
                     setRouteMarker(coord)
                     generateRouteLine(coord)
@@ -551,6 +549,7 @@ class DrawActivity :
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        const val MAX_MARKER_NUM = 20
 
     }
 }

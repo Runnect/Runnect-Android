@@ -106,7 +106,7 @@ class EndRunActivity :
     }
 
     private fun notifyMaxTitleLength() {
-        if (binding.etTitleCourse.text.length == 20) {
+        if (binding.etTitleCourse.text.length == MAX_TITLE_LENGTH) {
             Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
         }
     }
@@ -252,5 +252,9 @@ class EndRunActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    companion object {
+        const val MAX_TITLE_LENGTH = 20
     }
 }
