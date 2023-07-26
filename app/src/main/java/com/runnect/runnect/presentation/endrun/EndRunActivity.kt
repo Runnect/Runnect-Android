@@ -122,6 +122,10 @@ class EndRunActivity :
         viewModel.publicCourseId.value = runToEndRunData.publicCourseId
         viewModel.dataFrom.value = runToEndRunData.dataFrom
         viewModel.captureUri.value = runToEndRunData.captureUri!!.toUri()
+
+        timerHour = runToEndRunData.timerHour.toString()
+        timerMinute = runToEndRunData.timerMinute.toString()
+        timerSecond = runToEndRunData.timerSecond.toString()
     }
 
     //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
