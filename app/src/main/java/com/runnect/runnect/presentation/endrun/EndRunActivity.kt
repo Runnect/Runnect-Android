@@ -121,8 +121,7 @@ class EndRunActivity :
         viewModel.courseId.value = runToEndRunData.courseId
         viewModel.publicCourseId.value = runToEndRunData.publicCourseId
         viewModel.dataFrom.value = runToEndRunData.dataFrom
-        val captureUri = runToEndRunData.captureUri!!.toUri()
-        viewModel.captureUri.value = captureUri
+        viewModel.captureUri.value = runToEndRunData.captureUri!!.toUri()
     }
 
     //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
@@ -139,11 +138,6 @@ class EndRunActivity :
         transferHourToMinute = timerHour.toDouble() * 60
         transferSecondToMinute = timerSecond.toDouble() / 60
         totalMinute = transferHourToMinute + timerMinute.toInt() + transferSecondToMinute
-
-
-        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : $transferHourToMinute")
-        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : $transferSecondToMinute")
-        Timber.tag(ContentValues.TAG).d("totalMinute 값 : $totalMinute")
     }
 
     // 평균 페이스는 '분 / 거리'로 나온 값을 다음과 같이 표기해야 한다. ex) 18.20 -> 18'20"

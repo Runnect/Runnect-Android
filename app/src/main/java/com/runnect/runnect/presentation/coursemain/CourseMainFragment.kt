@@ -27,11 +27,9 @@ class CourseMainFragment :
     BindingFragment<FragmentCourseMainBinding>(R.layout.fragment_course_main),
     OnMapReadyCallback {
 
-
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
-
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
