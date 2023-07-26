@@ -324,17 +324,14 @@ class StorageMyDrawFragment :
 
 
     private fun manageSaveDeleteBtnCondition() {
-        viewModel.itemsToDeleteLiveData.observe(viewLifecycleOwner) {
-            val selectedItems = viewModel.itemsToDeleteLiveData.value!!.size
-            if (selectedItems == 0) {
-                disableSaveBtn()
+        viewModel.itemsToDeleteLiveData.observe(viewLifecycleOwner) { selectedItems ->
+            val count = selectedItems.size
+            if (count > 0) {
+                enableDeleteBtn()
+                btnDeleteCourseMain.text = "삭제하기($count)"
             } else {
-                if (selectedItems > 0) {
-                    enableDeleteBtn()
-                    btnDeleteCourseMain.text = "삭제하기(${selectedItems})"
-                } else {
-                    btnDeleteCourseMain.text = "삭제하기"
-                }
+                disableSaveBtn()
+                btnDeleteCourseMain.text = "삭제하기"
             }
         }
     }
