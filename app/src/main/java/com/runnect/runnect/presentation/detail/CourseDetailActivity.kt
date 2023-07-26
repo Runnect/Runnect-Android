@@ -52,12 +52,10 @@ class CourseDetailActivity :
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             root = intent.getStringExtra("root").toString()
-            if (root == MY_UPLOAD_ACTIVITY_TAG) {
-                handleReturnToMyUpload()
-            } else if (root == COURSE_DISCOVER_TAG) {
-                handleReturnToDiscover()
-            } else if (root == "storageScrap") {
-                handleReturnToStorageScrap()
+            when (root) {
+                MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
+                COURSE_DISCOVER_TAG -> handleReturnToDiscover()
+                STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
             }
         }
     }
@@ -89,21 +87,22 @@ class CourseDetailActivity :
         binding.ivCourseDetailBack.setOnClickListener {
             if (viewModel.editMode.value == true) {
                 editInterruptDialog.show()
-            } else {
-                if (!viewModel.isEdited) {
-                    finish()
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                } else {
-                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
-                        handleReturnToMyUpload()
-                    } else if (root == COURSE_DISCOVER_TAG) {
-                        handleReturnToDiscover()
-                    } else if (root == "storageScrap") {
-                        handleReturnToStorageScrap()
-                    }
-                }
+                return@setOnClickListener
+            }
+
+            if (!viewModel.isEdited) {
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                return@setOnClickListener
+            }
+
+            when (root) {
+                MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
+                COURSE_DISCOVER_TAG -> handleReturnToDiscover()
+                STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
             }
         }
+
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
                 CustomToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
@@ -263,7 +262,6 @@ class CourseDetailActivity :
                     }
 
                 }
-
                 setDepartureLatLng()
                 setTouchList()
             }
@@ -355,7 +353,6 @@ class CourseDetailActivity :
                     viewModel.deleteUploadCourse(publicCourseId)
                 }
             }
-
         }
     }
 
@@ -378,7 +375,6 @@ class CourseDetailActivity :
             }
         }
     }
-
 
     @SuppressLint("MissingInflatedId")
     fun bottomSheet() {
@@ -425,6 +421,7 @@ class CourseDetailActivity :
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
         const val MY_UPLOAD_ACTIVITY_TAG = "upload"
         const val COURSE_DISCOVER_TAG = "discover"
+        const val STORAGE_SCRAP_TAG = "storageScrap"
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"
