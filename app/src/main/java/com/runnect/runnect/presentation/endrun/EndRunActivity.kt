@@ -127,22 +127,11 @@ class EndRunActivity :
 
     //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
     private fun setTimerViewModelValue() {
-        timerHour = runToEndRunData.timerHour.toString()
-        timerMinute = runToEndRunData.timerMinute.toString()
-        timerSecond = runToEndRunData.timerSecond.toString()
+        val formattedTimerHour = String.format("%02d", runToEndRunData.timerHour)
+        val formattedTimerMinute = String.format("%02d", runToEndRunData.timerMinute)
+        val formattedTimerSecond = String.format("%02d", runToEndRunData.timerSecond)
 
-        if (timerSecond.length == 1) {
-            timerSecond = "0${timerSecond}"
-        }
-
-        if (timerMinute.length == 1) {
-            timerMinute = "0${timerMinute}"
-        }
-
-        if (timerHour.length == 1) {
-            timerHour = "0${timerHour}"
-        }
-        viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
+        viewModel.timerHourMinSec.value = "$formattedTimerHour:$formattedTimerMinute:$formattedTimerSecond"
     }
 
     //평균페이스는 '분'을 기준으로 표기하기 때문에 시간, 초를 '분'으로 변환해주어야 함
