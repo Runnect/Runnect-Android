@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.run
 
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
@@ -81,6 +80,11 @@ class RunActivity :
         stopTimer()
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopTimer()
     }
 
     private fun backButton() {
@@ -296,18 +300,7 @@ class RunActivity :
             timerMinute = minute
             timerSecond = second
 
-            Timber.tag(ContentValues.TAG).d("timerHour 값 : $timerHour")
-            Timber.tag(ContentValues.TAG).d("timerMinute 값 : $timerMinute")
-            Timber.tag(ContentValues.TAG).d("timerSecond 값 : $timerSecond")
-
-            Timber.tag(ContentValues.TAG)
-                .d("binding.tvTimeHour.text 값 : ${binding.tvTimeHour.text}")
-            Timber.tag(ContentValues.TAG)
-                .d("binding.tvTimeMinute.text 값 : ${binding.tvTimeMinute.text}")
-            Timber.tag(ContentValues.TAG)
-                .d("binding.tvTimeSecond.text 값 : ${binding.tvTimeSecond.text}")
-
-
+            Timber.tag("Timer").d("$timerHour:$timerMinute:$timerSecond")
         }
     }
 
