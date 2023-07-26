@@ -12,18 +12,16 @@ import com.runnect.runnect.util.CourseSearchDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 
-class DiscoverSearchAdapter(context: Context, listener: OnItemClick, scrapListener: OnHeartClick) :
+class DiscoverSearchAdapter(context: Context, private val itemClick: OnItemClick, private val heartClick: OnHeartClick) :
     ListAdapter<CourseSearchDTO, SearchViewHolder>(
         CourseSearchDiffUtilItemCallback()
     ) {
     private val inflater by lazy { LayoutInflater.from(context) }
-    private val mCallback = listener
-    private val sCallback = scrapListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
             ItemDiscoverCourseInfoBinding.inflate(inflater, parent, false),
-            mCallback, sCallback
+            itemClick, heartClick
         )
     }
 
@@ -34,8 +32,8 @@ class DiscoverSearchAdapter(context: Context, listener: OnItemClick, scrapListen
 
 class SearchViewHolder(
     private val binding: ItemDiscoverCourseInfoBinding,
-    private val mCallback: OnItemClick,
-    private val sCallback: OnHeartClick
+    private val itemClick: OnItemClick,
+    private val heartClick: OnHeartClick
 ) :
     RecyclerView.ViewHolder(binding.root) {
     fun onBind(data: CourseSearchDTO) {
@@ -45,10 +43,10 @@ class SearchViewHolder(
         binding.ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
         binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
             it.isSelected = !it.isSelected
-            sCallback.scrapCourse(data.id, it.isSelected)
+            heartClick.scrapCourse(data.id, it.isSelected)
         }
         binding.ivItemDiscoverCourseInfoMap.setOnClickListener {
-            mCallback.selectItem(data.id)
+            itemClick.selectItem(data.id)
         }
     }
 }
