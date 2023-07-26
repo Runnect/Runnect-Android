@@ -69,11 +69,7 @@ class DrawActivity :
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
-
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-
-    lateinit var dialog: AlertDialog
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +91,6 @@ class DrawActivity :
                 activateDrawCourse()
             }
         }
-
     }
 
     override fun onBackPressed() {
@@ -130,7 +125,6 @@ class DrawActivity :
         uiSettings.isZoomControlEnabled = false
     }
 
-
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
 
@@ -141,7 +135,6 @@ class DrawActivity :
             }
         }
     }
-
 
     private fun activateDrawCourse() {
         binding.btnPreStart.setOnClickListener {
@@ -215,7 +208,6 @@ class DrawActivity :
             btnDraw.isEnabled = false
             btnDraw.setBackgroundResource(R.drawable.radius_10_g3_button)
         }
-
     }
 
     private fun observeIsBtnAvailable() {
@@ -338,7 +330,6 @@ class DrawActivity :
         }
     }
 
-
     private fun drawCourse() {
         createDepartureMarker()
         createRouteMarker()
@@ -357,7 +348,6 @@ class DrawActivity :
             searchResult.locationLatLng.latitude, searchResult.locationLatLng.longitude
         )
     }
-
 
     private fun setDepartureMarker() {
         val departureMarker = Marker()
@@ -397,7 +387,6 @@ class DrawActivity :
             }
         }
     }
-
 
     private fun addCoordsToTouchList(coord: LatLng) {
         touchList.add(
@@ -451,7 +440,7 @@ class DrawActivity :
 
     private fun updateRouteLineData() {
         coords.removeLast()
-        if (coords.size >= 2) {
+        if (coords.size >= LEAST_CONDITION_CREATE_PATH) {
             path.coords = coords
             path.map = naverMap
         } else {
@@ -460,7 +449,7 @@ class DrawActivity :
     }
 
     private fun reCalculateDistance() {
-        if (calcDistanceList.size > 0 && sumList.size > 0) {
+        if (calcDistanceList.isNotEmpty() && sumList.isNotEmpty()) {
             calcDistanceList.removeLast()
             sumList.removeLast()
         }
@@ -471,12 +460,11 @@ class DrawActivity :
         viewModel.distanceSum.value = distanceSum
     }
 
-
     private fun calcDistance() {
 
-        for (i in 1..touchList.size) {
-            if (!calcDistanceList.contains(touchList[i - 1])) {
-                calcDistanceList.add(touchList[i - 1])
+        for (i in 0 until touchList.size) {
+            if (!calcDistanceList.contains(touchList[i])) {
+                calcDistanceList.add(touchList[i])
             }
         }
         for (num in 0..calcDistanceList.size - 2) {
@@ -485,7 +473,7 @@ class DrawActivity :
                 calcDistanceList[num].longitude,
                 calcDistanceList[num + 1].latitude,
                 calcDistanceList[num + 1].longitude,
-                "kilometer"
+                DISTANCE_UNIT
             )
             if (!sumList.contains(distanceResult)) {
                 sumList.add(distanceResult)
@@ -550,6 +538,7 @@ class DrawActivity :
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val MAX_MARKER_NUM = 20
-
+        const val DISTANCE_UNIT = "kilometer"
+        const val LEAST_CONDITION_CREATE_PATH = 2
     }
 }
