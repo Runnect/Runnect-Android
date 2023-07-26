@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
 import com.runnect.runnect.util.callback.OnBannerClick
@@ -35,7 +36,8 @@ class DiscoverPromotionAdapter(val context: Context, val bannerClickListener: On
             with(binding.ivItemDiscoverPromotionBanner) {
                 Glide.with(context)
                     .load(item.imageUrl)
-                    .centerCrop()
+                    .thumbnail(0.3f)
+                    .format(DecodeFormat.PREFER_RGB_565)
                     .into(binding.ivItemDiscoverPromotionBanner)
                 setOnClickListener {
                     bannerClickListener.selectBanner(item)

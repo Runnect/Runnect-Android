@@ -4,6 +4,7 @@ import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,29 +13,29 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+interface RepositoryModule {
     @Singleton
-    @Provides
-    fun provideUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository = userRepositoryImpl
+    @Binds
+    fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 
     @Singleton
-    @Provides
-    fun provideCourseRepository(courseRepositoryImpl: CourseRepositoryImpl): CourseRepository = courseRepositoryImpl
+    @Binds
+    fun bindCourseRepository(courseRepositoryImpl: CourseRepositoryImpl): CourseRepository
 
     @Singleton
-    @Provides
-    fun provideDepartureSearchRepository(departureSearchRepositoryImpl: DepartureSearchRepositoryImpl): DepartureSearchRepository = departureSearchRepositoryImpl
+    @Binds
+    fun bindDepartureSearchRepository(departureSearchRepositoryImpl: DepartureSearchRepositoryImpl): DepartureSearchRepository
 
     @Singleton
-    @Provides
-    fun provideStorageRepository(storageRepositoryImpl: StorageRepositoryImpl): StorageRepository = storageRepositoryImpl
+    @Binds
+    fun bindStorageRepository(storageRepositoryImpl: StorageRepositoryImpl): StorageRepository
 
     @Singleton
-    @Provides
-    fun provideLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository = loginRepositoryImpl
+    @Binds
+    fun bindLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository
 
     @Singleton
-    @Provides
-    fun provideBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository = bannerRepositoryImpl
+    @Binds
+    fun bindBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository
 
 }
