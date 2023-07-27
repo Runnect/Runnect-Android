@@ -27,11 +27,9 @@ class CourseMainFragment :
     BindingFragment<FragmentCourseMainBinding>(R.layout.fragment_course_main),
     OnMapReadyCallback {
 
-
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
-
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,9 +115,9 @@ class CourseMainFragment :
                     onDestroy() //앱 종료
                 }
             })
-            .setRationaleTitle("위치권한 요청")
-            .setRationaleMessage("코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.")
-            .setDeniedMessage("권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]")
+            .setRationaleTitle(PERMISSION_TITLE)
+            .setRationaleMessage(PERMISSION_CONTENT)
+            .setDeniedMessage(PERMISSION_GUIDE)
             .setPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -136,5 +134,8 @@ class CourseMainFragment :
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        const val PERMISSION_TITLE = "위치권한 요청"
+        const val PERMISSION_CONTENT = "코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다."
+        const val PERMISSION_GUIDE = "권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]"
     }
 }

@@ -106,7 +106,7 @@ class EndRunActivity :
     }
 
     private fun notifyMaxTitleLength() {
-        if (binding.etTitleCourse.text.length == 20) {
+        if (binding.etTitleCourse.text.length == MAX_TITLE_LENGTH) {
             Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
         }
     }
@@ -121,28 +121,20 @@ class EndRunActivity :
         viewModel.courseId.value = runToEndRunData.courseId
         viewModel.publicCourseId.value = runToEndRunData.publicCourseId
         viewModel.dataFrom.value = runToEndRunData.dataFrom
-        val captureUri = runToEndRunData.captureUri!!.toUri()
-        viewModel.captureUri.value = captureUri
+        viewModel.captureUri.value = runToEndRunData.captureUri!!.toUri()
+
+        timerHour = runToEndRunData.timerHour.toString()
+        timerMinute = runToEndRunData.timerMinute.toString()
+        timerSecond = runToEndRunData.timerSecond.toString()
     }
 
     //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
     private fun setTimerViewModelValue() {
-        timerHour = runToEndRunData.timerHour.toString()
-        timerMinute = runToEndRunData.timerMinute.toString()
-        timerSecond = runToEndRunData.timerSecond.toString()
+        val formattedTimerHour = String.format("%02d", runToEndRunData.timerHour)
+        val formattedTimerMinute = String.format("%02d", runToEndRunData.timerMinute)
+        val formattedTimerSecond = String.format("%02d", runToEndRunData.timerSecond)
 
-        if (timerSecond.length == 1) {
-            timerSecond = "0${timerSecond}"
-        }
-
-        if (timerMinute.length == 1) {
-            timerMinute = "0${timerMinute}"
-        }
-
-        if (timerHour.length == 1) {
-            timerHour = "0${timerHour}"
-        }
-        viewModel.timerHourMinSec.value = "$timerHour:$timerMinute:$timerSecond"
+        viewModel.timerHourMinSec.value = "$formattedTimerHour:$formattedTimerMinute:$formattedTimerSecond"
     }
 
     //평균페이스는 '분'을 기준으로 표기하기 때문에 시간, 초를 '분'으로 변환해주어야 함
@@ -150,11 +142,6 @@ class EndRunActivity :
         transferHourToMinute = timerHour.toDouble() * 60
         transferSecondToMinute = timerSecond.toDouble() / 60
         totalMinute = transferHourToMinute + timerMinute.toInt() + transferSecondToMinute
-
-
-        Timber.tag(ContentValues.TAG).d("transferHourToMinute 값 : $transferHourToMinute")
-        Timber.tag(ContentValues.TAG).d("transferSecondToMinute 값 : $transferSecondToMinute")
-        Timber.tag(ContentValues.TAG).d("totalMinute 값 : $totalMinute")
     }
 
     // 평균 페이스는 '분 / 거리'로 나온 값을 다음과 같이 표기해야 한다. ex) 18.20 -> 18'20"
@@ -252,5 +239,9 @@ class EndRunActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    companion object {
+        const val MAX_TITLE_LENGTH = 20
     }
 }

@@ -21,9 +21,7 @@ import timber.log.Timber
 class StorageMainFragment :
     BindingFragment<FragmentStorageMainBinding>(R.layout.fragment_storage_main) {
 
-
     val viewModel: StorageViewModel by viewModels()
-
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +33,6 @@ class StorageMainFragment :
             deactivateVisitorMode()
         }
     }
-
 
     private fun activateVisitorMode() {
         with(binding) {
@@ -67,17 +64,15 @@ class StorageMainFragment :
         }
     }
 
-
     private fun initView() {
         childFragmentManager.commit {
-            add<StorageMyDrawFragment>(R.id.fl_main) //여기 add된 게 tabLayoutAction 돌면 메모리 누수 없겠지?
+            add<StorageMyDrawFragment>(R.id.fl_main)
         }
     }
 
     private fun tabLayoutAction() {
         binding.storageTab.addOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
-                // 탭 버튼을 선택할 때 이벤트
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when (tab?.position) {
                         0 -> childFragmentManager.commit {
@@ -97,7 +92,6 @@ class StorageMainFragment :
                 // 다른 탭 버튼을 눌러 선택된 탭 버튼이 해제될 때 이벤트
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                 }
-
                 // 선택된 탭 버튼을 다시 선택할 때 이벤트
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }

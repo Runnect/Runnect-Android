@@ -34,11 +34,9 @@ class StorageScrapAdapter(
                 }
             }
         }
-
         fun bind(scrapList: MyScrapCourse) {
             binding.storageScrap = scrapList
         }
-
     }
 
     fun deleteItem(position: Int) {

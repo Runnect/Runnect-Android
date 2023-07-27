@@ -200,7 +200,6 @@ class StorageMyDrawFragment :
                 UiState.Success -> handleSuccessfulUploadDeletion()
                 UiState.Failure -> handleUnsuccessfulUploadCall()
                 else -> binding.indeterminateBar.isVisible = false
-
             }
         }
     }
@@ -230,59 +229,22 @@ class StorageMyDrawFragment :
         binding.indeterminateBar.isVisible = false
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun showMyDrawResult() {
-        Timber.tag(ContentValues.TAG)
-            .d("Success but emptyList : ${viewModel.myDrawCourses.isEmpty()}")
-        if (viewModel.myDrawCourses.isEmpty()) {
-            showEmptyView()
-        } else {
-            hideEmptyView()
-        }
-    }
-
     private fun updateAdapterData() {
         storageMyDrawAdapter.submitList(viewModel.myDrawCourses)
     }
 
     private fun addObserver() {
+        observeItemSize()
         observeStorageState()
         manageSaveDeleteBtnCondition()
         observeDeleteState()
-        observeItemSize()
     }
 
     @SuppressLint("SetTextI18n")
     private fun observeItemSize() {
-        viewModel.myDrawSize.observe(viewLifecycleOwner) {
-            if (viewModel.myDrawSize.value == 0) {
-                showEmptyView()
-            } else {
-                hideEmptyView()
-            }
-            binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawSize.value}개"
-        }
-    }
-
-    private fun showEmptyView() {
-        with(binding) {
-            layoutMyDrawNoCourse.isVisible = true
-            recyclerViewStorageMyDraw.isVisible = false
-            btnEditCourse.isEnabled = false
-            btnEditCourse.isVisible = false
-            tvTotalCourseCount.isVisible = false
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun hideEmptyView() {
-        with(binding) {
-            layoutMyDrawNoCourse.isVisible = false
-            recyclerViewStorageMyDraw.isVisible = true
-            btnEditCourse.isEnabled = true
-            btnEditCourse.isVisible = true
-            tvTotalCourseCount.isVisible = true
-            binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawCourses.size}개"
+        viewModel.myDrawSize.observe(viewLifecycleOwner) { size ->
+            val isEmpty = (size == 0)
+            updateViewAndTotalCourseCount(isEmpty, size)
         }
     }
 
@@ -296,7 +258,6 @@ class StorageMyDrawFragment :
                     showMyDrawResult()
                     updateAdapterData()
                 }
-
                 UiState.Failure -> {
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
@@ -305,6 +266,25 @@ class StorageMyDrawFragment :
             }
         }
     }
+
+    @SuppressLint("SetTextI18n")
+    private fun showMyDrawResult() {
+        val isEmpty = viewModel.myDrawCourses.isEmpty()
+        updateViewAndTotalCourseCount(isEmpty, viewModel.myDrawCourses.size)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateViewAndTotalCourseCount(isEmpty: Boolean, size: Int) {
+        binding.apply {
+            layoutMyDrawNoCourse.isVisible = isEmpty
+            recyclerViewStorageMyDraw.isVisible = !isEmpty
+            btnEditCourse.isEnabled = !isEmpty
+            btnEditCourse.isVisible = !isEmpty
+            tvTotalCourseCount.isVisible = !isEmpty
+            tvTotalCourseCount.text = if (isEmpty) "총 코스 0개" else "총 코스 ${size}개"
+        }
+    }
+
 
     private fun requireCourse() {
         binding.btnStorageNoCourse.setOnClickListener {
@@ -322,39 +302,22 @@ class StorageMyDrawFragment :
         viewModel.getMyDrawList()
     }
 
-
     private fun manageSaveDeleteBtnCondition() {
-        viewModel.itemsToDeleteLiveData.observe(viewLifecycleOwner) {
-            val selectedItems = viewModel.itemsToDeleteLiveData.value!!.size
-            if (selectedItems == 0) {
-                disableSaveBtn()
-            } else {
-                if (selectedItems > 0) {
-                    enableDeleteBtn()
-                    btnDeleteCourseMain.text = "삭제하기(${selectedItems})"
-                } else {
-                    btnDeleteCourseMain.text = "삭제하기"
-                }
-            }
+        viewModel.itemsToDeleteLiveData.observe(viewLifecycleOwner) { selectedItems ->
+            val count = selectedItems.size
+            val deleteBtnText = if (count > 0) "삭제하기($count)" else "삭제하기"
+            val deleteBtnColor = if (count > 0) R.color.M1 else R.color.G3
+
+            updateDeleteButton(deleteBtnText, deleteBtnColor, count > 0)
         }
     }
 
-    private fun disableSaveBtn() {
-        btnDeleteCourseMain =
-            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+    private fun updateDeleteButton(text: String, colorResId: Int, isEnabled: Boolean) {
+        btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
 
-        btnDeleteCourseMain.text = "완료하기"
-        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.G3))
-        btnDeleteCourseMain.isEnabled = false
-    }
-
-    private fun enableDeleteBtn() {
-        btnDeleteCourseMain =
-            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-
-        btnDeleteCourseMain.text = "삭제하기"
-        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.M1))
-        btnDeleteCourseMain.isEnabled = true
+        btnDeleteCourseMain.text = text
+        btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), colorResId))
+        btnDeleteCourseMain.isEnabled = isEnabled
     }
 
     override fun selectItem(id: Int): Boolean {

@@ -80,7 +80,7 @@ class DiscoverUploadActivity :
         }
         viewModel.courseUpLoadState.observe(this) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
+                UiState.Empty -> binding.indeterminateBar.isVisible = false
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     handleReturnToDiscover()

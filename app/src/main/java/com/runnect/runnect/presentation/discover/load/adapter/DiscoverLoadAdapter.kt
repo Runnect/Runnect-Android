@@ -15,6 +15,7 @@ import timber.log.Timber
 
 class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCourseClick) :
     ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(DiffUtilItemCallback()) {
+
     private val inflater by lazy { LayoutInflater.from(context) }
     private var beforeSelected: View? = null
 

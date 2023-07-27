@@ -40,7 +40,6 @@ class MyDrawDetailActivity :
         addObserver()
         toCountDownButton()
         deleteButton()
-
     }
 
     private fun deletingDialog() {

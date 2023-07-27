@@ -110,7 +110,6 @@ class RunActivity :
         )
     }
 
-
     override fun onMapReady(map: NaverMap) {
         naverMap = map
 
@@ -277,37 +276,22 @@ class RunActivity :
             val second = time % 60 //60이 되는순간 나머지가 0이라 0으로 표기
 
             runOnUiThread {
-                if (hour < 10) {
-                    binding.tvTimeHour.text = "0$hour"
-                } else {
-                    binding.tvTimeHour.text = "$hour"
-                }
-
-                if (minute < 10) {
-                    binding.tvTimeMinute.text = "0$minute"
-                } else {
-                    binding.tvTimeMinute.text = "$minute"
-                }
-
-                if (second < 10) {
-                    binding.tvTimeSecond.text = "0$second"
-                } else {
-                    binding.tvTimeSecond.text = "$second"
-                }
+                binding.tvTimeHour.text = String.format("%02d", hour)
+                binding.tvTimeMinute.text = String.format("%02d", minute)
+                binding.tvTimeSecond.text = String.format("%02d", second)
             }
 
             timerHour = hour
             timerMinute = minute
-            timerSecond = second
 
             Timber.tag("Timer").d("$timerHour:$timerMinute:$timerSecond")
+
         }
     }
 
     private fun stopTimer() {
         timerTask?.cancel()
     }
-
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000

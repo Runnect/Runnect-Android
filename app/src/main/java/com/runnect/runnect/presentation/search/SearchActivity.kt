@@ -49,8 +49,6 @@ class SearchActivity :
         imgBtnSearch()
         addListener()
         addObserver()
-
-
     }
 
     private fun initDivider() {
@@ -83,10 +81,10 @@ class SearchActivity :
         binding.recyclerViewSearch.adapter = searchAdapter
     }
 
-    override fun selectItem(item: SearchResultEntity) { //여기가 어댑터에서 받아온 거
+    override fun selectItem(item: SearchResultEntity) {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 putExtra("searchResult", item)
             }
         )
