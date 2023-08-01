@@ -51,7 +51,7 @@ class CourseDetailActivity :
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            root = intent.getStringExtra("root").toString()
+            root = intent.getStringExtra(EXTRA_ROOT).toString()
             when (root) {
                 MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
                 COURSE_DISCOVER_TAG -> handleReturnToDiscover()
@@ -63,9 +63,9 @@ class CourseDetailActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        publicCourseId = intent.getIntExtra("publicCourseId", 0)
-        Timber.tag(ContentValues.TAG).d("상세페이지 코스 아이디 : ${publicCourseId}")
-        root = intent.getStringExtra("root").toString()
+        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
+        Timber.tag(ContentValues.TAG).d("상세페이지 코스 아이디 : $publicCourseId")
+        root = intent.getStringExtra(EXTRA_ROOT).toString()
         addListener()
         initView()
         getCourseDetail()
@@ -120,7 +120,7 @@ class CourseDetailActivity :
             } else {
                 val intent = Intent(this, CountDownActivity::class.java).apply {
                     putExtra(
-                        "CourseData", CourseData(
+                        EXTRA_COURSE_DATA, CourseData(
                             courseId = viewModel.courseDetail.courseId,
                             publicCourseId = viewModel.courseDetail.id,
                             touchList = touchList,
@@ -426,5 +426,8 @@ class CourseDetailActivity :
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
+        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        const val EXTRA_ROOT = "root"
+        const val EXTRA_COURSE_DATA = "CourseData"
     }
 }

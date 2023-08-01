@@ -40,7 +40,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     private fun checkVisitorMode() {
         isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, "access") == "visitor"
+            PreferenceManager.getString(ApplicationClass.appContext, TOKEN_KEY_ACCESS) == "visitor"
     }
 
     private fun checkIntentValue() {
@@ -95,6 +95,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     companion object {
+
+        const val TOKEN_KEY_ACCESS = "access"
+
         var isVisitorMode = false
         var discoverFragment: DiscoverFragment? = null
         var storageScrapFragment: StorageScrapFragment? = null

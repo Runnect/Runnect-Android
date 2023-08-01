@@ -54,7 +54,7 @@ class MyDrawDetailActivity :
                 deleteCourse()
                 dialog.dismiss()
                 val intent = Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
-                    putExtra("fromDeleteMyDraw", true)
+                    putExtra(EXTRA_FRAGMENT_REPLACE_DIRECTION, true)
                 }
                 startActivity(intent)
             }
@@ -84,7 +84,7 @@ class MyDrawDetailActivity :
     }
 
     fun getMyDrawDetail() {
-        val courseId = intent.getIntExtra("fromStorageFragment", 0)
+        val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
         Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
 
         selectList.add(courseId) //courseId를 지역변수로 선언해서 여기에 작성해주었음
@@ -94,7 +94,7 @@ class MyDrawDetailActivity :
     fun toCountDownButton() {
         binding.btnMyDrawDetailRun.setOnClickListener {
             startActivity(Intent(this, CountDownActivity::class.java).apply {
-                putExtra("CourseData", viewModel.myDrawToRunData.value)
+                putExtra(EXTRA_COURSE_DATA, viewModel.myDrawToRunData.value)
             })
         }
     }
@@ -153,6 +153,12 @@ class MyDrawDetailActivity :
 
     fun deleteCourse() {
         viewModel.deleteMyDrawCourse(selectList)
+    }
+
+    companion object {
+        const val EXTRA_FRAGMENT_REPLACE_DIRECTION = "fromDeleteMyDraw"
+        const val EXTRA_COURSE_DATA = "CourseData"
+        const val EXTRA_COURSE_ID = "fromStorageFragment"
     }
 
 

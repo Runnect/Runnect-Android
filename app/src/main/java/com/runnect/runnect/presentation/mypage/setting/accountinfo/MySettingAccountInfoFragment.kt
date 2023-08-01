@@ -102,8 +102,8 @@ class MySettingAccountInfoFragment :
     }
 
     private fun moveToLogin() {
-        PreferenceManager.setString(requireContext(), "access", "none")
-        PreferenceManager.setString(requireContext(), "refresh", "none")
+        PreferenceManager.setString(requireContext(), TOKEN_KEY_ACCESS, "none")
+        PreferenceManager.setString(requireContext(), TOKEN_KEY_REFRESH, "none")
         val intent = Intent(requireActivity(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
@@ -158,5 +158,7 @@ class MySettingAccountInfoFragment :
         const val DESC_WITHDRAWAL = "정말로 탈퇴하시겟어요?"
         const val DESC_WITHDRAWAL_YES = "네"
         const val DESC_WITHDRAWAL_NO = "아니오"
+        const val TOKEN_KEY_ACCESS = "access"
+        const val TOKEN_KEY_REFRESH = "refresh"
     }
 }

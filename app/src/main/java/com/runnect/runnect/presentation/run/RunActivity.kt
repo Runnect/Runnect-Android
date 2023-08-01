@@ -177,7 +177,7 @@ class RunActivity :
     }
 
     private fun getIntentValue() {
-        courseData = intent.getParcelableExtra("CountToRunData")!!
+        courseData = intent.getParcelableExtra(EXTRA_COUNTDOWN_TO_RUN)!!
 
         courseId = courseData.courseId
         publicCourseId = courseData.publicCourseId
@@ -247,7 +247,7 @@ class RunActivity :
             stopTimer()
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
                 putExtra(
-                    "RunToEndRunData",
+                    EXTRA_RUN_TO_ENDRUN,
                     RunToEndRunData(
                         courseId = courseId!!,
                         publicCourseId = publicCourseId,
@@ -295,5 +295,7 @@ class RunActivity :
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
+        const val EXTRA_COUNTDOWN_TO_RUN = "CountToRunData"
     }
 }

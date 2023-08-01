@@ -20,7 +20,7 @@ class CountDownActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        courseData = intent.getParcelableExtra("CourseData")!!
+        courseData = intent.getParcelableExtra(EXTRA_COURSE_DATA)!!
 
         val intentToRun = Intent(this, RunActivity::class.java)
         val numList = arrayListOf(
@@ -53,7 +53,7 @@ class CountDownActivity :
                 if (counter == COUNT_END) {
                     intentToRun.apply {
                         putExtra(
-                            "CountToRunData", CourseData(
+                            EXTRA_COUNTDOWN_TO_RUN, CourseData(
                                 courseId = courseData.courseId,
                                 publicCourseId = courseData.publicCourseId,
                                 touchList = courseData.touchList,
@@ -82,6 +82,8 @@ class CountDownActivity :
     companion object {
         const val COUNT_START = 2
         const val COUNT_END = -1
-        const val COUNT_DECREASE_UNIT = 1   
+        const val COUNT_DECREASE_UNIT = 1
+        const val EXTRA_COUNTDOWN_TO_RUN = "CountToRunData"
+        const val EXTRA_COURSE_DATA = "CourseData"
     }
 }
