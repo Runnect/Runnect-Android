@@ -20,13 +20,9 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main) {
     private val viewModel: MainViewModel by viewModels()
-
-    private var fromEndRunActivity: String? = null
     private var isChangeToStorage: Boolean = false
     private var isChangeToDiscover: Boolean = false
-    private var fromDeleteMyDraw: Boolean = false
-    private var fromDrawMyCourse: Boolean = false
-    private var fromScrapFragment: Boolean = false
+    private var fragmentReplacementDirection: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +40,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun checkIntentValue() {
-        fromDeleteMyDraw = intent.getBooleanExtra("fromDeleteMyDraw", false)
-        fromDrawMyCourse = intent.getBooleanExtra("fromDrawActivity", false)
-        fromScrapFragment = intent.getBooleanExtra("fromScrapFragment", false)
-        fromEndRunActivity = intent.getStringExtra("dataFrom")
+        fragmentReplacementDirection = intent.getStringExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION)
 
-        isChangeToStorage = fromDeleteMyDraw || fromDrawMyCourse || fromEndRunActivity == "myDraw"
-        isChangeToDiscover = fromScrapFragment || fromEndRunActivity == "detail"
+        when (fragmentReplacementDirection) {
+            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage = true
+            "fromMyScrap" -> isChangeToDiscover = true
+        }
     }
 
     private fun initView() {
@@ -96,6 +91,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     companion object {
 
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        const val EXTRA_DATA_FROM = "dataFrom"
         const val TOKEN_KEY_ACCESS = "access"
 
         var isVisitorMode = false
