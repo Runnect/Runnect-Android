@@ -19,10 +19,9 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.round
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
@@ -149,14 +148,8 @@ class EndRunActivity :
 
     // 평균 페이스는 '분 / 거리'로 나온 값을 다음과 같이 표기해야 한다. ex) 18.20 -> 18'20"
     private fun setPaceViewModelValue() {
-        paceFull = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(
-            2, RoundingMode.FLOOR
-        ).toDouble()
-
-        paceMinute = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(
-            0, RoundingMode.FLOOR
-        ).toInt() // ex) 18.20 -> 18
-
+        paceFull = (totalMinute / runToEndRunData.totalDistance!!).round(2)
+        paceMinute = (totalMinute / runToEndRunData.totalDistance!!).round(0).toInt() // ex) 18.20 -> 18
         paceSecond = ((paceFull - paceMinute) * 100).roundToInt() // ex) 0.20 ->20
 
         viewModel.paceTotal.value = "$paceMinute'$paceSecond\""

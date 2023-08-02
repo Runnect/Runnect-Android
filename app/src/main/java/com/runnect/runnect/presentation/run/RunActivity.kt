@@ -32,8 +32,6 @@ import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
 import com.runnect.runnect.util.extension.round
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class RunActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityRunBinding>(R.layout.activity_run),
@@ -247,8 +245,9 @@ class RunActivity :
         touchList = courseData.touchList
         captureUri = courseData.image
         dataFrom = courseData.dataFrom
+        distanceSum = courseData.distance.toDouble().round(1)
 
-        viewModel.distanceSum.value = courseData.distance.toDouble().round(1)
+        viewModel.distanceSum.value = distanceSum
     }
 
     private fun createDepartureMarker() {
