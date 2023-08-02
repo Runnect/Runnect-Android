@@ -130,11 +130,14 @@ class EndRunActivity :
 
     //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
     private fun setTimerViewModelValue() {
-        val formattedTimerHour = String.format("%02d", runToEndRunData.timerHour)
-        val formattedTimerMinute = String.format("%02d", runToEndRunData.timerMinute)
-        val formattedTimerSecond = String.format("%02d", runToEndRunData.timerSecond)
+        val timerData = String.format(
+            "%02d:%02d:%02d",
+            runToEndRunData.timerHour,
+            runToEndRunData.timerMinute,
+            runToEndRunData.timerSecond
+        )
 
-        viewModel.timerHourMinSec.value = "$formattedTimerHour:$formattedTimerMinute:$formattedTimerSecond"
+        viewModel.timerHourMinSec.value = timerData
     }
 
     //평균페이스는 '분'을 기준으로 표기하기 때문에 시간, 초를 '분'으로 변환해주어야 함
