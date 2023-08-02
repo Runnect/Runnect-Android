@@ -1,9 +1,15 @@
 package com.runnect.runnect.presentation.run
 
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -21,13 +27,12 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.RunToEndRunData
+import com.runnect.runnect.data.dto.TimerData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
-import timber.log.Timber
+import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.Timer
-import kotlin.concurrent.timer
 
 class RunActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityRunBinding>(R.layout.activity_run),
@@ -44,13 +49,6 @@ class RunActivity :
     private var currentLocation: LatLng = LatLng(37.52901832956373, 126.9136196847032) //국회의사당 좌표
     private var coords = mutableListOf<LatLng>()
 
-    //타이머
-    private var time = 0
-    private var timerTask: Timer? = null
-    private var timerSecond: Int = 0
-    private var timerMinute: Int = 0
-    private var timerHour: Int = 0
-
     var courseId: Int? = null
     var publicCourseId: Int? = null
     lateinit var departure: String
@@ -60,8 +58,26 @@ class RunActivity :
     lateinit var dataFrom: String
     var distanceSum: Double = 0.0
 
-
     private val viewModel: RunViewModel by viewModels()
+
+    lateinit var timerData: TimerData
+    private var timerService: TimerService? = null
+    private var isServiceBound = false
+    lateinit var serviceIntent: Intent
+
+    private val connection = object : ServiceConnection {
+        //서비스가 연결되었을 때 호출
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as TimerService.LocalBinder
+            timerService = binder.getService()
+            isServiceBound = true
+        }
+
+        //서비스 연결이 끊어졌을 때 호출
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            isServiceBound = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,29 +86,10 @@ class RunActivity :
         binding.lifecycleOwner = this
 
         initView()
-        startTimer()
+        initTimerService()
         getCurrentLocation()
         showRecord()
         backButton()
-    }
-
-    override fun onBackPressed() {
-        stopTimer()
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopTimer()
-    }
-
-    private fun backButton() {
-        binding.imgBtnBack.setOnClickListener {
-            stopTimer()
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        }
     }
 
     private fun initView() {
@@ -108,6 +105,69 @@ class RunActivity :
             this,
             LOCATION_PERMISSION_REQUEST_CODE
         )
+    }
+
+    private fun initTimerService() {
+        serviceIntent = Intent(this, TimerService::class.java)
+        startService(serviceIntent)
+        bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun stopTimer() {
+        timerService?.stopTimer()
+        stopService(serviceIntent) //서비스 객체 제거
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Timer 결과값을 받기 위해 브로드캐스트 리시버 등록
+        registerReceiver(timerReceiver, IntentFilter(TimerService.TIMER_UPDATE_ACTION))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // 브로드캐스트 리시버 등록 해제
+        unregisterReceiver(timerReceiver)
+    }
+
+    private val timerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            timerData = intent.getParcelableExtra(EXTRA_TIMER_VALUE)!!
+            val timerUI = String.format(
+                "%02d:%02d:%02d",
+                timerData.hour,
+                timerData.minute,
+                timerData.second
+            )
+            updateTimerUI(timerUI)
+        }
+    }
+
+    private fun updateTimerUI(timerValue: String) {
+        binding.tvTimer.text = timerValue
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isServiceBound) {
+            unbindService(connection)
+        }
+        stopTimer()
+        finish()
+    }
+
+    private fun backButton() {
+        binding.imgBtnBack.setOnClickListener {
+            stopTimer()
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
+    }
+
+    override fun onBackPressed() {
+        stopTimer()
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -254,9 +314,9 @@ class RunActivity :
                         totalDistance = distanceSum,
                         captureUri = captureUri,
                         departure = departure,
-                        timerHour = timerHour,
-                        timerMinute = timerMinute,
-                        timerSecond = timerSecond,
+                        timerHour = timerData.hour,
+                        timerMinute = timerData.minute,
+                        timerSecond = timerData.second,
                         dataFrom = dataFrom
                     )
                 )
@@ -264,33 +324,6 @@ class RunActivity :
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
-    }
-
-    private fun startTimer() {
-        timerTask = timer(period = 1000) {
-
-            time++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
-
-            val hour = time / 3600
-            val minute = time / 60 //60이 되는 순간 몫이 1이 돼서 1로 표기
-            val second = time % 60 //60이 되는순간 나머지가 0이라 0으로 표기
-
-            runOnUiThread {
-                binding.tvTimeHour.text = String.format("%02d", hour)
-                binding.tvTimeMinute.text = String.format("%02d", minute)
-                binding.tvTimeSecond.text = String.format("%02d", second)
-            }
-
-            timerHour = hour
-            timerMinute = minute
-
-            Timber.tag("Timer").d("$timerHour:$timerMinute:$timerSecond")
-
-        }
-    }
-
-    private fun stopTimer() {
-        timerTask?.cancel()
     }
 
     companion object {
