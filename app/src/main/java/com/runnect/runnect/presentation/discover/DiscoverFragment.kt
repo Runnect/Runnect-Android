@@ -302,8 +302,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     override fun selectBanner(item: DiscoverPromotionItemDTO) {
-        Timber.tag("Banner").d("item_index : ${item.index}")
-
         if (item.linkUrl.isNotEmpty()) {
             requireContext().startWebView(item.linkUrl)
         }
