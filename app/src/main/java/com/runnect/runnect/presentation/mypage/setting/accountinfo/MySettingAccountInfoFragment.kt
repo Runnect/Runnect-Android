@@ -96,8 +96,8 @@ class MySettingAccountInfoFragment :
 
     private fun initLogoutDialog() {
         logoutDialog = requireActivity().setCustomDialog(
-            layoutInflater, binding.root, DESC_LOGOUT,
-            DESC_LOGOUT_YES, DESC_LOGOUT_NO
+            layoutInflater, binding.root, DESCRIPTION_LOGOUT,
+            DESCRIPTION_LOGOUT_YES, DESCRIPTION_LOGOUT_NO
         )
     }
 
@@ -122,8 +122,8 @@ class MySettingAccountInfoFragment :
 
     private fun initWithdrawalDialog() {
         withdrawalDialog = requireActivity().setCustomDialog(
-            layoutInflater, binding.root, DESC_WITHDRAWAL,
-            DESC_WITHDRAWAL_YES, DESC_WITHDRAWAL_NO
+            layoutInflater, binding.root, DESCRIPTION_WITHDRAWAL,
+            DESCRIPTION_WITHDRAWAL_YES, DESCRIPTION_WITHDRAWAL_NO
         )
     }
 
@@ -152,12 +152,12 @@ class MySettingAccountInfoFragment :
 
     companion object {
         const val ACCOUNT_INFO_TAG = "accountInfo"
-        const val DESC_LOGOUT = "로그아웃 하시겠어요?"
-        const val DESC_LOGOUT_YES = "네"
-        const val DESC_LOGOUT_NO = "아니오"
-        const val DESC_WITHDRAWAL = "정말로 탈퇴하시겟어요?"
-        const val DESC_WITHDRAWAL_YES = "네"
-        const val DESC_WITHDRAWAL_NO = "아니오"
+        const val DESCRIPTION_LOGOUT = "로그아웃 하시겠어요?"
+        const val DESCRIPTION_LOGOUT_YES = "네"
+        const val DESCRIPTION_LOGOUT_NO = "아니오"
+        const val DESCRIPTION_WITHDRAWAL = "정말로 탈퇴하시겟어요?"
+        const val DESCRIPTION_WITHDRAWAL_YES = "네"
+        const val DESCRIPTION_WITHDRAWAL_NO = "아니오"
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
     }
