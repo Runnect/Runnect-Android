@@ -43,7 +43,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         fragmentReplacementDirection = intent.getStringExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION)
 
         when (fragmentReplacementDirection) {
-            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage = true
+            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage =
+                true
+
             "fromMyScrap" -> isChangeToDiscover = true
         }
     }
@@ -92,7 +94,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     companion object {
 
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        const val EXTRA_DATA_FROM = "dataFrom"
         const val TOKEN_KEY_ACCESS = "access"
 
         var isVisitorMode = false

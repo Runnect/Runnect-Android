@@ -54,7 +54,7 @@ class MyDrawDetailActivity :
                 deleteCourse()
                 dialog.dismiss()
                 val intent = Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
-                    putExtra(EXTRA_FRAGMENT_REPLACE_DIRECTION, true)
+                    putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDeleteMyDrawDetail")
                 }
                 startActivity(intent)
             }
@@ -138,7 +138,7 @@ class MyDrawDetailActivity :
             departure = src.data.course.departure.name,
             distance = src.data.course.distance,
             image = src.data.course.image,
-            dataFrom = "myDraw"
+            dataFrom = "fromMyDrawDetail"
         )
     }
 
@@ -156,9 +156,9 @@ class MyDrawDetailActivity :
     }
 
     companion object {
-        const val EXTRA_FRAGMENT_REPLACE_DIRECTION = "fromDeleteMyDraw"
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_COURSE_DATA = "CourseData"
-        const val EXTRA_COURSE_ID = "fromStorageFragment"
+        const val EXTRA_COURSE_ID = "courseId"
     }
 
 

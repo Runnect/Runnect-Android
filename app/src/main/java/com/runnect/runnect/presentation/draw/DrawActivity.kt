@@ -266,7 +266,7 @@ class DrawActivity :
                             departure = searchResult.name,
                             distance = viewModel.distanceSum.value!!,
                             image = captureUri.toString(),
-                            dataFrom = "draw"
+                            dataFrom = "fromDrawCourse"
                         )
                     )
                 }
@@ -276,7 +276,7 @@ class DrawActivity :
 
             this.btn_storage.setOnClickListener {
                 val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
-                    putExtra(EXTRA_FRAGMENT_REPLACE_DIRECTION, true)
+                    putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDrawCourse")
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
                 startActivity(intent)
@@ -542,6 +542,6 @@ class DrawActivity :
         const val LEAST_CONDITION_CREATE_PATH = 2
         const val EXTRA_SEARCH_RESULT = "searchResult"
         const val EXTRA_COURSE_DATA = "CourseData"
-        const val EXTRA_FRAGMENT_REPLACE_DIRECTION = "fromDrawActivity"
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }

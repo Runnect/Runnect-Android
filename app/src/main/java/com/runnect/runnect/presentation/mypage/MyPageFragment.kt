@@ -80,7 +80,8 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         resultEditNameLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    val name = result.data?.getStringExtra(NICK_NAME) ?: viewModel.nickName.value
+                    val name =
+                        result.data?.getStringExtra(EXTRA_NICK_NAME) ?: viewModel.nickName.value
                     viewModel.setNickName(name!!)
                 }
             }
@@ -89,14 +90,14 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private fun addListener() {
         binding.ivMyPageEditFrame.setOnClickListener {
             val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
-            intent.putExtra(NICK_NAME, "${viewModel.nickName.value}")
+            intent.putExtra(EXTRA_NICK_NAME, "${viewModel.nickName.value}")
             val stampResId = requireContext().getStampResId(
                 stampId = viewModel.stampId.value,
                 resNameParam = RES_NAME,
                 resType = RES_STAMP_TYPE,
                 packageName = requireContext().packageName
             )
-            intent.putExtra(PROFILE, stampResId)
+            intent.putExtra(EXTRA_PROFILE, stampResId)
             resultEditNameLauncher.launch(intent)
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
@@ -172,8 +173,8 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     companion object {
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
-        const val NICK_NAME = "nickname"
-        const val PROFILE = "profile_img"
+        const val EXTRA_NICK_NAME = "nickname"
+        const val EXTRA_PROFILE = "profile_img"
         const val ACCOUNT_INFO_TAG = "accountInfo"
     }
 }

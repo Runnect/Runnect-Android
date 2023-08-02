@@ -113,8 +113,8 @@ class LoginActivity :
 
     private fun moveToGiveNickName() {
         val intent = Intent(this, GiveNicknameActivity::class.java)
-        intent.putExtra(TOKEN_KEY_ACCESS, viewModel.loginResult.value?.accessToken)
-        intent.putExtra(TOKEN_KEY_REFRESH, viewModel.loginResult.value?.refreshToken)
+        intent.putExtra(EXTRA_ACCESS_TOKEN, viewModel.loginResult.value?.accessToken)
+        intent.putExtra(EXTRA_REFRESH_TOKEN, viewModel.loginResult.value?.refreshToken)
         startActivity(intent)
         finish()
     }
@@ -151,7 +151,11 @@ class LoginActivity :
     companion object {
         const val GOOGLE_SIGN = "GOOGLE"
         const val KAKAO_SIGN = "KAKAO"
+
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
+
+        const val EXTRA_ACCESS_TOKEN = "access"
+        const val EXTRA_REFRESH_TOKEN = "refresh"
     }
 }

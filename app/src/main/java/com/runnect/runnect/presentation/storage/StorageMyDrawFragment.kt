@@ -175,6 +175,7 @@ class StorageMyDrawFragment :
         isSelectAvailable = true
     }
 
+    @SuppressLint("SetTextI18n")
     private fun exitEditMode() {
         availableEdit = false
         isSelectAvailable = false
@@ -258,6 +259,7 @@ class StorageMyDrawFragment :
                     showMyDrawResult()
                     updateAdapterData()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     Timber.tag(ContentValues.TAG)
@@ -289,7 +291,7 @@ class StorageMyDrawFragment :
     private fun requireCourse() {
         binding.btnStorageNoCourse.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java)
-            intent.putExtra("root", "storageNoScrap")
+            intent.putExtra(EXTRA_ROOT, "storageNoScrap")
             startActivity(intent)
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right,
@@ -325,7 +327,7 @@ class StorageMyDrawFragment :
 
         return if (!isSelectAvailable) {
             val intent = Intent(activity, MyDrawDetailActivity::class.java)
-            intent.putExtra("fromStorageFragment", id)
+            intent.putExtra(EXTRA_COURSE_ID, id)
             startActivity(intent)
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right,
@@ -340,6 +342,11 @@ class StorageMyDrawFragment :
 
     override fun calcItemSize(itemCount: Int) {
         viewModel.myDrawSize.value = itemCount
+    }
+
+    companion object {
+        const val EXTRA_COURSE_ID = "courseId"
+        const val EXTRA_ROOT = "root"
     }
 }
 

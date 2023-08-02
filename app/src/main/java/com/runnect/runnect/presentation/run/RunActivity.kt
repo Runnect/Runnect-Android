@@ -269,7 +269,7 @@ class RunActivity :
     private fun startTimer() {
         timerTask = timer(period = 1000) {
 
-            time++ //1초에 한 번씩 timer 값이 1씩 증가, 초기값은 0
+            time++
 
             val hour = time / 3600
             val minute = time / 60 //60이 되는 순간 몫이 1이 돼서 1로 표기
@@ -281,10 +281,7 @@ class RunActivity :
                 binding.tvTimeSecond.text = String.format("%02d", second)
             }
 
-            timerHour = hour
-            timerMinute = minute
-
-            Timber.tag("Timer").d("$timerHour:$timerMinute:$timerSecond")
+            Timber.tag("Timer").d("$hour:$minute:$second")
 
         }
     }
