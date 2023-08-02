@@ -196,32 +196,33 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setPromotion(vp: ViewPager2, vpList: MutableList<DiscoverPromotionItemDTO>) {
-        setPromotionAdapter(vpList)
-        setPromotionIndicator(vp)
-        setPromotionViewPager(vp)
+        val bannerCount = vpList.size
+        setPromotionAdapter(vpList,bannerCount)
+        setPromotionIndicator(vp,bannerCount)
+        setPromotionViewPager(vp,bannerCount)
         setScrollHandler(vp)
     }
 
-    private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
+    private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>, bannerCount: Int) {
         promotionAdapter = DiscoverPromotionAdapter(requireContext(), this)
         promotionAdapter.submitList(vpList)
         binding.vpDiscoverPromotion.adapter = promotionAdapter
-        setPromotionIndicator(binding.vpDiscoverPromotion)
+        setPromotionIndicator(binding.vpDiscoverPromotion, bannerCount)
     }
 
-    private fun setPromotionIndicator(vp: ViewPager2) {
+    private fun setPromotionIndicator(vp: ViewPager2, bannerCount: Int) {
         val indicator = binding.ciDiscoverPromotion
         indicator.setViewPager(vp)
-        indicator.createIndicators(FRAME_NUM, PAGE_NUM / 2)
+        indicator.createIndicators(bannerCount, PAGE_NUM / 2)
     }
 
-    private fun setPromotionViewPager(vp: ViewPager2) {
+    private fun setPromotionViewPager(vp: ViewPager2, bannerCount: Int) {
         vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp.setCurrentItem(PAGE_NUM / 2, false)
         vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.ciDiscoverPromotion.animatePageSelected(position % FRAME_NUM)
+                binding.ciDiscoverPromotion.animatePageSelected(position % bannerCount)
                 currentPosition = position
             }
 
@@ -232,7 +233,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 if (positionOffsetPixels == 0) {
-                    binding.ciDiscoverPromotion.animatePageSelected(position % FRAME_NUM)
+                    binding.ciDiscoverPromotion.animatePageSelected(position % bannerCount)
                 }
             }
         }
@@ -301,15 +302,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     override fun selectBanner(item: DiscoverPromotionItemDTO) {
-        Timber.tag("Banner").d("item_index : ${item.index}")
-
         if (item.linkUrl.isNotEmpty()) {
             requireContext().startWebView(item.linkUrl)
         }
     }
 
     companion object {
-        const val FRAME_NUM = 3
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
         const val COURSE_DISCOVER_TAG = "discover"
