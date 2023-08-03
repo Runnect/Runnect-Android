@@ -166,7 +166,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBarBanner.isVisible = false
-                    setPromotion( //submitList만 새로 해주면 되는데 이것 외 여러 코드들도 다시 돌리는 건 비효율적이라 리팩토링이 필요합니다.
+                    setPromotion(
                         binding.vpDiscoverPromotion,
                         viewModel.bannerData
                     )
@@ -249,7 +249,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun autoScrollStart() {
-        Timber.tag("lifeCycle").d("onCreate: ${getLifecycle().getCurrentState()}")
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)
