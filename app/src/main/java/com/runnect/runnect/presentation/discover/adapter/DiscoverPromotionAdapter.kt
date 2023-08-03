@@ -15,12 +15,12 @@ import com.runnect.runnect.util.callback.OnBannerClick
 class DiscoverPromotionAdapter(
     val context: Context,
     private val bannerClickListener: OnBannerClick,
-    private val bannerCount: Int
 ) :
 
     ListAdapter<DiscoverPromotionItemDTO, DiscoverPromotionAdapter.DiscoverPromotionViewHolder>(
         DiscoverPromotionDiff
     ) {
+    private var bannerCount: Int = 0
     lateinit var binding: ItemDiscoverPromotionBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverPromotionViewHolder {
         binding =
@@ -30,6 +30,9 @@ class DiscoverPromotionAdapter(
 
     override fun onBindViewHolder(holder: DiscoverPromotionViewHolder, position: Int) {
         holder.onBind(getItem(position % bannerCount))
+    }
+    fun setBannerCount(bannerCount: Int){
+        this.bannerCount = bannerCount
     }
 
     override fun getItemCount(): Int = PAGE_NUM

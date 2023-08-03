@@ -204,7 +204,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>, bannerCount: Int) {
-        promotionAdapter = DiscoverPromotionAdapter(requireContext(), this,bannerCount)
+        promotionAdapter = DiscoverPromotionAdapter(requireContext(), this)
+        promotionAdapter.setBannerCount(bannerCount)
         promotionAdapter.submitList(vpList)
         binding.vpDiscoverPromotion.adapter = promotionAdapter
         setPromotionIndicator(binding.vpDiscoverPromotion, bannerCount)
