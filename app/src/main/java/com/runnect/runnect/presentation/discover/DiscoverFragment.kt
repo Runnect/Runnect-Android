@@ -290,8 +290,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun selectItem(publicCourseId: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java)
-        intent.putExtra("publicCourseId", publicCourseId)
-        intent.putExtra("root", COURSE_DISCOVER_TAG)
+        intent.putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+        intent.putExtra(EXTRA_ROOT, COURSE_DISCOVER_TAG)
         startForResult.launch(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
@@ -309,5 +309,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
         const val COURSE_DISCOVER_TAG = "discover"
+        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        const val EXTRA_ROOT = "root"
     }
 }

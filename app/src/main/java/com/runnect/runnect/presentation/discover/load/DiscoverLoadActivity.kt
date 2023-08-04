@@ -109,10 +109,10 @@ class DiscoverLoadActivity :
             if (it.isActivated) {
                 val intent = Intent(this, DiscoverUploadActivity::class.java)
                 intent.apply {
-                    putExtra("courseId", viewModel.idSelectedItem.value)
-                    putExtra("img", viewModel.imgSelectedItem.value)
-                    putExtra("departure", viewModel.departureSelectedItem.value)
-                    putExtra("distance", viewModel.distanceSelectedItem.value)
+                    putExtra(EXTRA_COURSE_ID, viewModel.idSelectedItem.value)
+                    putExtra(EXTRA_IMG, viewModel.imgSelectedItem.value)
+                    putExtra(EXTRA_DEPARTURE, viewModel.departureSelectedItem.value)
+                    putExtra(EXTRA_DISTANCE, viewModel.distanceSelectedItem.value)
                 }
                 startActivity(intent)
                 adapter.clearSelection()
@@ -140,5 +140,12 @@ class DiscoverLoadActivity :
     override fun selectCourse(id: Int, img: String, departure: String, distance: String) {
         Timber.d("2. Adapter로부터 호출되는 콜백함수 selectItem")
         viewModel.checkSelectEnable(id, img, departure, distance)
+    }
+
+    companion object {
+        const val EXTRA_COURSE_ID = "courseId"
+        const val EXTRA_IMG = "img"
+        const val EXTRA_DEPARTURE = "departure"
+        const val EXTRA_DISTANCE = "distance"
     }
 }

@@ -23,18 +23,18 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
         listOf("c1", "c2", "c3", "s1", "s2", "s3", "u1", "u2", "u3", "r1", "r2", "r3")
 
     private val stampImgList = mutableListOf(
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 1개"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 10개"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "그린 코스 30개"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 1회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 20회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "스크랩 40회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 1회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 10회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "업로드 30회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 1회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 15회"),
-        RewardStampDTO(R.drawable.mypage_img_stamp_lock, "달리기 30회"),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_0_0),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_0_1),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_0_2),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_1_0),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_1_1),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_1_2),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_2_0),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_2_1),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_2_2),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_3_0),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_3_1),
+        RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_3_2),
     )
 
 
@@ -117,6 +117,18 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
     companion object {
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
+        const val MISSION_ROW_COLUMN_0_0 = "그린 코스 1개"
+        const val MISSION_ROW_COLUMN_0_1 = "그린 코스 10개"
+        const val MISSION_ROW_COLUMN_0_2 = "그린 코스 30개"
+        const val MISSION_ROW_COLUMN_1_0 = "스크랩 1회"
+        const val MISSION_ROW_COLUMN_1_1 = "스크랩 20회"
+        const val MISSION_ROW_COLUMN_1_2 = "스크랩 40회"
+        const val MISSION_ROW_COLUMN_2_0 = "업로드 1회"
+        const val MISSION_ROW_COLUMN_2_1 = "업로드 10회"
+        const val MISSION_ROW_COLUMN_2_2 = "업로드 30회"
+        const val MISSION_ROW_COLUMN_3_0 = "달리기 1회"
+        const val MISSION_ROW_COLUMN_3_1 = "달리기 15회"
+        const val MISSION_ROW_COLUMN_3_2 = "달리기 30회"
     }
 }
 

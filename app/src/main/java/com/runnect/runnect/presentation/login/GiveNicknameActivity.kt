@@ -37,12 +37,12 @@ class GiveNicknameActivity :
     private fun saveSignTokenInfo() {
         PreferenceManager.setString(
             applicationContext,
-            "access",
+            TOKEN_KEY_ACCESS,
             intent.getStringExtra("access")
         )
         PreferenceManager.setString(
             applicationContext,
-            "refresh",
+            TOKEN_KEY_REFRESH,
             intent.getStringExtra("refresh")
         )
     }
@@ -111,6 +111,11 @@ class GiveNicknameActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    companion object {
+        const val TOKEN_KEY_ACCESS = "access"
+        const val TOKEN_KEY_REFRESH = "refresh"
     }
 }
 

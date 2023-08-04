@@ -85,7 +85,7 @@ class SearchActivity :
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra("searchResult", item)
+                putExtra(EXTRA_SEARCH_RESULT, item)
             }
         )
     }
@@ -196,5 +196,8 @@ class SearchActivity :
         return super.dispatchTouchEvent(ev)
     }
 
+    companion object {
+        const val EXTRA_SEARCH_RESULT = "searchResult"
+    }
 
 }

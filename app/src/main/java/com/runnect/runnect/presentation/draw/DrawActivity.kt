@@ -80,7 +80,7 @@ class DrawActivity :
         if (::searchResult.isInitialized.not()) {
             intent?.let {
                 searchResult =
-                    intent.getParcelableExtra("searchResult") ?: throw Exception("데이터가 존재하지 않습니다.")
+                    intent.getParcelableExtra(EXTRA_SEARCH_RESULT) ?: throw Exception("데이터가 존재하지 않습니다.")
 
                 Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
                 viewModel.searchResult.value = searchResult
@@ -258,7 +258,7 @@ class DrawActivity :
             this.btn_run.setOnClickListener {
                 val intent = Intent(this@DrawActivity, CountDownActivity::class.java).apply {
                     putExtra(
-                        "CourseData", CourseData(
+                        EXTRA_COURSE_DATA, CourseData(
                             courseId = viewModel.courseId.value!!,
                             publicCourseId = null,
                             touchList = touchList,
@@ -266,7 +266,7 @@ class DrawActivity :
                             departure = searchResult.name,
                             distance = viewModel.distanceSum.value!!,
                             image = captureUri.toString(),
-                            dataFrom = "draw"
+                            dataFrom = "fromDrawCourse"
                         )
                     )
                 }
@@ -276,7 +276,7 @@ class DrawActivity :
 
             this.btn_storage.setOnClickListener {
                 val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
-                    putExtra("fromDrawActivity", true)
+                    putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDrawCourse")
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
                 startActivity(intent)
@@ -540,5 +540,8 @@ class DrawActivity :
         const val MAX_MARKER_NUM = 20
         const val DISTANCE_UNIT = "kilometer"
         const val LEAST_CONDITION_CREATE_PATH = 2
+        const val EXTRA_SEARCH_RESULT = "searchResult"
+        const val EXTRA_COURSE_DATA = "CourseData"
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }

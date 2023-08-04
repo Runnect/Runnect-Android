@@ -32,8 +32,8 @@ class MyPageEditNameActivity :
     }
 
     private fun initLayout() {
-        val nickName = intent.getStringExtra(NICK_NAME)
-        val profileImg = intent.getIntExtra(PROFILE, R.drawable.user_profile_basic)
+        val nickName = intent.getStringExtra(EXTRA_NICK_NAME)
+        val profileImg = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
         viewModel.setNickName(nickName!!)
         viewModel.setProfileImg(profileImg)
     }
@@ -65,7 +65,10 @@ class MyPageEditNameActivity :
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    setResult(RESULT_OK, Intent().putExtra(NICK_NAME, viewModel.nickName.value))
+                    setResult(
+                        RESULT_OK,
+                        Intent().putExtra(EXTRA_NICK_NAME, viewModel.nickName.value)
+                    )
                     finish()
                 }
 
@@ -111,7 +114,7 @@ class MyPageEditNameActivity :
     }
 
     companion object {
-        const val NICK_NAME = "nickname"
-        const val PROFILE = "profile_img"
+        const val EXTRA_NICK_NAME = "nickname"
+        const val EXTRA_PROFILE = "profile_img"
     }
 }

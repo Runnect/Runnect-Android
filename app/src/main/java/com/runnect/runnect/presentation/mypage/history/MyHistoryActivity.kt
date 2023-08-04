@@ -224,8 +224,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             //매개변수로 아이템 정보를 넘겨받아 기록 조회 액티비티 이동
             val intent = Intent(this, MyHistoryDetailActivity::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("historyDataBundle", data)
-            intent.putExtra("historyData", bundle)
+            bundle.putSerializable(BUNDLE_HISTORY, data)
+            intent.putExtra(EXTRA_HISTORY_DATA, bundle)
             startActivity(intent)
             false
         }
@@ -242,5 +242,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         const val EDIT_MODE = "편집"
         const val DIALOG_DESC = "러닝 기록을 정말로 삭제하시겠어요?"
         const val DELETE_BTN = "삭제하기"
+        const val EXTRA_HISTORY_DATA = "historyData"
+        const val BUNDLE_HISTORY = "historyDataBundle"
     }
 }

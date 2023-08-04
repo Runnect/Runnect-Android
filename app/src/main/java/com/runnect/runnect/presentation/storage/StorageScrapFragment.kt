@@ -29,13 +29,9 @@ class StorageScrapFragment :
     BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnHeartClick,
     OnScrapCourseClick,
     ItemCount {
-    
+
     val viewModel: StorageViewModel by viewModels()
     lateinit var storageScrapAdapter: StorageScrapAdapter
-
-    companion object {
-        var isFromStorageNoScrap = false
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -141,7 +137,7 @@ class StorageScrapFragment :
             isFromStorageNoScrap = true
 
             val intent = Intent(activity, MainActivity::class.java).apply {
-                putExtra("fromScrapFragment", true)
+                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromMyScrap")
             }
             startActivity(intent)
             requireActivity().overridePendingTransition(
@@ -169,12 +165,19 @@ class StorageScrapFragment :
         Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
 
         val intent = Intent(activity, CourseDetailActivity::class.java)
-        intent.putExtra("publicCourseId", item.publicCourseId)
-        intent.putExtra("root", "storageScrap")
+        intent.putExtra(EXTRA_PUBLIC_COURSE_ID, item.publicCourseId)
+        intent.putExtra(EXTRA_ROOT, "storageScrap")
         startActivity(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
             R.anim.slide_out_left
         )
+    }
+
+    companion object {
+        var isFromStorageNoScrap = false
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        const val EXTRA_ROOT = "root"
     }
 }

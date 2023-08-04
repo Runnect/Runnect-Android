@@ -70,7 +70,7 @@ class EndRunActivity :
     private fun backBtn() {
         binding.imgBtnBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("dataFrom", viewModel.dataFrom.value)
+                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, viewModel.dataFrom.value)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
             startActivity(intent)
@@ -111,7 +111,7 @@ class EndRunActivity :
     }
 
     fun getIntentValue() {
-        runToEndRunData = intent.getParcelableExtra("RunToEndRunData")!!
+        runToEndRunData = intent.getParcelableExtra(EXTRA_RUN_TO_ENDRUN)!!
 
         Timber.tag(ContentValues.TAG).d("runToEndRunData : $runToEndRunData")
 
@@ -215,7 +215,7 @@ class EndRunActivity :
 
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("dataFrom", viewModel.dataFrom.value)
+            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, viewModel.dataFrom.value)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         startActivity(intent)
@@ -239,5 +239,7 @@ class EndRunActivity :
 
     companion object {
         const val MAX_TITLE_LENGTH = 20
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
     }
 }

@@ -37,10 +37,10 @@ class DiscoverUploadActivity :
     private fun initLayout() {
         binding.etDiscoverUploadDesc.movementMethod = null //내용 초과시 스크롤 되지 않도록 함
         with(binding) {
-            ivDiscoverUploadMap.load(intent.getStringExtra("img"))
-            tvDiscoverUploadDistance.text = intent.getStringExtra("distance")
-            tvDiscoverUploadDeparture.text = intent.getStringExtra("departure")
-            viewModel.id = intent.getIntExtra("courseId", 0) //선택한 코스의 id로 API 호출 예정
+            ivDiscoverUploadMap.load(intent.getStringExtra(EXTRA_IMG))
+            tvDiscoverUploadDistance.text = intent.getStringExtra(EXTRA_DISTANCE)
+            tvDiscoverUploadDeparture.text = intent.getStringExtra(EXTRA_DEPARTURE)
+            viewModel.id = intent.getIntExtra(EXTRA_COURSE_ID, 0) //선택한 코스의 id로 API 호출 예정
         }
 
     }
@@ -119,5 +119,12 @@ class DiscoverUploadActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    companion object {
+        const val EXTRA_IMG = "img"
+        const val EXTRA_DISTANCE = "distance"
+        const val EXTRA_DEPARTURE = "departure"
+        const val EXTRA_COURSE_ID = "courseId"
     }
 }

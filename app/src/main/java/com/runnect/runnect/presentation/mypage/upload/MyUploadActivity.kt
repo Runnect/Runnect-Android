@@ -83,7 +83,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun initDialog() {
         dialog = setCustomDialog(
             layoutInflater, binding.root,
-            DIALOG_DESC,
+            DESCRIPTION_DIALOG,
             DELETE_BTN
         )
     }
@@ -152,7 +152,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun enterEditMode() {
         with(binding) {
             btnMyPageUploadEditCourse.text = EDIT_CANCEL
-            tvMyPageUploadTotalCourseCount.text = CHOICE_MODE_DESC
+            tvMyPageUploadTotalCourseCount.text = DESCRIPTION_CHOICE_MODE
             if (::adapter.isInitialized) adapter.handleCheckBoxVisibility(true)
         }
     }
@@ -223,8 +223,8 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             true
         } else {
             val intent = Intent(this, CourseDetailActivity::class.java).apply {
-                putExtra("publicCourseId", id)
-                putExtra("root", "upload")
+                putExtra(EXTRA_PUBLIC_COURSE_ID, id)
+                putExtra(EXTRA_ROOT, "upload")
             }
             startActivity(intent)
             false
@@ -232,10 +232,13 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     companion object {
-        const val CHOICE_MODE_DESC = "기록 선택"
+        const val DESCRIPTION_CHOICE_MODE = "기록 선택"
         const val EDIT_CANCEL = "취소"
         const val EDIT_MODE = "편집"
-        const val DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
+        const val DESCRIPTION_DIALOG = "코스를 정말로 삭제하시겠어요?"
         const val DELETE_BTN = "삭제하기"
+
+        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        const val EXTRA_ROOT = "root"
     }
 }

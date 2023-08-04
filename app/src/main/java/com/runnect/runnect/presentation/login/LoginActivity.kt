@@ -18,11 +18,6 @@ import timber.log.Timber
 class LoginActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
 
-    companion object {
-        const val GOOGLE_SIGN = "GOOGLE"
-        const val KAKAO_SIGN = "KAKAO"
-    }
-
     lateinit var socialLogin: SocialLogin
     lateinit var googleLogin: GoogleLogin
     lateinit var kakaoLogin: KakaoLogin
@@ -31,7 +26,7 @@ class LoginActivity :
     //자동 로그인
     override fun onStart() {
         super.onStart()
-        val accessToken = PreferenceManager.getString(applicationContext, "access")
+        val accessToken = PreferenceManager.getString(applicationContext, TOKEN_KEY_ACCESS)
         if (accessToken != "none" && accessToken != "visitor") {
             Timber.d("자동로그인 완료")
             moveToMain()
@@ -66,12 +61,12 @@ class LoginActivity :
             btnVisitorMode.setOnClickListener {
                 PreferenceManager.setString(
                     context = applicationContext,
-                    key = "access",
+                    key = TOKEN_KEY_ACCESS,
                     value = "visitor"
                 )
                 PreferenceManager.setString(
                     context = applicationContext,
-                    key = "refresh",
+                    key = TOKEN_KEY_REFRESH,
                     value = "null"
                 )
                 moveToMain()
@@ -118,8 +113,8 @@ class LoginActivity :
 
     private fun moveToGiveNickName() {
         val intent = Intent(this, GiveNicknameActivity::class.java)
-        intent.putExtra("access", viewModel.loginResult.value?.accessToken)
-        intent.putExtra("refresh", viewModel.loginResult.value?.refreshToken)
+        intent.putExtra(EXTRA_ACCESS_TOKEN, viewModel.loginResult.value?.accessToken)
+        intent.putExtra(EXTRA_REFRESH_TOKEN, viewModel.loginResult.value?.refreshToken)
         startActivity(intent)
         finish()
     }
@@ -128,12 +123,12 @@ class LoginActivity :
     private fun saveSignTokenInfo() {
         PreferenceManager.setString(
             context = applicationContext,
-            key = "access",
+            key = TOKEN_KEY_ACCESS,
             value = viewModel.loginResult.value?.accessToken
         )
         PreferenceManager.setString(
             context = applicationContext,
-            key = "refresh",
+            key = TOKEN_KEY_REFRESH,
             value = viewModel.loginResult.value?.refreshToken
         )
     }
@@ -151,5 +146,16 @@ class LoginActivity :
         if (::socialLogin.isInitialized) {
             socialLogin.clearSocialLogin()
         }
+    }
+
+    companion object {
+        const val GOOGLE_SIGN = "GOOGLE"
+        const val KAKAO_SIGN = "KAKAO"
+
+        const val TOKEN_KEY_ACCESS = "access"
+        const val TOKEN_KEY_REFRESH = "refresh"
+
+        const val EXTRA_ACCESS_TOKEN = "access"
+        const val EXTRA_REFRESH_TOKEN = "refresh"
     }
 }
