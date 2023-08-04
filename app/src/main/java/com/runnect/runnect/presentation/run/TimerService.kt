@@ -61,7 +61,7 @@ class TimerService : Service() {
     }
 
     companion object {
-        const val TIMER_UPDATE_ACTION = "com.runnect.runnect.TIMER_UPDATE_ACTION"
-        const val EXTRA_TIMER_VALUE = "com.runnect.runnect.EXTRA_TIMER_VALUE"
+        const val TIMER_UPDATE_ACTION = "TIMER_UPDATE_ACTION"
+        const val EXTRA_TIMER_VALUE = "EXTRA_TIMER_VALUE"
     }
 }

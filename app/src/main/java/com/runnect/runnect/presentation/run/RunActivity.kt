@@ -152,12 +152,10 @@ class RunActivity :
             unbindService(connection)
         }
         stopTimer()
-        finish()
     }
 
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
-            stopTimer()
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
@@ -320,6 +318,7 @@ class RunActivity :
             }
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            finish()
         }
     }
 
