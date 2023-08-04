@@ -166,7 +166,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBarBanner.isVisible = false
-                    setPromotion( //submitList만 새로 해주면 되는데 이것 외 여러 코드들도 다시 돌리는 건 비효율적이라 리팩토링이 필요합니다.
+                    setPromotion(
                         binding.vpDiscoverPromotion,
                         viewModel.bannerData
                     )
@@ -196,33 +196,32 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setPromotion(vp: ViewPager2, vpList: MutableList<DiscoverPromotionItemDTO>) {
-        val bannerCount = vpList.size
-        setPromotionAdapter(vpList,bannerCount)
-        setPromotionIndicator(vp,bannerCount)
-        setPromotionViewPager(vp,bannerCount)
+        setPromotionAdapter(vpList)
+        setPromotionIndicator(vp)
+        setPromotionViewPager(vp)
         setScrollHandler(vp)
     }
 
-    private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>, bannerCount: Int) {
+    private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
         promotionAdapter = DiscoverPromotionAdapter(requireContext(), this)
+        promotionAdapter.setBannerCount(viewModel.bannerCount)
         promotionAdapter.submitList(vpList)
         binding.vpDiscoverPromotion.adapter = promotionAdapter
-        setPromotionIndicator(binding.vpDiscoverPromotion, bannerCount)
+        setPromotionIndicator(binding.vpDiscoverPromotion)
     }
-
-    private fun setPromotionIndicator(vp: ViewPager2, bannerCount: Int) {
+    private fun setPromotionIndicator(vp: ViewPager2) {
         val indicator = binding.ciDiscoverPromotion
         indicator.setViewPager(vp)
-        indicator.createIndicators(bannerCount, PAGE_NUM / 2)
+        indicator.createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
     }
 
-    private fun setPromotionViewPager(vp: ViewPager2, bannerCount: Int) {
+    private fun setPromotionViewPager(vp: ViewPager2) {
         vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp.setCurrentItem(PAGE_NUM / 2, false)
         vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.ciDiscoverPromotion.animatePageSelected(position % bannerCount)
+                binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
                 currentPosition = position
             }
 
@@ -233,7 +232,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 if (positionOffsetPixels == 0) {
-                    binding.ciDiscoverPromotion.animatePageSelected(position % bannerCount)
+                    binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
                 }
             }
         }
@@ -249,7 +248,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun autoScrollStart() {
-        Timber.tag("lifeCycle").d("onCreate: ${getLifecycle().getCurrentState()}")
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)

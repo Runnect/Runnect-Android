@@ -37,6 +37,10 @@ class DiscoverViewModel @Inject constructor(
     val bannerState: LiveData<UiState>
         get() = _bannerState
 
+    private var _bannerCount = 0
+    val bannerCount: Int
+        get() = _bannerCount
+
 
     fun getBannerData() {
         viewModelScope.launch {
@@ -44,6 +48,7 @@ class DiscoverViewModel @Inject constructor(
                 _bannerState.value = UiState.Loading
                 bannerRepository.getBannerData().collect { bannerList ->
                     bannerData = bannerList
+                    _bannerCount = bannerData.size
                     _bannerState.value = UiState.Success
                 }
             }.onFailure {
