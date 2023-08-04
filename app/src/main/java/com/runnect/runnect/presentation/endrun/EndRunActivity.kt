@@ -19,10 +19,9 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.CustomToast
 import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.round
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
@@ -130,11 +129,14 @@ class EndRunActivity :
 
     //각각의 시간/분/초가 한자리수로 넘어올 때 형식 가공
     private fun setTimerViewModelValue() {
-        val formattedTimerHour = String.format("%02d", runToEndRunData.timerHour)
-        val formattedTimerMinute = String.format("%02d", runToEndRunData.timerMinute)
-        val formattedTimerSecond = String.format("%02d", runToEndRunData.timerSecond)
+        val timerData = String.format(
+            "%02d:%02d:%02d",
+            runToEndRunData.timerHour,
+            runToEndRunData.timerMinute,
+            runToEndRunData.timerSecond
+        )
 
-        viewModel.timerHourMinSec.value = "$formattedTimerHour:$formattedTimerMinute:$formattedTimerSecond"
+        viewModel.timerHourMinSec.value = timerData
     }
 
     //평균페이스는 '분'을 기준으로 표기하기 때문에 시간, 초를 '분'으로 변환해주어야 함
@@ -146,14 +148,8 @@ class EndRunActivity :
 
     // 평균 페이스는 '분 / 거리'로 나온 값을 다음과 같이 표기해야 한다. ex) 18.20 -> 18'20"
     private fun setPaceViewModelValue() {
-        paceFull = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(
-            2, RoundingMode.FLOOR
-        ).toDouble()
-
-        paceMinute = BigDecimal(totalMinute / runToEndRunData.totalDistance!!).setScale(
-            0, RoundingMode.FLOOR
-        ).toInt() // ex) 18.20 -> 18
-
+        paceFull = (totalMinute / runToEndRunData.totalDistance!!).round(2)
+        paceMinute = (totalMinute / runToEndRunData.totalDistance!!).round(0).toInt() // ex) 18.20 -> 18
         paceSecond = ((paceFull - paceMinute) * 100).roundToInt() // ex) 0.20 ->20
 
         viewModel.paceTotal.value = "$paceMinute'$paceSecond\""
