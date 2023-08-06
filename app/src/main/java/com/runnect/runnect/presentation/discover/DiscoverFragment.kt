@@ -145,15 +145,19 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         viewModel.courseInfoState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Empty -> {}
+                UiState.Loading -> {
+                    binding.shimmerLayout.startShimmer()
+                    binding.shimmerLayout.isVisible = true
+                }
+
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
+                    binding.shimmerLayout.stopShimmer()
+                    binding.shimmerLayout.isVisible = false
                     setRecommendCourseAdapter()
                 }
 
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
                 }
@@ -209,6 +213,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vpDiscoverPromotion.adapter = promotionAdapter
         setPromotionIndicator(binding.vpDiscoverPromotion)
     }
+
     private fun setPromotionIndicator(vp: ViewPager2) {
         val indicator = binding.ciDiscoverPromotion
         indicator.setViewPager(vp)
