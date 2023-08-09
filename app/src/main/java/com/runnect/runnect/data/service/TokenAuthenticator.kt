@@ -1,10 +1,12 @@
 package com.runnect.runnect.data.service
 
 import android.content.Context
+import android.content.Intent
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
+import com.runnect.runnect.presentation.login.LoginActivity
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -21,6 +23,12 @@ class TokenAuthenticator(val context: Context) : Authenticator {
     @OptIn(DelicateCoroutinesApi::class)
     override fun authenticate(route: Route?, response: Response): Request? {
         if (response.code == 401) {
+            if(response.message == "모든 토큰이 만료되었습니다." || response.message == "유효하지 않은 토큰입니다."){
+                val intent = Intent(context,LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+                return null
+            }
             val newAccessToken = GlobalScope.async(Dispatchers.IO) { //Deferred
                 getNewDeviceToken()
             }
