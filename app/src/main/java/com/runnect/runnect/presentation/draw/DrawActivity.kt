@@ -259,7 +259,7 @@ class DrawActivity :
                 val intent = Intent(this@DrawActivity, CountDownActivity::class.java).apply {
                     putExtra(
                         EXTRA_COURSE_DATA, CourseData(
-                            courseId = viewModel.courseId.value!!,
+                            courseId = viewModel.uploadResult.value!!.data.course.id,
                             publicCourseId = null,
                             touchList = touchList,
                             startLatLng = departureLatLng,

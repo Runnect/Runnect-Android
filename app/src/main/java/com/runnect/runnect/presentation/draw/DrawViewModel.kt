@@ -35,8 +35,6 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
     var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
-    val courseId = MutableLiveData<Int>()
-
     val isBtnAvailable = MutableLiveData(false)
 
 
@@ -99,7 +97,6 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
             }.onSuccess {
                 Timber.tag(ContentValues.TAG).d("통신success")
                 uploadResult.value = it.body()
-                courseId.value = it.body()!!.data.course.id
                 _drawState.value = UiState.Success
             }.onFailure {
                 Timber.tag(ContentValues.TAG).d("통신failure : ${it}")
