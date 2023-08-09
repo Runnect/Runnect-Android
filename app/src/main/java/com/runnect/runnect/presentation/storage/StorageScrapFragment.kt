@@ -42,6 +42,14 @@ class StorageScrapFragment :
         getCourse()
         toScrapCourseBtn()
         addObserver()
+        pullToRefresh()
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            getCourse()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     override fun onAttach(context: Context) {
