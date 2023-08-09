@@ -40,6 +40,14 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         addListener()
         addObserver()
         initDialog()
+        pullToRefresh()
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getUserUploadCourse()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun initLayout() {
