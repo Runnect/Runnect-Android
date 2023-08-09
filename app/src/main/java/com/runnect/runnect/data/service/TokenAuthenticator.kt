@@ -2,11 +2,13 @@ package com.runnect.runnect.data.service
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -23,8 +25,10 @@ class TokenAuthenticator(val context: Context) : Authenticator {
     @OptIn(DelicateCoroutinesApi::class)
     override fun authenticate(route: Route?, response: Response): Request? {
         if (response.code == 401) {
-            if(response.message == "모든 토큰이 만료되었습니다." || response.message == "유효하지 않은 토큰입니다."){
-                val intent = Intent(context,LoginActivity::class.java)
+            if (response.message == "Unauthorized") {
+                clearToken()
+                Toast.makeText(context,"장기간 미접속으로 인해 재로그인이 필요합니다.",Toast.LENGTH_LONG).show()
+                val intent = Intent(context, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 context.startActivity(intent)
                 return null
@@ -41,6 +45,12 @@ class TokenAuthenticator(val context: Context) : Authenticator {
             }
         }
         return null
+    }
+    private fun clearToken(){
+        PreferenceManager.setString(context,
+            TOKEN_KEY_ACCESS, "none")
+        PreferenceManager.setString(context,
+            TOKEN_KEY_REFRESH, "none")
     }
 
     private suspend inline fun getNewDeviceToken(): Boolean {
@@ -102,5 +112,9 @@ class TokenAuthenticator(val context: Context) : Authenticator {
                 PreferenceManager.getString(ApplicationClass.appContext, "refresh")!!
             )
             .build()
+    }
+    companion object {
+        const val TOKEN_KEY_ACCESS = "access"
+        const val TOKEN_KEY_REFRESH = "refresh"
     }
 }
