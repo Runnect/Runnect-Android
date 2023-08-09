@@ -10,191 +10,198 @@
             type="com.runnect.runnect.presentation.mypage.history.MyHistoryViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/const_my_page_history"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/M3"
-        tools:context=".presentation.mypage.history.MyHistoryActivity">
-
-        <ProgressBar
-            android:id="@+id/indeterminateBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="2dp"
-            android:indeterminateTint="@color/G3"
-            android:outlineProvider="none"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_my_page_history"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/W1"
-            app:contentInsetStart="0dp"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_my_page_history_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/start_margin_back_btn"
-                app:srcCompat="@drawable/all_back_arrow" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_history_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/start_margin_toolbar"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/my_page_history_title"
-                android:textColor="@color/G1"
-                android:textSize="18sp" />
-
-        </androidx.appcompat.widget.Toolbar>
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/const_my_page_history_edit_bar"
+            android:id="@+id/const_my_page_history"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/W1"
-            android:paddingVertical="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_my_page_history">
+            android:layout_height="match_parent"
+            android:background="@color/M3"
+            tools:context=".presentation.mypage.history.MyHistoryActivity">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_history_total_course_count"
+            <ProgressBar
+                android:id="@+id/indeterminateBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginStart="15dp"
-                android:fontFamily="@font/pretendard_regular"
-                android:textColor="@color/G2"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="총 기록 152개" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_my_page_history_edit_history"
-                android:layout_width="50dp"
-                android:layout_height="28dp"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/radius_50_edit_course_button"
-                android:fontFamily="@font/pretendard_medium"
-                android:text="@string/my_draw_edit"
-                android:textColor="@color/M1"
-                android:textSize="12sp"
+                android:elevation="2dp"
+                android:indeterminateTint="@color/G3"
+                android:outlineProvider="none"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:overScrollMode="never"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/const_my_page_history_edit_bar">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_my_page_history"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_my_page_history"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="15dp"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/item_mypage_history" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/layout_my_page_history_no_result"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="64dp"
-            android:layout_marginBottom="30dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/toolbar_my_page_history">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/no_course" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/pretendard_medium"
-                android:gravity="center"
-                android:lineHeight="22dp"
-                android:lineSpacingExtra="5sp"
-                android:text="@string/my_page_history_no_history"
-                android:textColor="@color/G2"
-                android:textSize="14sp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_history_my_page_draw_course"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                app:cardCornerRadius="10dp">
+                android:layout_height="56dp"
+                android:background="@color/W1"
+                app:contentInsetStart="0dp"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_my_page_history_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/start_margin_back_btn"
+                    app:srcCompat="@drawable/all_back_arrow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page_history_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/start_margin_toolbar"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:text="@string/my_page_history_title"
+                    android:textColor="@color/G1"
+                    android:textSize="18sp" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/const_my_page_history_edit_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/W1"
+                android:paddingVertical="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar_my_page_history">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page_history_total_course_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="15dp"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:textColor="@color/G2"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="총 기록 152개" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_my_page_history_edit_history"
+                    android:layout_width="50dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/radius_50_edit_course_button"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="@string/my_draw_edit"
+                    android:textColor="@color/M1"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/const_my_page_history_edit_bar">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@color/M1" />
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="20dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_my_page_history"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:overScrollMode="never"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:listitem="@layout/item_mypage_history" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/layout_my_page_history_no_result"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="64dp"
+                android:layout_marginBottom="30dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/toolbar_my_page_history">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/no_course" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/pretendard_semibold"
-                    android:text="@string/discover_load_draw_course"
-                    android:textColor="@color/W1"
-                    android:textSize="15sp" />
-            </androidx.cardview.widget.CardView>
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:gravity="center"
+                    android:lineHeight="22dp"
+                    android:lineSpacingExtra="5sp"
+                    android:text="@string/my_page_history_no_history"
+                    android:textColor="@color/G2"
+                    android:textSize="14sp" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_my_page_history_delete"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/all_finish_btn_selector"
-            android:fontFamily="@font/pretendard_semibold"
-            android:gravity="center"
-            android:text="@string/history_delete"
-            android:textColor="@color/W1"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_history_my_page_draw_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    app:cardCornerRadius="10dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@color/M1" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="@string/discover_load_draw_course"
+                        android:textColor="@color/W1"
+                        android:textSize="15sp" />
+                </androidx.cardview.widget.CardView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_history_delete"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginBottom="18dp"
+                android:background="@drawable/all_finish_btn_selector"
+                android:fontFamily="@font/pretendard_semibold"
+                android:gravity="center"
+                android:text="@string/history_delete"
+                android:textColor="@color/W1"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </layout>

@@ -64,6 +64,14 @@ class StorageMyDrawFragment :
         getCourse()
         requireCourse()
         addObserver()
+        pullToRefresh()
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            getCourse()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
 

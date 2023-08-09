@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.discover
 
+import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -65,6 +66,7 @@ class DiscoverViewModel @Inject constructor(
             }.onSuccess {
                 _recommendCourseList = it
                 _courseInfoState.value = UiState.Success
+                Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
             }.onFailure {
                 errorMessage.value = it.message
                 _courseInfoState.value = UiState.Failure

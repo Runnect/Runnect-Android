@@ -151,6 +151,9 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    //swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
     //Skeleton UI
     implementation "com.facebook.shimmer:shimmer:0.5.0"
 

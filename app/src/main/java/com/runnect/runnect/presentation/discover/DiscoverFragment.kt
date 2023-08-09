@@ -77,6 +77,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 activity?.onBackPressed()
             }
         }
+        pullToRefresh()
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            getRecommendCourses()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun getBannerData() {
@@ -186,17 +194,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
 
-    private fun setRecommendCourseAdapter() {
+    private fun setRecommendCourseAdapter() { //새로고침 시 매번 객체 초기화가 아니라 data만 갈아끼워질 수 있게 분리해야 할 듯 합니다.
         courseRecommendAdapter =
             CourseRecommendAdapter(requireContext(), this, this, isVisitorMode).apply {
                 submitList(
                     viewModel.recommendCourseList
                 )
             }
-
         binding.rvDiscoverRecommend.setHasFixedSize(true)
         binding.rvDiscoverRecommend.adapter = courseRecommendAdapter
-
     }
 
     private fun setPromotion(vp: ViewPager2, vpList: MutableList<DiscoverPromotionItemDTO>) {
