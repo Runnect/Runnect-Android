@@ -46,12 +46,24 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         addListener()
         addObserver()
         initDialog()
+        pullToRefresh()
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            getRecord()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun initLayout() {
-        viewModel.getRecord()
+        getRecord()
         binding.rvMyPageHistory.layoutManager = LinearLayoutManager(this)
         binding.rvMyPageHistory.addItemDecoration(RecyclerOffsetDecorationHeight(this, 10))
+    }
+
+    private fun getRecord(){
+        viewModel.getRecord()
     }
 
     private fun initDialog() {
@@ -109,7 +121,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
     }
 
-    private fun initAdapter() {
+    private fun initAdapter() { //data만 갱신하는 식으로 리팩토링 되어야 합니다.
         adapter = MyHistoryAdapter(this, this).apply {
             submitList(viewModel.historyItems)
         }
