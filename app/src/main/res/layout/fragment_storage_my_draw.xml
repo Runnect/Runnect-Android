@@ -53,8 +53,6 @@
                 tools:text="총 기록 152개" />
 
             <androidx.appcompat.widget.AppCompatButton
-                tools:visibility="visible"
-                android:visibility="invisible"
                 android:id="@+id/btn_edit_course"
                 android:layout_width="50dp"
                 android:layout_height="28dp"
@@ -65,9 +63,11 @@
                 android:text="@string/my_draw_edit"
                 android:textColor="@color/M1"
                 android:textSize="12sp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -127,36 +127,42 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_storage_my_draw_no_course_guide" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/top_constraint">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_constraint">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView_storage_my_draw"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="15dp"
-                    android:orientation="vertical"
-                    android:overScrollMode="never"
-                    android:paddingBottom="50dp"
-                    android:visibility="visible"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/item_storage_my_draw" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_storage_my_draw"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="15dp"
+                        android:orientation="vertical"
+                        android:overScrollMode="never"
+                        android:paddingBottom="50dp"
+                        android:visibility="visible"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:listitem="@layout/item_storage_my_draw" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
