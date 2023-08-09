@@ -29,6 +29,7 @@ class LoginActivity :
         val accessToken = PreferenceManager.getString(applicationContext, TOKEN_KEY_ACCESS)
         if (accessToken != "none" && accessToken != "visitor") {
             Timber.d("자동로그인 완료")
+            isAutoLogin = true
             moveToMain()
             Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
         }
@@ -157,5 +158,7 @@ class LoginActivity :
 
         const val EXTRA_ACCESS_TOKEN = "access"
         const val EXTRA_REFRESH_TOKEN = "refresh"
+
+        var isAutoLogin = false
     }
 }
