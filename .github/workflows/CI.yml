@@ -66,6 +66,11 @@ jobs:
               env:
                   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
               run: echo "GOOGLE_CLIENT_ID=\"$GOOGLE_CLIENT_ID\"" >> local.properties
+
+            - name: Access REMOTE_KEY_APP_VERSION
+              env:
+                  REMOTE_KEY_APP_VERSION: ${{ secrets.REMOTE_KEY_APP_VERSION }}
+              run: echo "REMOTE_KEY_APP_VERSION=\"$REMOTE_KEY_APP_VERSION\"" >> local.properties
               
             - name: Add kakao_strings.xml
               env:
