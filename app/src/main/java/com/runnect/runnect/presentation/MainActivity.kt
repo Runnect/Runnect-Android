@@ -1,9 +1,16 @@
 package com.runnect.runnect.presentation
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.commit
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
 import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
@@ -26,6 +33,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initRemoteConfig()
         checkVisitorMode()
         binding.vm = viewModel
         binding.lifecycleOwner = this
@@ -89,6 +97,48 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     fun getBtnDeleteCourseMain(): View {
         return binding.btnDeleteCourseMain
+    }
+
+    private fun initRemoteConfig() {
+        val remoteConfig = Firebase.remoteConfig
+        val localAppVersion =
+            packageManager.getPackageInfo(packageName, 0).versionName //현재 설치된 앱의 버전 (versionName)
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600 //1시간마다 최신 config를 가져오도록 설정
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync( //remote config 기본값 설정
+            mapOf(
+                REMOTE_KEY_APP_VERSION to "0.0.0"
+            )
+        )
+
+        remoteConfig.fetchAndActivate().addOnCompleteListener {//remote confing에서 값 수신 및 활성화
+            if (it.isSuccessful) { // fetch and activate 성공 }
+                Timber.tag("remote_config").d("fetch and activate: Success")
+                val updateAppVersion = remoteConfig.getString(REMOTE_KEY_APP_VERSION)
+                Timber.tag("appVersion").d("local: $localAppVersion, remote: $updateAppVersion")
+                if (localAppVersion != updateAppVersion) {
+                    initUpdateDialog()
+                }
+            } else {// fetch and activate 실패
+                Timber.tag("remote_config").d("fetch and activate: Fail")
+            }
+        }
+    }
+
+    private fun initUpdateDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("업데이트")
+            .setMessage("더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다.")
+            .setPositiveButton("업데이트") { _, _ -> loadPlayStore() }
+        builder.show()
+    }
+
+    private fun loadPlayStore() {
+        val uri = "market://details?id=$packageName"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+        startActivity(intent)
     }
 
     companion object {
