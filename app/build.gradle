@@ -157,4 +157,7 @@ dependencies {
     //Skeleton UI
     implementation "com.facebook.shimmer:shimmer:0.5.0"
 
+    //firebase remote config - update dialog
+    implementation 'com.google.firebase:firebase-config-ktx'
+
 }
