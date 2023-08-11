@@ -32,7 +32,7 @@ class TimerService : Service() {
                 time++
 
                 val hour = time / 3600
-                val minute = time / 60
+                val minute = (time % 3600) / 60
                 val second = time % 60
 
                 val timerValue = String.format("%02d:%02d:%02d", hour, minute, second)
