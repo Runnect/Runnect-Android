@@ -109,7 +109,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.setDefaultsAsync( //remote config 기본값 설정
             mapOf(
-                REMOTE_KEY_APP_VERSION to "0.0.0"
+                REMOTE_KEY_APP_VERSION to DEFAULT_VERSION
             )
         )
 
@@ -142,6 +142,11 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     companion object {
+
+        const val UPDATE_DIALOG_TITLE = "업데이트"
+        const val UPDATE_DIALOG_MESSAGE = "더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다."
+        const val UPDATE_DIALOG_BTN_TEXT = "업데이트"
+        const val DEFAULT_VERSION = "0.0.0"
 
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val TOKEN_KEY_ACCESS = "access"
