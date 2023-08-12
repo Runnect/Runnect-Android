@@ -129,9 +129,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     private fun initUpdateDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("업데이트")
-            .setMessage("더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다.")
-            .setPositiveButton("업데이트") { _, _ -> loadPlayStore() }
+        builder.setTitle(UPDATE_DIALOG_TITLE)
+            .setMessage(UPDATE_DIALOG_MESSAGE)
+            .setPositiveButton(UPDATE_DIALOG_BTN_TEXT) { _, _ -> loadPlayStore() }
+            .setCancelable(false)
         builder.show()
     }
 
