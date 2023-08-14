@@ -267,8 +267,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
     }
 
+    //timerTask 객체가 delay(600) 뒤에 생성되는데 그 전에 다른 fragment로 menu를 전환하면 생성되지도 않은 timerTask를 cancel하려는 것이니 NPE가 뜹니다.
+    //따라서 delay(700)을 줘서 임시조치를 취해놨습니다.
     private fun autoScrollStop() {
-        timerTask.cancel()
+        lifecycleScope.launch {
+            delay(700)
+            if (::timerTask.isInitialized) {
+                timerTask.cancel()
+            }
+        }
     }
 
     override fun onResume() {
