@@ -28,8 +28,10 @@ import com.kakao.sdk.template.model.Link
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
+import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -56,15 +58,31 @@ class CourseDetailActivity :
     private lateinit var editInterruptDialog: AlertDialog
 
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    var isFromDeepLink: Boolean = false
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            gestureBackWhenDeepLink()
+
             root = intent.getStringExtra(EXTRA_ROOT).toString()
             when (root) {
                 MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
                 COURSE_DISCOVER_TAG -> handleReturnToDiscover()
                 STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
             }
+        }
+    }
+
+    private fun gestureBackWhenDeepLink(){
+        if (isFromDeepLink) {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+            startActivity(intent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            isFromDeepLink = false
         }
     }
 
@@ -94,7 +112,7 @@ class CourseDetailActivity :
                 description = desc,
                 imageUrl = image,
                 link = Link(
-                    mobileWebUrl = "https://play.google.com/store/apps/details?id=com.sample.sample"
+                    mobileWebUrl = "https://play.google.com/store/apps/details?id=com.runnect.runnect"
                 )
             ),
             buttons = listOf(
@@ -152,6 +170,7 @@ class CourseDetailActivity :
 
     private fun initDeepLink() {
         if (Intent.ACTION_VIEW == intent.action) { //딥링크를 통해 열린 경우
+            isFromDeepLink = true
             val uri = intent.data
             if (uri != null) {
                 // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음
@@ -159,22 +178,10 @@ class CourseDetailActivity :
                 Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
             }
         }
-        getCourseDetail() //이게 비동기라 true를 주기도 전에 밑의 코드가 먼저 돌아버림
-//        viewModel.isFromDeepLink.value = true
-//        requireLoginFromDeepLink()
+        //위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어 getCourseDetail()을 돌려줄 수 있습니다.
+        getCourseDetail()
     }
 
-    //Q. LoginActivity는 로그인 직후에 제거되는 액티비티인지? 만약 그렇다면 다시 isAutoLogin 값을 true로 바꿔줄 필요 없음. 액티비티 소멸 시 같이 제거되기 떄문.
-    // 제거가 되면 여기서 참조가 안 되겠고 여기서 참조가 되면 안 제거 됐다는 얘긴데 Login은 다시 돌아갈 일 없으니까 제거 시켜주는 게 효율적일 듯합니다.
-    private fun requireLoginFromDeepLink() {
-        if (viewModel.isFromDeepLink.value == true) {//로그인 여부까지 확인해야 함. //방문자 모드로 하는 건?
-            viewModel.isFromDeepLink.value = false
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            Timber.tag("isFromDeepLink-viewModel").d("${viewModel.isFromDeepLink.value}")
-            Timber.tag("isAutoLogin").d("${LoginActivity.isAutoLogin}")
-        }
-    }
 
     private fun initView() {
         binding.vm = viewModel
@@ -183,6 +190,8 @@ class CourseDetailActivity :
 
     private fun addListener() {
         binding.ivCourseDetailBack.setOnClickListener {
+            gestureBackWhenDeepLink()
+
             if (viewModel.editMode.value == true) {
                 editInterruptDialog.show()
                 return@setOnClickListener
@@ -212,32 +221,36 @@ class CourseDetailActivity :
             }
         }
         binding.btnCourseDetailFinish.setOnClickListener {
+
+            if (isVisitorMode) {
+                requireLogin()
+            } else {
+                val intent = Intent(this, CountDownActivity::class.java).apply {
+                    putExtra(
+                        EXTRA_COURSE_DATA, CourseData(
+                            courseId = viewModel.courseDetail.courseId,
+                            publicCourseId = viewModel.courseDetail.id,
+                            touchList = touchList,
+                            startLatLng = departureLatLng,
+                            departure = viewModel.courseDetail.departure,
+                            distance = viewModel.courseDetail.distance.toFloat(),
+                            image = viewModel.courseDetail.image,
+                            dataFrom = "detail"
+                        )
+                    )
+                }
+                startActivity(intent)
+            }
+        }
+
+        binding.btnShare.setOnClickListener {
             sendKakaoLink(
                 title = viewModel.title.value.toString(),
                 desc = viewModel.description.value.toString(),
                 image = viewModel.imageUrl.value.toString()
             )
-
-//            if (isVisitorMode) {
-//                requireLogin()
-//            } else {
-//                val intent = Intent(this, CountDownActivity::class.java).apply {
-//                    putExtra(
-//                        EXTRA_COURSE_DATA, CourseData(
-//                            courseId = viewModel.courseDetail.courseId,
-//                            publicCourseId = viewModel.courseDetail.id,
-//                            touchList = touchList,
-//                            startLatLng = departureLatLng,
-//                            departure = viewModel.courseDetail.departure,
-//                            distance = viewModel.courseDetail.distance.toFloat(),
-//                            image = viewModel.courseDetail.image,
-//                            dataFrom = "detail"
-//                        )
-//                    )
-//                }
-//                startActivity(intent)
-//            }
         }
+
         binding.btnShowMore.setOnClickListener {
             if (root == MY_UPLOAD_ACTIVITY_TAG) {
                 editBottomSheet.show()
@@ -342,6 +355,14 @@ class CourseDetailActivity :
     }
 
     private fun addObserver() {
+        viewModel.isDeepLinkLogin.observe(this) {
+            if (viewModel.isDeepLinkLogin.value == false) { //딥링크로 진입했는데 로그인이 안 돼있을 경우
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                viewModel.isDeepLinkLogin.value = true
+            }
+        }
+
         viewModel.courseDetailState.observe(this) { state ->
             if (state == UiState.Success) {
                 with(binding) {
@@ -537,5 +558,6 @@ class CourseDetailActivity :
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
         const val EXTRA_COURSE_DATA = "CourseData"
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }

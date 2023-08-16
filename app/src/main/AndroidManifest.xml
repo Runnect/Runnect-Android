@@ -119,7 +119,7 @@
                 <!-- "kakao${YOUR_NATIVE_APP_KEY}://kakaolink" 형식의 앱 실행 스킴을 설정하는데 사용 -->
                 <data
                     android:host="kakaolink"
-                    android:scheme="@string/kakao_link_native_app_key" />
+                    android:scheme="@string/kakao_redirection_scheme" />
             </intent-filter>
         </activity>
 

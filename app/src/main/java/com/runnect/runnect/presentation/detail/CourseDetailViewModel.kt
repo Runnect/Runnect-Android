@@ -50,7 +50,7 @@ class CourseDetailViewModel @Inject constructor(
     var titleForInterruption = MutableLiveData("")
     var contentForInterruption = MutableLiveData("")
 
-    var isFromDeepLink: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isDeepLinkLogin = MutableLiveData(true)
     val editMediator = MediatorLiveData<Unit>()
     var isEdited = false
 
@@ -106,8 +106,8 @@ class CourseDetailViewModel @Inject constructor(
                 _courseDetailState.value = UiState.Failure
                 errorMessage.value = it.message
 
-                if(errorMessage.value == "HTTP 401 Unauthorized"){
-                    isFromDeepLink.value = true
+                if(errorMessage.value == "HTTP 401 Unauthorized"){ //딥링크 접속 && 미로그인의 경우
+                    isDeepLinkLogin.value = false
                 }
             }
         }
