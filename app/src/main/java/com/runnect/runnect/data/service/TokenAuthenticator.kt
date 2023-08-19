@@ -2,9 +2,12 @@ package com.runnect.runnect.data.service
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
+import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.presentation.login.LoginActivity
@@ -27,7 +30,9 @@ class TokenAuthenticator(val context: Context) : Authenticator {
         if (response.code == 401) {
             if (response.message == "Unauthorized") {
                 clearToken()
-                Toast.makeText(context,"장기간 미접속으로 인해 재로그인이 필요합니다.",Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).post{
+                    Toast.makeText(context,context.getString(R.string.alert_need_to_re_sign),Toast.LENGTH_LONG).show()
+                }
                 val intent = Intent(context, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 context.startActivity(intent)
