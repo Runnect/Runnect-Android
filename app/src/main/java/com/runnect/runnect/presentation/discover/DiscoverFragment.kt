@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
@@ -35,8 +34,6 @@ import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.startWebView
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
@@ -46,7 +43,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var courseRecommendAdapter: CourseRecommendAdapter
-    private lateinit var promotionAdapter: DiscoverPromotionAdapter
+    private val promotionAdapter: DiscoverPromotionAdapter by lazy {
+        DiscoverPromotionAdapter(requireContext(), this)
+    }
     private lateinit var startForResult: ActivityResultLauncher<Intent>
     private lateinit var scrollHandler: Handler
     private lateinit var timer: Timer
@@ -126,6 +125,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 16
             )
         )
+        setPromotionBanner(binding.vpDiscoverPromotion)
     }
 
     private fun addListener() {
@@ -178,10 +178,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBarBanner.isVisible = false
-                    setPromotion(
-                        binding.vpDiscoverPromotion,
-                        viewModel.bannerData
-                    )
+                    setBannerData()
                 }
 
                 UiState.Failure -> {
@@ -205,19 +202,23 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverRecommend.adapter = courseRecommendAdapter
     }
 
-    private fun setPromotion(vp: ViewPager2, vpList: MutableList<DiscoverPromotionItemDTO>) {
-        setPromotionAdapter(vpList)
-        setPromotionIndicator(vp)
+    private fun setPromotionBanner(vp: ViewPager2) {
         setPromotionViewPager(vp)
-        setScrollHandler(vp)
+        setScrollHandler()
+        setScrollPageRunnable(vp)
+        setTimerTask()
     }
 
-    private fun setPromotionAdapter(vpList: MutableList<DiscoverPromotionItemDTO>) {
-        promotionAdapter = DiscoverPromotionAdapter(requireContext(), this)
-        promotionAdapter.setBannerCount(viewModel.bannerCount)
-        promotionAdapter.submitList(vpList)
+    private fun setPromotionAdapter() {
         binding.vpDiscoverPromotion.adapter = promotionAdapter
+    }
+
+    private fun setBannerData() {
+        setPromotionAdapter()
+        promotionAdapter.setBannerCount(viewModel.bannerCount)
+        promotionAdapter.submitList(viewModel.bannerData)
         setPromotionIndicator(binding.vpDiscoverPromotion)
+        registerPromotionPageCallback(binding.vpDiscoverPromotion)
     }
 
     private fun setPromotionIndicator(vp: ViewPager2) {
@@ -229,6 +230,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setPromotionViewPager(vp: ViewPager2) {
         vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp.setCurrentItem(PAGE_NUM / 2, false)
+    }
+
+    private fun registerPromotionPageCallback(vp: ViewPager2) {
         vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -250,47 +254,46 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         )
     }
 
-    private fun setScrollHandler(vp: ViewPager2) {
+    private fun setScrollHandler() {
         scrollHandler = Handler(Looper.getMainLooper())
-        scrollPageRunnable = Runnable {
-            vp.setCurrentItem(++currentPosition, true)
-        }
         timer = Timer()
     }
 
-    private fun autoScrollStart() {
+    private fun setScrollPageRunnable(vp: ViewPager2) {
+        scrollPageRunnable = Runnable {
+            vp.setCurrentItem(++currentPosition, true)
+        }
+    }
+
+    private fun setTimerTask() {
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)
             }
         }
-        timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
     }
 
-    //timerTask 객체가 delay(600) 뒤에 생성되는데 그 전에 다른 fragment로 menu를 전환하면 생성되지도 않은 timerTask를 cancel하려는 것이니 NPE가 뜹니다.
-    //따라서 delay(700)을 줘서 임시조치를 취해놨습니다.
+    private fun autoScrollStart() {
+        if (::timer.isInitialized) {
+            timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
+        }
+    }
+
     private fun autoScrollStop() {
-        lifecycleScope.launch {
-            delay(700)
-            if (::timerTask.isInitialized) {
-                timerTask.cancel()
-            }
+        if (::timerTask.isInitialized) {
+            timerTask.cancel()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launch {
-            delay(600)
-            autoScrollStart()
-        }
+        autoScrollStart()
     }
 
     override fun onPause() {
         super.onPause()
         autoScrollStop()
     }
-
 
     override fun scrapCourse(id: Int?, scrapTF: Boolean) {
         viewModel.postCourseScrap(id!!, scrapTF)
