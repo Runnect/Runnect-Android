@@ -114,4 +114,5 @@
     <string name="give_nickname_title_3">이름을 입력해주세요</string>
     <string name="give_nickname_edit_input">닉네임을 입력해주세요</string>
     <string name="give_nickname_finish">시작하기</string>
+    <string name="alert_need_to_re_sign">장기간 미접속으로 인해 재로그인이 필요합니다.</string>
 </resources>
