@@ -27,7 +27,7 @@ class DiscoverViewModel @Inject constructor(
         get() = _courseInfoState
 
     private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
-    val recommendCourseList: List<RecommendCourseDTO>
+    val recommendCourseList: MutableList<RecommendCourseDTO>
         get() = _recommendCourseList
 
     val currentPageNo = MutableLiveData<Int>()
