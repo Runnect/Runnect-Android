@@ -58,11 +58,11 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourse() {
+    fun getRecommendCourse(pageNo: String?) {
         viewModelScope.launch {
             runCatching {
                 _courseInfoState.value = UiState.Loading
-                courseRepository.getRecommendCourse()
+                courseRepository.getRecommendCourse(pageNo = pageNo)
             }.onSuccess {
                 _recommendCourseList = it
                 _courseInfoState.value = UiState.Success
