@@ -274,13 +274,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun autoScrollStart() {
-        if (::timer.isInitialized) {
+        if (::timer.isInitialized && timerTask.scheduledExecutionTime() <= 0) {
             timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
         }
     }
 
     private fun autoScrollStop() {
-        if (::timerTask.isInitialized) {
+        if (::timer.isInitialized && timerTask.scheduledExecutionTime() <= 0) {
             timerTask.cancel()
         }
     }
