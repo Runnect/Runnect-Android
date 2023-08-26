@@ -11,6 +11,7 @@ data class ResponseRecommendCourse(
 
 @Serializable
 data class RecommendPublicCourse(
+    val pageNo: String?,
     val courseId: Int,
     val departure: RecommendDeparture,
     val id: Int,

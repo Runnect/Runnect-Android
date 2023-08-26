@@ -25,12 +25,13 @@ fun PublicCourseUpload.toData(): UserUploadCourseDTO {
 
 fun RecommendPublicCourse.toData(): RecommendCourseDTO {
     return RecommendCourseDTO(
+        pageNo = pageNo,
         courseId = courseId,
         departure = departure.region + ' ' + departure.city,
         id = id,
         title = title,
         scrap = scrap,
-        image = image,
+        image = image
     )
 }
 
