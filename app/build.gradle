@@ -153,6 +153,16 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    //kakao share
+    dependencies {
+        //카카오 SDK 모듈 설정
+        implementation "com.kakao.sdk:v2-user:2.15.0" // 카카오 로그인
+        implementation "com.kakao.sdk:v2-talk:2.15.0" // 친구, 메시지(카카오톡)
+        implementation "com.kakao.sdk:v2-story:2.15.0" // 카카오스토리
+        implementation "com.kakao.sdk:v2-link:2.9.0" // 메시지(카카오링크)
+        implementation "com.kakao.sdk:v2-navi:2.15.0" // 카카오내비
+
+    }
     //swipe refresh layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 

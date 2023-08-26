@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.detail
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
@@ -10,11 +11,20 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.gun0912.tedpermission.provider.TedPermissionProvider.context
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.link.LinkClient
+import com.kakao.sdk.link.WebSharerClient
+import com.kakao.sdk.template.model.Button
+import com.kakao.sdk.template.model.Content
+import com.kakao.sdk.template.model.FeedTemplate
+import com.kakao.sdk.template.model.Link
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -48,15 +58,31 @@ class CourseDetailActivity :
     private lateinit var editInterruptDialog: AlertDialog
 
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    var isFromDeepLink: Boolean = false
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            gestureBackWhenDeepLink()
+
             root = intent.getStringExtra(EXTRA_ROOT).toString()
             when (root) {
                 MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
                 COURSE_DISCOVER_TAG -> handleReturnToDiscover()
                 STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
             }
+        }
+    }
+
+    private fun gestureBackWhenDeepLink(){
+        if (isFromDeepLink) {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+            startActivity(intent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            isFromDeepLink = false
         }
     }
 
@@ -67,14 +93,93 @@ class CourseDetailActivity :
         Timber.tag(ContentValues.TAG).d("상세페이지 코스 아이디 : $publicCourseId")
         root = intent.getStringExtra(EXTRA_ROOT).toString()
         addListener()
+        initDeepLink()
         initView()
-        getCourseDetail()
         addObserver()
         initEditBottomSheet()
         initDeleteDialog()
         setDeleteDialogClickEvent()
         initEditInterruptedDialog()
         setEditInterruptedDialog()
+    }
+
+    //    title: String, desc: String, image: String
+    private fun sendKakaoLink(title: String, desc: String, image: String) {
+        // 메시지 템플릿 만들기 (피드형)
+        val defaultFeed = FeedTemplate(
+            content = Content(
+                title = title,
+                description = desc,
+                imageUrl = image,
+                link = Link(
+                    mobileWebUrl = "https://play.google.com/store/apps/details?id=com.runnect.runnect"
+                )
+            ),
+            buttons = listOf(
+                Button(
+                    "자세히 보기",
+                    Link(
+                        //이 부분을 사용해서 어떤 상세페이지를 띄울지 결정할수 있다
+                        androidExecutionParams = mapOf(
+                            "publicCourseId" to publicCourseId.toString(),
+                        )
+                    ),
+                )
+            )
+        )
+
+        // 피드 메시지 보내기
+        if (context?.let { LinkClient.instance.isKakaoLinkAvailable(it) } == true) {
+            // 카카오톡으로 카카오링크 공유 가능
+            context?.let {
+                LinkClient.instance.defaultTemplate(it, defaultFeed) { linkResult, error ->
+                    if (error != null) {
+                        Timber.tag("kakao_link").d("카카오링크 보내기 실패: $error")
+                    } else if (linkResult != null) {
+                        Timber.tag("kakao_link").d("카카오링크 보내기 성공: ${linkResult.intent}")
+
+                        startActivity(linkResult.intent) //카카오톡이 깔려있을 경우 카카오톡으로 넘기기
+
+                        // 카카오링크 보내기에 성공했지만 아래 경고 메시지가 존재할 경우 일부 컨텐츠가 정상 동작하지 않음
+                        Timber.tag("kakao_link").d("Warning Msg: ${linkResult.warningMsg}")
+                        Timber.tag("kakao_link").d("Argument Msg: ${linkResult.argumentMsg}")
+                    }
+                }
+            }
+        } else {  // 카카오톡 미설치: 웹 공유 사용 권장
+            // 웹 공유 예시 코드
+            val sharerUrl = WebSharerClient.instance.defaultTemplateUri(defaultFeed)
+
+            // 1. CustomTabs으로 Chrome 브라우저 열기
+            try {
+                context?.let { KakaoCustomTabsClient.openWithDefault(it, sharerUrl) }
+            } catch (e: UnsupportedOperationException) {
+                // Chrome 브라우저가 없을 때
+                Toast.makeText(context, "chrome 또는 인터넷 브라우저를 설치해주세요", Toast.LENGTH_SHORT).show()
+            }
+
+            // 2. CustomTabs으로 디바이스 기본 브라우저 열기
+            try {
+                context?.let { KakaoCustomTabsClient.open(it, sharerUrl) }
+            } catch (e: ActivityNotFoundException) {
+                // 인터넷 브라우저가 없을 때
+                Toast.makeText(context, "chrome 또는 인터넷 브라우저를 설치해주세요", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initDeepLink() {
+        if (Intent.ACTION_VIEW == intent.action) { //딥링크를 통해 열린 경우
+            isFromDeepLink = true
+            val uri = intent.data
+            if (uri != null) {
+                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음
+                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
+                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
+            }
+        }
+        //위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어 getCourseDetail()을 돌려줄 수 있습니다.
+        getCourseDetail()
     }
 
 
@@ -85,6 +190,8 @@ class CourseDetailActivity :
 
     private fun addListener() {
         binding.ivCourseDetailBack.setOnClickListener {
+            gestureBackWhenDeepLink()
+
             if (viewModel.editMode.value == true) {
                 editInterruptDialog.show()
                 return@setOnClickListener
@@ -135,6 +242,15 @@ class CourseDetailActivity :
                 startActivity(intent)
             }
         }
+
+        binding.btnShare.setOnClickListener {
+            sendKakaoLink(
+                title = viewModel.title.value.toString(),
+                desc = viewModel.description.value.toString(),
+                image = viewModel.imageUrl.value.toString()
+            )
+        }
+
         binding.btnShowMore.setOnClickListener {
             if (root == MY_UPLOAD_ACTIVITY_TAG) {
                 editBottomSheet.show()
@@ -239,6 +355,14 @@ class CourseDetailActivity :
     }
 
     private fun addObserver() {
+        viewModel.isDeepLinkLogin.observe(this) {
+            if (viewModel.isDeepLinkLogin.value == false) { //딥링크로 진입했는데 로그인이 안 돼있을 경우
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                viewModel.isDeepLinkLogin.value = true
+            }
+        }
+
         viewModel.courseDetailState.observe(this) { state ->
             if (state == UiState.Success) {
                 with(binding) {
@@ -267,7 +391,9 @@ class CourseDetailActivity :
             }
         }
 
-        viewModel.myUploadDeleteState.observe(this) { state ->
+
+        viewModel.myUploadDeleteState.observe(this)
+        { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
@@ -288,14 +414,17 @@ class CourseDetailActivity :
                 else -> {}
             }
         }
-        viewModel.editMediator.observe(this) {}
-        viewModel.isEditFinishEnable.observe(this) {
+        viewModel.editMediator.observe(this)
+        {}
+        viewModel.isEditFinishEnable.observe(this)
+        {
             with(binding.tvCourseDetailEditFinish) {
                 isActivated = it
                 isClickable = it
             }
         }
-        viewModel.courseUpdateState.observe(this) { state ->
+        viewModel.courseUpdateState.observe(this)
+        { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
@@ -429,5 +558,6 @@ class CourseDetailActivity :
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
         const val EXTRA_COURSE_DATA = "CourseData"
+        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }

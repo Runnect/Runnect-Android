@@ -15,6 +15,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.addSourceList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +36,10 @@ class CourseDetailViewModel @Inject constructor(
 
     private lateinit var courseToDelete: List<Int>
 
+    var imageUrl: MutableLiveData<String> = MutableLiveData("")
+    var title: MutableLiveData<String> = MutableLiveData("")
+    var description: MutableLiveData<String> = MutableLiveData("")
+
     var stampId: MutableLiveData<String> = MutableLiveData("CSPR0")
     var mapImage: MutableLiveData<String> = MutableLiveData(DEFAULT_MAP_IMAGE)
     var editTitle: MutableLiveData<String> = MutableLiveData("")
@@ -45,6 +50,7 @@ class CourseDetailViewModel @Inject constructor(
     var titleForInterruption = MutableLiveData("")
     var contentForInterruption = MutableLiveData("")
 
+    var isDeepLinkLogin = MutableLiveData(true)
     val editMediator = MediatorLiveData<Unit>()
     var isEdited = false
 
@@ -84,6 +90,10 @@ class CourseDetailViewModel @Inject constructor(
                     publicCourseId = courseId
                 )
             }.onSuccess {
+                imageUrl.value = it.image
+                title.value = it.title
+                description.value = it.description
+
                 _courseDetail = it
                 stampId.value = it.stampId
                 mapImage.value = it.image
@@ -95,6 +105,10 @@ class CourseDetailViewModel @Inject constructor(
             }.onFailure {
                 _courseDetailState.value = UiState.Failure
                 errorMessage.value = it.message
+
+                if(errorMessage.value == "HTTP 401 Unauthorized"){ //딥링크 접속 && 미로그인의 경우
+                    isDeepLinkLogin.value = false
+                }
             }
         }
     }

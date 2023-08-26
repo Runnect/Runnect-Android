@@ -54,7 +54,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage =
                 true
 
-            "fromMyScrap" -> isChangeToDiscover = true
+            "fromMyScrap", "fromCourseDetail" -> isChangeToDiscover = true
         }
     }
 
