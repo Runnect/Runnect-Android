@@ -51,6 +51,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
+    private lateinit var pageRegisterCallback:ViewPager2.OnPageChangeCallback
     private var currentPosition = PAGE_NUM / 2
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
@@ -233,7 +234,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun registerPromotionPageCallback(vp: ViewPager2) {
-        vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        pageRegisterCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
@@ -251,7 +252,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
             }
         }
-        )
+        vp.registerOnPageChangeCallback(pageRegisterCallback)
     }
 
     private fun setScrollHandler() {
@@ -293,6 +294,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun onPause() {
         super.onPause()
         autoScrollStop()
+        binding.vpDiscoverPromotion.unregisterOnPageChangeCallback(pageRegisterCallback)
     }
 
     override fun scrapCourse(id: Int?, scrapTF: Boolean) {
