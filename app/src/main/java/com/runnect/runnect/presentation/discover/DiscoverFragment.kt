@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.view.View
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -14,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
@@ -56,6 +58,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
+    var recyclerViewState: Parcelable? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,7 +67,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = this.viewLifecycleOwner
         initLayout()
         getBannerData()
-        getRecommendCourses()
+        getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
         setResultDetail()
@@ -79,9 +83,23 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         pullToRefresh()
     }
 
+    private fun initScrollListener() {
+        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            val contentView = binding.nestedScrollView.getChildAt(0)
+            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
+                Timber.tag("ScrollListener").d("End of Scroll")
+                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
+                Timber.tag("Paging").d("currentPageNum : $currentPageNo")
+                currentPageNo++
+                Timber.tag("Paging").d("nextPageNum : $currentPageNo")
+                getRecommendCourses(pageNo = currentPageNo.toString())
+            }
+        }
+    }
+
     private fun pullToRefresh() {
         binding.refreshLayout.setOnRefreshListener {
-            getRecommendCourses()
+            getRecommendCourses(pageNo = "1")
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -111,8 +129,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         MainActivity.discoverFragment = null
     }
 
-    fun getRecommendCourses() {
-        viewModel.getRecommendCourse()
+    fun getRecommendCourses(pageNo: String?) {
+        viewModel.getRecommendCourse(pageNo = pageNo)
     }
 
     private fun initLayout() {
@@ -129,6 +147,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
+        initScrollListener()
+
         binding.ivDiscoverSearch.setOnClickListener {
             startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
             requireActivity().overridePendingTransition(
@@ -304,7 +324,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
-                getRecommendCourses()
+                getRecommendCourses(pageNo = "1")
             }
         }
     }

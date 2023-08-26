@@ -30,6 +30,8 @@ class DiscoverViewModel @Inject constructor(
     val recommendCourseList: List<RecommendCourseDTO>
         get() = _recommendCourseList
 
+    val currentPageNo = MutableLiveData<Int>()
+
     val errorMessage = MutableLiveData<String>()
 
     var bannerData = mutableListOf<DiscoverPromotionItemDTO>()
@@ -64,10 +66,12 @@ class DiscoverViewModel @Inject constructor(
                 _courseInfoState.value = UiState.Loading
                 courseRepository.getRecommendCourse(pageNo = pageNo)
             }.onSuccess {
-                _recommendCourseList = it
+                _recommendCourseList.addAll(it)
+                currentPageNo.value = it[0].pageNo
                 _courseInfoState.value = UiState.Success
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
             }.onFailure {
+                Timber.tag(ContentValues.TAG).d("데이터 수신 실패")
                 errorMessage.value = it.message
                 _courseInfoState.value = UiState.Failure
             }

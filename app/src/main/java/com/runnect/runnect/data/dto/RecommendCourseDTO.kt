@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.dto
 
 data class RecommendCourseDTO(
-    val pageNo: String?,
+    val pageNo: Int,
     val courseId: Int,
     val departure: String,
     val id: Int,
