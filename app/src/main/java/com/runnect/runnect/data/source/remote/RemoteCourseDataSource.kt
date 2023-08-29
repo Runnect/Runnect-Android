@@ -13,7 +13,7 @@ import okhttp3.RequestBody
 import javax.inject.Inject
 
 class RemoteCourseDataSource @Inject constructor(private val courseService: CourseService) {
-    suspend fun getRecommendCourse(): ResponseRecommendCourse = courseService.getRecommendCourse()
+    suspend fun getRecommendCourse(pageNo: String?): ResponseRecommendCourse = courseService.getRecommendCourse(pageNo = pageNo)
     suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap =
         courseService.postCourseScrap(requestCourseScrap)
 

@@ -27,8 +27,10 @@ class DiscoverViewModel @Inject constructor(
         get() = _courseInfoState
 
     private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
-    val recommendCourseList: List<RecommendCourseDTO>
+    val recommendCourseList: MutableList<RecommendCourseDTO>
         get() = _recommendCourseList
+
+    val currentPageNo = MutableLiveData<Int>()
 
     val errorMessage = MutableLiveData<String>()
 
@@ -58,16 +60,18 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourse() {
+    fun getRecommendCourse(pageNo: String?) {
         viewModelScope.launch {
             runCatching {
                 _courseInfoState.value = UiState.Loading
-                courseRepository.getRecommendCourse()
+                courseRepository.getRecommendCourse(pageNo = pageNo)
             }.onSuccess {
-                _recommendCourseList = it
+                _recommendCourseList.addAll(it)
+                currentPageNo.value = it[0].pageNo
                 _courseInfoState.value = UiState.Success
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
             }.onFailure {
+                Timber.tag(ContentValues.TAG).d("데이터 수신 실패")
                 errorMessage.value = it.message
                 _courseInfoState.value = UiState.Failure
             }

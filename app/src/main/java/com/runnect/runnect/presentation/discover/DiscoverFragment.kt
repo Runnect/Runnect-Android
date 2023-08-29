@@ -64,7 +64,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = this.viewLifecycleOwner
         initLayout()
         getBannerData()
-        getRecommendCourses()
+        getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
         setResultDetail()
@@ -80,9 +80,24 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         pullToRefresh()
     }
 
+    private fun initScrollListener() {
+        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            val contentView = binding.nestedScrollView.getChildAt(0)
+            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
+                Timber.tag("ScrollListener").d("End of Scroll")
+                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
+                Timber.tag("Paging").d("currentPageNum : $currentPageNo")
+                currentPageNo++
+                Timber.tag("Paging").d("nextPageNum : $currentPageNo")
+                getRecommendCourses(pageNo = currentPageNo.toString())
+            }
+        }
+    }
+
     private fun pullToRefresh() {
         binding.refreshLayout.setOnRefreshListener {
-            getRecommendCourses()
+            viewModel.recommendCourseList.clear() //새로고침 시 다시 pageNo가 1부터 시작되는데 기존에 끝까지 받아온 거에 addAll로 계속 누적돼서 clear()로 비워주는 것.
+            getRecommendCourses(pageNo = "1")
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -112,8 +127,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         MainActivity.discoverFragment = null
     }
 
-    fun getRecommendCourses() {
-        viewModel.getRecommendCourse()
+    fun getRecommendCourses(pageNo: String?) {
+        viewModel.getRecommendCourse(pageNo = pageNo)
     }
 
     private fun initLayout() {
@@ -130,6 +145,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
+        initScrollListener()
+
         binding.ivDiscoverSearch.setOnClickListener {
             startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
             requireActivity().overridePendingTransition(
@@ -169,6 +186,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 UiState.Failure -> {
                     Timber.tag(ContentValues.TAG)
                         .d("Failure : ${viewModel.errorMessage.value}")
+                    if (viewModel.errorMessage.value == END_PAGE) {
+                        binding.shimmerLayout.stopShimmer()
+                        binding.shimmerLayout.isVisible = false
+                    }
                 }
             }
         }
@@ -306,7 +327,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
-                getRecommendCourses()
+                getRecommendCourses(pageNo = "1")
             }
         }
     }
@@ -334,5 +355,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val COURSE_DISCOVER_TAG = "discover"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
+        const val END_PAGE = "HTTP 400 Bad Request"
     }
 }

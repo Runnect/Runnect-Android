@@ -15,7 +15,8 @@ import retrofit2.http.*
 interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
-    ): ResponseRecommendCourse
+        @Query("pageNo") pageNo: String?,
+        ): ResponseRecommendCourse
 
     @POST("/api/scrap")
     suspend fun postCourseScrap(

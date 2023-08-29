@@ -26,9 +26,9 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
-    override suspend fun getRecommendCourse(): MutableList<RecommendCourseDTO> {
+    override suspend fun getRecommendCourse(pageNo: String?): MutableList<RecommendCourseDTO> {
         val recommendCourse = mutableListOf<RecommendCourseDTO>()
-        for (i in remoteCourseDataSource.getRecommendCourse().data.publicCourses) {
+        for (i in remoteCourseDataSource.getRecommendCourse(pageNo = pageNo).data.publicCourses) {
             recommendCourse.add(i.toData())
         }
         return recommendCourse
