@@ -3,8 +3,10 @@ package com.runnect.runnect.presentation.run
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.Service
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -20,6 +22,7 @@ class TimerService : Service() {
     private val binder = LocalBinder()
     private var timer: Timer? = null
     private var time = 0
+    private var player: MediaPlayer? = null
 
     inner class LocalBinder : Binder() {
         fun getService(): TimerService = this@TimerService
@@ -27,6 +30,7 @@ class TimerService : Service() {
 
     // 서비스 시작 시 호출
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        notifyStartRun()
         startTimer()
         initNotification()
         return START_STICKY
@@ -67,19 +71,22 @@ class TimerService : Service() {
         return binder
     }
 
+
     fun initNotification() {
         val builder = NotificationCompat.Builder(this, "default")
             .setSmallIcon(R.drawable.runnect_logo_circle)
             .setContentTitle("러닝")
             .setContentText("00:00:00")
             .setOngoing(true) // true 일경우 알림 리스트에서 클릭하거나 좌우로 드래그해도 사라지지 않음
+
         val notificationIntent = Intent(this@TimerService, RunActivity::class.java)
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
         val pendingIntent = PendingIntent.getActivity(
             this@TimerService,
             0,
             notificationIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            FLAG_IMMUTABLE
         )
         builder.setContentIntent(pendingIntent) // 알림 클릭 시 이동
 
@@ -97,6 +104,16 @@ class TimerService : Service() {
         notificationManager.notify(NOTI_ID, builder.build()) // id : 정의해야하는 각 알림의 고유한 int값
         val notification = builder.build()
         startForeground(NOTI_ID, notification)
+    }
+
+    fun notifyStartRun() {
+        if (player == null) {
+            player = MediaPlayer.create(this@TimerService, R.raw.start_run)
+            player?.setOnCompletionListener { mediaPlayer ->
+                mediaPlayer.release() // 재생이 끝나면 MediaPlayer 객체를 해제합니다.
+            }
+        }
+        player?.start()
     }
 
     companion object {
