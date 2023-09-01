@@ -130,7 +130,7 @@ class RunActivity :
     }
 
     private val timerReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
+        override fun onReceive(context: Context, intent: Intent) { //앱 나가니까 반영 안 되고 다시 들어오면 반영돼있음.
             timerData = intent.getParcelableExtra(EXTRA_TIMER_VALUE)!!
             val timerUI = String.format(
                 "%02d:%02d:%02d",
