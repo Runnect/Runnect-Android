@@ -1,9 +1,15 @@
 package com.runnect.runnect.presentation.run
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
+import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.TimerData
 import timber.log.Timber
 import java.util.Timer
@@ -22,6 +28,7 @@ class TimerService : Service() {
     // 서비스 시작 시 호출
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startTimer()
+        initNotification()
         return START_STICKY
     }
 
@@ -60,8 +67,43 @@ class TimerService : Service() {
         return binder
     }
 
+    fun initNotification() {
+        val builder = NotificationCompat.Builder(this, "default")
+            .setSmallIcon(R.drawable.runnect_logo_circle)
+            .setContentTitle("러닝")
+            .setContentText("00:00:00")
+            .setOngoing(true) // true 일경우 알림 리스트에서 클릭하거나 좌우로 드래그해도 사라지지 않음
+        val notificationIntent = Intent(this@TimerService, RunActivity::class.java)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val pendingIntent = PendingIntent.getActivity(
+            this@TimerService,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+        builder.setContentIntent(pendingIntent) // 알림 클릭 시 이동
+
+        // 알림 표시
+        val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    "default",
+                    "기본 채널",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+            )
+        }
+        notificationManager.notify(NOTI_ID, builder.build()) // id : 정의해야하는 각 알림의 고유한 int값
+        val notification = builder.build()
+        startForeground(NOTI_ID, notification)
+    }
+
     companion object {
         const val TIMER_UPDATE_ACTION = "TIMER_UPDATE_ACTION"
         const val EXTRA_TIMER_VALUE = "EXTRA_TIMER_VALUE"
+
+        // Notification
+        private const val NOTI_ID = 1
     }
 }
