@@ -24,8 +24,8 @@ android {
         applicationId "com.runnect.runnect"
         minSdk 28
         targetSdk 33
-        versionCode 18
-        versionName "1.0.2"
+        versionCode 19
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "RUNNECT_BASE_URL", properties["RUNNECT_BASE_URL"]
