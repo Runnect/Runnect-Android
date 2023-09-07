@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.dto.tmap.geocoding
 
+
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,7 +12,7 @@ data class ResponseReverseGeocodingDto(
     @Serializable
     data class AddressInfo(
         @SerialName("addressKey")
-        val addressKey: String,
+        val addressKey: String? = null,
         @SerialName("addressType")
         val addressType: String,
         @SerialName("adminDong")
@@ -19,7 +20,7 @@ data class ResponseReverseGeocodingDto(
         @SerialName("adminDongCode")
         val adminDongCode: String,
         @SerialName("adminDongCoord")
-        val adminDongCoord: AdminDongCoord,
+        val adminDongCoord: AdminDongCoord? = null,
         @SerialName("buildingIndex")
         val buildingIndex: String,
         @SerialName("buildingName")
@@ -27,34 +28,35 @@ data class ResponseReverseGeocodingDto(
         @SerialName("bunji")
         val bunji: String,
         @SerialName("city_do")
-        val city_do: String,
+        val cityDo: String,
         @SerialName("eup_myun")
-        val eup_myun: String,
+        val eupMyun: String,
         @SerialName("fullAddress")
         val fullAddress: String,
         @SerialName("gu_gun")
-        val gu_gun: String,
+        val guGun: String,
         @SerialName("legalDong")
         val legalDong: String,
         @SerialName("legalDongCode")
         val legalDongCode: String,
         @SerialName("legalDongCoord")
-        val legalDongCoord: LegalDongCoord,
+        val legalDongCoord: LegalDongCoord? = null,
         @SerialName("mappingDistance")
         val mappingDistance: String,
         @SerialName("ri")
         val ri: String,
         @SerialName("roadAddressKey")
-        val roadAddressKey: String,
+        val roadAddressKey: String? = null,
         @SerialName("roadCode")
         val roadCode: String,
         @SerialName("roadCoord")
-        val roadCoord: RoadCoord,
+        val roadCoord: RoadCoord? = null,
         @SerialName("roadName")
         val roadName: String
     ) {
+
         @Serializable
-        data class RoadCoord(
+        data class AdminDongCoord(
             @SerialName("lat")
             val lat: String,
             @SerialName("latEntr")
@@ -66,7 +68,7 @@ data class ResponseReverseGeocodingDto(
         )
 
         @Serializable
-        data class AdminDongCoord(
+        data class RoadCoord(
             @SerialName("lat")
             val lat: String,
             @SerialName("latEntr")

@@ -47,7 +47,6 @@ import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -120,10 +119,8 @@ class DrawActivity :
         }
     }
 
-    fun getLocationUsingLatLng(lat: Double, lon: Double){
+    fun getLocationUsingLatLng(lat: Double, lon: Double) {
         viewModel.getLocationUsingLatLng(lat = lat, lon = lon)
-        binding.tvPlaceName.text = viewModel.reverseGeocodingResult.value?.buildingName ?: "fail"
-        binding.tvPlaceAddress.text = viewModel.reverseGeocodingResult.value?.fullAddress ?: "fail"
     }
 
     fun initCurrentLocationMode() {
@@ -188,10 +185,11 @@ class DrawActivity :
 
         if (isCurrentLocationMode || isCustomLocationMode) {
             naverMap.locationSource = locationSource
-            naverMap.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow - 자동으로 camera 이동
+            naverMap.locationTrackingMode =
+                LocationTrackingMode.Follow //위치추적 모드 Follow - 자동으로 camera 이동
         }
 
-        naverMap.addOnLocationChangeListener { location ->
+        naverMap.addOnLocationChangeListener { location -> //사용자의 현위치를 받아오는 리스너
             currentLocation = LatLng(location.latitude, location.longitude)
             map.locationOverlay.run { //현재 위치 마커
                 if (isCurrentLocationMode || isCustomLocationMode) {
@@ -225,17 +223,22 @@ class DrawActivity :
 
         if (isCustomLocationMode) {
             naverMap.addOnCameraChangeListener { _, _ ->
-                Timber.tag("카메라-변경중").d("변경중")
+//                Timber.tag("카메라-변경중").d("변경중")
             }
 
             naverMap.addOnCameraIdleListener { //여기서 좌표로 장소/주소 받아오는 서버 통신 logic 돌려야 함.
                 // 현재 지도의 중심 좌표를 가져옵니다.
                 val cameraPosition = naverMap.cameraPosition
                 val centerLatLng = cameraPosition.target // 중심 좌표
-                lifecycleScope.launch {
-                    delay(3000)
-                    getLocationUsingLatLng(lat = currentLocation.latitude, lon = currentLocation.longitude)
-//                    showToast("$centerLatLng")
+
+                if (::currentLocation.isInitialized) { //최초 1회 돌릴 때는 currentLocation이랑 centerLat
+                    getLocationUsingLatLng(
+                        lat = centerLatLng.latitude,
+                        lon = centerLatLng.longitude
+                    )
+                    Timber.tag("초기화").d("currentLocation 초기화 완료")
+                } else {
+                    Timber.tag("초기화").d("currentLocation 초기화 아직 안 됨")
                 }
                 Timber.tag("카메라-끝").d("$centerLatLng")
             }
@@ -307,6 +310,17 @@ class DrawActivity :
     private fun addObserver() {
         observeIsBtnAvailable()
         observeDrawState()
+
+        viewModel.reverseGeocodingResult.observe(this) {
+            val buildingName = viewModel.reverseGeocodingResult.value!!.buildingName
+            if (buildingName == "") {
+                binding.tvPlaceName.text = "알 수 없음"
+            } else {
+                binding.tvPlaceName.text = buildingName
+            }
+            binding.tvPlaceAddress.text =
+                viewModel.reverseGeocodingResult.value?.fullAddress ?: "fail"
+        }
     }
 
     private fun activateMarkerBackBtn() {

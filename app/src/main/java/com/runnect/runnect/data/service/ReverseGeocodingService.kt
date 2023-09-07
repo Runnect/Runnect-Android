@@ -17,7 +17,7 @@ interface ReverseGeocodingService {
         @Query("callback") callback: String? = null,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Query("coordType") coordType: String? = null,
-        @Query("addressType") addresstType: String? = null,
+        @Query("coordType") coordType: String? = "WGS84GEO",
+        @Query("addressType") addresstType: String? = "A04",
         ): Response<ResponseReverseGeocodingDto>
 }
