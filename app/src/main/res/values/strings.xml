@@ -54,7 +54,7 @@
     <string name="my_draw_distance_unit">km</string>
     <string name="my_draw_start_run_button">시작하기</string>
     <string name="scrap_detail_start_run_button">시작하기</string>
-    <string name="search_set_departure_hint">지역과 키워드 중심으로 검색해보세요</string>
+    <string name="search_set_departure_hint">출발지를 설정해주세요</string>
     <string name="search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
     <string name="dialog_finish_run_notify">수고하셨습니다! 러닝을 완료했어요!</string>
     <string name="dialog_finish_run_see_record">기록 보러 가기</string>
