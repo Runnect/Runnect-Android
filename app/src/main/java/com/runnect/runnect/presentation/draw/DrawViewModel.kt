@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.data.dto.response.ResponsePostCourseDto
 import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.domain.ReverseGeocodingRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +25,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) : ViewModel() {
+class DrawViewModel @Inject constructor(
+    val courseRepository: CourseRepository,
+    val reverseGeocodingRepository: ReverseGeocodingRepository
+) : ViewModel() {
 
     private var _drawState = MutableLiveData<UiState>(UiState.Empty)
     val drawState: LiveData<UiState>
@@ -36,6 +41,8 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
     val departureAddress = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
     val isBtnAvailable = MutableLiveData(false)
+
+    val reverseGeocodingResult = MutableLiveData<LocationData>()
 
 
     private val _image = MutableLiveData<ContentUriRequestBody>()
@@ -102,6 +109,22 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
                 Timber.tag(ContentValues.TAG).d("통신failure : ${it}")
                 errorMessage.value = it.message
                 _drawState.value = UiState.Failure
+            }
+        }
+    }
+
+    fun getLocationUsingLatLng(lat: Double, lon: Double) {
+        viewModelScope.launch {
+            runCatching {
+                reverseGeocodingRepository.getLocationUsingLatLng(
+                    lat = lat, lon = lon
+                )
+            }.onSuccess {
+                Timber.tag(ContentValues.TAG).d("통신success")
+                reverseGeocodingResult.value = it
+            }.onFailure {
+                Timber.tag(ContentValues.TAG).d("통신failure : ${it}")
+                errorMessage.value = it.message
             }
         }
     }
