@@ -3,22 +3,21 @@ package com.runnect.runnect.data.source.remote
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
-import com.runnect.runnect.data.dto.response.ResponseGetCourseDto
-import com.runnect.runnect.data.dto.response.ResponseGetScrapDto
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDTO
+import com.runnect.runnect.data.dto.response.ResponseGetScrapDTO
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
 import retrofit2.Response
 import javax.inject.Inject
 
-//여기 있는 것들 싹 다 CourseDataSource로 옮겨도 될 것 같은데 일단 하던 작업 마무리 짓는 게 우선이라 일단 냅둠
 class RemoteStorageDataSource @Inject constructor(private val courseService: CourseService) {
-    suspend fun getMyDrawCourse(): Response<ResponseGetCourseDto> =
+    suspend fun getMyDrawCourse(): Response<ResponseGetCourseDTO> =
         courseService.getCourseList()
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDto): Response<ResponsePutMyDrawDto> =
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO> =
         courseService.deleteMyDrawCourse(deleteCourseList)
 
-    suspend fun getMyScrapCourse(): Response<ResponseGetScrapDto> =
+    suspend fun getMyScrapCourse(): Response<ResponseGetScrapDTO> =
         courseService.getScrapList()
 
     suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> =

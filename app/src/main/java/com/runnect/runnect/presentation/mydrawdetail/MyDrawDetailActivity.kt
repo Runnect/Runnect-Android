@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.CourseData
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
@@ -103,7 +103,7 @@ class MyDrawDetailActivity :
         observeGetResult()
     }
 
-    private fun setImage(src: ResponseGetMyDrawDetailDto) {
+    private fun setImage(src: ResponseGetMyDrawDetailDTO) {
         with(binding) {
             Glide
                 .with(ivMyDrawDetail.context)
@@ -117,19 +117,19 @@ class MyDrawDetailActivity :
     }
 
     //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
-    private fun setDepartureLatLng(src: ResponseGetMyDrawDetailDto) {
+    private fun setDepartureLatLng(src: ResponseGetMyDrawDetailDTO) {
         departureLatLng =
             LatLng(src.data.course.path[0][0], src.data.course.path[0][1])
         Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
     }
 
-    private fun setTouchList(src: ResponseGetMyDrawDetailDto) {
+    private fun setTouchList(src: ResponseGetMyDrawDetailDTO) {
         for (i in 1 until src.data.course.path.size) {
             touchList.add(LatLng(src.data.course.path[i][0], src.data.course.path[i][1]))
         }
     }
 
-    private fun setPutExtraValue(src: ResponseGetMyDrawDetailDto) {
+    private fun setPutExtraValue(src: ResponseGetMyDrawDetailDTO) {
         viewModel.myDrawToRunData.value = CourseData(
             courseId = src.data.course.id,
             publicCourseId = null,

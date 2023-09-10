@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.RunToEndRunData
-import com.runnect.runnect.data.dto.request.RequestPostRecordDto
+import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -158,7 +158,7 @@ class EndRunActivity :
     private fun saveRecord() {
         binding.btnEndRunSave.setOnClickListener {
             viewModel.postRecord(
-                RequestPostRecordDto(
+                RequestPostRecordDTO(
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = viewModel.publicCourseId.value,
                     title = viewModel.editTextValue.value!!,

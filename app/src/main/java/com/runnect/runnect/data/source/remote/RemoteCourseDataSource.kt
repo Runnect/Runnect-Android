@@ -2,8 +2,8 @@ package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPostRecordDto
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
@@ -29,14 +29,10 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
     ) = courseService.patchUpdatePublicCourse(publicCourseId, requestUpdatePublicCourse)
 
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDto) =
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO) =
         courseService.deleteMyDrawCourse(deleteCourseList)
     suspend fun getMyDrawDetail(courseId: Int) = courseService.getMyDrawDetail(courseId)
-    suspend fun postRecord(request: RequestPostRecordDto) = courseService.postRecord(request)
+    suspend fun postRecord(request: RequestPostRecordDTO) = courseService.postRecord(request)
     suspend fun uploadCourse(image: MultipartBody.Part, data: RequestBody) =
         courseService.uploadCourse(image, data)
-
-    //   나중에 StorageRepository 없애고나서 살려줄 예정
-    suspend fun getCourseList() = courseService.getCourseList()
-    suspend fun getScrapList() = courseService.getScrapList()
 }

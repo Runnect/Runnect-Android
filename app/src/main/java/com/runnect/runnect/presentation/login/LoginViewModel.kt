@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestLogin
-import com.runnect.runnect.data.dto.response.LoginDTO
+import com.runnect.runnect.data.dto.LoginDTO
 import com.runnect.runnect.domain.LoginRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

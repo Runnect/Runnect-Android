@@ -1,8 +1,8 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPostRecordDto
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.*
@@ -58,30 +58,30 @@ interface CourseService {
     //내가 그린 코스 수정
     @PUT("/api/course")
     suspend fun deleteMyDrawCourse(
-        @Body deleteCourseList: RequestPutMyDrawDto
-    ): Response<ResponsePutMyDrawDto>
+        @Body deleteCourseList: RequestPutMyDrawDTO
+    ): Response<ResponsePutMyDrawDTO>
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
     suspend fun getCourseList(
-    ): Response<ResponseGetCourseDto>
+    ): Response<ResponseGetCourseDTO>
 
     //보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
     suspend fun getScrapList(
-    ): Response<ResponseGetScrapDto>
+    ): Response<ResponseGetScrapDTO>
 
     //내가 그린 코스 Detail 가져오기
     @GET("/api/course/detail/{courseId}") //이해가 안 되네. :courseId 하면 안 되고 왜 {}하면 되는거지?
     suspend fun getMyDrawDetail(
         @Path("courseId") courseId: Int,
-    ): Response<ResponseGetMyDrawDetailDto>
+    ): Response<ResponseGetMyDrawDetailDTO>
 
     //기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
-        @Body request: RequestPostRecordDto
-    ): Response<ResponsePostRecordDto>
+        @Body request: RequestPostRecordDTO
+    ): Response<ResponsePostRecordDTO>
 
     //코스 업로드
     @Multipart
@@ -89,5 +89,5 @@ interface CourseService {
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
         @Part("data") data: RequestBody,
-    ): Response<ResponsePostCourseDto>
+    ): Response<ResponsePostCourseDTO>
 }
