@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.request.RequestLogin
-import com.runnect.runnect.data.dto.response.LoginDTO
+import com.runnect.runnect.data.dto.LoginDTO
 import com.runnect.runnect.data.source.remote.RemoteLoginDataSource
 import com.runnect.runnect.domain.LoginRepository
 import com.runnect.runnect.util.extension.toData

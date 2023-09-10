@@ -8,7 +8,6 @@ import javax.inject.Inject
 
 class BannerRepositoryImpl @Inject constructor(private val remoteBannerDataSource: RemoteBannerDataSource) :
     BannerRepository {
-
     override suspend fun getBannerData(): Flow<MutableList<DiscoverPromotionItemDTO>> =
         remoteBannerDataSource.getBannerFlow()
 }

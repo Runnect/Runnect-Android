@@ -6,39 +6,33 @@ import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
-import com.runnect.runnect.data.dto.response.*
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseDeleteUser
+import com.runnect.runnect.data.dto.response.ResponseEditHistoryTitle
+import com.runnect.runnect.data.dto.response.ResponseUpdateNickName
+import com.runnect.runnect.data.dto.response.ResponseUser
 import com.runnect.runnect.data.source.remote.RemoteUserDataSource
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.util.extension.toData
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: RemoteUserDataSource) : UserRepository {
+class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: RemoteUserDataSource) :
+    UserRepository {
     override suspend fun getUserInfo(): ResponseUser = remoteUserDataSource.getUserInfo()
     override suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
         remoteUserDataSource.updateNickName(requestUpdateNickName)
 
     override suspend fun getMyStamp(): MutableList<String> {
-        val stampList = mutableListOf<String>()
-        for (i in remoteUserDataSource.getMyStamp().data.stamps) {
-            stampList.add(i.id)
-        }
-        return stampList
+        return remoteUserDataSource.getMyStamp().data.stamps.map { it.id }.toMutableList()
     }
 
     override suspend fun getRecord(): MutableList<HistoryInfoDTO> {
-        val recordList = mutableListOf<HistoryInfoDTO>()
-        for (i in remoteUserDataSource.getRecord().data.records) {
-            recordList.add(i.toData())
-        }
-        return recordList
+        return remoteUserDataSource.getRecord().data.records.map { it.toData() }.toMutableList()
     }
 
     override suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO> {
-        val userUploadCourseList = mutableListOf<UserUploadCourseDTO>()
-        for (i in remoteUserDataSource.getUserUploadCourse().data.publicCourses) {
-            userUploadCourseList.add(i.toData())
-        }
-        return userUploadCourseList
+        return remoteUserDataSource.getUserUploadCourse().data.publicCourses.map { it.toData() }.toMutableList()
     }
 
     override suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): ResponseDeleteHistory {
@@ -50,8 +44,7 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
     }
 
     override suspend fun patchHistoryTitle(
-        historyId: Int,
-        requestEditHistoryTitle: RequestEditHistoryTitle
+        historyId: Int, requestEditHistoryTitle: RequestEditHistoryTitle
     ): ResponseEditHistoryTitle {
         return remoteUserDataSource.patchHistoryTitle(historyId, requestEditHistoryTitle)
     }
