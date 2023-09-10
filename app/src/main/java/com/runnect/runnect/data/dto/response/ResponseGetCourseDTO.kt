@@ -5,9 +5,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetScrapDto(
+data class ResponseGetCourseDTO(
     @SerialName("data")
-    val data: Data,
+    val `data`: Data,
     @SerialName("message")
     val message: String,
     @SerialName("status")
@@ -17,25 +17,21 @@ data class ResponseGetScrapDto(
 ) {
     @Serializable
     data class Data(
-        @SerialName("Scraps")
-        val scraps: List<Scrap>,
+        @SerialName("courses")
+        val courses: List<Course>,
         @SerialName("user")
         val user: User,
     ) {
         @Serializable
-        data class Scrap(
-            @SerialName("courseId")
-            val courseId: Int,
+        data class Course(
+            @SerialName("createdAt")
+            val createdAt: String,
             @SerialName("departure")
             val departure: Departure,
             @SerialName("id")
             val id: Int,
             @SerialName("image")
             val image: String,
-            @SerialName("publicCourseId")
-            val publicCourseId: Int,
-            @SerialName("title")
-            val title: String,
         ) {
             @Serializable
             data class Departure(

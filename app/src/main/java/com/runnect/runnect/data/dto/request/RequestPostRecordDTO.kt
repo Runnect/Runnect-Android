@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestPostRecordDto(
+data class RequestPostRecordDTO(
     @SerialName("courseId")
     val courseId: Int,
     @SerialName("publicCourseId")

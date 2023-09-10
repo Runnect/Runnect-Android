@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.dto.response
+package com.runnect.runnect.data.dto
 
 data class LoginDTO(
     val status: Int,
