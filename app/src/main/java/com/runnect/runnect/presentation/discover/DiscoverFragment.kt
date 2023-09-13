@@ -157,7 +157,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.btnDiscoverUpload.setOnClickListener {
 
             if (isVisitorMode) {
-                CustomToast.createToast(requireContext(), "러넥트에 가입하면 코스를 업로드할 수 있어요").show()
+                CustomToast.createToast(requireContext(), VISITOR_REQUIRE_LOGIN).show()
             } else {
                 startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
                 requireActivity().overridePendingTransition(
@@ -213,12 +213,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
 
-    private fun setRecommendCourseAdapter() { //새로고침 시 매번 객체 초기화가 아니라 data만 갈아끼워질 수 있게 분리해야 할 듯 합니다.
+    private fun setRecommendCourseAdapter() {
         courseRecommendAdapter =
             CourseRecommendAdapter(requireContext(), this, this, isVisitorMode).apply {
-                submitList(
-                    viewModel.recommendCourseList
-                )
+                submitList(viewModel.recommendCourseList)
             }
         binding.rvDiscoverRecommend.setHasFixedSize(true)
         binding.rvDiscoverRecommend.adapter = courseRecommendAdapter
@@ -356,5 +354,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
         const val END_PAGE = "HTTP 400 Bad Request"
+        const val VISITOR_REQUIRE_LOGIN = "러넥트에 가입하면 코스를 업로드할 수 있어요"
     }
 }
