@@ -27,8 +27,7 @@ import javax.inject.Inject
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
     override suspend fun getRecommendCourse(pageNo: String?): MutableList<RecommendCourseDTO> {
-        return remoteCourseDataSource.getRecommendCourse(pageNo = pageNo).data.publicCourses.map { it.toData() }
-            .toMutableList()
+        return remoteCourseDataSource.getRecommendCourse(pageNo = pageNo).data.publicCourses.map { it.toData() }.toMutableList()
     }
 
     override suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap {
@@ -62,7 +61,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO> {
-        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList)
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
     override suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetailDTO> {

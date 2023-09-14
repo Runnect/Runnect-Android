@@ -19,8 +19,7 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
 
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
         return changeMyDrawData(
-            data = remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses
-        ).toMutableList()
+            data = remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses).toMutableList()
     }
 
     private fun changeMyDrawData(data: List<ResponseGetCourseDTO.Data.Course>): List<MyDrawCourse> {
@@ -36,21 +35,16 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO> {
-        return remoteStorageDataSource.deleteMyDrawCourse(
-            deleteCourseList = deleteCourseList
-        )
+        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
     override suspend fun getMyScrapCourse(): MutableList<MyScrapCourse> {
         return changeMyScrapData(
-            data = remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps
-        ).toMutableList()
+            data = remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps).toMutableList()
     }
 
     override suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> {
-        return remoteStorageDataSource.postMyScrapCourse(
-            requestCourseScrap = requestCourseScrap
-        )
+        return remoteStorageDataSource.postMyScrapCourse(requestCourseScrap = requestCourseScrap)
     }
 
     private fun changeMyScrapData(data: List<ResponseGetScrapDTO.Data.Scrap>): List<MyScrapCourse> {

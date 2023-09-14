@@ -47,15 +47,14 @@ class CourseRecommendAdapter(
                 ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
                 ivItemDiscoverCourseInfoScrap.setOnClickListener {
                     if (isVisitorMode) {
-                        CustomToast.createToast(context = context, message = REQUIRE_LOGIN)
-                            .show()
+                        CustomToast.createToast(context = context, message = REQUIRE_LOGIN).show()
                     } else {
                         it.isSelected = !it.isSelected
-                        heartClick.scrapCourse(data.id, it.isSelected)
+                        heartClick.scrapCourse(id = data.id, scrapTF = it.isSelected)
                     }
                 }
                 root.setOnClickListener {
-                    itemClick.selectItem(data.id)
+                    itemClick.selectItem(publicCourseId = data.id)
                 }
             }
         }

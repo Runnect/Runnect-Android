@@ -4,10 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="vm"
-            type="com.runnect.runnect.presentation.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

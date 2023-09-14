@@ -30,7 +30,7 @@ class LoginActivity :
         if (accessToken != "none" && accessToken != "visitor") {
             Timber.d("자동로그인 완료")
             moveToMain()
-            Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -80,17 +80,10 @@ class LoginActivity :
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     when (viewModel.loginResult.value?.type) {
-                        "Login" -> {
-                            handleSuccessfulLogin()
-                        }
-
-                        "Signup" -> {
-                            handleSuccessfulSignup()
-                        }
+                        "Login" -> handleSuccessfulLogin()
+                        "Signup" -> handleSuccessfulSignup()
                     }
-
                 }
-
                 else -> binding.indeterminateBar.isVisible = false
             }
         }
@@ -102,7 +95,7 @@ class LoginActivity :
     private fun handleSuccessfulLogin() {
         saveSignTokenInfo()
         moveToMain()
-        Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
         binding.indeterminateBar.isVisible = false
     }
 
@@ -157,5 +150,7 @@ class LoginActivity :
 
         const val EXTRA_ACCESS_TOKEN = "access"
         const val EXTRA_REFRESH_TOKEN = "refresh"
+
+        const val MESSAGE_LOGIN_SUCCESS = "로그인 되었습니다"
     }
 }

@@ -64,7 +64,6 @@ class EndRunActivity :
         saveRecord()
         addObserver()
         setCurrentTimeCustomFormat()
-
     }
 
     private fun backBtn() {
@@ -81,13 +80,10 @@ class EndRunActivity :
     private fun editTextController() {
         binding.etTitleCourse.addTextChangedListener {
             if (!binding.etTitleCourse.text.isNullOrEmpty()) {
-
                 viewModel.editTextValue.value = binding.etTitleCourse.text.toString()
                 Timber.tag(ContentValues.TAG).d("editText.value : ${viewModel.editTextValue.value}")
-
                 enableSaveBtn()
                 notifyMaxTitleLength()
-
             } else {
                 disableSaveBtn()
             }
@@ -106,7 +102,7 @@ class EndRunActivity :
 
     private fun notifyMaxTitleLength() {
         if (binding.etTitleCourse.text.length == MAX_TITLE_LENGTH) {
-            Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, MESSAGE_MAX_TITLE_LENGTH, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -182,7 +178,6 @@ class EndRunActivity :
                     hideLoadingBar()
                     notifyUploadFinish()
                 }
-
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()
@@ -239,6 +234,7 @@ class EndRunActivity :
 
     companion object {
         const val MAX_TITLE_LENGTH = 20
+        const val MESSAGE_MAX_TITLE_LENGTH = "최대 20자까지 입력 가능합니다"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
     }

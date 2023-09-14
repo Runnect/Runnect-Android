@@ -414,8 +414,6 @@ class CourseDetailActivity :
                 else -> {}
             }
         }
-        viewModel.editMediator.observe(this)
-        {}
         viewModel.isEditFinishEnable.observe(this)
         {
             with(binding.tvCourseDetailEditFinish) {
@@ -427,15 +425,11 @@ class CourseDetailActivity :
         { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    handleSuccessfulCourseUpdate()
-                }
-
+                UiState.Success -> handleSuccessfulCourseUpdate()
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
-
                 else -> {}
             }
         }
@@ -458,13 +452,8 @@ class CourseDetailActivity :
     private fun setEditBottomSheetClickEvent() {
         editBottomSheet.setEditBottomSheetClickListener { which ->
             when (which) {
-                editBottomSheet.layout_edit_frame -> {
-                    enterEditMode()
-                }
-
-                editBottomSheet.layout_delete_frame -> {
-                    deleteDialog.show()
-                }
+                editBottomSheet.layout_edit_frame -> enterEditMode()
+                editBottomSheet.layout_delete_frame -> deleteDialog.show()
             }
         }
     }
@@ -478,9 +467,7 @@ class CourseDetailActivity :
     private fun setDeleteDialogClickEvent() {
         deleteDialog.setDialogClickListener { which ->
             when (which) {
-                deleteDialog.btn_delete_yes -> {
-                    viewModel.deleteUploadCourse(publicCourseId)
-                }
+                deleteDialog.btn_delete_yes -> viewModel.deleteUploadCourse(publicCourseId)
             }
         }
     }
@@ -498,9 +485,7 @@ class CourseDetailActivity :
     private fun setEditInterruptedDialog() {
         editInterruptDialog.setDialogClickListener { which ->
             when (which) {
-                editInterruptDialog.btn_delete_yes -> {
-                    enterReadMode()
-                }
+                editInterruptDialog.btn_delete_yes -> enterReadMode()
             }
         }
     }

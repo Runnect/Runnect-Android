@@ -31,7 +31,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                 courseRepository.getMyDrawDetail(
                     courseId = courseId
                 )
-
             }.onSuccess {
                 getResult.value = it.body()
             }.onFailure {

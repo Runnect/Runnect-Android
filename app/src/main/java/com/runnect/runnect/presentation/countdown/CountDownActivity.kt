@@ -74,7 +74,6 @@ class CountDownActivity :
                     }
                 }
             }
-
             override fun onAnimationRepeat(animation: Animation) {}
         })
     }

@@ -8,7 +8,6 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface SearchService {
-
     @GET("/tmap/pois")
     suspend fun getSearchLocation(
         @Header("appKey") appKey: String = BuildConfig.TMAP_API_KEY,

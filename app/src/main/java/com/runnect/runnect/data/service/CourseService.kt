@@ -72,7 +72,7 @@ interface CourseService {
     ): Response<ResponseGetScrapDTO>
 
     //내가 그린 코스 Detail 가져오기
-    @GET("/api/course/detail/{courseId}") //이해가 안 되네. :courseId 하면 안 되고 왜 {}하면 되는거지?
+    @GET("/api/course/detail/{courseId}")
     suspend fun getMyDrawDetail(
         @Path("courseId") courseId: Int,
     ): Response<ResponseGetMyDrawDetailDTO>

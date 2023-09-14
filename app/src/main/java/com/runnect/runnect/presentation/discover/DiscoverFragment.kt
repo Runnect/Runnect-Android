@@ -84,11 +84,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             val contentView = binding.nestedScrollView.getChildAt(0)
             if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
-                Timber.tag("ScrollListener").d("End of Scroll")
                 var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
-                Timber.tag("Paging").d("currentPageNum : $currentPageNo")
                 currentPageNo++
-                Timber.tag("Paging").d("nextPageNum : $currentPageNo")
                 getRecommendCourses(pageNo = currentPageNo.toString())
             }
         }

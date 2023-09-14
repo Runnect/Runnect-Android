@@ -135,12 +135,10 @@ class SearchActivity :
             when (it) {
                 UiState.Empty -> hideLoadingBar()
                 UiState.Loading -> showLoadingBar()
-
                 UiState.Success -> {
                     hideLoadingBar()
                     showSearchResult()
                 }
-
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()

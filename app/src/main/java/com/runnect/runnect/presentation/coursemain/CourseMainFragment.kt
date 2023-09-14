@@ -119,7 +119,7 @@ class CourseMainFragment :
             .setRationaleMessage(PERMISSION_CONTENT)
             .setDeniedMessage(PERMISSION_GUIDE)
             .setPermissions(
-                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.POST_NOTIFICATIONS, // 러닝 시 notification icon 띄우기
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )

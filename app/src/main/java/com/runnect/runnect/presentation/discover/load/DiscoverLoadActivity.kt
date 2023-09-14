@@ -34,7 +34,6 @@ class DiscoverLoadActivity :
         addObserver()
         addListener()
     }
-
     private fun initLayout() {
         binding.rvDiscoverLoadSelect.apply {
             layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
@@ -54,18 +53,10 @@ class DiscoverLoadActivity :
 
         viewModel.courseLoadState.observe(this) {
             when (it) {
-                UiState.Empty -> {
-                    handleEmptyCourseLoad()
-                }
-
+                UiState.Empty -> handleEmptyCourseLoad()
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    handleSuccessfulCourseLoad()
-                }
-
-                UiState.Failure -> {
-                    handleUnsuccessfulCourseLoad()
-                }
+                UiState.Success -> handleSuccessfulCourseLoad()
+                UiState.Failure -> handleUnsuccessfulCourseLoad()
             }
         }
     }
@@ -129,9 +120,7 @@ class DiscoverLoadActivity :
 
     private fun initAdapter() {
         adapter = DiscoverLoadAdapter(this, this).apply {
-            submitList(
-                viewModel.courseLoadList
-            )
+            submitList(viewModel.courseLoadList)
         }
         binding.rvDiscoverLoadSelect.adapter = this@DiscoverLoadActivity.adapter
     }

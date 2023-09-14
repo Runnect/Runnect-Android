@@ -57,7 +57,8 @@ class GoogleLogin(activity: LoginActivity, viewModel: LoginViewModel) : SocialLo
             val socialToken = account.idToken
             viewModelRef.get()?.postLogin(
                 RequestLogin(
-                    socialToken, LoginActivity.GOOGLE_SIGN
+                    token = socialToken,
+                    provider = LoginActivity.GOOGLE_SIGN
                 )
             )
         } catch (e: ApiException) {
