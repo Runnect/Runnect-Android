@@ -242,10 +242,9 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     companion object {
         const val DESCRIPTION_CHOICE_MODE = "기록 선택"
         const val EDIT_CANCEL = "취소"
-        const val EDIT_MODE = "편집"
+        const val EDIT_MODE = "선택"
         const val DESCRIPTION_DIALOG = "코스를 정말로 삭제하시겠어요?"
         const val DELETE_BTN = "삭제하기"
-
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
     }
