@@ -247,7 +247,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     companion object {
         const val CHOICE_MODE_DESC = "기록 선택"
         const val EDIT_CANCEL = "취소"
-        const val EDIT_MODE = "편집"
+        const val EDIT_MODE = "선택"
         const val DIALOG_DESC = "러닝 기록을 정말로 삭제하시겠어요?"
         const val DELETE_BTN = "삭제하기"
         const val EXTRA_HISTORY_DATA = "historyData"

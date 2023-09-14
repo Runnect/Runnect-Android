@@ -194,7 +194,7 @@ class StorageMyDrawFragment :
                 false
             )
         }
-        binding.btnEditCourse.text = "편집"
+        binding.btnEditCourse.text = EDIT_MODE
         binding.tvTotalCourseCount.text = "총 코스 ${viewModel.myDrawCourses.size}개"
 
         viewModel.clearItemsToDelete()
@@ -227,7 +227,7 @@ class StorageMyDrawFragment :
 
     fun deleteCourse() {
         viewModel.deleteMyDrawCourse()
-        binding.btnEditCourse.text = "편집"
+        binding.btnEditCourse.text = EDIT_MODE
     }
 
     private fun showLoadingBar() {
@@ -355,6 +355,7 @@ class StorageMyDrawFragment :
     companion object {
         const val EXTRA_COURSE_ID = "courseId"
         const val EXTRA_ROOT = "root"
+        const val EDIT_MODE = "선택"
     }
 }
 
