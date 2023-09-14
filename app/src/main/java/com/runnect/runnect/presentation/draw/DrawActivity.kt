@@ -238,10 +238,7 @@ class DrawActivity :
                     hideLoadingBar()
                     notifyCreateFinish()
                 }
-
-                UiState.Failure -> {
-                    hideLoadingBar()
-                }
+                UiState.Failure -> hideLoadingBar()
             }
         }
     }
@@ -382,7 +379,7 @@ class DrawActivity :
                     generateRouteLine(coord)
                     calcDistance()
                 } else {
-                    Toast.makeText(this, "마커는 20개까지 생성 가능합니다", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, MESSAGE_MAX_MARKER_COUNT, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -536,6 +533,7 @@ class DrawActivity :
     }
 
     companion object {
+        const val MESSAGE_MAX_MARKER_COUNT = "마커는 20개까지 생성 가능합니다"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val MAX_MARKER_NUM = 20
         const val DISTANCE_UNIT = "kilometer"

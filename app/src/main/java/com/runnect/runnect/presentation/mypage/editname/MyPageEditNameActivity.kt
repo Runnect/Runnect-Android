@@ -34,8 +34,8 @@ class MyPageEditNameActivity :
     private fun initLayout() {
         val nickName = intent.getStringExtra(EXTRA_NICK_NAME)
         val profileImg = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
-        viewModel.setNickName(nickName!!)
-        viewModel.setProfileImg(profileImg)
+        viewModel.setNickName(nickName = nickName!!)
+        viewModel.setProfileImg(profileImg = profileImg)
     }
 
     private fun addListener() {

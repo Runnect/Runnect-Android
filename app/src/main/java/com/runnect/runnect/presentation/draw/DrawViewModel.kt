@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
-import com.runnect.runnect.data.dto.response.ResponsePostCourseDto
+import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.ContentUriRequestBody
@@ -46,7 +46,7 @@ class DrawViewModel @Inject constructor(val courseRepository: CourseRepository) 
         _image.value = requestBody
     }
 
-    val uploadResult = MutableLiveData<ResponsePostCourseDto>()
+    val uploadResult = MutableLiveData<ResponsePostCourseDTO>()
     val errorMessage = MutableLiveData<String>()
 
 

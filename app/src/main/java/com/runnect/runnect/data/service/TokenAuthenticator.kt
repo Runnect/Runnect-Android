@@ -24,7 +24,6 @@ class TokenAuthenticator(val context: Context) : Authenticator {
     private val BASE_URL = BuildConfig.RUNNECT_BASE_URL
     private var retrofit: Retrofit? = null
 
-
     @OptIn(DelicateCoroutinesApi::class)
     override fun authenticate(route: Route?, response: Response): Request? {
         if (response.code == 401) {
@@ -69,8 +68,8 @@ class TokenAuthenticator(val context: Context) : Authenticator {
         runCatching {
             createRefreshService()!!.create(LoginService::class.java).getNewToken()
         }.onSuccess {
-            PreferenceManager.setString(context, "access", it.data.accessToken)
-            PreferenceManager.setString(context, "refresh", it.data.refreshToken)
+            PreferenceManager.setString(context, TOKEN_KEY_ACCESS, it.data.accessToken)
+            PreferenceManager.setString(context, TOKEN_KEY_REFRESH, it.data.refreshToken)
             return true
         }.onFailure {
         }
@@ -106,20 +105,22 @@ class TokenAuthenticator(val context: Context) : Authenticator {
     private fun getRequest(response: Response): Request {
         return response.request
             .newBuilder()
-            .removeHeader("accessToken")
-            .removeHeader("refreshToken")
+            .removeHeader(HEADER_TOKEN_INFO_ACCESS)
+            .removeHeader(HEADER_TOKEN_INFO_REFRESH)
             .addHeader(
-                "accessToken",
-                PreferenceManager.getString(ApplicationClass.appContext, "access")!!
+                HEADER_TOKEN_INFO_ACCESS,
+                PreferenceManager.getString(ApplicationClass.appContext, TOKEN_KEY_ACCESS)!!
             )
             .addHeader(
-                "refreshToken",
-                PreferenceManager.getString(ApplicationClass.appContext, "refresh")!!
+                HEADER_TOKEN_INFO_REFRESH,
+                PreferenceManager.getString(ApplicationClass.appContext, TOKEN_KEY_REFRESH)!!
             )
             .build()
     }
     companion object {
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
+        const val HEADER_TOKEN_INFO_ACCESS = "accessToken"
+        const val HEADER_TOKEN_INFO_REFRESH = "refreshToken"
     }
 }

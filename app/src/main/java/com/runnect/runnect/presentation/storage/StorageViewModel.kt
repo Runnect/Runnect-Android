@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
 import com.runnect.runnect.domain.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,7 +64,7 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
             runCatching {
                 _myDrawCoursesDeleteState.value = UiState.Loading
                 storageRepository.deleteMyDrawCourse(
-                    RequestPutMyDrawDto(
+                    RequestPutMyDrawDTO(
                         courseIdList = itemsToDelete
                     )
                 )

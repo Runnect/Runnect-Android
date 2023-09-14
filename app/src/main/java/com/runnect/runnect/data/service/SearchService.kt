@@ -1,14 +1,13 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.BuildConfig
-import com.runnect.runnect.data.dto.tmap.SearchResponseTmapDto
+import com.runnect.runnect.data.dto.response.ResponseSearchTmapDTO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface SearchService {
-
     @GET("/tmap/pois")
     suspend fun getSearchLocation(
         @Header("appKey") appKey: String = BuildConfig.TMAP_API_KEY,
@@ -26,5 +25,5 @@ interface SearchService {
         @Query("reqCoordType") reqCoordType: String? = null,
         @Query("centerLon") centerLon: String? = null,
         @Query("centerLat") centerLat: String? = null,
-    ): Response<SearchResponseTmapDto>
+    ): Response<ResponseSearchTmapDTO>
 }

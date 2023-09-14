@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.RunToEndRunData
-import com.runnect.runnect.data.dto.request.RequestPostRecordDto
+import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -64,7 +64,6 @@ class EndRunActivity :
         saveRecord()
         addObserver()
         setCurrentTimeCustomFormat()
-
     }
 
     private fun backBtn() {
@@ -81,13 +80,10 @@ class EndRunActivity :
     private fun editTextController() {
         binding.etTitleCourse.addTextChangedListener {
             if (!binding.etTitleCourse.text.isNullOrEmpty()) {
-
                 viewModel.editTextValue.value = binding.etTitleCourse.text.toString()
                 Timber.tag(ContentValues.TAG).d("editText.value : ${viewModel.editTextValue.value}")
-
                 enableSaveBtn()
                 notifyMaxTitleLength()
-
             } else {
                 disableSaveBtn()
             }
@@ -106,7 +102,7 @@ class EndRunActivity :
 
     private fun notifyMaxTitleLength() {
         if (binding.etTitleCourse.text.length == MAX_TITLE_LENGTH) {
-            Toast.makeText(this, "최대 20자까지 입력 가능합니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, MESSAGE_MAX_TITLE_LENGTH, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -158,7 +154,7 @@ class EndRunActivity :
     private fun saveRecord() {
         binding.btnEndRunSave.setOnClickListener {
             viewModel.postRecord(
-                RequestPostRecordDto(
+                RequestPostRecordDTO(
                     courseId = viewModel.courseId.value!!,
                     publicCourseId = viewModel.publicCourseId.value,
                     title = viewModel.editTextValue.value!!,
@@ -182,7 +178,6 @@ class EndRunActivity :
                     hideLoadingBar()
                     notifyUploadFinish()
                 }
-
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()
@@ -239,6 +234,7 @@ class EndRunActivity :
 
     companion object {
         const val MAX_TITLE_LENGTH = 20
+        const val MESSAGE_MAX_TITLE_LENGTH = "최대 20자까지 입력 가능합니다"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
     }

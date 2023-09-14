@@ -37,7 +37,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
@@ -78,9 +77,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private fun setDialogClickEvent() {
         dialog.setDialogClickListener { which ->
             when (which) {
-                dialog.btn_delete_yes -> {
-                    viewModel.deleteHistory()
-                }
+                dialog.btn_delete_yes -> viewModel.deleteHistory()
             }
         }
     }
@@ -157,7 +154,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         viewModel.selectedItemsCount.observe(this) { count ->
             updateDeleteButton(count)
         }
-        viewModel.selectCountMediator.observe(this) {}
     }
 
     private fun handleEmptyHistoryLoad() {

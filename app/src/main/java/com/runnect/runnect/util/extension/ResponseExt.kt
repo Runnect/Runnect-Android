@@ -1,6 +1,5 @@
 package com.runnect.runnect.util.extension
 
-import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.*
 import com.runnect.runnect.data.dto.response.*
 

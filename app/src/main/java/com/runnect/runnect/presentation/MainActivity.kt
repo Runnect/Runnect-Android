@@ -26,7 +26,6 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main) {
-    private val viewModel: MainViewModel by viewModels()
     private var isChangeToStorage: Boolean = false
     private var isChangeToDiscover: Boolean = false
     private var fragmentReplacementDirection: String? = null
@@ -35,8 +34,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         super.onCreate(savedInstanceState)
         initRemoteConfig()
         checkVisitorMode()
-        binding.vm = viewModel
-        binding.lifecycleOwner = this
         checkIntentValue()
         initView()
         addListener()
@@ -51,9 +48,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         fragmentReplacementDirection = intent.getStringExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION)
 
         when (fragmentReplacementDirection) {
-            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage =
-                true
-
+            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage = true
             "fromMyScrap", "fromCourseDetail" -> isChangeToDiscover = true
         }
     }
@@ -64,7 +59,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             isChangeToDiscover -> R.id.menu_main_discover.also { isChangeToDiscover = false }
             else -> R.id.menu_main_drawing
         }
-
         binding.btmNaviMain.menu.findItem(selectedItemId).isChecked = true
         changeFragment(selectedItemId)
     }

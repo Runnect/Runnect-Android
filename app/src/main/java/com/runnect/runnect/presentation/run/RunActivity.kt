@@ -176,7 +176,6 @@ class RunActivity :
         hideZoomControl()
         setCourse()
         setCurrentLocationImage()
-
     }
 
     private fun setLocationTrackingMode() {

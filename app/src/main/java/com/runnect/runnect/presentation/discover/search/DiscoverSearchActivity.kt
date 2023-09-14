@@ -63,7 +63,6 @@ class DiscoverSearchActivity :
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
-        //추후 showToast -> API 호출 대체 예정
         binding.etDiscoverSearchTitle.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -138,7 +137,6 @@ class DiscoverSearchActivity :
         return super.dispatchTouchEvent(ev)
     }
 
-    //코스 클릭 시 상세페이지로 이동
     override fun selectItem(publicCourseId: Int) {
         val intent = Intent(this, CourseDetailActivity::class.java)
         intent.putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)

@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseData
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDto
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDto
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.domain.CourseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
     val image = MutableLiveData<Uri>()
     val myDrawToRunData = MutableLiveData<CourseData>()
     val courseId = MutableLiveData<Int>()
-    val getResult = MutableLiveData<ResponseGetMyDrawDetailDto>()
+    val getResult = MutableLiveData<ResponseGetMyDrawDetailDTO>()
     val errorMessage = MutableLiveData<String>()
 
     fun getMyDrawDetail(courseId: Int) {
@@ -31,7 +31,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                 courseRepository.getMyDrawDetail(
                     courseId = courseId
                 )
-
             }.onSuccess {
                 getResult.value = it.body()
             }.onFailure {
@@ -44,7 +43,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
         viewModelScope.launch {
             runCatching {
                 courseRepository.deleteMyDrawCourse(
-                    RequestPutMyDrawDto(
+                    RequestPutMyDrawDTO(
                         courseIdList = deleteList
                     )
                 )
