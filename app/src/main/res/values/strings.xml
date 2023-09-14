@@ -81,7 +81,7 @@
     <string name="run_description_current_location">current_location</string>
     <string name="login_signIn_google">구글로 로그인</string>
     <string name="login_signIn_kakao">카카오로 로그인</string>
-    <string name="my_draw_edit">편집</string>
+    <string name="my_draw_edit">선택</string>
     <string name="my_draw_delete">삭제하기</string>
     <string name="discover_upload_btn">업로드</string>
     <string name="discover_load_draw_course">코스 그리기</string>
