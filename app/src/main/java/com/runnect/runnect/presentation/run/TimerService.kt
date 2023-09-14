@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.TimerData
 import timber.log.Timber
@@ -81,7 +82,8 @@ class TimerService : Service() {
 
     fun initNotification() {
         notificationBuilder = NotificationCompat.Builder(this, "default")
-            .setSmallIcon(R.drawable.runnect_logo_circle)
+            .setSmallIcon(R.drawable.ic_notification_run)
+            .setColor(ContextCompat.getColor(this@TimerService, R.color.M1))
             .setContentTitle("러닝")
             .setContentText("00:00:00")
             .setOngoing(true) // true 일 경우 알림 리스트에서 클릭하거나 좌우로 드래그해도 사라지지 않음
@@ -109,7 +111,10 @@ class TimerService : Service() {
                 )
             )
         }
-        notificationManager.notify(NOTI_ID, notificationBuilder.build()) // id : 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(
+            NOTI_ID,
+            notificationBuilder.build()
+        ) // id : 정의해야하는 각 알림의 고유한 int값
         val notification = notificationBuilder.build()
         startForeground(NOTI_ID, notification)
     }
