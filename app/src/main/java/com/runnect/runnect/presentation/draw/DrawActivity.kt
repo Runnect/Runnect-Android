@@ -313,8 +313,8 @@ class DrawActivity :
 
         viewModel.reverseGeocodingResult.observe(this) {
             val buildingName = viewModel.reverseGeocodingResult.value!!.buildingName
-            if (buildingName == "") {
-                binding.tvPlaceName.text = "알 수 없음"
+            if (buildingName.isEmpty()) {
+                binding.tvPlaceName.text = CUSTOM_DEPARTURE
             } else {
                 binding.tvPlaceName.text = buildingName
             }
@@ -684,5 +684,6 @@ class DrawActivity :
         const val EXTRA_SEARCH_RESULT = "searchResult"
         const val EXTRA_COURSE_DATA = "CourseData"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
     }
 }
