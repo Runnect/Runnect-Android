@@ -2,8 +2,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -59,7 +58,6 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLength="10"
-            android:onTextChanged="@{model::getSearchKeyword}"
             android:outlineProvider="none"
             android:textAlignment="center"
             android:textColor="@color/black"

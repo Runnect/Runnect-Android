@@ -30,6 +30,8 @@ class DrawViewModel @Inject constructor(
     val reverseGeocodingRepository: ReverseGeocodingRepository
 ) : ViewModel() {
 
+    val editTextValue = MutableLiveData<String>()
+
     private var _drawState = MutableLiveData<UiState>(UiState.Empty)
     val drawState: LiveData<UiState>
         get() = _drawState
@@ -97,7 +99,7 @@ class DrawViewModel @Inject constructor(
                     data = RequestBody(
                         path = path.value!!,
                         distance = distanceSum.value!!,
-                        departureAddress = departureAddress.value!!,
+                        departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
                         departureName = departureName.value!!
                     )
                 )

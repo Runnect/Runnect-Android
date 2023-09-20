@@ -16,10 +16,10 @@
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_marginBottom="10dp"
             android:id="@+id/custom_departure_marker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:elevation="10dp"
             android:outlineProvider="none"
             android:src="@drawable/marker_departure"
@@ -153,7 +153,7 @@
             android:background="@drawable/radius_10_g3_button"
             android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="완성하기"
+            android:text="다음으로"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="15sp"

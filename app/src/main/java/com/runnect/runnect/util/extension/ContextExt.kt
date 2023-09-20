@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -133,6 +134,11 @@ fun BottomSheetDialog.setEditBottomSheetClickListener(listener: (which: LinearLa
     }
 }
 
+fun BottomSheetDialog.handleEditTextValue(){
+    this.setOnShowListener {
+        val editText = this.layout_edit_frame
+    }
+}
 
 fun Context.getStampResId(
     stampId: String?,

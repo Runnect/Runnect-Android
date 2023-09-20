@@ -38,6 +38,8 @@
         parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
         <item name="android:windowIsFloating">false</item>
+        <!-- 키보드 가려짐 방지-->
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <style name="AppModalStyle"
