@@ -7,12 +7,12 @@ import javax.inject.Inject
 
 class ReverseGeocodingRepositoryImpl @Inject constructor(private val reverseGeocodingDataSource: RemoteReverseGeocodingDataSource) :
     ReverseGeocodingRepository {
-    override suspend fun getLocationUsingLatLng(
+    override suspend fun getLocationInfoUsingLatLng(
         lat: Double,
         lon: Double
     ): LocationData {
         val response =
-            reverseGeocodingDataSource.getLocationUsingLatLng(lat = lat, lon = lon).body()
+            reverseGeocodingDataSource.getLocationInfoUsingLatLng(lat = lat, lon = lon).body()
         return LocationData(
             buildingName = response?.addressInfo?.buildingName ?: "buildingName fail",
             fullAddress = response?.addressInfo?.fullAddress ?: "fullAddress fail"

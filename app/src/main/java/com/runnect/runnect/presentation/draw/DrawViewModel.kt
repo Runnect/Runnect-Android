@@ -113,10 +113,10 @@ class DrawViewModel @Inject constructor(
         }
     }
 
-    fun getLocationUsingLatLng(lat: Double, lon: Double) {
+    fun getLocationInfoUsingLatLng(lat: Double, lon: Double) {
         viewModelScope.launch {
             runCatching {
-                reverseGeocodingRepository.getLocationUsingLatLng(
+                reverseGeocodingRepository.getLocationInfoUsingLatLng(
                     lat = lat, lon = lon
                 )
             }.onSuccess {

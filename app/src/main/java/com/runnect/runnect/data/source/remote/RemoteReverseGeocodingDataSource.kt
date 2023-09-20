@@ -6,7 +6,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class RemoteReverseGeocodingDataSource @Inject constructor(private val reverseGeocodingService: ReverseGeocodingService) {
-    suspend fun getLocationUsingLatLng(
+    suspend fun getLocationInfoUsingLatLng(
         lat: Double,
         lon: Double
     ): Response<ResponseReverseGeocodingDto> =
