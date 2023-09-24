@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.login.GiveNickNameViewModel" />
@@ -14,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.login.GiveNicknameActivity">
+
         <ProgressBar
             android:id="@+id/indeterminateBar"
             android:layout_width="wrap_content"
@@ -26,50 +28,53 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_give_nickname_title_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/give_nickname_title_1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="22dp"
             android:layout_marginTop="83dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:text="@string/give_nickname_title_1"
             android:textColor="@color/M1"
             android:textSize="22sp"
-            android:fontFamily="@font/pretendard_bold"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_give_nickname_title_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/give_nickname_title_2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_give_nickname_title_1"
             android:layout_marginTop="83dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/give_nickname_title_2"
             android:textColor="@color/G1"
             android:textSize="22sp"
-            android:fontFamily="@font/pretendard_medium"/>
+            app:layout_constraintStart_toEndOf="@id/tv_give_nickname_title_1"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_give_nickname_title_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/give_nickname_title_3"
-            app:layout_constraintTop_toBottomOf="@id/tv_give_nickname_title_1"
-            app:layout_constraintStart_toStartOf="@id/tv_give_nickname_title_1"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="@string/give_nickname_title_3"
             android:textColor="@color/G1"
             android:textSize="22sp"
-            android:fontFamily="@font/pretendard_medium"/>
+            app:layout_constraintStart_toStartOf="@id/tv_give_nickname_title_1"
+            app:layout_constraintTop_toBottomOf="@id/tv_give_nickname_title_1" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_give_nickname_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="233dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/user_profile_basic"
-            android:layout_marginTop="233dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/user_profile_basic" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_give_nickname_input"
@@ -78,7 +83,7 @@
             android:layout_marginHorizontal="22dp"
             android:layout_marginTop="48dp"
             android:background="@drawable/my_page_edit_name_border"
-            android:fontFamily="@font/pretendard_semibold"
+            android:fontFamily="@font/pretendard_medium"
             android:gravity="center"
             android:hint="@string/give_nickname_edit_input"
             android:imeOptions="actionDone"
@@ -90,9 +95,9 @@
             android:textColorHint="@color/G3"
             android:textCursorDrawable="@color/M1"
             android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@id/iv_give_nickname_profile"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/iv_give_nickname_profile" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_give_nickname_finish"
