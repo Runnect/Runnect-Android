@@ -19,7 +19,6 @@
             android:id="@+id/custom_departure_marker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:elevation="10dp"
             android:outlineProvider="none"
             android:src="@drawable/marker_departure"

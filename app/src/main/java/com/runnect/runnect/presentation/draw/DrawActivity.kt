@@ -517,7 +517,7 @@ class DrawActivity :
     private fun setDepartureMarker(departureLatLng: LatLng) {
         val departureMarker = Marker()
         departureMarker.position = LatLng(departureLatLng.latitude, departureLatLng.longitude)
-        departureMarker.anchor = PointF(0.5f, 0.7f)
+        departureMarker.anchor = PointF(0.5f, 0.5f)
         departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
         departureMarker.map = naverMap
 
