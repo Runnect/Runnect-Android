@@ -7,6 +7,9 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -25,6 +28,7 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
@@ -119,10 +123,14 @@ class DrawActivity :
             showDrawGuide()
             hideDeparture()
             showDrawCourse()
-
             drawCourse(departureLatLng = getCenterPosition())
-            binding.customDepartureMarker.isVisible = false
+            hideFloatedDeparture()
         }
+    }
+
+    private fun hideFloatedDeparture() {
+        binding.customDepartureMarker.isVisible = false
+        binding.customDepartureInfoWindow.isVisible = false
     }
 
     fun getLocationInfoUsingLatLng(lat: Double, lon: Double) {
@@ -518,7 +526,7 @@ class DrawActivity :
         val departureMarker = Marker()
         departureMarker.position = LatLng(departureLatLng.latitude, departureLatLng.longitude)
         departureMarker.anchor = PointF(0.5f, 0.5f)
-        departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
+        departureMarker.icon = OverlayImage.fromResource(R.drawable.runnect_marker)
         departureMarker.map = naverMap
 
         if (isSearchLocationMode) {
@@ -526,6 +534,19 @@ class DrawActivity :
                 LatLng(departureLatLng.latitude, departureLatLng.longitude)
             ) // 현위치에서 출발할 때 이것 때문에 트랙킹 모드 활성화 시 카메라 이동하는 게 묻혔음
         }
+
+        setCustomInfoWindow(marker = departureMarker)
+    }
+
+    private fun setCustomInfoWindow(marker: Marker) {
+        val infoWindow = InfoWindow()
+        infoWindow.adapter = object : InfoWindow.ViewAdapter() {
+            override fun getView(p0: InfoWindow): View {
+                return LayoutInflater.from(this@DrawActivity)
+                    .inflate(R.layout.custom_info_window, binding.root as ViewGroup, false)
+            }
+        }
+        infoWindow.open(marker)
     }
 
     private fun addDepartureToCoords(departureLatLng: LatLng) {
