@@ -11,6 +11,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.talk.TalkApiClient
+import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
@@ -125,6 +128,9 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         binding.viewMyPageMainSettingFrame.setOnClickListener {
             moveToSettingFragment()
         }
+        binding.viewMyPageMainKakaoChannelInquiryFrame.setOnClickListener {
+            inquiryKakao()
+        }
     }
 
     private fun moveToSettingFragment() {
@@ -170,6 +176,10 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
     }
 
+    private fun inquiryKakao(){
+        val url = TalkApiClient.instance.channelChatUrl(BuildConfig.KAKAO_CHANNEL_ID)
+        KakaoCustomTabsClient.openWithDefault(requireActivity(), url)
+    }
     companion object {
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"

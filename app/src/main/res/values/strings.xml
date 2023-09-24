@@ -87,12 +87,13 @@
     <string name="discover_load_draw_course">코스 그리기</string>
     <string name="discover_load_no_course">공유할 수 있는 코스가 없어요!\n코스를 그려주세요!</string>
     <string name="my_page_setting_title">설정</string>
-    <string name="my_page_version_title">버전정보</string>
+    <string name="my_page_version_title">버전 정보</string>
     <string name="my_page_version">v. 1.0.1</string>
     <string name="my_page_edit_name_title">닉네임 수정</string>
     <string name="my_page_edit_name_finish">완료</string>
     <string name="my_page_edit_name_guide">닉네임을 입력하세요</string>
     <string name="my_page_edit_name_redundant_warning">동일 닉네임의 유저가 존재합니다.\n다른 닉네임을 입력해 주세요.</string>
+    <string name="my_page_kakao_channel_inquiry">카카오톡 채널 문의</string>
     <string name="discover_search_guide">지역과 키워드 위주로 검색해보세요</string>
     <string name="my_page_history_no_history">아직 러닝 기록이 없어요!\n코스를 그리고 달려보세요</string>
     <string name="history_delete">삭제하기</string>

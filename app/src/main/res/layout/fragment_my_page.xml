@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.mypage.MyPageViewModel" />
@@ -25,13 +26,13 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:lineSpacingExtra="5sp"
             android:id="@+id/tv_visitor_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="22dp"
             android:fontFamily="@font/pretendard_medium"
             android:gravity="center"
+            android:lineSpacingExtra="5sp"
             android:text="러넥트에 가입하고 나의 러닝 기록과\n스탬프를 확인해 보세요!"
             android:textAlignment="center"
             android:textColor="@color/G2"
@@ -247,19 +248,21 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_my_page_progress" />
 
             <com.google.android.material.divider.MaterialDivider
-                app:dividerColor="@color/G5"
                 android:id="@+id/divider_my_page"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="24dp"
+                app:dividerColor="@color/G5"
                 app:layout_constraintDimensionRatio="360:10"
                 app:layout_constraintTop_toBottomOf="@id/tv_my_page_progress_current" />
+
+            <!-- 목표 보상 -->
 
             <View
                 android:id="@+id/view_my_page_main_reward_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="360:60"
+                app:layout_constraintDimensionRatio="390:62"
                 app:layout_constraintTop_toBottomOf="@id/divider_my_page" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -295,11 +298,19 @@
                 app:layout_constraintEnd_toEndOf="@id/view_my_page_main_reward_frame"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:dividerColor="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
+
+            <!-- 러닝 기록 -->
+
             <View
                 android:id="@+id/view_my_page_main_history_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="360:60"
+                app:layout_constraintDimensionRatio="390:62"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -335,11 +346,19 @@
                 app:layout_constraintEnd_toEndOf="@id/view_my_page_main_history_frame"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_main_history_frame" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:dividerColor="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame" />
+
+            <!-- 업로드한 코스 -->
+
             <View
                 android:id="@+id/view_my_page_main_upload_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="360:60"
+                app:layout_constraintDimensionRatio="390:62"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -375,11 +394,19 @@
                 app:layout_constraintEnd_toEndOf="@id/view_my_page_main_upload_frame"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_main_upload_frame" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:dividerColor="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_upload_frame" />
+
+            <!-- 설정 -->
+
             <View
                 android:id="@+id/view_my_page_main_setting_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="360:60"
+                app:layout_constraintDimensionRatio="390:62"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_upload_frame" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -415,13 +442,63 @@
                 app:layout_constraintEnd_toEndOf="@id/view_my_page_main_setting_frame"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_main_setting_frame" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:dividerColor="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_setting_frame" />
+
+            <!-- 카톡 채널 -->
+
+            <View
+                android:id="@+id/view_my_page_main_kakao_channel_inquiry_frame"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="390:62"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_setting_frame" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_item_my_page_main_kakao_channel_inquiry_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/all_star"
+                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_kakao_channel_inquiry_frame"
+                app:layout_constraintStart_toStartOf="@id/view_my_page_main_kakao_channel_inquiry_frame"
+                app:layout_constraintTop_toTopOf="@id/view_my_page_main_kakao_channel_inquiry_frame" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_main_kakao_channel_inquiry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="@string/my_page_kakao_channel_inquiry"
+                android:textColor="@color/G1"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_kakao_channel_inquiry_frame"
+                app:layout_constraintStart_toEndOf="@id/iv_item_my_page_main_kakao_channel_inquiry_star"
+                app:layout_constraintTop_toTopOf="@id/view_my_page_main_kakao_channel_inquiry_frame" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_my_page_main_kakao_channel_inquiry_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:src="@drawable/all_front_arrow"
+                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_kakao_channel_inquiry_frame"
+                app:layout_constraintEnd_toEndOf="@id/view_my_page_main_kakao_channel_inquiry_frame"
+                app:layout_constraintTop_toTopOf="@id/view_my_page_main_kakao_channel_inquiry_frame" />
+
+            <!-- 버전 정보 -->
+
             <View
                 android:id="@+id/view_my_page_main_version_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@drawable/my_page_version_info_stroke"
-                app:layout_constraintDimensionRatio="360:60"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_setting_frame" />
+                app:layout_constraintDimensionRatio="390:62"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_kakao_channel_inquiry_frame" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_my_page_main_version_title"
@@ -448,26 +525,6 @@
                 app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_version_frame"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_main_version_frame" />
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                app:dividerColor="@color/G4"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame"/>
-
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                app:dividerColor="@color/G4"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame"/>
-
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                app:dividerColor="@color/G4"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_upload_frame"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
