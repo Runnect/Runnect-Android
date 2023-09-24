@@ -71,6 +71,11 @@ jobs:
               env:
                   REMOTE_KEY_APP_VERSION: ${{ secrets.REMOTE_KEY_APP_VERSION }}
               run: echo "REMOTE_KEY_APP_VERSION=\"$REMOTE_KEY_APP_VERSION\"" >> local.properties
+
+            - name: Access KAKAO_CHANNEL_ID
+              env:
+                  KAKAO_CHANNEL_ID: ${{ secrets.KAKAO_CHANNEL_ID }}
+              run: echo "KAKAO_CHANNEL_ID=\"$KAKAO_CHANNEL_ID\"" >> local.properties
               
             - name: Add kakao_strings.xml
               env:
