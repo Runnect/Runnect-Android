@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.draw
 
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -17,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -51,6 +51,8 @@ import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -96,27 +98,28 @@ class DrawActivity :
         binding.lifecycleOwner = this
 
         initMapView()
-
         searchResult =
             intent.getParcelableExtra(EXTRA_SEARCH_RESULT) ?: throw Exception("데이터가 존재하지 않습니다.")
-        Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
 
         viewModel.departureName.value = searchResult.name //빼줄 거긴한데 일단 여기
+        addObserver()
+        backButton()
+        courseFinish()
+    }
 
+    fun initMode() {
         when (searchResult.mode) {
             "searchLocation" -> initSearchLocationMode()
             "currentLocation" -> initCurrentLocationMode()
             "customLocation" -> initCustomLocationMode()
         }
-        addObserver()
-        backButton()
-        courseFinish()
     }
 
     fun initCustomLocationMode() {
         isCustomLocationMode = true
 
         binding.customDepartureMarker.isVisible = true
+        binding.tvCustomDepartureGuideFrame.isVisible = true
 
         binding.btnPreStart.setOnClickListener {
             isMarkerAvailable = true
@@ -144,16 +147,18 @@ class DrawActivity :
         showDrawGuide()
         hideDeparture()
         showDrawCourse()
+        lifecycleScope.launch {
+            delay(500) //인위적으로 늦춰줌
+            if (::departureLatLng.isInitialized) {
+                setDepartureLatLng(
+                    latLng = departureLatLng
+                )
+                drawCourse(departureLatLng = departureLatLng)
+            }
+        }
+        binding.customDepartureInfoWindow.isVisible = false
+        binding.tvGuide.isVisible = false
 
-        //currentLocation 초기화되면 여기에 넣어서 마커 생성
-//        setDepartureLatLng(
-//            latLng = LatLng(
-//                searchResult.locationLatLng!!.latitude,
-//                searchResult.locationLatLng!!.longitude
-//            )
-//        )
-
-        naverMap.locationOverlay.isVisible = true
     }
 
     fun initSearchLocationMode() {
@@ -162,15 +167,20 @@ class DrawActivity :
         viewModel.searchResult.value = searchResult
         setDepartureLatLng(
             latLng = LatLng(
-                searchResult.locationLatLng!!.latitude,
-                searchResult.locationLatLng!!.longitude
+                searchResult.locationLatLng!!.latitude, searchResult.locationLatLng!!.longitude
             )
         )
         activateDrawCourse()
-//네이버 맵 초기화 전에 돌아서 NPE 뜨고 죽어버림.
-//        naverMap.locationOverlay.isVisible = true
-//        drawCourse(departureLatLng = departureLatLng) //안 되면 걍 searchResult 바로 넣어
-//        drawCourse()
+        binding.customDepartureInfoWindow.isVisible = false
+        binding.tvGuide.isVisible = false
+
+        //네이버 맵 초기화 전에 돌아서 NPE 뜨고 죽어버림.
+        lifecycleScope.launch {
+            delay(500) //인위적으로 늦춰줌
+            if (::departureLatLng.isInitialized) {
+                drawCourse(departureLatLng = departureLatLng)
+            }
+        }
     }
 
     private fun setDepartureLatLng(latLng: LatLng) {
@@ -217,6 +227,8 @@ class DrawActivity :
 
     override fun onMapReady(map: NaverMap) { //여기는 여러모드에 대해 공통된 사항들만
         naverMap = map
+        initMode()
+
         setLocationTrackingMode()
         setCurrentLocationIcon()
         setMinMaxZoom()
@@ -231,8 +243,7 @@ class DrawActivity :
             val centerLatLng = getCenterPosition()
             if (::currentLocation.isInitialized) {//초기화가 된 상태에서 통신을 해야 안 죽음.
                 getLocationInfoUsingLatLng(
-                    lat = centerLatLng.latitude,
-                    lon = centerLatLng.longitude
+                    lat = centerLatLng.latitude, lon = centerLatLng.longitude
                 )
             }
             Timber.tag("카메라-끝").d("$centerLatLng") //위에 통신이 비동기로 돌아서 이게 먼저 찍힘.
@@ -257,9 +268,9 @@ class DrawActivity :
             currentLocation = LatLng(location.latitude, location.longitude)
 
             naverMap.locationOverlay.position = LatLng(
-                currentLocation.latitude,
-                currentLocation.longitude
+                currentLocation.latitude, currentLocation.longitude
             )
+            naverMap.locationOverlay.isVisible = false
             setDepartureLatLng(latLng = LatLng(currentLocation.latitude, currentLocation.longitude))
         }
     }
@@ -269,7 +280,6 @@ class DrawActivity :
             if (isVisitorMode) {
                 requireVisitorLogin()
             } else {
-                //바텀앁 올라와서 코스 이름 입력 받고
                 val bottomSheetDialog = inputCourseName()
                 bottomSheetDialog.show()
             }
@@ -342,6 +352,9 @@ class DrawActivity :
             tvDeparture.startAnimation(animUp)
             viewTopFrame.isVisible = false
             tvDeparture.isVisible = false
+            tvGuide.isVisible = false
+            tvCustomDepartureGuideFrame.isVisible = false
+
 
             //Bottom invisible
             viewBottomSheetFrame.startAnimation(animDown)
@@ -709,8 +722,7 @@ class DrawActivity :
 
 
         if (!viewModel.departureName.value.isNullOrEmpty()) { //안 비어있다는 건 custom 출발지 editText로 세팅해주었다는 것
-            viewModel.departureName.value =
-                searchResult.name //여기 custom 출발지일 경우 분기처리 필요
+            viewModel.departureName.value = searchResult.name //여기 custom 출발지일 경우 분기처리 필요
         }
     }
 
