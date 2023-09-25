@@ -197,7 +197,7 @@
             android:background="@drawable/radius_10_g3_button"
             android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="다음으로"
+            android:text="완성하기"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="15sp"

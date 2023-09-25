@@ -120,6 +120,7 @@ class DrawActivity :
 
         binding.customDepartureMarker.isVisible = true
         binding.tvCustomDepartureGuideFrame.isVisible = true
+        binding.btnDraw.text = "다음으로"
 
         binding.btnPreStart.setOnClickListener {
             isMarkerAvailable = true
@@ -144,6 +145,8 @@ class DrawActivity :
         isCurrentLocationMode = true
         binding.customDepartureMarker.isVisible = false
         isMarkerAvailable = true
+        binding.btnDraw.text = "다음으로"
+
         showDrawGuide()
         hideDeparture()
         showDrawCourse()
@@ -174,7 +177,6 @@ class DrawActivity :
         binding.customDepartureInfoWindow.isVisible = false
         binding.tvGuide.isVisible = false
 
-        //네이버 맵 초기화 전에 돌아서 NPE 뜨고 죽어버림.
         lifecycleScope.launch {
             delay(500) //인위적으로 늦춰줌
             if (::departureLatLng.isInitialized) {
@@ -225,7 +227,7 @@ class DrawActivity :
     }
 
 
-    override fun onMapReady(map: NaverMap) { //여기는 여러모드에 대해 공통된 사항들만
+    override fun onMapReady(map: NaverMap) {
         naverMap = map
         initMode()
 
@@ -233,13 +235,13 @@ class DrawActivity :
         setCurrentLocationIcon()
         setMinMaxZoom()
         setZoomEnable()
-        setLocationChangedListener() //현위치 중심 좌표 받아오고
-        setCameraFinishedListener() //비동기
+        setLocationChangedListener()
+        setCameraFinishedListener()
     }
 
     fun setCameraFinishedListener() {
 
-        naverMap.addOnCameraIdleListener { //여기서 좌표로 장소/주소 받아오는 서버 통신 logic 돌려야 함.
+        naverMap.addOnCameraIdleListener {
             val centerLatLng = getCenterPosition()
             if (::currentLocation.isInitialized) {//초기화가 된 상태에서 통신을 해야 안 죽음.
                 getLocationInfoUsingLatLng(
@@ -280,8 +282,10 @@ class DrawActivity :
             if (isVisitorMode) {
                 requireVisitorLogin()
             } else {
-                val bottomSheetDialog = inputCourseName()
-                bottomSheetDialog.show()
+                if (isCustomLocationMode || isCurrentLocationMode) {
+                    val bottomSheetDialog = inputCourseName()
+                    bottomSheetDialog.show()
+                } else createMbr()
             }
         }
     }
@@ -705,7 +709,7 @@ class DrawActivity :
                 )
             ) //Uri -> RequestBody
             setViewModelValue(calcDistanceList)
-            viewModel.uploadCourse() //이거 전에 지오코딩으로 받아온 값을 뷰모델 departureAddress에 추가해줘야 함.
+            viewModel.uploadCourse()
         }
     }
 
@@ -718,18 +722,16 @@ class DrawActivity :
             viewModel.departureAddress.value = searchResult.fullAddress
         } else viewModel.departureAddress.value =
             viewModel.reverseGeocodingResult.value?.fullAddress
-        //현위치도 분기처리 해줘야 함. 현위치도 결국 지오코딩 써야되네
 
-
-        if (!viewModel.departureName.value.isNullOrEmpty()) { //안 비어있다는 건 custom 출발지 editText로 세팅해주었다는 것
-            viewModel.departureName.value = searchResult.name //여기 custom 출발지일 경우 분기처리 필요
+        if (isSearchLocationMode) {
+            viewModel.departureName.value = searchResult.name
         }
     }
 
     // Get uri of images from camera function
     private fun getImageUri(inImage: Bitmap): Uri {
 
-        val tempFile = File.createTempFile("temprentpk", ".png")
+        val tempFile = File.createTempFile("CreatedCourse", ".png")
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
         val bitmapData = bytes.toByteArray()
