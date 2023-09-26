@@ -23,6 +23,7 @@
             android:elevation="10dp"
             android:outlineProvider="none"
             android:src="@drawable/ic_info_window"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@id/custom_departure_marker"
             app:layout_constraintEnd_toEndOf="@id/custom_departure_marker"
             app:layout_constraintStart_toStartOf="@id/custom_departure_marker" />
@@ -34,6 +35,7 @@
             android:elevation="10dp"
             android:outlineProvider="none"
             android:src="@drawable/runnect_marker"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,11 +162,11 @@
             android:text="@string/draw_custom_departure_guide_frame"
             android:textColor="@color/G1"
             android:textSize="17sp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
             app:layout_constraintEnd_toEndOf="@id/view_top_frame"
             app:layout_constraintStart_toStartOf="@id/view_top_frame"
-            app:layout_constraintTop_toTopOf="@id/view_top_frame"
-            android:visibility="invisible"/>
+            app:layout_constraintTop_toTopOf="@id/view_top_frame" />
 
         <TextView
             android:id="@+id/tv_guide"
@@ -197,7 +199,7 @@
             android:background="@drawable/radius_10_g3_button"
             android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="완성하기"
+            android:text="@string/draw_next"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="15sp"
