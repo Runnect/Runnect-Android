@@ -90,6 +90,8 @@ class DrawActivity :
     private var isMarkerAvailable: Boolean = false
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
+    var isFirstInit: Boolean = true
+
     private lateinit var bottomSheetBinding: BottomsheetRequireCourseNameBinding  // Bottom Sheet 바인딩
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,16 +179,6 @@ class DrawActivity :
         showDrawGuide()
         hideDeparture()
         showDrawCourse()
-
-        lifecycleScope.launch {
-            delay(500) //인위적으로 늦춰줌
-            if (::departureLatLng.isInitialized) {
-                setDepartureLatLng(
-                    latLng = departureLatLng
-                )
-                drawCourse(departureLatLng = departureLatLng)
-            }
-        }
     }
     private fun initCustomLocationMode() {
         isCustomLocationMode = true
@@ -260,6 +252,13 @@ class DrawActivity :
             naverMap.locationOverlay.position = currentLocation
             naverMap.locationOverlay.isVisible = false
             setDepartureLatLng(latLng = LatLng(currentLocation.latitude, currentLocation.longitude))
+
+            //같은 scope 안에 넣었으니 setDepartureLatLng 다음에 drawCourse가 실행되는 것이 보장됨
+            //이때 isFirstInit의 초기값을 true로 줘서 최초 1회는 실행되게 하고 이후 drawCourse 내에서 isFirstInit 값을 false로 바꿔줌
+            //뒤의 조건을 안 달아주면 다른 mode에서는 버튼을 클릭하기도 전에 drawCourse()가 돌 거라 안 됨.
+            if(isFirstInit && isCurrentLocationMode){
+                drawCourse(departureLatLng = departureLatLng)
+            }
         }
     }
 
@@ -519,6 +518,7 @@ class DrawActivity :
     }
 
     private fun drawCourse(departureLatLng: LatLng) {
+        isFirstInit = false
         createDepartureMarker(departureLatLng = departureLatLng)
         createRouteMarker()
         deleteRouteMarker()
