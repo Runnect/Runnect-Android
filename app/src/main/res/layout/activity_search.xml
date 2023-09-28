@@ -28,16 +28,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="17dp"
             android:background="@color/transparent_00"
             android:src="@drawable/backbutton"
+            app:layout_constraintBottom_toBottomOf="@id/divider_search"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/frame_toolbar" />
 
         <EditText
             android:id="@+id/et_search"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="12dp"
             android:background="@color/transparent_00"
             android:fontFamily="@font/pretendard_medium"
@@ -46,10 +46,12 @@
             android:inputType="text"
             android:onTextChanged="@{model::getSearchKeyword}"
             android:textColor="@color/G1"
+            android:textColorHint="@color/G3"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
+            app:layout_constraintBottom_toBottomOf="@id/divider_search"
+            app:layout_constraintEnd_toStartOf="@id/imgBtn_search"
             app:layout_constraintStart_toEndOf="@id/imgBtn_back"
-            app:layout_constraintTop_toTopOf="@id/imgBtn_back" />
+            app:layout_constraintTop_toTopOf="@id/frame_toolbar" />
 
         <ImageButton
             android:id="@+id/imgBtn_search"
@@ -58,9 +60,9 @@
             android:layout_gravity="end"
             android:layout_marginEnd="19.25dp"
             android:backgroundTint="@color/transparent_00"
-            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
+            app:layout_constraintBottom_toBottomOf="@id/divider_search"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/imgBtn_back"
+            app:layout_constraintTop_toTopOf="@id/frame_toolbar"
             app:srcCompat="@drawable/discover_search" />
 
         <com.google.android.material.divider.MaterialDivider
