@@ -84,7 +84,6 @@ class StorageMainFragment :
                             replace<StorageScrapFragment>(R.id.fl_main)
                             Timber.tag("hu").d("스크랩으로 이동하였음")
                         }
-
                         else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
                     }
                 }
