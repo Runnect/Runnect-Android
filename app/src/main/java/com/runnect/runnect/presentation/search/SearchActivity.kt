@@ -139,6 +139,7 @@ class SearchActivity :
                     hideLoadingBar()
                     showSearchResult()
                 }
+
                 UiState.Failure -> {
                     hideLoadingBar()
                     showErrorMessage()
@@ -154,7 +155,7 @@ class SearchActivity :
 
     private fun imgBtnSearch() {
         binding.imgBtnSearch.setOnClickListener {
-            viewModel.getSearchList(viewModel.searchKeyword.value.toString())
+            viewModel.getSearchList(binding.etSearch.text.toString())
         }
 
     }

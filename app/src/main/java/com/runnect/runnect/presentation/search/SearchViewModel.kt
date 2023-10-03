@@ -17,14 +17,6 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(private val departureSearchRepository: DepartureSearchRepository) :
     ViewModel() {
 
-    private val _searchKeyword = MutableLiveData<String>()
-    val searchKeyword: LiveData<String> get() = _searchKeyword
-
-    fun getSearchKeyword(s: CharSequence, start: Int, before: Int, count: Int) {
-        _searchKeyword.value = s.toString()
-        Timber.tag(ContentValues.TAG).d("EditText값 : ${_searchKeyword.value}")
-    }
-
     val searchError = MutableLiveData<String>()
 
     val dataList = MutableLiveData<List<SearchResultEntity>?>()
