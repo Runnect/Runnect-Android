@@ -11,7 +11,6 @@ import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.presentation.login.LoginActivity
-import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -19,6 +18,7 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import timber.log.Timber
 
 class TokenAuthenticator(val context: Context) : Authenticator {
     private val BASE_URL = BuildConfig.RUNNECT_BASE_URL
@@ -27,16 +27,6 @@ class TokenAuthenticator(val context: Context) : Authenticator {
     @OptIn(DelicateCoroutinesApi::class)
     override fun authenticate(route: Route?, response: Response): Request? {
         if (response.code == 401) {
-            if (response.message == "Unauthorized") {
-                clearToken()
-                Handler(Looper.getMainLooper()).post{
-                    Toast.makeText(context,context.getString(R.string.alert_need_to_re_sign),Toast.LENGTH_LONG).show()
-                }
-                val intent = Intent(context, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                context.startActivity(intent)
-                return null
-            }
             val newAccessToken = GlobalScope.async(Dispatchers.IO) { //Deferred
                 getNewDeviceToken()
             }
@@ -50,11 +40,16 @@ class TokenAuthenticator(val context: Context) : Authenticator {
         }
         return null
     }
-    private fun clearToken(){
-        PreferenceManager.setString(context,
-            TOKEN_KEY_ACCESS, "none")
-        PreferenceManager.setString(context,
-            TOKEN_KEY_REFRESH, "none")
+
+    private fun clearToken() {
+        PreferenceManager.setString(
+            context,
+            TOKEN_KEY_ACCESS, "none"
+        )
+        PreferenceManager.setString(
+            context,
+            TOKEN_KEY_REFRESH, "none"
+        )
     }
 
     private suspend inline fun getNewDeviceToken(): Boolean {
@@ -68,10 +63,27 @@ class TokenAuthenticator(val context: Context) : Authenticator {
         runCatching {
             createRefreshService()!!.create(LoginService::class.java).getNewToken()
         }.onSuccess {
+            Timber.tag("test").d("callRefresh-onSuccess")
             PreferenceManager.setString(context, TOKEN_KEY_ACCESS, it.data.accessToken)
             PreferenceManager.setString(context, TOKEN_KEY_REFRESH, it.data.refreshToken)
             return true
         }.onFailure {
+            Timber.tag("test").d("callRefresh-onFailure")
+            //이 부분을 onSuccess 안에 추가해야 하는 것인지, onFailure에 두는 것이 맞는지 헷갈립니다.
+            if (it.message == "Unauthorized") {
+                Timber.tag("test").d("callRefresh-onFailure-inner-if")
+                clearToken()
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.alert_need_to_re_sign),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                val intent = Intent(context, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+            }
         }
         return false
     }
@@ -117,6 +129,7 @@ class TokenAuthenticator(val context: Context) : Authenticator {
             )
             .build()
     }
+
     companion object {
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
