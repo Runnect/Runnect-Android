@@ -116,4 +116,7 @@
     <string name="give_nickname_edit_input">닉네임을 입력해주세요</string>
     <string name="give_nickname_finish">시작하기</string>
     <string name="alert_need_to_re_sign">장기간 미접속으로 인해 재로그인이 필요합니다.</string>
+    <string name="draw_custom_departure_guide">지도를 움직여 출발지를 설정해주세요</string>
+    <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
+    <string name="draw_next">다음으로</string>
 </resources>

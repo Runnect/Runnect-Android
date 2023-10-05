@@ -1,25 +1,34 @@
 package com.runnect.runnect.presentation.draw
 
-import android.app.AlertDialog
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
@@ -30,6 +39,7 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
+import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
@@ -41,6 +51,8 @@ import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -52,8 +64,15 @@ import java.math.RoundingMode
 class DrawActivity :
     com.runnect.runnect.binding.BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
-    private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
+    private lateinit var currentLocation: LatLng
+    private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수)
+
+    var isCustomLocationMode: Boolean = false
+    var isSearchLocationMode: Boolean = false
+    var isCurrentLocationMode: Boolean = false
+
+    private lateinit var naverMap: NaverMap
     private lateinit var departureLatLng: LatLng
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
@@ -71,40 +90,37 @@ class DrawActivity :
     private var isMarkerAvailable: Boolean = false
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
+    var isFirstInit: Boolean = true
+
+    private lateinit var bottomSheetBinding: BottomsheetRequireCourseNameBinding  // Bottom Sheet 바인딩
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding.model = viewModel
         binding.lifecycleOwner = this
 
-        if (::searchResult.isInitialized.not()) {
-            intent?.let {
-                searchResult =
-                    intent.getParcelableExtra(EXTRA_SEARCH_RESULT) ?: throw Exception("데이터가 존재하지 않습니다.")
-
-                Timber.tag(ContentValues.TAG).d("searchResult : $searchResult")
-                viewModel.searchResult.value = searchResult
-                initView()
-                courseFinish()
-                addObserver()
-                backButton()
-                activateDrawCourse()
-            }
-        }
+        initMapView()
+        getSearchIntent()
+        addObserver()
+        backButton()
+        courseFinish()
     }
 
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun getSearchIntent() {
+        searchResult =
+            intent.getParcelableExtra(EXTRA_SEARCH_RESULT) ?: throw Exception("데이터가 존재하지 않습니다.")
     }
 
-    private fun initView() {
+    private fun initMapView() {
+        fusedLocation = LocationServices.getFusedLocationProviderClient(this) // 현위치 정보 제공
+
         val fm = supportFragmentManager
         val mapFragment =
             fm.findFragmentById(R.id.mapView) as MapFragment? ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapView, it).commit()
             }
         mapFragment.getMapAsync(this)
+
         locationSource = FusedLocationSource(
             this, LOCATION_PERMISSION_REQUEST_CODE
         )
@@ -112,28 +128,188 @@ class DrawActivity :
 
     override fun onMapReady(map: NaverMap) {
         naverMap = map
+        initMode()
+        setLocationTrackingMode()
+        setCurrentLocationIcon()
+        setZoomControl()
+        setLocationChangedListener()
+        setCameraFinishedListener()
+    }
+    private fun initMode() {
+        when (searchResult.mode) {
+            "searchLocation" -> initSearchLocationMode()
+            "currentLocation" -> initCurrentLocationMode()
+            "customLocation" -> initCustomLocationMode()
+        }
+    }
+    private fun initSearchLocationMode() {
+        isSearchLocationMode = true
+
+        with(binding){
+            tvGuide.isVisible = false
+            btnDraw.text = CREATE_COURSE
+        }
+
+        viewModel.searchResult.value = searchResult
+        viewModel.departureName.value =
+            searchResult.name //searchLocationMode일 땐 departureName 값 세팅해주는 부분이 따로 없어서 여기에 작성해놓음
+
+        setDepartureLatLng(
+            latLng = LatLng(
+                searchResult.locationLatLng!!.latitude, searchResult.locationLatLng!!.longitude
+            )
+        )
+        activateDrawCourse()
+
+        lifecycleScope.launch {
+            delay(500) //인위적으로 늦춰줌
+            if (::departureLatLng.isInitialized) {
+                drawCourse(departureLatLng = departureLatLng)
+            }
+        }
+    }
+    private fun initCurrentLocationMode() {
+        isCurrentLocationMode = true
+        isMarkerAvailable = true
+
+        with(binding) {
+            customDepartureMarker.isVisible = false
+            tvGuide.isVisible = false
+        }
+        showDrawGuide()
+        hideDeparture()
+        showDrawCourse()
+    }
+    private fun initCustomLocationMode() {
+        isCustomLocationMode = true
+
+        with(binding) {
+            customDepartureMarker.isVisible = true
+            customDepartureInfoWindow.isVisible = true
+            tvCustomDepartureGuideFrame.isVisible = true
+
+            btnPreStart.setOnClickListener {
+                isMarkerAvailable = true
+                showDrawGuide()
+                hideDeparture()
+                showDrawCourse()
+                drawCourse(departureLatLng = getCenterPosition())
+                hideFloatedDeparture()
+            }
+        }
+    }
+
+    private fun hideFloatedDeparture() {
+        with(binding) {
+            customDepartureMarker.isVisible = false
+            customDepartureInfoWindow.isVisible = false
+        }
+    }
+
+    private fun setDepartureLatLng(latLng: LatLng) {
+        departureLatLng = LatLng(
+            latLng.latitude, latLng.longitude
+        )
+    }
+
+    private fun getLocationInfoUsingLatLng(lat: Double, lon: Double) {
+        viewModel.getLocationInfoUsingLatLng(lat = lat, lon = lon)
+    }
+
+    fun setZoomControl() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
-
-        //네이버 맵 sdk에 위치 정보 제공
-        locationSource = FusedLocationSource(this@DrawActivity, LOCATION_PERMISSION_REQUEST_CODE)
-        naverMap.locationSource = locationSource
-
-        drawCourse()
 
         val uiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
     }
 
-    private fun courseFinish() {
-        binding.btnDraw.setOnClickListener {
+    fun setCurrentLocationIcon() {
+        val locationOverlay = naverMap.locationOverlay
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
+    }
 
-            if (isVisitorMode) {
-                requireVisitorLogin()
-            } else {
-                createMbr()
+    private fun setCameraFinishedListener() {
+        naverMap.addOnCameraIdleListener {
+            val centerLatLng = getCenterPosition()
+            if (::currentLocation.isInitialized) {
+                getLocationInfoUsingLatLng( //코스를 다 그린 후에도 계속 통신이 돌아서 리소스 낭비를 막기 위한 조치 필요
+                    lat = centerLatLng.latitude, lon = centerLatLng.longitude
+                )
+            }
+            Timber.tag("카메라-끝").d("$centerLatLng") //위에 통신이 비동기로 돌아서 이게 먼저 찍힘.
+        }
+    }
+
+    fun getCenterPosition(): LatLng {
+        val cameraPosition = naverMap.cameraPosition
+        return cameraPosition.target // 중심 좌표
+    }
+    private fun setLocationChangedListener() {
+        naverMap.addOnLocationChangeListener { location ->
+            currentLocation = LatLng(location.latitude, location.longitude)
+
+            naverMap.locationOverlay.position = currentLocation
+            naverMap.locationOverlay.isVisible = false
+            setDepartureLatLng(latLng = LatLng(currentLocation.latitude, currentLocation.longitude))
+
+            //같은 scope 안에 넣었으니 setDepartureLatLng 다음에 drawCourse가 실행되는 것이 보장됨
+            //이때 isFirstInit의 초기값을 true로 줘서 최초 1회는 실행되게 하고 이후 drawCourse 내에서 isFirstInit 값을 false로 바꿔줌
+            //뒤의 조건을 안 달아주면 다른 mode에서는 버튼을 클릭하기도 전에 drawCourse()가 돌 거라 안 됨.
+            if(isFirstInit && isCurrentLocationMode){
+                drawCourse(departureLatLng = departureLatLng)
             }
         }
+    }
+
+    private fun setLocationTrackingMode() {
+        naverMap.locationSource = locationSource
+
+        if (isCurrentLocationMode || isCustomLocationMode) {
+            naverMap.locationTrackingMode =
+                LocationTrackingMode.Follow //위치추적 모드 Follow - 자동으로 camera 이동
+        }
+    }
+
+    private fun courseFinish() {
+        binding.btnDraw.setOnClickListener {
+            if (isVisitorMode) {
+                requireVisitorLogin()
+                return@setOnClickListener
+            }
+            when {
+                isSearchLocationMode -> createMbr()
+                isCurrentLocationMode || isCustomLocationMode -> requireCourseNameDialog().show()
+            }
+        }
+    }
+
+    private fun requireCourseNameDialog(): BottomSheetDialog {
+        bottomSheetBinding = BottomsheetRequireCourseNameBinding.inflate(layoutInflater)
+        val bottomSheetView = bottomSheetBinding.root
+        val etCourseName = bottomSheetBinding.etCourseName
+        val btnCreateCourse = bottomSheetBinding.btnCreateCourse
+
+        etCourseName.addTextChangedListener {
+            if (!etCourseName.text.isNullOrEmpty()) {
+                btnCreateCourse.setBackgroundResource(R.drawable.radius_10_m1_button)
+                btnCreateCourse.isEnabled = true
+                viewModel.departureName.value = etCourseName.text.toString()
+            } else {
+                btnCreateCourse.setBackgroundResource(R.drawable.radius_10_g3_button)
+                btnCreateCourse.isEnabled = false
+            }
+            Timber.tag("EditTextValue").d("${viewModel.departureName.value}")
+        }
+
+        btnCreateCourse.setOnClickListener {
+            createMbr()
+        }
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        return bottomSheetDialog
     }
 
     private fun activateDrawCourse() {
@@ -173,6 +349,8 @@ class DrawActivity :
             tvDeparture.startAnimation(animUp)
             viewTopFrame.isVisible = false
             tvDeparture.isVisible = false
+            tvGuide.isVisible = false
+            tvCustomDepartureGuideFrame.isVisible = false
 
             //Bottom invisible
             viewBottomSheetFrame.startAnimation(animDown)
@@ -190,6 +368,17 @@ class DrawActivity :
     private fun addObserver() {
         observeIsBtnAvailable()
         observeDrawState()
+
+        viewModel.reverseGeocodingResult.observe(this) {
+            val buildingName = viewModel.reverseGeocodingResult.value!!.buildingName
+
+            if (buildingName.isEmpty()) {
+                binding.tvPlaceName.text = CUSTOM_DEPARTURE
+            } else binding.tvPlaceName.text = buildingName
+
+            binding.tvPlaceAddress.text =
+                viewModel.reverseGeocodingResult.value?.fullAddress ?: "fail"
+        }
     }
 
     private fun activateMarkerBackBtn() {
@@ -229,7 +418,7 @@ class DrawActivity :
         binding.indeterminateBar.isVisible = false
     }
 
-    private fun observeDrawState() {
+    private fun observeDrawState() { //분기 처리를 더 해줘야 함. 서버에서 400 날아오는데 이게 success로 빠져서 '코스 생성 완료' 팝업이 뜨고 있음.
         viewModel.drawState.observe(this) {
             when (it) {
                 UiState.Empty -> hideLoadingBar()
@@ -238,7 +427,10 @@ class DrawActivity :
                     hideLoadingBar()
                     notifyCreateFinish()
                 }
-                UiState.Failure -> hideLoadingBar()
+
+                UiState.Failure -> {
+                    hideLoadingBar()
+                }
             }
         }
     }
@@ -260,7 +452,7 @@ class DrawActivity :
                             publicCourseId = null,
                             touchList = touchList,
                             startLatLng = departureLatLng,
-                            departure = searchResult.name,
+                            departure = viewModel.departureName.value!!,
                             distance = viewModel.distanceSum.value!!,
                             image = captureUri.toString(),
                             dataFrom = "fromDrawCourse"
@@ -312,56 +504,63 @@ class DrawActivity :
         }
     }
 
-
-    //카메라 위치 변경 함수
     private fun cameraUpdate(location: Any) {
-        //이건 맨 처음 지도 켤 때 startLocation으로 위치 옮길 때 사용
+        //맨 처음 지도 켤 때 startLocation으로 위치 옮길 때 사용
         if (location is LatLng) {
-            val cameraUpdate = CameraUpdate.scrollTo(location)
+            val cameraUpdate = CameraUpdate.scrollTo(location).animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)
         }
-        //이건 카메라 이동해서 캡쳐할 때 사용
+        //카메라 이동해서 캡쳐할 때 사용
         else if (location is LatLngBounds) {
             val cameraUpdate = CameraUpdate.fitBounds(location)
             naverMap.moveCamera(cameraUpdate)
         }
     }
 
-    private fun drawCourse() {
-        createDepartureMarker()
+    private fun drawCourse(departureLatLng: LatLng) {
+        isFirstInit = false
+        createDepartureMarker(departureLatLng = departureLatLng)
         createRouteMarker()
         deleteRouteMarker()
     }
 
-    private fun createDepartureMarker() {
-        setDepartureLatLng()
-        setDepartureMarker()
-        addDepartureToCoords()
-        addDepartureToCalcDistanceList()
+    private fun createDepartureMarker(departureLatLng: LatLng) {
+        setDepartureMarker(departureLatLng = departureLatLng)
+        addDepartureToCoords(departureLatLng = departureLatLng)
+        addDepartureToCalcDistanceList(departureLatLng = departureLatLng)
     }
 
-    private fun setDepartureLatLng() {
-        departureLatLng = LatLng(
-            searchResult.locationLatLng.latitude, searchResult.locationLatLng.longitude
-        )
-    }
-
-    private fun setDepartureMarker() {
+    private fun setDepartureMarker(departureLatLng: LatLng) {
         val departureMarker = Marker()
         departureMarker.position = LatLng(departureLatLng.latitude, departureLatLng.longitude)
-        departureMarker.anchor = PointF(0.5f, 0.7f)
-        departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
+        departureMarker.anchor = PointF(0.5f, 0.5f)
+        departureMarker.icon = OverlayImage.fromResource(R.drawable.runnect_marker)
         departureMarker.map = naverMap
-        cameraUpdate(
-            LatLng(departureLatLng.latitude, departureLatLng.longitude)
-        )
+
+        if (isSearchLocationMode) {
+            cameraUpdate(
+                LatLng(departureLatLng.latitude, departureLatLng.longitude)
+            ) // 현위치에서 출발할 때 이것 때문에 트랙킹 모드 활성화 시 카메라 이동하는 게 묻혔음
+        }
+        setCustomInfoWindow(marker = departureMarker)
     }
 
-    private fun addDepartureToCoords() {
+    private fun setCustomInfoWindow(marker: Marker) {
+        val infoWindow = InfoWindow()
+        infoWindow.adapter = object : InfoWindow.ViewAdapter() {
+            override fun getView(p0: InfoWindow): View {
+                return LayoutInflater.from(this@DrawActivity)
+                    .inflate(R.layout.custom_info_window, binding.root as ViewGroup, false)
+            }
+        }
+        infoWindow.open(marker)
+    }
+
+    private fun addDepartureToCoords(departureLatLng: LatLng) {
         coords.add(LatLng(departureLatLng.latitude, departureLatLng.longitude))
     }
 
-    private fun addDepartureToCalcDistanceList() {
+    private fun addDepartureToCalcDistanceList(departureLatLng: LatLng) {
         calcDistanceList.add(
             LatLng(
                 departureLatLng.latitude, departureLatLng.longitude
@@ -371,16 +570,17 @@ class DrawActivity :
 
     private fun createRouteMarker() {
         naverMap.setOnMapClickListener { _, coord ->
-            if (isMarkerAvailable) {
-                viewModel.isBtnAvailable.value = true
-                if (touchList.size < MAX_MARKER_NUM) {
-                    addCoordsToTouchList(coord)
-                    setRouteMarker(coord)
-                    generateRouteLine(coord)
-                    calcDistance()
-                } else {
-                    Toast.makeText(this, MESSAGE_MAX_MARKER_COUNT, Toast.LENGTH_SHORT).show()
-                }
+            if (!isMarkerAvailable) return@setOnMapClickListener
+
+            viewModel.isBtnAvailable.value = true
+
+            if (touchList.size < MAX_MARKER_NUM) {
+                addCoordsToTouchList(coord)
+                setRouteMarker(coord)
+                generateRouteLine(coord)
+                calcDistance()
+            } else {
+                Toast.makeText(this, NOTIFY_LIMIT_MARKER_NUM, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -458,7 +658,6 @@ class DrawActivity :
     }
 
     private fun calcDistance() {
-
         for (i in 0 until touchList.size) {
             if (!calcDistanceList.contains(touchList[i])) {
                 calcDistanceList.add(touchList[i])
@@ -509,14 +708,24 @@ class DrawActivity :
             UploadLatLng(latLng.latitude, latLng.longitude)
         }
         viewModel.path.value = uploadLatLngList
-        viewModel.departureAddress.value = searchResult.fullAddress
-        viewModel.departureName.value = searchResult.name
+
+        when {
+            isSearchLocationMode -> {
+                viewModel.departureAddress.value = searchResult.fullAddress
+                viewModel.departureName.value = searchResult.name
+            }
+
+            isCurrentLocationMode || isCustomLocationMode -> {
+                viewModel.departureAddress.value =
+                    viewModel.reverseGeocodingResult.value?.fullAddress
+            }
+        }
+
     }
 
     // Get uri of images from camera function
     private fun getImageUri(inImage: Bitmap): Uri {
-
-        val tempFile = File.createTempFile("temprentpk", ".png")
+        val tempFile = File.createTempFile("CreatedCourse", ".png")
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
         val bitmapData = bytes.toByteArray()
@@ -532,8 +741,12 @@ class DrawActivity :
         return uri
     }
 
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
     companion object {
-        const val MESSAGE_MAX_MARKER_COUNT = "마커는 20개까지 생성 가능합니다"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val MAX_MARKER_NUM = 20
         const val DISTANCE_UNIT = "kilometer"
@@ -541,5 +754,8 @@ class DrawActivity :
         const val EXTRA_SEARCH_RESULT = "searchResult"
         const val EXTRA_COURSE_DATA = "CourseData"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
+        const val NOTIFY_LIMIT_MARKER_NUM = "마커는 20개까지 생성 가능합니다"
+        const val CREATE_COURSE = "완성하기"
     }
 }

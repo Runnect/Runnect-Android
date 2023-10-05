@@ -85,11 +85,10 @@ class SearchActivity :
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra(EXTRA_SEARCH_RESULT, item)
+                putExtra(EXTRA_SEARCH_RESULT, item) //mode == "searchLocation"
             }
         )
     }
-
 
     private fun showEmptyView() {
         with(binding) {
@@ -178,6 +177,38 @@ class SearchActivity :
                 return false
             }
         })
+
+        binding.cvStartCurrentLocation.setOnClickListener {
+            startCurrentLocation()
+        }
+
+        binding.cvStartCustomLocation.setOnClickListener {
+            startCustomLocation()
+        }
+    }
+
+    fun startCurrentLocation() {
+        startActivity(
+            Intent(this, DrawActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                putExtra(
+                    EXTRA_SEARCH_RESULT,
+                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null, mode = "currentLocation")
+                )
+            }
+        )
+    }
+
+    fun startCustomLocation() {
+        startActivity(
+            Intent(this, DrawActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                putExtra(
+                    EXTRA_SEARCH_RESULT,
+                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null, mode = "customLocation")
+                )
+            }
+        )
     }
 
     //키보드 밖 터치 시, 키보드 내림

@@ -1,12 +1,11 @@
 package com.runnect.runnect.di
 
-import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
+import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -33,6 +32,10 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository
+
+    @Singleton
+    @Binds
+    fun bindReverseGeocodingRepository(reverseGeocodingRepositoryImpl: ReverseGeocodingRepositoryImpl): ReverseGeocodingRepository
 
     @Singleton
     @Binds
