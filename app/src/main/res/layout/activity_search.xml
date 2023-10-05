@@ -44,7 +44,6 @@
             android:hint="@string/search_set_departure_hint"
             android:imeOptions="actionSearch"
             android:inputType="text"
-            android:onTextChanged="@{model::getSearchKeyword}"
             android:textColor="@color/G1"
             android:textColorHint="@color/G3"
             android:textSize="15sp"
