@@ -1,7 +1,6 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.BuildConfig
-import com.runnect.runnect.data.dto.tmap.SearchResponseTmapDto
 import com.runnect.runnect.data.dto.tmap.geocoding.ResponseReverseGeocodingDto
 import retrofit2.Response
 import retrofit2.http.GET
@@ -19,5 +18,5 @@ interface ReverseGeocodingService {
         @Query("lon") lon: Double,
         @Query("coordType") coordType: String? = "WGS84GEO",
         @Query("addressType") addresstType: String? = "A04",
-        ): Response<ResponseReverseGeocodingDto>
+    ): Response<ResponseReverseGeocodingDto>
 }

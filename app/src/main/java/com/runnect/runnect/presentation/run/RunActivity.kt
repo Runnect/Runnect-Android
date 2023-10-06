@@ -10,6 +10,9 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.IBinder
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -20,6 +23,7 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
@@ -253,13 +257,26 @@ class RunActivity :
 
         departureMarker.position =
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
-        departureMarker.anchor = PointF(0.5f, 0.7f)
-        departureMarker.icon = OverlayImage.fromResource(R.drawable.marker_departure)
+        departureMarker.anchor = PointF(0.5f, 0.5f)
+        departureMarker.icon = OverlayImage.fromResource(R.drawable.runnect_marker)
         departureMarker.map = naverMap
         cameraUpdate(
             LatLng(departureLatLng.latitude, departureLatLng.longitude)
         )
         coords.add(LatLng(departureLatLng.latitude, departureLatLng.longitude))
+
+        setCustomInfoWindow(marker = departureMarker)
+    }
+
+    private fun setCustomInfoWindow(marker: Marker) {
+        val infoWindow = InfoWindow()
+        infoWindow.adapter = object : InfoWindow.ViewAdapter() {
+            override fun getView(p0: InfoWindow): View {
+                return LayoutInflater.from(this@RunActivity)
+                    .inflate(R.layout.custom_info_window, binding.root as ViewGroup, false)
+            }
+        }
+        infoWindow.open(marker)
     }
 
     private fun createRouteMarker() {

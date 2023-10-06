@@ -571,7 +571,6 @@ class DrawActivity :
     private fun createRouteMarker() {
         naverMap.setOnMapClickListener { _, coord ->
             if (!isMarkerAvailable) return@setOnMapClickListener
-
             viewModel.isBtnAvailable.value = true
 
             if (touchList.size < MAX_MARKER_NUM) {
