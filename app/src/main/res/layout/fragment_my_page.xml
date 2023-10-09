@@ -97,7 +97,6 @@
                 android:id="@+id/view_my_page_profile_frame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/M3"
                 app:layout_constraintDimensionRatio="360:85"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,9 +110,9 @@
                 android:indeterminateTint="@color/G3"
                 android:outlineProvider="none"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@id/divider_my_page"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/cl_my_page_lv_progress_bar"
                 app:layout_constraintTop_toTopOf="@id/view_my_page_profile_frame" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -145,7 +144,7 @@
                 android:layout_width="78dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/my_page_edit_border"
+                android:background="@drawable/my_page_nickname_edit_border"
                 app:layout_constraintBottom_toBottomOf="@id/view_my_page_profile_frame"
                 app:layout_constraintDimensionRatio="78:28"
                 app:layout_constraintEnd_toEndOf="@id/view_my_page_profile_frame"
@@ -159,7 +158,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="9dp"
                 android:background="@color/transparent_00"
-                android:src="@drawable/my_page_edit"
+                android:src="@drawable/ic_mypage_nickname_edit"
                 app:layout_constraintBottom_toBottomOf="@id/iv_my_page_edit_frame"
                 app:layout_constraintStart_toStartOf="@id/iv_my_page_edit_frame"
                 app:layout_constraintTop_toTopOf="@id/iv_my_page_edit_frame" />
@@ -171,90 +170,94 @@
                 android:layout_marginEnd="11dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="@string/my_page_edit"
-                android:textColor="@color/M2"
+                android:textColor="@color/M1"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_my_page_edit_frame"
                 app:layout_constraintEnd_toEndOf="@id/iv_my_page_edit_frame"
                 app:layout_constraintTop_toTopOf="@id/iv_my_page_edit_frame" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_user_lv_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
-                android:layout_marginTop="32dp"
-                android:height="22dp"
-                android:fontFamily="@font/pretendard_bold"
-                android:gravity="center"
-                android:text="@string/my_page_lv_indicator"
-                android:textColor="@color/G1"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_profile_frame" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_user_lv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:height="22dp"
-                android:fontFamily="@font/pretendard_bold"
-                android:gravity="center"
-                android:text="@{vm.level}"
-                android:textColor="@color/G1"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_my_page_user_lv_indicator"
-                app:layout_constraintStart_toEndOf="@id/tv_my_page_user_lv_indicator"
-                app:layout_constraintTop_toTopOf="@id/tv_my_page_user_lv_indicator"
-                tools:text="3" />
-
-            <ProgressBar
-                android:id="@+id/pb_my_page_progress"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_my_page_lv_progress_bar"
                 android:layout_width="0dp"
-                android:layout_height="11dp"
-                android:layout_marginHorizontal="22dp"
-                android:layout_marginTop="6dp"
-                android:max="100"
-                android:progress="@{vm.levelPercent}"
-                android:progressDrawable="@drawable/progressbar_custom"
+                android:layout_height="wrap_content"
+                android:background="@color/M3_A60"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_my_page_user_lv" />
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_profile_frame">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_progress_current"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:fontFamily="@font/pretendard_semibold"
-                android:text="@{vm.levelPercent.toString()}"
-                android:textColor="@color/G1"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_my_page_progress_max"
-                app:layout_constraintEnd_toStartOf="@id/tv_my_page_progress_max"
-                app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max"
-                tools:text="50" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page_user_lv_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="20dp"
+                    android:height="22dp"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:gravity="center"
+                    android:text="@string/my_page_lv_indicator"
+                    android:textColor="@color/G1"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_progress_max"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:fontFamily="@font/pretendard_semibold"
-                android:text="@string/my_page_progress_max"
-                android:textColor="@color/G2"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="@id/pb_my_page_progress"
-                app:layout_constraintTop_toBottomOf="@id/pb_my_page_progress" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page_user_lv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:height="22dp"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:gravity="center"
+                    android:text="@{vm.level}"
+                    android:textColor="@color/G1"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_my_page_user_lv_indicator"
+                    app:layout_constraintStart_toEndOf="@id/tv_my_page_user_lv_indicator"
+                    app:layout_constraintTop_toTopOf="@id/tv_my_page_user_lv_indicator"
+                    tools:text="3" />
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider_my_page"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="24dp"
-                app:dividerColor="@color/G5"
-                app:layout_constraintDimensionRatio="360:10"
-                app:layout_constraintTop_toBottomOf="@id/tv_my_page_progress_current" />
+                <ProgressBar
+                    android:id="@+id/pb_my_page_progress"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="11dp"
+                    android:layout_marginHorizontal="22dp"
+                    android:layout_marginTop="6dp"
+                    android:max="100"
+                    android:progress="@{vm.levelPercent}"
+                    android:progressDrawable="@drawable/progressbar_custom"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_my_page_user_lv" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page_progress_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="1dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@{vm.levelPercent.toString()}"
+                    android:textColor="@color/G1"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_my_page_progress_max"
+                    app:layout_constraintEnd_toStartOf="@id/tv_my_page_progress_max"
+                    app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max"
+                    tools:text="50" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page_progress_max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="@string/my_page_progress_max"
+                    android:textColor="@color/G2"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/pb_my_page_progress"
+                    app:layout_constraintTop_toBottomOf="@id/pb_my_page_progress" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- 러닝 기록 -->
 
@@ -263,7 +266,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintDimensionRatio="390:62"
-                app:layout_constraintTop_toBottomOf="@id/divider_my_page" />
+                app:layout_constraintTop_toBottomOf="@id/cl_my_page_lv_progress_bar" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_item_my_page_main_history_star"
