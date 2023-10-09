@@ -14,9 +14,9 @@ import javax.inject.Inject
 class MyRewardViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
 
-    private val _stampState = MutableLiveData<UiState>(UiState.Loading)
-    val stampState: LiveData<UiState>
-        get() = _stampState
+    private val _getStampListState = MutableLiveData<UiState>(UiState.Loading)
+    val getStampListState: LiveData<UiState>
+        get() = _getStampListState
 
     var stampList: MutableList<String> = mutableListOf()
 
@@ -25,14 +25,14 @@ class MyRewardViewModel @Inject constructor(private val userRepository: UserRepo
     fun getStampList() {
         viewModelScope.launch {
             runCatching {
-                _stampState.value = UiState.Loading
+                _getStampListState.value = UiState.Loading
                 userRepository.getMyStamp()
             }.onSuccess {
                 stampList = it
-                _stampState.value = UiState.Success
+                _getStampListState.value = UiState.Success
             }.onFailure {
                 errorMessage.value = it.message
-                _stampState.value = UiState.Failure
+                _getStampListState.value = UiState.Failure
             }
         }
     }
