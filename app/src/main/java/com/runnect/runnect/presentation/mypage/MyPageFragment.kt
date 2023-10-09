@@ -100,9 +100,6 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
             )
             intent.putExtra(EXTRA_PROFILE, stampResId)
             resultEditNameLauncher.launch(intent)
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
         }
 
         binding.viewMyPageMainRewardFrame.setOnClickListener {
