@@ -256,54 +256,6 @@
                 app:layout_constraintDimensionRatio="360:10"
                 app:layout_constraintTop_toBottomOf="@id/tv_my_page_progress_current" />
 
-            <!-- 목표 보상 -->
-
-            <View
-                android:id="@+id/view_my_page_main_reward_frame"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="390:62"
-                app:layout_constraintTop_toBottomOf="@id/divider_my_page" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_item_my_page_main_reward_star"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:src="@drawable/all_star"
-                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_reward_frame"
-                app:layout_constraintStart_toStartOf="@id/view_my_page_main_reward_frame"
-                app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_my_page_main_reward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/pretendard_medium"
-                android:text="@string/my_page_reward_title"
-                android:textColor="@color/G1"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_reward_frame"
-                app:layout_constraintStart_toEndOf="@id/iv_item_my_page_main_reward_star"
-                app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_my_page_main_reward_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:src="@drawable/all_front_arrow"
-                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_reward_frame"
-                app:layout_constraintEnd_toEndOf="@id/view_my_page_main_reward_frame"
-                app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                app:dividerColor="@color/G4"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
-
             <!-- 러닝 기록 -->
 
             <View
@@ -311,7 +263,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintDimensionRatio="390:62"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
+                app:layout_constraintTop_toBottomOf="@id/divider_my_page" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_item_my_page_main_history_star"
@@ -352,6 +304,54 @@
                 app:dividerColor="@color/G4"
                 app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame" />
 
+            <!-- 목표 보상 -->
+
+            <View
+                android:id="@+id/view_my_page_main_reward_frame"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="390:62"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_item_my_page_main_reward_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/all_star"
+                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_reward_frame"
+                app:layout_constraintStart_toStartOf="@id/view_my_page_main_reward_frame"
+                app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_main_reward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="@string/my_page_reward_title"
+                android:textColor="@color/G1"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_reward_frame"
+                app:layout_constraintStart_toEndOf="@id/iv_item_my_page_main_reward_star"
+                app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_my_page_main_reward_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:src="@drawable/all_front_arrow"
+                app:layout_constraintBottom_toBottomOf="@id/view_my_page_main_reward_frame"
+                app:layout_constraintEnd_toEndOf="@id/view_my_page_main_reward_frame"
+                app:layout_constraintTop_toTopOf="@id/view_my_page_main_reward_frame" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:dividerColor="@color/G4"
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
+
             <!-- 업로드한 코스 -->
 
             <View
@@ -359,7 +359,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintDimensionRatio="390:62"
-                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_history_frame" />
+                app:layout_constraintTop_toBottomOf="@id/view_my_page_main_reward_frame" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_item_my_page_main_upload_star"
