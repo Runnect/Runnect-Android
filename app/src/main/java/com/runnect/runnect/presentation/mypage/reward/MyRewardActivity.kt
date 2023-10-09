@@ -59,20 +59,20 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
 
     private fun initBackButtonClickListener() {
         binding.ivMyPageRewardBack.setOnClickListener {
-            moveToPreviousScreen()
+            navigateToPreviousScreen()
         }
     }
 
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                moveToPreviousScreen()
+                navigateToPreviousScreen()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    private fun moveToPreviousScreen() {
+    private fun navigateToPreviousScreen() {
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }

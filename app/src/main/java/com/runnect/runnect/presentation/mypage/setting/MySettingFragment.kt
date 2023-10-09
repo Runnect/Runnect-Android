@@ -13,20 +13,24 @@ import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAcco
 import com.runnect.runnect.util.extension.startWebView
 
 class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fragment_my_setting) {
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            moveToMyPage()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addListener()
+        registerBackPressedCallback()
+    }
+
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToMyPageFragment()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun addListener() {
         binding.ivSettingBack.setOnClickListener {
-            moveToMyPage()
+            navigateToMyPageFragment()
         }
         binding.viewSettingAccountInfoFrame.setOnClickListener {
             moveToMySettingAccountInfo()
@@ -37,16 +41,11 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         binding.viewSettingTermsFrame.setOnClickListener {
             requireContext().startWebView(TERMS_URL)
         }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            backPressedCallback
-        )
     }
 
-    private fun moveToMyPage() {
-        val fragmentManager = requireActivity().supportFragmentManager
-        fragmentManager.commit {
-            this.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun navigateToMyPageFragment() {
+        parentFragmentManager.commit {
+            setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
             replace<MyPageFragment>(R.id.fl_main)
         }
     }
@@ -54,8 +53,7 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
     private fun moveToMySettingAccountInfo() {
         val emailFromMyPage = getEmailFromMyPage()
         val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, emailFromMyPage) }
-        val fragmentManager = requireActivity().supportFragmentManager
-        fragmentManager.commit {
+        parentFragmentManager.commit {
             this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace<MySettingAccountInfoFragment>(R.id.fl_main, args = bundle)
         }
