@@ -46,6 +46,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         addObserver()
         initDialog()
         pullToRefresh()
+        registerBackPressedCallback()
     }
 
     private fun pullToRefresh() {
@@ -84,8 +85,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun addListener() {
         binding.ivMyPageHistoryBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            moveToPreviousScreen()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
             startSearchActivity()
@@ -239,7 +239,16 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
     }
 
-    override fun onBackPressed() {
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun moveToPreviousScreen() {
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
