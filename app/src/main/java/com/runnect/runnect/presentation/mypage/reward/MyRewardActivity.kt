@@ -45,10 +45,22 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
         binding.lifecycleOwner = this
         viewModel.getStampList()
 
-        initRecyclerView()
-        initBackButtonClickListener()
-        setupGetStampListStateObserver()
+        initLayout()
+        addListener()
+        addObserver()
         registerBackPressedCallback()
+    }
+
+    private fun initLayout() {
+        initRecyclerView()
+    }
+
+    private fun addListener() {
+        initBackButtonClickListener()
+    }
+
+    private fun addObserver() {
+        setupGetStampListStateObserver()
     }
 
     private fun initRecyclerView() {

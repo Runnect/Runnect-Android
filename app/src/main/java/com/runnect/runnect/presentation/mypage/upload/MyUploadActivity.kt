@@ -38,7 +38,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.lifecycleOwner = this
         viewModel.getUserUploadCourse()
 
-        initRecyclerView()
+        initLayout()
         addListener()
         addObserver()
         initDialog()
@@ -46,11 +46,8 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         registerBackPressedCallback()
     }
 
-    private fun pullToRefresh() {
-        binding.refreshLayout.setOnRefreshListener {
-            viewModel.getUserUploadCourse()
-            binding.refreshLayout.isRefreshing = false
-        }
+    private fun initLayout() {
+        initRecyclerView()
     }
 
     private fun initRecyclerView() {
@@ -87,6 +84,13 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getUserUploadCourse()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun handleEditClicked() {
