@@ -8,9 +8,9 @@
         android:id="@+id/ll_popup_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp"
+        android:layout_margin="6dp"
         android:background="@drawable/shape_white_fill_10_rect"
-        android:elevation="3dp"
+        android:elevation="6dp"
         android:orientation="vertical" />
 
 </FrameLayout>

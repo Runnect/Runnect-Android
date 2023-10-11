@@ -5,6 +5,8 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.view.Gravity
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintSet
@@ -16,6 +18,8 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.PopupItem
+import com.runnect.runnect.util.RunnectPopupMenu
 import com.runnect.runnect.util.extension.customGetSerializable
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
@@ -80,9 +84,11 @@ class MyHistoryDetailActivity :
     }
 
     private fun addListener() {
-        binding.ivShowMore.setOnClickListener {
-            editBottomSheet.show()
+        binding.ivShowMore.setOnClickListener { view ->
+            //editBottomSheet.show()
+            showPopupMenu(view)
         }
+
         binding.ivBackBtn.setOnClickListener {
             if (viewModel.editMode.value == EDIT_MODE) {
                 editInterruptDialog.show()
@@ -90,10 +96,37 @@ class MyHistoryDetailActivity :
                 handleIsEdited(viewModel.titleForInterruption.isEmpty())
             }
         }
+
         binding.tvHistoryEditFinish.setOnClickListener {
             viewModel.editHistoryTitle()
         }
+
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
+
+    private fun showPopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
+            when (pos) {
+                0 -> {
+                    /** 수정하기 */
+                }
+
+                1 -> {
+                    /** 삭제하기 */
+                }
+            }
+        }.apply {
+            showCustomPosition(anchorView)
+        }
+    }
+
+    private fun RunnectPopupMenu.showCustomPosition(anchorView: View) {
+        showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
     }
 
     private fun handleIsEdited(isEdited: Boolean) {
@@ -298,5 +331,7 @@ class MyHistoryDetailActivity :
         const val EDIT_INTERRUPT_DIALOG_DESC = "     러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
+        private const val POPUP_MENU_X_OFFSET = 17
+        private const val POPUP_MENU_Y_OFFSET = -10
     }
 }

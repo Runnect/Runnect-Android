@@ -119,4 +119,7 @@
     <string name="draw_custom_departure_guide">지도를 움직여 출발지를 설정해주세요</string>
     <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
     <string name="draw_next">다음으로</string>
+
+    <string name="popup_menu_item_edit">수정하기</string>
+    <string name="popup_menu_item_delete">삭제하기</string>
 </resources>
