@@ -31,12 +31,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private val viewModel: MyHistoryViewModel by viewModels()
     private lateinit var adapter: MyHistoryAdapter
     private lateinit var dialog: AlertDialog
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        }
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
@@ -46,6 +41,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         addObserver()
         initDialog()
         pullToRefresh()
+        registerBackPressedCallback()
     }
 
     private fun pullToRefresh() {
@@ -84,8 +80,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun addListener() {
         binding.ivMyPageHistoryBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToPreviousScreen()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
             startSearchActivity()
@@ -96,7 +91,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         binding.tvMyPageHistoryDelete.setOnClickListener {
             handleDeleteButtonClicked(it)
         }
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
     private fun startSearchActivity() {
@@ -239,7 +233,16 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
     }
 
-    override fun onBackPressed() {
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun navigateToPreviousScreen() {
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }

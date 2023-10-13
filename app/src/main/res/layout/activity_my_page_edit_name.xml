@@ -46,7 +46,7 @@
                 android:id="@+id/tv_my_page_edit_name_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginStart="24dp"
                 android:fontFamily="@font/pretendard_bold"
                 android:text="@string/my_page_edit_name_title"
                 android:textColor="@color/G1"
@@ -66,13 +66,14 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_my_page_edit_name_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="98dp"
+            android:layout_width="96dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="147dp"
             app:imgRes="@{vm.profileImg}"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/toolbar_my_page_edit_name" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar_my_page_edit_name" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_my_page_edit_name"

@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -36,29 +37,27 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.vm = viewModel
         binding.lifecycleOwner = this
         viewModel.getUserUploadCourse()
+
         initLayout()
         addListener()
         addObserver()
         initDialog()
         pullToRefresh()
-    }
-
-    private fun pullToRefresh() {
-        binding.refreshLayout.setOnRefreshListener {
-            viewModel.getUserUploadCourse()
-            binding.refreshLayout.isRefreshing = false
-        }
+        registerBackPressedCallback()
     }
 
     private fun initLayout() {
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
         binding.rvMyPageUpload.layoutManager = GridLayoutManager(this, 2)
         binding.rvMyPageUpload.addItemDecoration(GridSpacingItemDecoration(this, 2, 6, 18))
     }
 
     private fun addListener() {
         binding.ivMyPageUploadBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToPreviousScreen()
         }
         binding.btnMyPageUploadEditCourse.setOnClickListener {
             handleEditClicked()
@@ -69,10 +68,28 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.cvUploadMyPageUploadCourse.setOnClickListener {
             startActivity(Intent(this, DiscoverLoadActivity::class.java))
             finish()
-            overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+    }
+
+    private fun navigateToPreviousScreen() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun pullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getUserUploadCourse()
+            binding.refreshLayout.isRefreshing = false
         }
     }
 

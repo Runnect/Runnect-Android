@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
@@ -16,7 +17,6 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.clearFocus
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class MyPageEditNameActivity :
@@ -43,9 +43,11 @@ class MyPageEditNameActivity :
             setResult(RESULT_CANCELED)
             finish()
         }
+
         binding.tvMyPageEditNameFinish.setOnClickListener {
             viewModel.updateNickName()
         }
+
         binding.etMyPageEditName.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
