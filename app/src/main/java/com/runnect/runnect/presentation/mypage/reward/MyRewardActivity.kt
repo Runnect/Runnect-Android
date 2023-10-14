@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.reward
 
 import android.content.ContentValues
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,6 +20,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activity_my_reward) {
     private val viewModel: MyRewardViewModel by viewModels()
+    private lateinit var adapter: MyRewardAdapter
     private var stampListForIndex =
         listOf("c1", "c2", "c3", "s1", "s2", "s3", "u1", "u2", "u3", "r1", "r2", "r3")
 
@@ -37,49 +39,64 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
         RewardStampDTO(R.drawable.mypage_img_stamp_lock, MISSION_ROW_COLUMN_3_2),
     )
 
-
-    private lateinit var adapter: MyRewardAdapter
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         viewModel.getStampList()
+
         initLayout()
         addListener()
         addObserver()
+        registerBackPressedCallback()
     }
 
     private fun initLayout() {
+        initRecyclerView()
+    }
+
+    private fun addListener() {
+        initBackButtonClickListener()
+    }
+
+    private fun addObserver() {
+        setupGetStampListStateObserver()
+    }
+
+    private fun initRecyclerView() {
         binding.rvMyPageRewardStamps.setHasFixedSize(true)
         binding.rvMyPageRewardStamps.layoutManager = GridLayoutManager(this, 3)
         binding.rvMyPageRewardStamps.addItemDecoration(GridSpacingItemDecoration(this, 3, 28, 28))
     }
 
-    private fun addListener() {
+    private fun initBackButtonClickListener() {
         binding.ivMyPageRewardBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToPreviousScreen()
         }
     }
 
-    override fun onBackPressed() {
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun navigateToPreviousScreen() {
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-
-    private fun addObserver() {
-
-        viewModel.stampState.observe(this) {
+    private fun setupGetStampListStateObserver() {
+        viewModel.getStampListState.observe(this) {
             when (it) {
                 UiState.Empty -> binding.indeterminateBar.isVisible = false //visible 옵션으로 처리하는 게 맞나
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     initAdapter()
-
                 }
 
                 UiState.Failure -> {
@@ -88,8 +105,6 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
                 }
             }
         }
-
-
     }
 
     private fun initAdapter() {
