@@ -11,13 +11,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ItemMypageHistoryBinding
-import com.runnect.runnect.util.HistoryInfoDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnHistoryItemClick
+import com.runnect.runnect.util.callback.ItemDiffCallback
 
 class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
-    ListAdapter<HistoryInfoDTO, MyHistoryAdapter.MyHistoryViewHolder>(
-        HistoryInfoDiffUtilItemCallback()
-    ) {
+    ListAdapter<HistoryInfoDTO, MyHistoryAdapter.MyHistoryViewHolder>(diffUtil) {
     private val inflater by lazy { LayoutInflater.from(context) }
     private var selectedItems: MutableList<View>? = mutableListOf()
 
@@ -50,6 +48,7 @@ class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
                 Glide.with(itemView).load(data.img).thumbnail(0.3f)
                     .format(DecodeFormat.PREFER_RGB_565)
                     .into(ivMyPageHistoryCourse)
+
                 ivMyPageHistoryCourse.load(data.img)
                 tvMyPageHistoryCourseName.text = data.title
                 tvMyPageHistoryPlace.text = data.location
@@ -57,6 +56,7 @@ class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
                 tvMyPageHistoryDistanceData.text = data.distance + " " + "km"
                 tvMyPageHistoryTimeData.text = data.time
                 tvMyPageHistoryPaceData.text = data.pace
+
                 ivMyPageHistoryFrame.setOnClickListener {
                     val isEditMode = listener.selectItem(data)
                     if (isEditMode) {
@@ -72,5 +72,11 @@ class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
             }
         }
     }
-}
 
+    companion object {
+        private val diffUtil = ItemDiffCallback<HistoryInfoDTO>(
+            onItemsTheSame = { old, new -> old.id == new.id },
+            onContentsTheSame = { old, new -> old == new }
+        )
+    }
+}
