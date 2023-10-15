@@ -18,6 +18,7 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
@@ -62,12 +63,8 @@ class MyHistoryDetailActivity :
         initLayout()
         addListener()
         addObserver()
-        initEditBottomSheet()
-        setEditBottomSheetClickEvent()
-        initDeleteDialog()
-        setDeleteDialogClickEvent()
-        initEditInterruptedDialog()
-        setEditInterruptedDialog()
+//        initEditBottomSheet()
+//        setEditBottomSheetClickEvent()
     }
 
     private fun initLayout() {
@@ -98,8 +95,8 @@ class MyHistoryDetailActivity :
 
     private fun addListener() {
         binding.ivShowMore.setOnClickListener { view ->
-            detailMoreBottomSheet.show()
-            //showPopupMenu(view)
+            //detailMoreBottomSheet.show()
+            showPopupMenu(view)
         }
 
         binding.ivBackBtn.setOnClickListener {
@@ -125,15 +122,8 @@ class MyHistoryDetailActivity :
 
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
             when (pos) {
-                0 -> {
-                    /** 수정하기 */
-                    /** 수정하기 */
-                }
-
-                1 -> {
-                    /** 삭제하기 */
-                    /** 삭제하기 */
-                }
+                0 -> { /** 제목 수정 가능한 상태로 만들기 */ }
+                1 -> showHistoryDeleteDialog()
             }
         }.apply {
             showCustomPosition(anchorView)
@@ -226,7 +216,10 @@ class MyHistoryDetailActivity :
 
     private fun enterEditMode() {
         viewModel.editMode.value = EDIT_MODE
+
+        // 수정 모드에 진입하면서, 원래 제목을 뷰모델에 저장해둔다.
         viewModel.titleForInterruption = viewModel.title.value.toString()
+
         enableEditTitle()
         updateConstraintForEditMode()
         detailMoreBottomSheet.dismiss()
@@ -240,6 +233,7 @@ class MyHistoryDetailActivity :
         binding.ivShowMore.isVisible = true
     }
 
+    // todo: https://m.blog.naver.com/lys1900/222030610067
     private fun updateConstraintForEditMode() {
         val constraintLayout = binding.constMyHistoryDetail
         val constraintSet = ConstraintSet()
@@ -288,65 +282,51 @@ class MyHistoryDetailActivity :
         binding.etCourseTitle.inputType = InputType.TYPE_NULL
     }
 
-    private fun initEditBottomSheet() {
-        detailMoreBottomSheet = setEditBottomSheet()
-        setEditBottomSheetClickEvent()
-    }
+//    private fun initEditBottomSheet() {
+//        detailMoreBottomSheet = setEditBottomSheet()
+//        setEditBottomSheetClickEvent()
+//    }
+//
+//    private fun setEditBottomSheetClickEvent() {
+//        detailMoreBottomSheet.setEditBottomSheetClickListener { which ->
+//            when (which) {
+//                detailMoreBottomSheet.layout_edit_frame -> {
+//                    enterEditMode()
+//                }
+//
+//                detailMoreBottomSheet.layout_delete_frame -> {
+//                    detailMoreBottomSheet.dismiss()
+//                    deleteDialog.show()
+//                }
+//            }
+//        }
+//    }
 
-    private fun setEditBottomSheetClickEvent() {
-        detailMoreBottomSheet.setEditBottomSheetClickListener { which ->
-            when (which) {
-                detailMoreBottomSheet.layout_edit_frame -> {
-                    enterEditMode()
-                }
-
-                detailMoreBottomSheet.layout_delete_frame -> {
-                    detailMoreBottomSheet.dismiss()
-                    deleteDialog.show()
-                }
-            }
-        }
-    }
-
-    private fun initDeleteDialog() {
-        deleteDialog = setCustomDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            description = stringOf(R.string.dialog_my_history_detail_delete_desc),
-            yesBtnText = stringOf(R.string.dialog_my_history_detail_delete_yes)
+    private fun showHistoryDeleteDialog() {
+        val dialog = CommonDialogFragment(
+            stringOf(R.string.dialog_my_history_detail_delete_desc),
+            stringOf(R.string.dialog_my_history_detail_delete_no),
+            stringOf(R.string.dialog_my_history_detail_delete_yes),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = { viewModel.deleteHistory() }
         )
+        dialog.show(supportFragmentManager, TAG_MY_HISTORY_DELETE_DIALOG)
     }
 
-    private fun setDeleteDialogClickEvent() {
-        deleteDialog.setDialogButtonClickListener { which ->
-            when (which) {
-                deleteDialog.btn_delete_yes -> {
-                    viewModel.deleteHistory()
-                }
+    private fun showEditFinishDialog() {
+        val dialog = CommonDialogFragment(
+            stringOf(R.string.dialog_my_history_detail_edit_finish_desc),
+            stringOf(R.string.dialog_my_history_detail_edit_finish_no),
+            stringOf(R.string.dialog_my_history_detail_edit_finish_yes),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = {
+                enterReadMode()
+
+                // 원래 제목으로 다시 복구한다.
+                viewModel.title.value = viewModel.titleForInterruption
             }
-
-        }
-    }
-
-    private fun initEditInterruptedDialog() {
-        editInterruptDialog = setCustomDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            description = stringOf(R.string.dialog_my_history_detail_edit_finish_desc),
-            yesBtnText = stringOf(R.string.dialog_my_history_detail_edit_finish_yes),
-            noBtnText = stringOf(R.string.dialog_my_history_detail_edit_finish_no)
         )
-    }
-
-    private fun setEditInterruptedDialog() {
-        editInterruptDialog.setDialogButtonClickListener { which ->
-            when (which) {
-                editInterruptDialog.btn_delete_yes -> {
-                    enterReadMode()
-                    viewModel.title.value = viewModel.titleForInterruption
-                }
-            }
-        }
+        dialog.show(supportFragmentManager, TAG_MY_HISTORY_EDIT_DIALOG)
     }
 
     companion object {
@@ -356,5 +336,7 @@ class MyHistoryDetailActivity :
         private const val READ_MODE = "readMode"
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
+        private const val TAG_MY_HISTORY_DELETE_DIALOG = "MY_HISTORY_DELETE_DIALOG"
+        private const val TAG_MY_HISTORY_EDIT_DIALOG = "MY_HISTORY_EDIT_DIALOG"
     }
 }

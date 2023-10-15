@@ -22,7 +22,7 @@ abstract class BindingDialogFragment<B : ViewDataBinding>(
         super.onStart()
         dialog?.window?.apply {
             setLayout(
-                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT
             )
             setBackgroundDrawableResource(android.R.color.transparent)
