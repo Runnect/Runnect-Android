@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_white_fill_10_rect"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_common_dialog_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:lineHeight="22sp"
+            android:textColor="@color/G2"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="다이얼로그 설명란 입니다." />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_common_dialog_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_m3_fill_10_rect"
+            android:fontFamily="@font/pretendard_semibold"
+            android:paddingHorizontal="60dp"
+            android:paddingVertical="13dp"
+            android:textColor="@color/M1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_common_dialog_desc"
+            tools:text="취소" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_common_dialog_positive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_m1_fill_10_rect"
+            android:fontFamily="@font/pretendard_semibold"
+            android:paddingHorizontal="60dp"
+            android:paddingVertical="13dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_common_dialog_negative"
+            app:layout_constraintStart_toEndOf="@id/btn_common_dialog_negative"
+            app:layout_constraintTop_toTopOf="@id/btn_common_dialog_negative"
+            tools:text="확인" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
