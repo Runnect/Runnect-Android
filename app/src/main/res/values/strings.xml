@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">Runnect</string>
 
-
     <string name="discover_title">코스 발견</string>
     <string name="discover_recommend_title">코스 추천</string>
-
     <string name="discover_recommend_subtitle">새로운 코스를 발견해나가요</string>
     <string name="main_menu_drawing">코스 그리기</string>
     <string name="main_menu_storage">보관함</string>
@@ -122,4 +120,12 @@
 
     <string name="popup_menu_item_edit">수정하기</string>
     <string name="popup_menu_item_delete">삭제하기</string>
+
+    <!-- my history detail -->
+    <string name="dialog_my_history_detail_delete_desc">러닝 기록을 정말로 삭제하시겠어요?</string>
+    <string name="dialog_my_history_detail_delete_yes">삭제하기</string>
+    <string name="dialog_my_history_detail_edit_finish_desc">러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
+    <string name="dialog_my_history_detail_edit_finish_yes">예</string>
+    <string name="dialog_my_history_detail_edit_finish_no">아니오</string>
+
 </resources>
