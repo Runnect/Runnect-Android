@@ -15,20 +15,19 @@ import javax.inject.Inject
 @HiltViewModel
 class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
-    val deleteState: LiveData<UiState>
-        get() = _deleteState
-    private val _deleteState = MutableLiveData<UiState>()
+    private val _historyDeleteState = MutableLiveData<UiState>()
+    val historyDeleteState: LiveData<UiState>
+        get() = _historyDeleteState
 
-    val editState: LiveData<UiState>
-        get() = _editState
-    private val _editState = MutableLiveData<UiState>()
-
-    val errorMessage = MutableLiveData<String>()
+    private val _titleEditState = MutableLiveData<UiState>()
+    val titleEditState: LiveData<UiState>
+        get() = _titleEditState
 
     var editMode = MutableLiveData(READ_MODE)
-
     var mapImg: MutableLiveData<String> = MutableLiveData<String>(DEFAULT_IMAGE)
     val title: MutableLiveData<String> = MutableLiveData()
+    val errorMessage = MutableLiveData<String>()
+
     var titleForInterruption = ""
     var date = DEFAULT_DATE
     var departure = DEFAULT_DEPARTURE
@@ -44,12 +43,12 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     fun deleteHistory() {
         viewModelScope.launch {
             runCatching {
-                _deleteState.value = UiState.Loading
+                _historyDeleteState.value = UiState.Loading
                 userRepository.putDeleteHistory(RequestDeleteHistory(historyIdToDelete))
             }.onSuccess {
-                _deleteState.value = UiState.Success
+                _historyDeleteState.value = UiState.Success
             }.onFailure {
-                _deleteState.value = UiState.Failure
+                _historyDeleteState.value = UiState.Failure
                 errorMessage.value = it.message
             }
         }
@@ -58,15 +57,15 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     fun editHistoryTitle() {
         viewModelScope.launch {
             runCatching {
-                _editState.value = UiState.Loading
+                _titleEditState.value = UiState.Loading
                 userRepository.patchHistoryTitle(
                     historyIdToDelete[0],
                     RequestEditHistoryTitle(title.value.toString())
                 )
             }.onSuccess {
-                _editState.value = UiState.Success
+                _titleEditState.value = UiState.Success
             }.onFailure {
-                _editState.value = UiState.Failure
+                _titleEditState.value = UiState.Failure
                 errorMessage.value = it.message
             }
         }
