@@ -10,7 +10,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
-import com.runnect.runnect.util.view.RunnectToast
+import com.runnect.runnect.util.custom.RunnectToast
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.stringOf

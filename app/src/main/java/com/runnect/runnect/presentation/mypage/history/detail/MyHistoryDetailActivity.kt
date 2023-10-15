@@ -18,14 +18,15 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.PopupItem
-import com.runnect.runnect.util.RunnectPopupMenu
+import com.runnect.runnect.util.custom.PopupItem
+import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.setCustomDialog
-import com.runnect.runnect.util.extension.setDialogClickListener
+import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import com.runnect.runnect.util.extension.setEditBottomSheet
 import com.runnect.runnect.util.extension.setEditBottomSheetClickListener
 import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.extension.stringOf
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
@@ -51,6 +52,7 @@ class MyHistoryDetailActivity :
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            // TODO: 이 함수가 어떤 역할을 하는 건가요?
             handleIsEdited(viewModel.titleForInterruption.isEmpty())
         }
     }
@@ -125,9 +127,11 @@ class MyHistoryDetailActivity :
             when (pos) {
                 0 -> {
                     /** 수정하기 */
+                    /** 수정하기 */
                 }
 
                 1 -> {
+                    /** 삭제하기 */
                     /** 삭제하기 */
                 }
             }
@@ -308,13 +312,13 @@ class MyHistoryDetailActivity :
         deleteDialog = setCustomDialog(
             layoutInflater = layoutInflater,
             view = binding.root,
-            description = DELETE_DIALOG_DESC,
-            yesBtnText = DELETE_DIALOG_YES_BTN
+            description = stringOf(R.string.dialog_my_history_detail_delete_desc),
+            yesBtnText = stringOf(R.string.dialog_my_history_detail_delete_yes)
         )
     }
 
     private fun setDeleteDialogClickEvent() {
-        deleteDialog.setDialogClickListener { which ->
+        deleteDialog.setDialogButtonClickListener { which ->
             when (which) {
                 deleteDialog.btn_delete_yes -> {
                     viewModel.deleteHistory()
@@ -328,14 +332,14 @@ class MyHistoryDetailActivity :
         editInterruptDialog = setCustomDialog(
             layoutInflater = layoutInflater,
             view = binding.root,
-            description = EDIT_INTERRUPT_DIALOG_DESC,
-            yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
-            noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
+            description = stringOf(R.string.dialog_my_history_detail_edit_finish_desc),
+            yesBtnText = stringOf(R.string.dialog_my_history_detail_edit_finish_yes),
+            noBtnText = stringOf(R.string.dialog_my_history_detail_edit_finish_no)
         )
     }
 
     private fun setEditInterruptedDialog() {
-        editInterruptDialog.setDialogClickListener { which ->
+        editInterruptDialog.setDialogButtonClickListener { which ->
             when (which) {
                 editInterruptDialog.btn_delete_yes -> {
                     enterReadMode()
@@ -346,18 +350,10 @@ class MyHistoryDetailActivity :
     }
 
     companion object {
-        const val HISTORY_BUNDLE_KEY = "historyDataBundle"
-        const val HISTORY_INTENT_KEY = "historyData"
-
-        const val EDIT_MODE = "editMode"
-        const val READ_MODE = "readMode"
-
-        const val DELETE_DIALOG_DESC = "러닝 기록을 정말로 삭제하시겠어요?"
-        const val DELETE_DIALOG_YES_BTN = "삭제하기"
-        const val EDIT_INTERRUPT_DIALOG_DESC = "     러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
-        const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
-        const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
-
+        private const val HISTORY_BUNDLE_KEY = "historyDataBundle"
+        private const val HISTORY_INTENT_KEY = "historyData"
+        private const val EDIT_MODE = "editMode"
+        private const val READ_MODE = "readMode"
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
     }

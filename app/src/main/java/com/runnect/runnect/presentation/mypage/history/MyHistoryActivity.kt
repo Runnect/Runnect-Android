@@ -17,10 +17,10 @@ import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.RecyclerOffsetDecorationHeight
+import com.runnect.runnect.util.custom.RecyclerOffsetDecorationHeight
 import com.runnect.runnect.util.callback.OnHistoryItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
-import com.runnect.runnect.util.extension.setDialogClickListener
+import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
@@ -71,7 +71,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun setDialogClickEvent() {
-        dialog.setDialogClickListener { which ->
+        dialog.setDialogButtonClickListener { which ->
             when (which) {
                 dialog.btn_delete_yes -> viewModel.deleteHistory()
             }

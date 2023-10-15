@@ -14,12 +14,10 @@
         android:background="@drawable/radius_10_custom_alert_dialog"
         tools:ignore="MissingConstraints">
 
-
         <TextView
             android:id="@+id/tv_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="24dp"
             android:fontFamily="@font/pretendard_medium"
             android:text="코스를 정말로 삭제하시겠어요?"
@@ -28,7 +26,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_delete_no"
@@ -66,6 +63,3 @@
             app:layout_constraintTop_toTopOf="@id/btn_delete_no" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
-
-
-

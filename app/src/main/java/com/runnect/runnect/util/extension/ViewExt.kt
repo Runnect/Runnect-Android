@@ -1,4 +1,4 @@
-package com.runnect.runnect.util.view
+package com.runnect.runnect.util.extension
 
 import android.view.View
 
@@ -15,4 +15,3 @@ inline fun View.setOnSingleClickListener(
         }
     }
 }
-

@@ -18,7 +18,7 @@ import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.setCustomDialog
-import com.runnect.runnect.util.extension.setDialogClickListener
+import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
@@ -111,7 +111,7 @@ class MySettingAccountInfoFragment :
     }
 
     private fun setLogoutDialogClickEvent() {
-        logoutDialog.setDialogClickListener { which ->
+        logoutDialog.setDialogButtonClickListener { which ->
             when (which) {
                 logoutDialog.btn_delete_yes -> {
                     moveToLogin()
@@ -128,7 +128,7 @@ class MySettingAccountInfoFragment :
     }
 
     private fun setWithdrawalDialogClickEvent() {
-        withdrawalDialog.setDialogClickListener { which ->
+        withdrawalDialog.setDialogButtonClickListener { which ->
             when (which) {
                 withdrawalDialog.btn_delete_yes -> {
                     viewModel.deleteUser()

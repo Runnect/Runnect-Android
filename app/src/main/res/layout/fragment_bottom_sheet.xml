@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom|center"
     android:background="@drawable/top_radius_20_white"
+    android:gravity="bottom|center"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,9 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_run_finish" />
 
-
         <androidx.appcompat.widget.AppCompatButton
-            android:textAlignment="center"
             android:id="@+id/btn_delete_yes"
             android:layout_width="330dp"
             android:layout_height="40dp"
@@ -46,12 +44,12 @@
             android:background="@drawable/radius_10_m1_button"
             android:stateListAnimator="@null"
             android:text="@string/bottom_sheet_see_record"
+            android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_finish_run" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

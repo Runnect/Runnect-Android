@@ -1,4 +1,4 @@
-package com.runnect.runnect.util
+package com.runnect.runnect.util.custom
 
 import android.content.Context
 import android.util.TypedValue
@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
-import androidx.core.content.ContextCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemRunnectPopupMenuBinding
 import com.runnect.runnect.databinding.LayoutRunnectPopupMenuBinding
+import com.runnect.runnect.util.extension.drawableOf
 
 class RunnectPopupMenu(
     private val context: Context,
@@ -54,12 +54,7 @@ class RunnectPopupMenu(
         )
         height = contentView.measuredHeight
 
-        setBackgroundDrawable(
-            ContextCompat.getDrawable(
-                context,
-                R.drawable.shape_transparent_10_rect
-            )
-        )
+        setBackgroundDrawable(context.drawableOf(R.drawable.shape_transparent_10_rect))
     }
 
     private fun getDp(context: Context, value: Float): Int {

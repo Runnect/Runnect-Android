@@ -1,4 +1,4 @@
-package com.runnect.runnect.util
+package com.runnect.runnect.util.multipart
 
 import android.content.Context
 import android.net.Uri
@@ -36,7 +36,7 @@ class ContentUriRequestBody(
         }
     }
 
-    fun getFileName() = fileName
+    private fun getFileName() = fileName
 
     override fun contentLength(): Long = size
 
@@ -50,6 +50,5 @@ class ContentUriRequestBody(
     }
 
     /** uri -> file-> RequestBody **/
-
     fun toFormData() = MultipartBody.Part.createFormData("image", getFileName(), this)
 }

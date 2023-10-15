@@ -44,7 +44,7 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.ContentUriRequestBody
+import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import com.runnect.runnect.util.extension.setActivityDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run

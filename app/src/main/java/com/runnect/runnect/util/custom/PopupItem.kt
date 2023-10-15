@@ -1,4 +1,4 @@
-package com.runnect.runnect.util
+package com.runnect.runnect.util.custom
 
 data class PopupItem(
     val resId: Int,
