@@ -10,11 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.runnect.runnect.R
 import kotlinx.android.synthetic.main.custom_dialog_delete.*
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -69,8 +73,6 @@ fun Fragment.setFragmentDialog(
     return Pair(dialog, dialogLayout)
 }
 
-
-
 fun Context.setCustomDialog(
     layoutInflater: LayoutInflater,
     view: View,
@@ -93,7 +95,7 @@ fun Context.setCustomDialog(
     return dialog
 }
 
-fun AlertDialog.setDialogClickListener(listener: (which: AppCompatButton) -> Unit) {
+fun AlertDialog.setDialogButtonClickListener(listener: (which: AppCompatButton) -> Unit) {
     this.setOnShowListener {
         val yesButton = this.btn_delete_yes
         val noButton = this.btn_delete_no
@@ -168,3 +170,13 @@ fun Context.startWebView(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     startActivity(intent)
 }
+
+fun Context.snackBar(anchorView: View, message: String) {
+    Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
+}
+
+fun Context.stringOf(@StringRes resId: Int) = getString(resId)
+
+fun Context.colorOf(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
+
+fun Context.drawableOf(@DrawableRes resId: Int) = ContextCompat.getDrawable(this, resId)
