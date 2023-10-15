@@ -83,7 +83,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             navigateToPreviousScreen()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
-            startSearchActivity()
+            startDrawCourseSearchActivity()
         }
         binding.btnMyPageHistoryEditHistory.setOnClickListener {
             handleEditClicked()
@@ -93,9 +93,9 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
     }
 
-    private fun startSearchActivity() {
+    private fun startDrawCourseSearchActivity() {
         val intent = Intent(this, SearchActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) //페이지 전환 시 애니메이션 제거
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         startActivity(intent)
         finish()
     }
