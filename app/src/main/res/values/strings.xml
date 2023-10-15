@@ -128,4 +128,5 @@
     <string name="dialog_my_history_detail_edit_finish_yes">예</string>
     <string name="dialog_my_history_detail_edit_finish_no">아니오</string>
 
+    <string name="visitor_mode_require_login_desc">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
 </resources>
