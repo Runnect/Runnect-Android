@@ -20,7 +20,7 @@ import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.PopupItem
 import com.runnect.runnect.util.RunnectPopupMenu
-import com.runnect.runnect.util.extension.customGetSerializable
+import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogClickListener
 import com.runnect.runnect.util.extension.setEditBottomSheet
@@ -35,11 +35,20 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
+    // 러닝 기록 데이터
     private lateinit var historyData: HistoryInfoDTO
-    private lateinit var editBottomSheet: BottomSheetDialog
+
+    // 더보기 버튼 클릭 시 등장하는 바텀시트
+    private lateinit var detailMoreBottomSheet: BottomSheetDialog
+
+    // 삭제 확인 다이얼로그
     private lateinit var deleteDialog: AlertDialog
+
+    // 수정 중단 확인 다이얼로그
     private lateinit var editInterruptDialog: AlertDialog
+
     private val viewModel: MyHistoryDetailViewModel by viewModels()
+
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             handleIsEdited(viewModel.titleForInterruption.isEmpty())
@@ -61,13 +70,15 @@ class MyHistoryDetailActivity :
 
     private fun initLayout() {
         val bundle = intent.getBundleExtra(HISTORY_INTENT_KEY)
-        historyData = bundle?.customGetSerializable(HISTORY_BUNDLE_KEY)!!
+        historyData = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)!!
+
         with(binding) {
             vm = viewModel
             viewModel.mapImg.value = historyData.img
             lifecycleOwner = this@MyHistoryDetailActivity
             enterReadMode()
         }
+
         setHistoryData()
     }
 
@@ -85,8 +96,8 @@ class MyHistoryDetailActivity :
 
     private fun addListener() {
         binding.ivShowMore.setOnClickListener { view ->
-            //editBottomSheet.show()
-            showPopupMenu(view)
+            detailMoreBottomSheet.show()
+            //showPopupMenu(view)
         }
 
         binding.ivBackBtn.setOnClickListener {
@@ -131,32 +142,42 @@ class MyHistoryDetailActivity :
 
     private fun handleIsEdited(isEdited: Boolean) {
         if (isEdited) {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToPreviousScreen()
         } else {
             val intent = Intent(this, MyHistoryActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToPreviousScreen()
         }
+    }
 
+    private fun navigateToPreviousScreen() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addObserver() {
+        setupTitleValueObserver()
+        setupHistoryDeleteStateObserver()
+        setupTitleEditStateObserver()
+    }
+
+    private fun setupTitleValueObserver() {
         viewModel.title.observe(this) { title ->
             with(binding.tvHistoryEditFinish) {
                 if (title.isNullOrEmpty()) {
                     isActivated = false
                     isClickable = false
-
                 } else {
                     isActivated = true
                     isClickable = true
                 }
             }
         }
-        viewModel.deleteState.observe(this) { state ->
+    }
+
+    private fun setupHistoryDeleteStateObserver() {
+        viewModel.historyDeleteState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
@@ -176,7 +197,10 @@ class MyHistoryDetailActivity :
                 else -> {}
             }
         }
-        viewModel.editState.observe(this) { state ->
+    }
+
+    private fun setupTitleEditStateObserver() {
+        viewModel.titleEditState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
@@ -201,7 +225,7 @@ class MyHistoryDetailActivity :
         viewModel.titleForInterruption = viewModel.title.value.toString()
         enableEditTitle()
         updateConstraintForEditMode()
-        editBottomSheet.dismiss()
+        detailMoreBottomSheet.dismiss()
         binding.ivShowMore.isVisible = false
     }
 
@@ -261,19 +285,19 @@ class MyHistoryDetailActivity :
     }
 
     private fun initEditBottomSheet() {
-        editBottomSheet = setEditBottomSheet()
+        detailMoreBottomSheet = setEditBottomSheet()
         setEditBottomSheetClickEvent()
     }
 
     private fun setEditBottomSheetClickEvent() {
-        editBottomSheet.setEditBottomSheetClickListener { which ->
+        detailMoreBottomSheet.setEditBottomSheetClickListener { which ->
             when (which) {
-                editBottomSheet.layout_edit_frame -> {
+                detailMoreBottomSheet.layout_edit_frame -> {
                     enterEditMode()
                 }
 
-                editBottomSheet.layout_delete_frame -> {
-                    editBottomSheet.dismiss()
+                detailMoreBottomSheet.layout_delete_frame -> {
+                    detailMoreBottomSheet.dismiss()
                     deleteDialog.show()
                 }
             }
@@ -324,13 +348,16 @@ class MyHistoryDetailActivity :
     companion object {
         const val HISTORY_BUNDLE_KEY = "historyDataBundle"
         const val HISTORY_INTENT_KEY = "historyData"
+
         const val EDIT_MODE = "editMode"
         const val READ_MODE = "readMode"
+
         const val DELETE_DIALOG_DESC = "러닝 기록을 정말로 삭제하시겠어요?"
         const val DELETE_DIALOG_YES_BTN = "삭제하기"
         const val EDIT_INTERRUPT_DIALOG_DESC = "     러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
+
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
     }
