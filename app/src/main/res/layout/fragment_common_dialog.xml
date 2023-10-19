@@ -12,13 +12,13 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="35dp"
             android:background="@drawable/shape_white_fill_10_rect"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="20dp">
+            android:paddingHorizontal="12dp">
 
             <TextView
                 android:id="@+id/tv_common_dialog_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:lineHeight="22sp"
                 android:textColor="@color/G2"
@@ -31,7 +31,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
