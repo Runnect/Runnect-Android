@@ -22,38 +22,22 @@ import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
-import com.runnect.runnect.util.extension.setCustomDialog
-import com.runnect.runnect.util.extension.setDialogButtonClickListener
-import com.runnect.runnect.util.extension.setEditBottomSheet
-import com.runnect.runnect.util.extension.setEditBottomSheetClickListener
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.stringOf
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
-    // 러닝 기록 데이터
-    private lateinit var historyData: HistoryInfoDTO
-
-    // 더보기 버튼 클릭 시 등장하는 바텀시트
-    private lateinit var detailMoreBottomSheet: BottomSheetDialog
-
-    // 삭제 확인 다이얼로그
-    private lateinit var deleteDialog: AlertDialog
-
-    // 수정 중단 확인 다이얼로그
-    private lateinit var editInterruptDialog: AlertDialog
-
+    private lateinit var runningHistory: HistoryInfoDTO
+//    private lateinit var detailMoreBottomSheet: BottomSheetDialog
+//    private lateinit var editInterruptDialog: AlertDialog
     private val viewModel: MyHistoryDetailViewModel by viewModels()
 
+    // todo: 수정하기 로직 이해하기
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            // TODO: 이 함수가 어떤 역할을 하는 건가요?
             handleIsEdited(viewModel.titleForInterruption.isEmpty())
         }
     }
@@ -63,17 +47,18 @@ class MyHistoryDetailActivity :
         initLayout()
         addListener()
         addObserver()
+
 //        initEditBottomSheet()
 //        setEditBottomSheetClickEvent()
     }
 
     private fun initLayout() {
         val bundle = intent.getBundleExtra(HISTORY_INTENT_KEY)
-        historyData = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)!!
+        runningHistory = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)!!
 
         with(binding) {
             vm = viewModel
-            viewModel.mapImg.value = historyData.img
+            viewModel.mapImg.value = runningHistory.img
             lifecycleOwner = this@MyHistoryDetailActivity
             enterReadMode()
         }
@@ -82,7 +67,7 @@ class MyHistoryDetailActivity :
     }
 
     private fun setHistoryData() {
-        with(historyData) {
+        with(runningHistory) {
             viewModel.setTitle(title)
             viewModel.date = date
             viewModel.departure = location
@@ -101,7 +86,7 @@ class MyHistoryDetailActivity :
 
         binding.ivBackBtn.setOnClickListener {
             if (viewModel.editMode.value == EDIT_MODE) {
-                editInterruptDialog.show()
+//                editInterruptDialog.show()
             } else {
                 handleIsEdited(viewModel.titleForInterruption.isEmpty())
             }
@@ -222,7 +207,7 @@ class MyHistoryDetailActivity :
 
         enableEditTitle()
         updateConstraintForEditMode()
-        detailMoreBottomSheet.dismiss()
+//        detailMoreBottomSheet.dismiss()
         binding.ivShowMore.isVisible = false
     }
 
