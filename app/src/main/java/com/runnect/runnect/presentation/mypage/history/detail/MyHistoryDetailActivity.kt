@@ -29,7 +29,7 @@ import timber.log.Timber
 class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
     private val viewModel: MyHistoryDetailViewModel by viewModels()
-    private var currentScreenMode: String = READ_MODE
+    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +53,14 @@ class MyHistoryDetailActivity :
 
     private fun initLayout() {
         val bundle = intent.getBundleExtra(HISTORY_INTENT_KEY)
-        val runningHistory: HistoryInfoDTO? = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)
+        val runningHistory: HistoryInfoDTO? =
+            bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)
         initRunningHistory(runningHistory)
         enterReadMode()
     }
 
     private fun initRunningHistory(dto: HistoryInfoDTO?) {
-        if(dto != null){
+        if (dto != null) {
             binding.dto = dto
             viewModel.apply {
                 setInitialHistoryTitle(dto.title)
@@ -69,7 +70,7 @@ class MyHistoryDetailActivity :
     }
 
     private fun enterReadMode() {
-        currentScreenMode = READ_MODE
+        currentScreenMode = ScreenMode.ReadOnlyMode
         binding.ivShowMore.isVisible = true
         disableTitleEditing()
         updateConstraintForReadMode()
@@ -77,10 +78,15 @@ class MyHistoryDetailActivity :
 
     private fun addListener() {
         binding.ivBackBtn.setOnClickListener {
-            if (currentScreenMode == EDIT_MODE) {
-//                editInterruptDialog.show()
-            } else {
-                handleIsEdited(viewModel.titleForInterruption.isEmpty())
+//            if (currentScreenMode == EDIT_MODE) {
+////                editInterruptDialog.show()
+//            } else {
+//                handleIsEdited(viewModel.titleForInterruption.isEmpty())
+//            }
+
+            when (currentScreenMode) {
+                is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
+                is ScreenMode.EditMode -> showStopEditingDialog()
             }
         }
 
@@ -101,7 +107,10 @@ class MyHistoryDetailActivity :
 
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
             when (pos) {
-                0 -> { /** 제목 수정 가능한 상태로 만들기 */ }
+                0 -> {
+                    /** 제목 수정 가능한 상태로 만들기 */
+                }
+
                 1 -> showHistoryDeleteDialog()
             }
         }.apply {
@@ -194,7 +203,7 @@ class MyHistoryDetailActivity :
     }
 
     private fun enterEditMode() {
-        currentScreenMode = EDIT_MODE
+        currentScreenMode = ScreenMode.EditMode
 
         // 수정 모드에 진입하면서, 원래 제목을 뷰모델에 저장해둔다.
         viewModel.titleForInterruption = viewModel._title.value.toString()
