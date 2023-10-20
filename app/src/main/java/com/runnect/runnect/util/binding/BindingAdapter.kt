@@ -1,35 +1,28 @@
 package com.runnect.runnect.util.binding
 
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import coil.load
 import com.bumptech.glide.Glide
 
 object BindingAdapter {
-    @BindingAdapter("imgRes")
+    @BindingAdapter("setLocalImageByResourceId")
     @JvmStatic
-    fun imgRes(imageView: ImageView, resId: Int) {
+    fun setLocalImageByResourceId(imageView: ImageView, resId: Int) {
         imageView.load(resId)
     }
 
-    @BindingAdapter("imgUri")
+    @BindingAdapter("setLocalImageByUri")
     @JvmStatic
-    fun imgUri(imageView: ImageView, uri: String) {
+    fun setLocalImageByUri(imageView: ImageView, uri: String) {
         imageView.load(uri)
     }
 
-    @BindingAdapter("loadStorageImage")
+    @BindingAdapter("setRemoteImageByUrl")
     @JvmStatic
-    fun loadStorageImage(view: ImageView, imageUrl: String) {
-        Glide.with(view.context)
-            .load(imageUrl)
-            .centerCrop()
-            .into(view)
-    }
-
-    @BindingAdapter("loadEndRunImage")
-    @JvmStatic
-    fun loadEndRunImage(view: ImageView, imageUrl: String) {
+    fun setRemoteImageByUrl(view: ImageView, imageUrl: String) {
         Glide.with(view.context)
             .load(imageUrl)
             .centerCrop()

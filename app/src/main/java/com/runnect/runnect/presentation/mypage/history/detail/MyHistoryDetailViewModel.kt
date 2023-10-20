@@ -24,8 +24,10 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         get() = _titleEditState
 
     var editMode = MutableLiveData(READ_MODE)
-    var mapImg: MutableLiveData<String> = MutableLiveData<String>(DEFAULT_IMAGE)
-    val title: MutableLiveData<String> = MutableLiveData()
+
+    val _title = MutableLiveData("")
+    val title: String get() = _title.value ?: ""
+
     val errorMessage = MutableLiveData<String>()
 
     var titleForInterruption = ""
@@ -34,17 +36,21 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     var distance = DEFAULT_DISTANCE
     var time = DEFAULT_TIME
     var pace = DEFAULT_PACE
-    var historyIdToDelete = listOf(0)
+    var currentHistoryId = listOf(0)
 
-    fun setTitle(titleParam: String) {
-        title.value = titleParam
+    fun setInitialHistoryTitle(title: String) {
+        _title.value = title
+    }
+
+    fun setCurrentHistoryId(id: Int) {
+        currentHistoryId = listOf(id)
     }
 
     fun deleteHistory() {
         viewModelScope.launch {
             runCatching {
                 _historyDeleteState.value = UiState.Loading
-                userRepository.putDeleteHistory(RequestDeleteHistory(historyIdToDelete))
+                userRepository.putDeleteHistory(RequestDeleteHistory(currentHistoryId))
             }.onSuccess {
                 _historyDeleteState.value = UiState.Success
             }.onFailure {
@@ -59,8 +65,8 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
             runCatching {
                 _titleEditState.value = UiState.Loading
                 userRepository.patchHistoryTitle(
-                    historyIdToDelete[0],
-                    RequestEditHistoryTitle(title.value.toString())
+                    currentHistoryId[0],
+                    RequestEditHistoryTitle(title)
                 )
             }.onSuccess {
                 _titleEditState.value = UiState.Success
@@ -72,8 +78,6 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     }
 
     companion object {
-        const val DEFAULT_IMAGE =
-            "https://insopt-bucket-rin.s3.ap-northeast-2.amazonaws.com/1683259309418_temprentpk5892730152618614049.png"
         const val DEFAULT_DATE = "2023.00.00"
         const val DEFAULT_DEPARTURE = "서울시"
         const val DEFAULT_PACE = "0’00"

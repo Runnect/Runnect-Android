@@ -16,10 +16,13 @@ import javax.inject.Inject
 class MyPageEditNameViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
     val nickName = MutableLiveData<String>()
+
+    private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState>
         get() = _uiState
-    private val _uiState = MutableLiveData<UiState>()
-    val profileImg: MutableLiveData<Int> = MutableLiveData<Int>(R.drawable.user_profile_basic)
+
+    val profileImgResId: MutableLiveData<Int> = MutableLiveData<Int>(R.drawable.user_profile_basic)
+
     val statusCode: LiveData<Int>
         get() = _statusCode
     private val _statusCode = MutableLiveData<Int>()
@@ -28,8 +31,8 @@ class MyPageEditNameViewModel @Inject constructor(private val userRepository: Us
         this.nickName.value = nickName
     }
 
-    fun setProfileImg(profileImg: Int) {
-        this.profileImg.value = profileImg
+    fun setProfileImg(profileImgResId: Int) {
+        this.profileImgResId.value = profileImgResId
     }
 
     fun updateNickName() {

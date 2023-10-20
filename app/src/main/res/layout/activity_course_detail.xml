@@ -83,7 +83,7 @@
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
-                    app:imgUri="@{vm.mapImage}"
+                    setLocalImageByUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:251"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -346,7 +346,7 @@
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
-                    app:imgUri="@{vm.mapImage}"
+                    setLocalImageByUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:304"
                     app:layout_constraintTop_toTopOf="parent" />
 

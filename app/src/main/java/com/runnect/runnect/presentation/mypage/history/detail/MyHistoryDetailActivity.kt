@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.mypage.history.detail
 
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.HistoryInfoDTO
@@ -30,12 +28,12 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
-    private lateinit var runningHistory: HistoryInfoDTO
+//    private lateinit var runningHistory: HistoryInfoDTO
 //    private lateinit var detailMoreBottomSheet: BottomSheetDialog
 //    private lateinit var editInterruptDialog: AlertDialog
     private val viewModel: MyHistoryDetailViewModel by viewModels()
 
-    // todo: 수정하기 로직 이해하기
+    // TODO: 뒤로가기 눌렀을 때, 수정 모드인 경우 경고 다이얼로그 띄우기
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             handleIsEdited(viewModel.titleForInterruption.isEmpty())
@@ -44,6 +42,9 @@ class MyHistoryDetailActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.lifecycleOwner = this@MyHistoryDetailActivity
+        binding.vm = viewModel
+
         initLayout()
         addListener()
         addObserver()
@@ -54,28 +55,17 @@ class MyHistoryDetailActivity :
 
     private fun initLayout() {
         val bundle = intent.getBundleExtra(HISTORY_INTENT_KEY)
-        runningHistory = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)!!
+        val runningHistory: HistoryInfoDTO? = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)
 
-        with(binding) {
-            vm = viewModel
-            viewModel.mapImg.value = runningHistory.img
-            lifecycleOwner = this@MyHistoryDetailActivity
-            enterReadMode()
+        if(runningHistory != null){
+            binding.dto = runningHistory
+            viewModel.apply {
+                setInitialHistoryTitle(runningHistory.title)
+                setCurrentHistoryId(runningHistory.id)
+            }
         }
 
-        setHistoryData()
-    }
-
-    private fun setHistoryData() {
-        with(runningHistory) {
-            viewModel.setTitle(title)
-            viewModel.date = date
-            viewModel.departure = location
-            viewModel.distance = distance
-            viewModel.time = time
-            viewModel.pace = pace
-            viewModel.historyIdToDelete = listOf(id)
-        }
+        enterReadMode()
     }
 
     private fun addListener() {
@@ -142,7 +132,7 @@ class MyHistoryDetailActivity :
     }
 
     private fun setupTitleValueObserver() {
-        viewModel.title.observe(this) { title ->
+        viewModel._title.observe(this) { title ->
             with(binding.tvHistoryEditFinish) {
                 if (title.isNullOrEmpty()) {
                     isActivated = false
@@ -185,7 +175,7 @@ class MyHistoryDetailActivity :
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
                     enterReadMode()
-                    viewModel.titleForInterruption = viewModel.title.value.toString()
+                    viewModel.titleForInterruption = viewModel._title.value.toString()
                     showToast("수정이 완료되었습니다")
                 }
 
@@ -203,7 +193,7 @@ class MyHistoryDetailActivity :
         viewModel.editMode.value = EDIT_MODE
 
         // 수정 모드에 진입하면서, 원래 제목을 뷰모델에 저장해둔다.
-        viewModel.titleForInterruption = viewModel.title.value.toString()
+        viewModel.titleForInterruption = viewModel._title.value.toString()
 
         enableEditTitle()
         updateConstraintForEditMode()
@@ -308,7 +298,7 @@ class MyHistoryDetailActivity :
                 enterReadMode()
 
                 // 원래 제목으로 다시 복구한다.
-                viewModel.title.value = viewModel.titleForInterruption
+                viewModel._title.value = viewModel.titleForInterruption
             }
         )
         dialog.show(supportFragmentManager, TAG_MY_HISTORY_EDIT_DIALOG)

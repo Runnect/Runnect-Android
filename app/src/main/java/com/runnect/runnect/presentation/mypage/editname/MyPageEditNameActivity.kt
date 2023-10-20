@@ -7,7 +7,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
@@ -33,9 +32,9 @@ class MyPageEditNameActivity :
 
     private fun initLayout() {
         val nickName = intent.getStringExtra(EXTRA_NICK_NAME)
-        val profileImg = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
+        val profileImgResId = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
         viewModel.setNickName(nickName = nickName!!)
-        viewModel.setProfileImg(profileImg = profileImg)
+        viewModel.setProfileImg(profileImgResId = profileImgResId)
     }
 
     private fun addListener() {

@@ -9,6 +9,9 @@
             name="vm"
             type="com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailViewModel" />
 
+        <variable
+            name="dto"
+            type="com.runnect.runnect.data.dto.HistoryInfoDTO" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,7 +52,6 @@
                 app:layout_constraintStart_toStartOf="@id/toolbar_history_detail"
                 app:layout_constraintTop_toTopOf="@id/toolbar_history_detail" />
 
-
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_show_more"
                 android:layout_width="wrap_content"
@@ -59,15 +61,16 @@
                 android:backgroundTint="@color/W1"
                 android:padding="10dp"
                 android:src="@drawable/showmorebtn" />
+
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image"
+            setLocalImageByUri="@{dto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G3"
             android:scaleType="centerCrop"
-            app:imgUri="@{vm.mapImg}"
             app:layout_constraintDimensionRatio="360:410"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,12 +78,12 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image_edit"
+            setLocalImageByUri="@{dto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G4"
             android:scaleType="centerCrop"
             android:visibility="visible"
-            app:imgUri="@{vm.mapImg}"
             app:layout_constraintDimensionRatio="360:362"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -95,10 +98,10 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/W1"
             android:fontFamily="@font/pretendard_bold"
-            android:hint="@string/end_run_title_hint"
+            android:hint="@string/my_history_detail_title_hint"
             android:maxLength="20"
             android:singleLine="true"
-            android:text="@={vm.title}"
+            android:text="@={vm._title}"
             android:textColor="@color/G1"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/divider_course_title"
@@ -141,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{vm.date}"
+            android:text="@{dto.date}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_record_date"
@@ -175,7 +178,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{vm.departure}"
+            android:text="@{dto.location}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_departure"
@@ -217,15 +220,15 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            app:layout_constraintBottom_toBottomOf="@id/view_1"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{vm.distance}"
+            android:text="@{dto.distance}"
             android:textColor="@color/G1"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
@@ -285,7 +288,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{vm.time}"
+            android:text="@{dto.time}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
@@ -332,7 +335,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{vm.pace}"
+            android:text="@{dto.pace}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
