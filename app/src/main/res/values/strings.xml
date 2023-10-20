@@ -126,9 +126,9 @@
     <string name="dialog_my_history_detail_delete_desc">러닝 기록을 정말로 삭제하시겠어요?</string>
     <string name="dialog_my_history_detail_delete_yes">삭제하기</string>
     <string name="dialog_my_history_detail_delete_no">취소</string>
-    <string name="dialog_my_history_detail_edit_finish_desc">러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
-    <string name="dialog_my_history_detail_edit_finish_yes">예</string>
-    <string name="dialog_my_history_detail_edit_finish_no">아니오</string>
+    <string name="dialog_my_history_detail_stop_editing_desc">러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
+    <string name="dialog_my_history_detail_stop_editing_yes">예</string>
+    <string name="dialog_my_history_detail_stop_editing_no">아니오</string>
     <string name="my_history_detail_title_hint">글 제목</string>
 
     <!-- visitor mode -->

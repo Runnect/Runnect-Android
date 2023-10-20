@@ -28,17 +28,8 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
-//    private lateinit var runningHistory: HistoryInfoDTO
-//    private lateinit var detailMoreBottomSheet: BottomSheetDialog
-//    private lateinit var editInterruptDialog: AlertDialog
     private val viewModel: MyHistoryDetailViewModel by viewModels()
-
-    // TODO: 뒤로가기 눌렀을 때, 수정 모드인 경우 경고 다이얼로그 띄우기
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            handleIsEdited(viewModel.titleForInterruption.isEmpty())
-        }
-    }
+    private var currentScreenMode: String = READ_MODE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,45 +39,58 @@ class MyHistoryDetailActivity :
         initLayout()
         addListener()
         addObserver()
+        registerBackPressedCallback()
+    }
 
-//        initEditBottomSheet()
-//        setEditBottomSheetClickEvent()
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleIsEdited(viewModel.titleForInterruption.isEmpty())
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun initLayout() {
         val bundle = intent.getBundleExtra(HISTORY_INTENT_KEY)
         val runningHistory: HistoryInfoDTO? = bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)
-
-        if(runningHistory != null){
-            binding.dto = runningHistory
-            viewModel.apply {
-                setInitialHistoryTitle(runningHistory.title)
-                setCurrentHistoryId(runningHistory.id)
-            }
-        }
-
+        initRunningHistory(runningHistory)
         enterReadMode()
     }
 
-    private fun addListener() {
-        binding.ivShowMore.setOnClickListener { view ->
-            //detailMoreBottomSheet.show()
-            showPopupMenu(view)
+    private fun initRunningHistory(dto: HistoryInfoDTO?) {
+        if(dto != null){
+            binding.dto = dto
+            viewModel.apply {
+                setInitialHistoryTitle(dto.title)
+                setCurrentHistoryId(dto.id)
+            }
         }
+    }
 
+    private fun enterReadMode() {
+        currentScreenMode = READ_MODE
+        binding.ivShowMore.isVisible = true
+        disableTitleEditing()
+        updateConstraintForReadMode()
+    }
+
+    private fun addListener() {
         binding.ivBackBtn.setOnClickListener {
-            if (viewModel.editMode.value == EDIT_MODE) {
+            if (currentScreenMode == EDIT_MODE) {
 //                editInterruptDialog.show()
             } else {
                 handleIsEdited(viewModel.titleForInterruption.isEmpty())
             }
         }
 
-        binding.tvHistoryEditFinish.setOnClickListener {
-            viewModel.editHistoryTitle()
+        binding.ivShowMore.setOnClickListener { view ->
+            showPopupMenu(view)
         }
 
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+        binding.tvHistoryEditFinish.setOnClickListener {
+            viewModel.patchHistoryTitle()
+        }
     }
 
     private fun showPopupMenu(anchorView: View) {
@@ -126,12 +130,12 @@ class MyHistoryDetailActivity :
     }
 
     private fun addObserver() {
-        setupTitleValueObserver()
+        setupTitleObserver()
         setupHistoryDeleteStateObserver()
         setupTitleEditStateObserver()
     }
 
-    private fun setupTitleValueObserver() {
+    private fun setupTitleObserver() {
         viewModel._title.observe(this) { title ->
             with(binding.tvHistoryEditFinish) {
                 if (title.isNullOrEmpty()) {
@@ -190,51 +194,23 @@ class MyHistoryDetailActivity :
     }
 
     private fun enterEditMode() {
-        viewModel.editMode.value = EDIT_MODE
+        currentScreenMode = EDIT_MODE
 
         // 수정 모드에 진입하면서, 원래 제목을 뷰모델에 저장해둔다.
         viewModel.titleForInterruption = viewModel._title.value.toString()
 
-        enableEditTitle()
+        enableTitleEditing()
         updateConstraintForEditMode()
 //        detailMoreBottomSheet.dismiss()
         binding.ivShowMore.isVisible = false
     }
 
-    private fun enterReadMode() {
-        viewModel.editMode.value = READ_MODE
-        disableEditTitle()
-        updateConstraintForReadMode()
-        binding.ivShowMore.isVisible = true
-    }
-
-    // todo: https://m.blog.naver.com/lys1900/222030610067
-    private fun updateConstraintForEditMode() {
-        val constraintLayout = binding.constMyHistoryDetail
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintLayout)
-        with(constraintSet) {
-            this.connect(
-                binding.dividerCourseTitle.id,
-                ConstraintSet.TOP,
-                binding.ivDetailCourseImageEdit.id,
-                ConstraintSet.BOTTOM
-            )
-            applyTo(constraintLayout)
-        }
-        with(binding) {
-            ivDetailCourseImage.isVisible = false
-            ivDetailCourseImageEdit.isVisible = true
-            tvHistoryEditFinish.isVisible = true
-        }
-    }
-
     private fun updateConstraintForReadMode() {
         val constraintLayout = binding.constMyHistoryDetail
         val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintLayout)
-        with(constraintSet) {
-            this.connect(
+        constraintSet.apply {
+            clone(constraintLayout)
+            connect(
                 binding.dividerCourseTitle.id,
                 ConstraintSet.TOP,
                 binding.ivDetailCourseImage.id,
@@ -242,6 +218,7 @@ class MyHistoryDetailActivity :
             )
             applyTo(constraintLayout)
         }
+
         with(binding) {
             ivDetailCourseImage.isVisible = true
             ivDetailCourseImageEdit.isVisible = false
@@ -249,12 +226,33 @@ class MyHistoryDetailActivity :
         }
     }
 
-    private fun enableEditTitle() {
-        binding.etCourseTitle.inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
+    private fun updateConstraintForEditMode() {
+        val constraintLayout = binding.constMyHistoryDetail
+        val constraintSet = ConstraintSet()
+        constraintSet.apply {
+            clone(constraintLayout)
+            connect(
+                binding.dividerCourseTitle.id,
+                ConstraintSet.TOP,
+                binding.ivDetailCourseImageEdit.id,
+                ConstraintSet.BOTTOM
+            )
+            applyTo(constraintLayout)
+        }
+
+        with(binding) {
+            ivDetailCourseImage.isVisible = false
+            ivDetailCourseImageEdit.isVisible = true
+            tvHistoryEditFinish.isVisible = true
+        }
     }
 
-    private fun disableEditTitle() {
+    private fun disableTitleEditing() {
         binding.etCourseTitle.inputType = InputType.TYPE_NULL
+    }
+
+    private fun enableTitleEditing() {
+        binding.etCourseTitle.inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
     }
 
 //    private fun initEditBottomSheet() {
@@ -288,16 +286,16 @@ class MyHistoryDetailActivity :
         dialog.show(supportFragmentManager, TAG_MY_HISTORY_DELETE_DIALOG)
     }
 
-    private fun showEditFinishDialog() {
+    private fun showStopEditingDialog() {
         val dialog = CommonDialogFragment(
-            stringOf(R.string.dialog_my_history_detail_edit_finish_desc),
-            stringOf(R.string.dialog_my_history_detail_edit_finish_no),
-            stringOf(R.string.dialog_my_history_detail_edit_finish_yes),
+            stringOf(R.string.dialog_my_history_detail_stop_editing_desc),
+            stringOf(R.string.dialog_my_history_detail_stop_editing_no),
+            stringOf(R.string.dialog_my_history_detail_stop_editing_yes),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 enterReadMode()
 
-                // 원래 제목으로 다시 복구한다.
+                // TODO: 원래 제목으로 다시 복구한다.
                 viewModel._title.value = viewModel.titleForInterruption
             }
         )

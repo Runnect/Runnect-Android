@@ -23,8 +23,6 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     val titleEditState: LiveData<UiState>
         get() = _titleEditState
 
-    var editMode = MutableLiveData(READ_MODE)
-
     val _title = MutableLiveData("")
     val title: String get() = _title.value ?: ""
 
@@ -60,7 +58,7 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         }
     }
 
-    fun editHistoryTitle() {
+    fun patchHistoryTitle() {
         viewModelScope.launch {
             runCatching {
                 _titleEditState.value = UiState.Loading
@@ -83,6 +81,5 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         const val DEFAULT_PACE = "0’00"
         const val DEFAULT_TIME = "00:00:00"
         const val DEFAULT_DISTANCE = "0.0"
-        const val READ_MODE = "readMode"
     }
 }

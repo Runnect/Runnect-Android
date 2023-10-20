@@ -99,6 +99,7 @@
             android:backgroundTint="@color/W1"
             android:fontFamily="@font/pretendard_bold"
             android:hint="@string/my_history_detail_title_hint"
+            android:imeOptions="actionDone"
             android:maxLength="20"
             android:singleLine="true"
             android:text="@={vm._title}"
