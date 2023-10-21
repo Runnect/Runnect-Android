@@ -2,11 +2,11 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
 import com.runnect.runnect.data.dto.response.ResponseEditHistoryTitle
@@ -32,16 +32,18 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
     }
 
     override suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO> {
-        return remoteUserDataSource.getUserUploadCourse().data.publicCourses.map { it.toData() }.toMutableList()
-    }
-
-    override suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): ResponseDeleteHistory {
-        return remoteUserDataSource.putDeleteHistory(requestDeleteHistory)
+        return remoteUserDataSource.getUserUploadCourse().data.publicCourses.map { it.toData() }
+            .toMutableList()
     }
 
     override suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse {
         return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse)
     }
+
+    override suspend fun putDeleteHistory(requestDeleteHistoryDto: RequestDeleteHistoryDto): Result<ResponseDeleteHistoryDto?> =
+        runCatching {
+            remoteUserDataSource.putDeleteHistory(requestDeleteHistoryDto).data
+        }
 
     override suspend fun patchHistoryTitle(
         historyId: Int, requestEditHistoryTitle: RequestEditHistoryTitle

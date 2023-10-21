@@ -4,19 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
-    private val _historyDeleteState = MutableLiveData<UiState>()
-    val historyDeleteState: LiveData<UiState>
+    private val _historyDeleteState =
+        MutableLiveData<UiStateV2<ResponseDeleteHistoryDto?>>(UiStateV2.Empty)
+    val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistoryDto?>>
         get() = _historyDeleteState
 
     private val _titleEditState = MutableLiveData<UiState>()
@@ -44,17 +49,28 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         currentHistoryId = listOf(id)
     }
 
+    fun restoreInitialTitle(title: String) {
+        _title.value = title
+    }
+
     fun deleteHistory() {
         viewModelScope.launch {
-            runCatching {
-                _historyDeleteState.value = UiState.Loading
-                userRepository.putDeleteHistory(RequestDeleteHistory(currentHistoryId))
-            }.onSuccess {
-                _historyDeleteState.value = UiState.Success
-            }.onFailure {
-                _historyDeleteState.value = UiState.Failure
-                errorMessage.value = it.message
-            }
+            _historyDeleteState.value = UiStateV2.Loading
+
+            userRepository.putDeleteHistory(RequestDeleteHistoryDto(currentHistoryId))
+                .onSuccess { response ->
+                    _historyDeleteState.value = UiStateV2.Success(response)
+                    Timber.d("SUCCESS DELETE HISTORY")
+                }.onFailure { t ->
+                    _historyDeleteState.value = UiStateV2.Failure(t.message.toString())
+
+                    if(t is HttpException) {
+                        Timber.e("HTTP FAIL DELETE HISTORY: ${t.code()} ${t.message()}")
+                        return@launch
+                    }
+
+                    Timber.e("FAIL DELETE HISTORY: ${t.message}")
+                }
         }
     }
 

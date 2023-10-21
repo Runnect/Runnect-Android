@@ -1,11 +1,12 @@
 package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.UserService
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
+import com.runnect.runnect.data.dto.response.base.BaseResponse
 import javax.inject.Inject
 
 class RemoteUserDataSource @Inject constructor(private val userService: UserService) {
@@ -16,11 +17,18 @@ class RemoteUserDataSource @Inject constructor(private val userService: UserServ
     suspend fun getMyStamp(): ResponseMyStamp = userService.getMyStamp()
     suspend fun getRecord(): ResponseRecordInfo = userService.getRecord()
     suspend fun getUserUploadCourse(): ResponseUserUploadCourse = userService.getUserUploadCourse()
-    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): ResponseDeleteHistory =
-        userService.putDeleteHistory(requestDeleteHistory)
+
     suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse =
         userService.putDeleteUploadCourse(requestDeleteUploadCourse)
-    suspend fun patchHistoryTitle(historyId:Int, requestEditHistoryTitle: RequestEditHistoryTitle): ResponseEditHistoryTitle =
+
+    suspend fun putDeleteHistory(requestDeleteHistoryDto: RequestDeleteHistoryDto): BaseResponse<ResponseDeleteHistoryDto> =
+        userService.putDeleteHistory(requestDeleteHistoryDto)
+
+    suspend fun patchHistoryTitle(
+        historyId: Int,
+        requestEditHistoryTitle: RequestEditHistoryTitle
+    ): ResponseEditHistoryTitle =
         userService.patchHistoryTitle(historyId, requestEditHistoryTitle)
-    suspend fun deleteUser():ResponseDeleteUser = userService.deleteUser()
+
+    suspend fun deleteUser(): ResponseDeleteUser = userService.deleteUser()
 }

@@ -16,11 +16,13 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.extension.snackBar
 import com.runnect.runnect.util.extension.stringOf
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -30,6 +32,7 @@ class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
     private val viewModel: MyHistoryDetailViewModel by viewModels()
     private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
+    private var currentTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,12 @@ class MyHistoryDetailActivity :
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                handleIsEdited(viewModel.titleForInterruption.isEmpty())
+                //handleIsEdited(viewModel.titleForInterruption.isEmpty())
+
+                when (currentScreenMode) {
+                    is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
+                    is ScreenMode.EditMode -> showStopEditingDialog()
+                }
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
@@ -108,7 +116,8 @@ class MyHistoryDetailActivity :
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
             when (pos) {
                 0 -> {
-                    /** 제목 수정 가능한 상태로 만들기 */
+                    // todo: 여기서 팝업메뉴를 dismiss 하는 코드는 안 필요한가?
+                    enterEditMode()
                 }
 
                 1 -> showHistoryDeleteDialog()
@@ -120,6 +129,21 @@ class MyHistoryDetailActivity :
 
     private fun RunnectPopupMenu.showCustomPosition(anchorView: View) {
         showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
+    }
+
+    private fun enterEditMode() {
+        currentScreenMode = ScreenMode.EditMode
+        binding.ivShowMore.isVisible = false
+
+        saveCurrentTitle()
+//        viewModel.titleForInterruption = viewModel._title.value.toString()
+        updateConstraintForEditMode()
+        enableTitleEditing()
+    }
+
+    private fun saveCurrentTitle() {
+        currentTitle = viewModel.title
+        Timber.e("현재 제목: $currentTitle")
     }
 
     private fun handleIsEdited(isEdited: Boolean) {
@@ -161,39 +185,48 @@ class MyHistoryDetailActivity :
     private fun setupHistoryDeleteStateObserver() {
         viewModel.historyDeleteState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    val intent = Intent(this, MyHistoryActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    startActivity(intent)
-                    finish()
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
+                is UiStateV2.Success -> {
+                    dismissLoadingProgressBar()
+                    navigateToMyHistoryScreen()
                 }
 
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
+                    snackBar(binding.root, state.msg)
                 }
 
                 else -> {}
             }
         }
+    }
+
+    private fun navigateToMyHistoryScreen() {
+        Intent(this, MyHistoryActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(this)
+        }
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setupTitleEditStateObserver() {
         viewModel.titleEditState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Loading -> showLoadingProgressBar()
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
+                    dismissLoadingProgressBar()
                     enterReadMode()
+
+                    // todo: 서버의 응답값을 UiState에서 받을 수 있도록
+                    updateCurrentTitle()
+
                     viewModel.titleForInterruption = viewModel._title.value.toString()
                     showToast("수정이 완료되었습니다")
                 }
 
                 UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
+                    dismissLoadingProgressBar()
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
 
@@ -202,16 +235,16 @@ class MyHistoryDetailActivity :
         }
     }
 
-    private fun enterEditMode() {
-        currentScreenMode = ScreenMode.EditMode
+    private fun updateCurrentTitle() {
+        // todo: 서버에서 응답값으로 보내준 타이틀로 전역 변수 갱신하기
+    }
 
-        // 수정 모드에 진입하면서, 원래 제목을 뷰모델에 저장해둔다.
-        viewModel.titleForInterruption = viewModel._title.value.toString()
+    private fun showLoadingProgressBar() {
+        binding.pbMyHistoryDetailLoading.isVisible = true
+    }
 
-        enableTitleEditing()
-        updateConstraintForEditMode()
-//        detailMoreBottomSheet.dismiss()
-        binding.ivShowMore.isVisible = false
+    private fun dismissLoadingProgressBar() {
+        binding.pbMyHistoryDetailLoading.isVisible = false
     }
 
     private fun updateConstraintForReadMode() {
@@ -262,6 +295,8 @@ class MyHistoryDetailActivity :
 
     private fun enableTitleEditing() {
         binding.etCourseTitle.inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
+
+        // TODO: 키보드가 올라오도록
     }
 
 //    private fun initEditBottomSheet() {
@@ -305,7 +340,8 @@ class MyHistoryDetailActivity :
                 enterReadMode()
 
                 // TODO: 원래 제목으로 다시 복구한다.
-                viewModel._title.value = viewModel.titleForInterruption
+                viewModel.restoreInitialTitle(currentTitle)
+//                viewModel._title.value = viewModel.titleForInterruption
             }
         )
         dialog.show(supportFragmentManager, TAG_MY_HISTORY_EDIT_DIALOG)
