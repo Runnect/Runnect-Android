@@ -88,7 +88,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         binding.btnMyPageHistoryEditHistory.setOnClickListener {
             handleEditClicked()
         }
-        binding.tvMyPageHistoryDelete.setOnClickListener {
+        binding.btnMyPageHistoryDelete.setOnClickListener {
             handleDeleteButtonClicked(it)
         }
     }
@@ -102,11 +102,11 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun handleEditClicked() {
         viewModel.convertMode()
-        binding.tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
+        binding.btnMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
     }
 
     private fun handleDeleteButtonClicked(it: View) {
-        if (it.isActivated) {
+        if (it.isEnabled) {
             setDialogClickEvent()
             dialog.show()
         }
@@ -129,7 +129,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             }
         }
         viewModel.historyDeleteState.observe(this) {
-            updateDeleteButton(viewModel.selectedItemsCount.value ?: 0)
+            updateDeleteButton(viewModel.itemsToDelete.size)
             when (it) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> handleSuccessfulHistoryDeletion()
@@ -145,8 +145,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                 exitEditMode()
             }
         }
-        viewModel.selectedItemsCount.observe(this) { count ->
-            updateDeleteButton(count)
+        viewModel.itemsToDeleteLiveData.observe(this) {
+            count -> updateDeleteButton(count.size)
         }
     }
 
@@ -195,14 +195,14 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             btnMyPageHistoryEditHistory.text = EDIT_MODE
             tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
             if (::adapter.isInitialized) adapter.clearSelection()
-            tvMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
+            btnMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
             viewModel.clearItemsToDelete()
         }
     }
 
     private fun updateDeleteButton(count: Int) {
-        with(binding.tvMyPageHistoryDelete) {
-            isActivated = count != 0
+        with(binding.btnMyPageHistoryDelete) {
+            isEnabled = count != 0
             text = updateDeleteButtonLabel(count)
         }
     }
