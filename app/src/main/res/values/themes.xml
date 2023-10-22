@@ -7,8 +7,8 @@
         <item name="colorOnPrimary">@color/white</item>
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/M6</item>
-        <item name="colorSecondaryVariant">@color/M7</item>
+        <item name="colorSecondary">@color/M1</item>
+        <item name="colorSecondaryVariant">@color/M2</item>
         <item name="colorOnSecondary">@color/black</item>
 
         <!-- Status bar color. -->

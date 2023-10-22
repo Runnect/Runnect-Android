@@ -7,7 +7,7 @@
 
     <style name="Widget.Runnect.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textColorHint">@color/G3</item>
-        <item name="android:textColorHighlight">?colorSecondary</item>
+        <item name="android:textColorHighlight">@color/M6</item>
         <item name="android:textCursorDrawable">@drawable/shape_m1_line_cursor</item>
     </style>
 </resources>
