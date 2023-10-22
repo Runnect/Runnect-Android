@@ -19,6 +19,7 @@ import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
+import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.snackBar
 import com.runnect.runnect.util.extension.stringOf
@@ -272,10 +273,10 @@ class MyHistoryDetailActivity :
             }
 
             is ScreenMode.EditMode -> {
-                binding.etCourseTitle.inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
-
-                // TODO: 키보드가 올라오도록
-                
+                binding.etCourseTitle.apply {
+                    inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
+                    setFocusAndShowKeyboard(this@MyHistoryDetailActivity)
+                }
             }
         }
     }
