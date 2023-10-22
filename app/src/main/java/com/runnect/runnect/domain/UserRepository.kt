@@ -4,7 +4,7 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
-import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
 
@@ -25,8 +25,8 @@ interface UserRepository {
 
     suspend fun patchHistoryTitle(
         historyId: Int,
-        requestEditHistoryTitle: RequestEditHistoryTitle
-    ): ResponseEditHistoryTitle
+        requestPatchHistoryTitleDto: RequestPatchHistoryTitleDto
+    ): Result<ResponsePatchHistoryTitleDto?>
 
     suspend fun deleteUser(): ResponseDeleteUser
 }

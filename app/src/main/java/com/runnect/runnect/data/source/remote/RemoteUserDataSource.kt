@@ -3,7 +3,7 @@ package com.runnect.runnect.data.source.remote
 import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
-import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.dto.response.base.BaseResponse
@@ -26,9 +26,9 @@ class RemoteUserDataSource @Inject constructor(private val userService: UserServ
 
     suspend fun patchHistoryTitle(
         historyId: Int,
-        requestEditHistoryTitle: RequestEditHistoryTitle
-    ): ResponseEditHistoryTitle =
-        userService.patchHistoryTitle(historyId, requestEditHistoryTitle)
+        requestPatchHistoryTitleDto: RequestPatchHistoryTitleDto
+    ): BaseResponse<ResponsePatchHistoryTitleDto> =
+        userService.patchHistoryTitle(historyId, requestPatchHistoryTitleDto)
 
     suspend fun deleteUser(): ResponseDeleteUser = userService.deleteUser()
 }
