@@ -1,11 +1,11 @@
 package com.runnect.runnect.data.dto.request
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class RequestEditHistoryTitle(
-    @SerializedName("title")
+data class RequestPatchHistoryTitleDto(
+    @SerialName("title")
     val title: String
 )
