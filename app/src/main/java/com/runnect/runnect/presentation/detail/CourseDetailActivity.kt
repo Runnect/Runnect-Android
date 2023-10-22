@@ -521,7 +521,7 @@ class CourseDetailActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

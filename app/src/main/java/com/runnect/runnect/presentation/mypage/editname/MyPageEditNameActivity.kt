@@ -13,7 +13,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyPageEditNameBinding
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,7 +51,7 @@ class MyPageEditNameActivity :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    clearFocus(binding.etMyPageEditName)
+                    hideKeyboard(binding.etMyPageEditName)
                     return true
                 }
                 return false
@@ -103,7 +103,7 @@ class MyPageEditNameActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)
