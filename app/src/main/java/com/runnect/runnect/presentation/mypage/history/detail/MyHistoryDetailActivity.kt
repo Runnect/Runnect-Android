@@ -24,7 +24,6 @@ import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.snackBar
 import com.runnect.runnect.util.extension.stringOf
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyHistoryDetailActivity :
@@ -101,7 +100,7 @@ class MyHistoryDetailActivity :
             showPopupMenu(view)
         }
 
-        binding.tvHistoryEditFinish.setOnClickListener {
+        binding.btnMyHistoryDetailEditFinish.setOnClickListener {
             viewModel.patchHistoryTitle()
         }
     }
@@ -152,23 +151,8 @@ class MyHistoryDetailActivity :
     }
 
     private fun addObserver() {
-        setupTitleObserver()
         setupHistoryDeleteStateObserver()
         setupTitlePatchStateObserver()
-    }
-
-    private fun setupTitleObserver() {
-        viewModel._title.observe(this) { title ->
-            with(binding.tvHistoryEditFinish) {
-                if (title.isNullOrEmpty()) {
-                    isActivated = false
-                    isClickable = false
-                } else {
-                    isActivated = true
-                    isClickable = true
-                }
-            }
-        }
     }
 
     private fun setupHistoryDeleteStateObserver() {
@@ -241,7 +225,7 @@ class MyHistoryDetailActivity :
         with(binding) {
             ivDetailCourseImage.isVisible = true
             ivDetailCourseImageEdit.isVisible = false
-            tvHistoryEditFinish.isVisible = false
+            btnMyHistoryDetailEditFinish.isVisible = false
         }
     }
 
@@ -262,7 +246,7 @@ class MyHistoryDetailActivity :
         with(binding) {
             ivDetailCourseImage.isVisible = false
             ivDetailCourseImageEdit.isVisible = true
-            tvHistoryEditFinish.isVisible = true
+            btnMyHistoryDetailEditFinish.isVisible = true
         }
     }
 

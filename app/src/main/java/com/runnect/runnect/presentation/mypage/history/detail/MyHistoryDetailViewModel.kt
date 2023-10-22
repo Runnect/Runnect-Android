@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.mypage.history.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
@@ -30,6 +31,8 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
 
     val _title = MutableLiveData("")
     val title: String get() = _title.value ?: ""
+
+    val isValidTitle: LiveData<Boolean> = _title.map { it.isNotBlank() }
 
     private var historyId: Int = -1
 
