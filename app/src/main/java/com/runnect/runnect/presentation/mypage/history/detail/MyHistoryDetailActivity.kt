@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.mypage.history.detail
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -211,23 +210,23 @@ class MyHistoryDetailActivity :
     }
 
     private fun setupTitleEditStateObserver() {
-        viewModel.titleEditState.observe(this) { state ->
+        viewModel.titlePatchState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> showLoadingProgressBar()
-                UiState.Success -> {
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
+                is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
                     enterReadMode()
 
-                    // todo: 서버의 응답값을 UiState에서 받을 수 있도록
-                    updateCurrentTitle()
+                    val response = state.data ?: return@observe
+                    updateCurrentTitle(response.record.title)
+//                    viewModel.titleForInterruption = viewModel._title.value.toString()
 
-                    viewModel.titleForInterruption = viewModel._title.value.toString()
                     showToast("수정이 완료되었습니다")
                 }
 
-                UiState.Failure -> {
+                is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
 
                 else -> {}
@@ -235,8 +234,8 @@ class MyHistoryDetailActivity :
         }
     }
 
-    private fun updateCurrentTitle() {
-        // todo: 서버에서 응답값으로 보내준 타이틀로 전역 변수 갱신하기
+    private fun updateCurrentTitle(title: String) {
+        currentTitle = title
     }
 
     private fun showLoadingProgressBar() {

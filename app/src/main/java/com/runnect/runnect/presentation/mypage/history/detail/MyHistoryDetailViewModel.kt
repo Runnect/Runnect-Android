@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
+import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitleDto
 import com.runnect.runnect.domain.UserRepository
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,18 +20,16 @@ import javax.inject.Inject
 class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
     private val _historyDeleteState =
-        MutableLiveData<UiStateV2<ResponseDeleteHistoryDto?>>(UiStateV2.Empty)
+        MutableLiveData<UiStateV2<ResponseDeleteHistoryDto?>>()
     val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistoryDto?>>
         get() = _historyDeleteState
 
-    private val _titleEditState = MutableLiveData<UiState>()
-    val titleEditState: LiveData<UiState>
-        get() = _titleEditState
+    private val _titlePatchState = MutableLiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>()
+    val titlePatchState: LiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>
+        get() = _titlePatchState
 
     val _title = MutableLiveData("")
     val title: String get() = _title.value ?: ""
-
-    val errorMessage = MutableLiveData<String>()
 
     var titleForInterruption = ""
     var date = DEFAULT_DATE
@@ -39,14 +37,14 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     var distance = DEFAULT_DISTANCE
     var time = DEFAULT_TIME
     var pace = DEFAULT_PACE
-    var currentHistoryId = listOf(0)
+    private var currentHistoryId: Int = -1
 
     fun setInitialHistoryTitle(title: String) {
         _title.value = title
     }
 
     fun setCurrentHistoryId(id: Int) {
-        currentHistoryId = listOf(id)
+        currentHistoryId = id
     }
 
     fun restoreInitialTitle(title: String) {
@@ -57,14 +55,15 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         viewModelScope.launch {
             _historyDeleteState.value = UiStateV2.Loading
 
-            userRepository.putDeleteHistory(RequestDeleteHistoryDto(currentHistoryId))
+            val deleteItems = listOf(currentHistoryId)
+            userRepository.putDeleteHistory(RequestDeleteHistoryDto(deleteItems))
                 .onSuccess { response ->
                     _historyDeleteState.value = UiStateV2.Success(response)
                     Timber.d("SUCCESS DELETE HISTORY")
                 }.onFailure { t ->
                     _historyDeleteState.value = UiStateV2.Failure(t.message.toString())
 
-                    if(t is HttpException) {
+                    if (t is HttpException) {
                         Timber.e("HTTP FAIL DELETE HISTORY: ${t.code()} ${t.message()}")
                         return@launch
                     }
@@ -76,17 +75,23 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
 
     fun patchHistoryTitle() {
         viewModelScope.launch {
-            runCatching {
-                _titleEditState.value = UiState.Loading
-                userRepository.patchHistoryTitle(
-                    currentHistoryId[0],
-                    RequestEditHistoryTitle(title)
-                )
-            }.onSuccess {
-                _titleEditState.value = UiState.Success
-            }.onFailure {
-                _titleEditState.value = UiState.Failure
-                errorMessage.value = it.message
+            _titlePatchState.value = UiStateV2.Loading
+
+            userRepository.patchHistoryTitle(
+                currentHistoryId,
+                RequestPatchHistoryTitleDto(title)
+            ).onSuccess { response ->
+                _titlePatchState.value = UiStateV2.Success(response)
+                Timber.d("SUCCESS PATCH HISTORY TITLE")
+            }.onFailure { t ->
+                _titlePatchState.value = UiStateV2.Failure(t.message.toString())
+
+                if (t is HttpException) {
+                    Timber.e("HTTP FAIL PATCH HISTORY TITLE: ${t.code()} ${t.message()}")
+                    return@launch
+                }
+
+                Timber.e("FAIL PATCH HISTORY TITLE: ${t.message}")
             }
         }
     }
