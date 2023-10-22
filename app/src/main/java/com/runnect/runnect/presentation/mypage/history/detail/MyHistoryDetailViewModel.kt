@@ -31,31 +31,21 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
     val _title = MutableLiveData("")
     val title: String get() = _title.value ?: ""
 
-    var titleForInterruption = ""
-    var date = DEFAULT_DATE
-    var departure = DEFAULT_DEPARTURE
-    var distance = DEFAULT_DISTANCE
-    var time = DEFAULT_TIME
-    var pace = DEFAULT_PACE
-    private var currentHistoryId: Int = -1
+    private var historyId: Int = -1
 
-    fun setInitialHistoryTitle(title: String) {
+    fun updateHistoryTitle(title: String) {
         _title.value = title
     }
 
-    fun setCurrentHistoryId(id: Int) {
-        currentHistoryId = id
-    }
-
-    fun restoreInitialTitle(title: String) {
-        _title.value = title
+    fun updateHistoryId(id: Int) {
+        historyId = id
     }
 
     fun deleteHistory() {
         viewModelScope.launch {
             _historyDeleteState.value = UiStateV2.Loading
 
-            val deleteItems = listOf(currentHistoryId)
+            val deleteItems = listOf(historyId)
             userRepository.putDeleteHistory(RequestDeleteHistoryDto(deleteItems))
                 .onSuccess { response ->
                     _historyDeleteState.value = UiStateV2.Success(response)
@@ -78,7 +68,7 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
             _titlePatchState.value = UiStateV2.Loading
 
             userRepository.patchHistoryTitle(
-                currentHistoryId,
+                historyId,
                 RequestPatchHistoryTitleDto(title)
             ).onSuccess { response ->
                 _titlePatchState.value = UiStateV2.Success(response)
@@ -94,13 +84,5 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
                 Timber.e("FAIL PATCH HISTORY TITLE: ${t.message}")
             }
         }
-    }
-
-    companion object {
-        const val DEFAULT_DATE = "2023.00.00"
-        const val DEFAULT_DEPARTURE = "서울시"
-        const val DEFAULT_PACE = "0’00"
-        const val DEFAULT_TIME = "00:00:00"
-        const val DEFAULT_DISTANCE = "0.0"
     }
 }

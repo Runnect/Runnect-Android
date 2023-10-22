@@ -130,9 +130,8 @@
     <string name="dialog_my_history_detail_stop_editing_yes">예</string>
     <string name="dialog_my_history_detail_stop_editing_no">아니오</string>
     <string name="my_history_detail_title_hint">글 제목</string>
+    <string name="my_history_detail_title_edit_success_toast">수정이 완료되었습니다</string>
 
     <!-- visitor mode -->
     <string name="visitor_mode_require_login_desc">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
-
-
 </resources>

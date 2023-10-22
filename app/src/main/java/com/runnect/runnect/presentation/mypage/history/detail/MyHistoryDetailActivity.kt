@@ -14,7 +14,6 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
@@ -31,7 +30,7 @@ class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
     private val viewModel: MyHistoryDetailViewModel by viewModels()
     private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
-    private var currentTitle: String = ""
+    private var temporarilySavedTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,20 +41,6 @@ class MyHistoryDetailActivity :
         addListener()
         addObserver()
         registerBackPressedCallback()
-    }
-
-    private fun registerBackPressedCallback() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                //handleIsEdited(viewModel.titleForInterruption.isEmpty())
-
-                when (currentScreenMode) {
-                    is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
-                    is ScreenMode.EditMode -> showStopEditingDialog()
-                }
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun initLayout() {
@@ -70,31 +55,45 @@ class MyHistoryDetailActivity :
         if (dto != null) {
             binding.dto = dto
             viewModel.apply {
-                setInitialHistoryTitle(dto.title)
-                setCurrentHistoryId(dto.id)
+                updateHistoryTitle(dto.title)
+                updateHistoryId(dto.id)
             }
         }
     }
 
     private fun enterReadMode() {
-        currentScreenMode = ScreenMode.ReadOnlyMode
-        binding.ivShowMore.isVisible = true
-        disableTitleEditing()
+        updateCurrentScreenMode(ScreenMode.ReadOnlyMode)
+        updateTitleInputType()
+        updateMoreButtonVisibility(true)
         updateConstraintForReadMode()
+    }
+
+    private fun enterEditMode() {
+        updateCurrentScreenMode(ScreenMode.EditMode)
+        updateTitleInputType()
+        updateMoreButtonVisibility(false)
+        updateConstraintForEditMode()
+
+        // 중간에 수정을 취소하면 원래 제목으로 되돌리기 위해
+        // 현재 제목을 전역 변수에 저장해둔다.
+        saveTemporarilyCurrentTitle()
+    }
+
+    private fun saveTemporarilyCurrentTitle() {
+        temporarilySavedTitle = viewModel.title
+    }
+
+    private fun updateCurrentScreenMode(mode: ScreenMode) {
+        currentScreenMode = mode
+    }
+
+    private fun updateMoreButtonVisibility(isVisible: Boolean) {
+        binding.ivShowMore.isVisible = isVisible
     }
 
     private fun addListener() {
         binding.ivBackBtn.setOnClickListener {
-//            if (currentScreenMode == EDIT_MODE) {
-////                editInterruptDialog.show()
-//            } else {
-//                handleIsEdited(viewModel.titleForInterruption.isEmpty())
-//            }
-
-            when (currentScreenMode) {
-                is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
-                is ScreenMode.EditMode -> showStopEditingDialog()
-            }
+            handleBackButtonByCurrentScreenMode()
         }
 
         binding.ivShowMore.setOnClickListener { view ->
@@ -106,6 +105,22 @@ class MyHistoryDetailActivity :
         }
     }
 
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackButtonByCurrentScreenMode()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun handleBackButtonByCurrentScreenMode() {
+        when (currentScreenMode) {
+            is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
+            is ScreenMode.EditMode -> showStopEditingDialog()
+        }
+    }
+
     private fun showPopupMenu(anchorView: View) {
         val popupItems = listOf(
             PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
@@ -114,11 +129,7 @@ class MyHistoryDetailActivity :
 
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
             when (pos) {
-                0 -> {
-                    // todo: 여기서 팝업메뉴를 dismiss 하는 코드는 안 필요한가?
-                    enterEditMode()
-                }
-
+                0 -> enterEditMode()
                 1 -> showHistoryDeleteDialog()
             }
         }.apply {
@@ -130,41 +141,19 @@ class MyHistoryDetailActivity :
         showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
     }
 
-    private fun enterEditMode() {
-        currentScreenMode = ScreenMode.EditMode
-        binding.ivShowMore.isVisible = false
-
-        saveCurrentTitle()
-//        viewModel.titleForInterruption = viewModel._title.value.toString()
-        updateConstraintForEditMode()
-        enableTitleEditing()
-    }
-
-    private fun saveCurrentTitle() {
-        currentTitle = viewModel.title
-        Timber.e("현재 제목: $currentTitle")
-    }
-
-    private fun handleIsEdited(isEdited: Boolean) {
-        if (isEdited) {
-            navigateToPreviousScreen()
-        } else {
-            val intent = Intent(this, MyHistoryActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-            navigateToPreviousScreen()
-        }
-    }
-
     private fun navigateToPreviousScreen() {
-        finish()
+        // 수정 & 삭제 사항이 반영되도록 이전 액티비티를 새로 띄운다.
+        Intent(this, MyHistoryActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(this)
+        }
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addObserver() {
         setupTitleObserver()
         setupHistoryDeleteStateObserver()
-        setupTitleEditStateObserver()
+        setupTitlePatchStateObserver()
     }
 
     private fun setupTitleObserver() {
@@ -188,7 +177,7 @@ class MyHistoryDetailActivity :
 
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
-                    navigateToMyHistoryScreen()
+                    navigateToPreviousScreen()
                 }
 
                 is UiStateV2.Failure -> {
@@ -201,15 +190,7 @@ class MyHistoryDetailActivity :
         }
     }
 
-    private fun navigateToMyHistoryScreen() {
-        Intent(this, MyHistoryActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(this)
-        }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
-    private fun setupTitleEditStateObserver() {
+    private fun setupTitlePatchStateObserver() {
         viewModel.titlePatchState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
@@ -219,10 +200,10 @@ class MyHistoryDetailActivity :
                     enterReadMode()
 
                     val response = state.data ?: return@observe
-                    updateCurrentTitle(response.record.title)
-//                    viewModel.titleForInterruption = viewModel._title.value.toString()
+                    val newTitle = response.record.title
+                    viewModel.updateHistoryTitle(newTitle)
 
-                    showToast("수정이 완료되었습니다")
+                    showToast(stringOf(R.string.my_history_detail_title_edit_success_toast))
                 }
 
                 is UiStateV2.Failure -> {
@@ -232,10 +213,6 @@ class MyHistoryDetailActivity :
                 else -> {}
             }
         }
-    }
-
-    private fun updateCurrentTitle(title: String) {
-        currentTitle = title
     }
 
     private fun showLoadingProgressBar() {
@@ -288,35 +265,20 @@ class MyHistoryDetailActivity :
         }
     }
 
-    private fun disableTitleEditing() {
-        binding.etCourseTitle.inputType = InputType.TYPE_NULL
+    private fun updateTitleInputType() {
+        when (currentScreenMode) {
+            is ScreenMode.ReadOnlyMode -> {
+                binding.etCourseTitle.inputType = InputType.TYPE_NULL
+            }
+
+            is ScreenMode.EditMode -> {
+                binding.etCourseTitle.inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
+
+                // TODO: 키보드가 올라오도록
+                
+            }
+        }
     }
-
-    private fun enableTitleEditing() {
-        binding.etCourseTitle.inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
-
-        // TODO: 키보드가 올라오도록
-    }
-
-//    private fun initEditBottomSheet() {
-//        detailMoreBottomSheet = setEditBottomSheet()
-//        setEditBottomSheetClickEvent()
-//    }
-//
-//    private fun setEditBottomSheetClickEvent() {
-//        detailMoreBottomSheet.setEditBottomSheetClickListener { which ->
-//            when (which) {
-//                detailMoreBottomSheet.layout_edit_frame -> {
-//                    enterEditMode()
-//                }
-//
-//                detailMoreBottomSheet.layout_delete_frame -> {
-//                    detailMoreBottomSheet.dismiss()
-//                    deleteDialog.show()
-//                }
-//            }
-//        }
-//    }
 
     private fun showHistoryDeleteDialog() {
         val dialog = CommonDialogFragment(
@@ -336,11 +298,9 @@ class MyHistoryDetailActivity :
             stringOf(R.string.dialog_my_history_detail_stop_editing_yes),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
+                // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
+                viewModel.updateHistoryTitle(temporarilySavedTitle)
                 enterReadMode()
-
-                // TODO: 원래 제목으로 다시 복구한다.
-                viewModel.restoreInitialTitle(currentTitle)
-//                viewModel._title.value = viewModel.titleForInterruption
             }
         )
         dialog.show(supportFragmentManager, TAG_MY_HISTORY_EDIT_DIALOG)
@@ -349,8 +309,6 @@ class MyHistoryDetailActivity :
     companion object {
         private const val HISTORY_BUNDLE_KEY = "historyDataBundle"
         private const val HISTORY_INTENT_KEY = "historyData"
-        private const val EDIT_MODE = "editMode"
-        private const val READ_MODE = "readMode"
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
         private const val TAG_MY_HISTORY_DELETE_DIALOG = "MY_HISTORY_DELETE_DIALOG"
