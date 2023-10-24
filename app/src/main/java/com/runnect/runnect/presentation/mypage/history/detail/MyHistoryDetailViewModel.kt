@@ -71,8 +71,8 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
             _titlePatchState.value = UiStateV2.Loading
 
             userRepository.patchHistoryTitle(
-                historyId,
-                RequestPatchHistoryTitleDto(title)
+                historyId = historyId,
+                requestPatchHistoryTitleDto = RequestPatchHistoryTitleDto(title)
             ).onSuccess { response ->
                 _titlePatchState.value = UiStateV2.Success(response)
                 Timber.d("SUCCESS PATCH HISTORY TITLE")
