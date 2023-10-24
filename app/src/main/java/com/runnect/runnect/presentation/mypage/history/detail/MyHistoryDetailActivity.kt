@@ -51,12 +51,12 @@ class MyHistoryDetailActivity :
         enterReadMode()
     }
 
-    private fun initRunningHistory(dto: HistoryInfoDTO?) {
-        if (dto != null) {
-            binding.dto = dto
+    private fun initRunningHistory(historyDto: HistoryInfoDTO?) {
+        if (historyDto != null) {
+            binding.historyDto = historyDto
             viewModel.apply {
-                updateHistoryTitle(dto.title)
-                updateHistoryId(dto.id)
+                updateHistoryTitle(historyDto.title)
+                updateHistoryId(historyDto.id)
             }
         }
     }

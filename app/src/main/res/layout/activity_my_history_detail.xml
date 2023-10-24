@@ -10,7 +10,7 @@
             type="com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailViewModel" />
 
         <variable
-            name="dto"
+            name="historyDto"
             type="com.runnect.runnect.data.dto.HistoryInfoDTO" />
     </data>
 
@@ -66,7 +66,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image"
-            setLocalImageByUri="@{dto.img}"
+            setLocalImageByUri="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G3"
@@ -78,7 +78,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image_edit"
-            setLocalImageByUri="@{dto.img}"
+            setLocalImageByUri="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G4"
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{dto.date}"
+            android:text="@{historyDto.date}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_record_date"
@@ -179,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{dto.location}"
+            android:text="@{historyDto.location}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_departure"
@@ -226,7 +226,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{dto.distance}"
+            android:text="@{historyDto.distance}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/view_1"
@@ -289,7 +289,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{dto.time}"
+            android:text="@{historyDto.time}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
@@ -336,7 +336,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{dto.pace}"
+            android:text="@{historyDto.pace}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
