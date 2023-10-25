@@ -188,7 +188,7 @@ class MyHistoryDetailActivity :
                     val newTitle = response.record.title
                     viewModel.updateHistoryTitle(newTitle)
 
-                    showToast(stringOf(R.string.my_history_detail_title_edit_success_toast))
+                    showToast(stringOf(R.string.my_history_upload_detail_title_edit_success_msg))
                 }
 
                 is UiStateV2.Failure -> {
@@ -268,8 +268,8 @@ class MyHistoryDetailActivity :
     private fun showHistoryDeleteDialog() {
         val dialog = CommonDialogFragment(
             stringOf(R.string.dialog_my_history_detail_delete_desc),
-            stringOf(R.string.dialog_my_history_detail_delete_no),
-            stringOf(R.string.dialog_my_history_detail_delete_yes),
+            stringOf(R.string.dialog_course_detail_delete_no),
+            stringOf(R.string.dialog_course_detail_delete_yes),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = { viewModel.deleteHistory() }
         )
@@ -279,8 +279,8 @@ class MyHistoryDetailActivity :
     private fun showStopEditingDialog() {
         val dialog = CommonDialogFragment(
             stringOf(R.string.dialog_my_history_detail_stop_editing_desc),
-            stringOf(R.string.dialog_my_history_detail_stop_editing_no),
-            stringOf(R.string.dialog_my_history_detail_stop_editing_yes),
+            stringOf(R.string.dialog_course_detail_stop_editing_no),
+            stringOf(R.string.dialog_course_detail_stop_editing_yes),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.

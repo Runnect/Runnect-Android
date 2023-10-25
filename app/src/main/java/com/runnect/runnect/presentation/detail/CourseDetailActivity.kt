@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -35,6 +36,9 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.custom.CommonDialogFragment
+import com.runnect.runnect.util.custom.PopupItem
+import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.custom.RunnectToast
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,7 +80,6 @@ class CourseDetailActivity :
         setDeleteDialogClickEvent()
         initEditInterruptedDialog()
         setEditInterruptedDialog()
-
     }
 
     private fun initDetailCourseId() {
@@ -122,7 +125,6 @@ class CourseDetailActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    //    title: String, desc: String, image: String
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -227,16 +229,18 @@ class CourseDetailActivity :
 
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                RunnectToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
-                    .show()
+                RunnectToast.createToast(
+                    this@CourseDetailActivity,
+                    "러넥트에 가입하면 코스를 스크랩할 수 있어요"
+                ).show()
             } else {
                 it.isSelected = !it.isSelected
                 viewModel.postCourseScrap(publicCourseId, it.isSelected)
                 viewModel.isEdited = true
             }
         }
-        binding.btnCourseDetailFinish.setOnClickListener {
 
+        binding.btnCourseDetailFinish.setOnClickListener {
             if (isVisitorMode) {
                 requireLogin()
             } else {
@@ -266,18 +270,56 @@ class CourseDetailActivity :
             )
         }
 
-        binding.btnShowMore.setOnClickListener {
-            if (rootScreen == MY_UPLOAD_ACTIVITY_TAG) {
-                editBottomSheet.show()
-            } else {
-                bottomSheet()
-            }
-        }
-
         binding.tvCourseDetailEditFinish.setOnClickListener {
             viewModel.patchUpdatePublicCourse(publicCourseId)
         }
+
+        binding.btnShowMore.setOnClickListener { view ->
+            if (isMyUploadCourseDetailScreen()) {
+//                editBottomSheet.show()
+                // todo: 수정/삭제 팝업메뉴 띄우기
+                showPopupMenu(view)
+            } else {
+//                bottomSheet()
+                // todo: 신고하기 팝업메뉴 띄우기
+            }
+        }
     }
+
+    private fun showPopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
+            when (pos) {
+                0 -> enterEditMode()
+                1 -> showMyUploadCourseDeleteDialog()
+            }
+        }.apply {
+            showCustomPosition(anchorView)
+        }
+    }
+
+    private fun showMyUploadCourseDeleteDialog() {
+        val dialog = CommonDialogFragment(
+            stringOf(R.string.dialog_my_upload_course_detail_delete_desc),
+            stringOf(R.string.dialog_course_detail_delete_no),
+            stringOf(R.string.dialog_course_detail_delete_yes),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = { /** todo: 뷰모델에서 코스 삭제하기 */ }
+        )
+        dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_DELETE_DIALOG)
+    }
+
+    private fun RunnectPopupMenu.showCustomPosition(anchorView: View) {
+        showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
+    }
+
+
+    private fun isMyUploadCourseDetailScreen() =
+        rootScreen == CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName
 
     private fun requireLogin() {
         val (dialog, dialogLayout) = setActivityDialog(
@@ -522,32 +564,25 @@ class CourseDetailActivity :
         bottomSheetDialog.show()
     }
 
-    //키보드 밖 터치 시, 키보드 내림
+    // 키보드 밖 터치 시, 키보드 내림
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val focusView = currentFocus
         if (focusView != null) {
             val rect = Rect()
             focusView.getGlobalVisibleRect(rect)
+
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
+
             if (!rect.contains(x, y)) {
                 hideKeyboard(focusView)
             }
         }
+
         return super.dispatchTouchEvent(ev)
     }
 
     companion object {
-        const val DELETE_DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
-        const val DELETE_DIALOG_YES_BTN = "삭제하기"
-        const val EDIT_INTERRUPT_DIALOG_DESC = "     게시글 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
-        const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
-        const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
-
-        const val STORAGE_SCRAP_TAG = "storageScrap"
-        const val COURSE_DISCOVER_TAG = "discover"
-        const val MY_UPLOAD_ACTIVITY_TAG = "upload"
-
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"
@@ -556,5 +591,16 @@ class CourseDetailActivity :
         const val EXTRA_ROOT = "root"
         const val EXTRA_COURSE_DATA = "CourseData"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+
+        // ---------------------------------------------------
+
+        private const val STORAGE_SCRAP_TAG = "storageScrap"
+        private const val COURSE_DISCOVER_TAG = "discover"
+        private const val MY_UPLOAD_ACTIVITY_TAG = "upload"
+
+        private const val POPUP_MENU_X_OFFSET = 17
+        private const val POPUP_MENU_Y_OFFSET = -10
+
+        private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
     }
 }
