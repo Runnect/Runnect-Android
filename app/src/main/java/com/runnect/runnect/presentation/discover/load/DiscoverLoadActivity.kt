@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.discover.load
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,11 +30,29 @@ class DiscoverLoadActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+
         initLayout()
         viewModel.getMyCourseLoad()
         addObserver()
         addListener()
+        registerBackPressedCallback()
     }
+
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun navigateToPreviousScreen() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+
     private fun initLayout() {
         binding.rvDiscoverLoadSelect.apply {
             layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
@@ -84,11 +103,6 @@ class DiscoverLoadActivity :
         binding.indeterminateBar.isVisible = false
         Timber.tag(ContentValues.TAG)
             .d("Failure : ${viewModel.errorMessage.value}")
-    }
-
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addListener() {
