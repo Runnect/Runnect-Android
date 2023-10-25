@@ -79,11 +79,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_map"
+                    setLocalImageByUri="@{vm.mapImage}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
-                    setLocalImageByUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:251"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -284,44 +284,33 @@
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
             android:background="@color/G3"
-            app:layout_constraintBottom_toTopOf="@id/btn_course_detail_finish" />
-
+            app:layout_constraintBottom_toTopOf="@id/btn_course_detail_start_run" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_course_detail_finish"
+            android:id="@+id/btn_course_detail_start_run"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="56dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="18dp"
             android:background="@drawable/course_detail_finish_btn"
+            android:fontFamily="@font/pretendard_semibold"
+            android:stateListAnimator="@null"
             android:text="@string/course_detail_start_run_button"
             android:textColor="@color/W1"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_course_detail_finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/pretendard_semibold"
-            android:text="@string/course_detail_start"
-            android:textColor="@color/M4"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_course_detail_finish"
-            app:layout_constraintEnd_toEndOf="@id/btn_course_detail_finish"
-            app:layout_constraintStart_toStartOf="@id/btn_course_detail_finish"
-            app:layout_constraintTop_toTopOf="@id/btn_course_detail_finish" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_course_detail_scrap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="17dp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_course_detail_finish"
-            app:layout_constraintEnd_toStartOf="@id/btn_course_detail_finish"
-            app:layout_constraintTop_toTopOf="@id/btn_course_detail_finish"
+            app:layout_constraintBottom_toBottomOf="@id/btn_course_detail_start_run"
+            app:layout_constraintEnd_toStartOf="@id/btn_course_detail_start_run"
+            app:layout_constraintTop_toTopOf="@id/btn_course_detail_start_run"
             app:srcCompat="@drawable/course_detail_scrap_selector" />
 
         <ScrollView
@@ -342,11 +331,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_edit_map"
+                    setLocalImageByUri="@{vm.mapImage}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
-                    setLocalImageByUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:304"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -534,8 +523,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="sv_course_detail,
-                btn_course_detail_finish,
-                tv_course_detail_finish,
+                btn_course_detail_start_run,
                 iv_course_detail_scrap,
                 divider_course_detail_bottom" />
 
