@@ -49,31 +49,51 @@ import kotlin.properties.Delegates
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
-    var publicCourseId by Delegates.notNull<Int>()
-    private var root: String = ""
-    lateinit var departureLatLng: LatLng
-    private val touchList = arrayListOf<LatLng>()
+    private lateinit var departureLatLng: LatLng
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
     private lateinit var editInterruptDialog: AlertDialog
 
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    var isFromDeepLink: Boolean = false
+    private val rootScreen by lazy { intent.getStringExtra(EXTRA_ROOT).toString() }
+    private var publicCourseId by Delegates.notNull<Int>()
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            gestureBackWhenDeepLink()
+    private var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private var isFromDeepLink: Boolean = false
+    private val touchList = arrayListOf<LatLng>()
 
-            root = intent.getStringExtra(EXTRA_ROOT).toString()
-            when (root) {
-                MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
-                COURSE_DISCOVER_TAG -> handleReturnToDiscover()
-                STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
-            }
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initDetailCourseId()
+
+        addListener()
+        initDeepLink()
+        initView()
+        addObserver()
+        registerBackPressedCallback()
+
+        initEditBottomSheet()
+        initDeleteDialog()
+        setDeleteDialogClickEvent()
+        initEditInterruptedDialog()
+        setEditInterruptedDialog()
+
     }
 
-    private fun gestureBackWhenDeepLink(){
+    private fun initDetailCourseId() {
+        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
+    }
+
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackButtonFromDeepLink()
+                navigateToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun handleBackButtonFromDeepLink() {
         if (isFromDeepLink) {
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
@@ -86,21 +106,20 @@ class CourseDetailActivity :
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun navigateToPreviousScreen() {
+        when (rootScreen) {
+            CourseDetailRootScreen.COURSE_STORAGE_SCRAP.extraName ->
+                handleReturnToStorageScrap()
 
-        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
-        Timber.tag(ContentValues.TAG).d("상세페이지 코스 아이디 : $publicCourseId")
-        root = intent.getStringExtra(EXTRA_ROOT).toString()
-        addListener()
-        initDeepLink()
-        initView()
-        addObserver()
-        initEditBottomSheet()
-        initDeleteDialog()
-        setDeleteDialogClickEvent()
-        initEditInterruptedDialog()
-        setEditInterruptedDialog()
+            CourseDetailRootScreen.COURSE_DISCOVER.extraName ->
+                handleReturnToDiscover()
+
+            CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName ->
+                handleReturnToMyUpload()
+        }
+
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     //    title: String, desc: String, image: String
@@ -190,7 +209,7 @@ class CourseDetailActivity :
 
     private fun addListener() {
         binding.ivCourseDetailBack.setOnClickListener {
-            gestureBackWhenDeepLink()
+            handleBackButtonFromDeepLink()
 
             if (viewModel.editMode.value == true) {
                 editInterruptDialog.show()
@@ -203,11 +222,7 @@ class CourseDetailActivity :
                 return@setOnClickListener
             }
 
-            when (root) {
-                MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
-                COURSE_DISCOVER_TAG -> handleReturnToDiscover()
-                STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
-            }
+            navigateToPreviousScreen()
         }
 
         binding.ivCourseDetailScrap.setOnClickListener {
@@ -252,16 +267,16 @@ class CourseDetailActivity :
         }
 
         binding.btnShowMore.setOnClickListener {
-            if (root == MY_UPLOAD_ACTIVITY_TAG) {
+            if (rootScreen == MY_UPLOAD_ACTIVITY_TAG) {
                 editBottomSheet.show()
             } else {
                 bottomSheet()
             }
         }
+
         binding.tvCourseDetailEditFinish.setOnClickListener {
             viewModel.patchUpdatePublicCourse(publicCourseId)
         }
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
     private fun requireLogin() {
@@ -290,20 +305,14 @@ class CourseDetailActivity :
         val intent = Intent(this, MyUploadActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun handleReturnToDiscover() {
         MainActivity.updateDiscoverFragment()
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun handleReturnToStorageScrap() {
         MainActivity.updateStorageScrap()
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun enterEditMode() {
@@ -398,7 +407,7 @@ class CourseDetailActivity :
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
+                    if (rootScreen == MY_UPLOAD_ACTIVITY_TAG) {
                         val intent = Intent(this, MyUploadActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
@@ -430,6 +439,7 @@ class CourseDetailActivity :
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
+
                 else -> {}
             }
         }
@@ -533,9 +543,11 @@ class CourseDetailActivity :
         const val EDIT_INTERRUPT_DIALOG_DESC = "     게시글 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
         const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
         const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
-        const val MY_UPLOAD_ACTIVITY_TAG = "upload"
-        const val COURSE_DISCOVER_TAG = "discover"
+
         const val STORAGE_SCRAP_TAG = "storageScrap"
+        const val COURSE_DISCOVER_TAG = "discover"
+        const val MY_UPLOAD_ACTIVITY_TAG = "upload"
+
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"

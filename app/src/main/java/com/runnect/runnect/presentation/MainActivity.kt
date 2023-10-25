@@ -149,6 +149,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         var isVisitorMode = false
         var discoverFragment: DiscoverFragment? = null
         var storageScrapFragment: StorageScrapFragment? = null
+
         fun updateDiscoverFragment() {
             discoverFragment?.getRecommendCourses(pageNo = "")
         }
