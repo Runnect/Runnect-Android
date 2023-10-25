@@ -124,8 +124,8 @@ class MyHistoryDetailActivity :
 
     private fun showPopupMenu(anchorView: View) {
         val popupItems = listOf(
-            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
-            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
+            PopupItem(R.drawable.ic_detail_more_edit, stringOf(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, stringOf(R.string.popup_menu_item_delete))
         )
 
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
