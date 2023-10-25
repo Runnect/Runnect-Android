@@ -212,7 +212,7 @@ class CourseDetailActivity :
 
         initScrapButtonClickListener()
 
-        initRunStartButtonClickListener()
+        initStartRunButtonClickListener()
 
         initShareButtonClickListener()
 
@@ -250,26 +250,30 @@ class CourseDetailActivity :
         }
     }
 
-    private fun initRunStartButtonClickListener() {
-        binding.btnCourseDetailFinish.setOnClickListener {
+    private fun initStartRunButtonClickListener() {
+        binding.btnCourseDetailStartRun.setOnClickListener {
             if (isVisitorMode) {
                 requireLogin()
-            } else {
-                val intent = Intent(this, CountDownActivity::class.java).apply {
-                    putExtra(
-                        EXTRA_COURSE_DATA, CourseData(
-                            courseId = viewModel.courseDetail.courseId,
-                            publicCourseId = viewModel.courseDetail.id,
-                            touchList = touchList,
-                            startLatLng = departureLatLng,
-                            departure = viewModel.courseDetail.departure,
-                            distance = viewModel.courseDetail.distance.toFloat(),
-                            image = viewModel.courseDetail.image,
-                            dataFrom = "detail"
-                        )
+                return@setOnClickListener
+            }
+
+            Intent(
+                this@CourseDetailActivity,
+                CountDownActivity::class.java
+            ).apply {
+                putExtra(
+                    EXTRA_COURSE_DATA, CourseData(
+                        courseId = viewModel.courseDetail.courseId,
+                        publicCourseId = viewModel.courseDetail.id,
+                        touchList = touchList,
+                        startLatLng = departureLatLng,
+                        departure = viewModel.courseDetail.departure,
+                        distance = viewModel.courseDetail.distance.toFloat(),
+                        image = viewModel.courseDetail.image,
+                        dataFrom = "detail"
                     )
-                }
-                startActivity(intent)
+                )
+                startActivity(this)
             }
         }
     }
@@ -279,13 +283,14 @@ class CourseDetailActivity :
             if (isVisitorMode) {
                 RunnectToast.createToast(
                     this@CourseDetailActivity,
-                    "러넥트에 가입하면 코스를 스크랩할 수 있어요"
+                    stringOf(R.string.visitor_mode_require_login_desc)
                 ).show()
-            } else {
-                it.isSelected = !it.isSelected
-                viewModel.postCourseScrap(publicCourseId, it.isSelected)
-                viewModel.isEdited = true
+                return@setOnClickListener
             }
+
+            it.isSelected = !it.isSelected
+            viewModel.postCourseScrap(publicCourseId, it.isSelected)
+            viewModel.isEdited = true
         }
     }
 
@@ -307,7 +312,7 @@ class CourseDetailActivity :
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
-        when(currentScreenMode) {
+        when (currentScreenMode) {
             is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
             is ScreenMode.EditMode -> showStopEditingDialog()
         }
@@ -484,9 +489,7 @@ class CourseDetailActivity :
             }
         }
 
-
-        viewModel.myUploadDeleteState.observe(this)
-        { state ->
+        viewModel.myUploadDeleteState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
@@ -507,15 +510,15 @@ class CourseDetailActivity :
                 else -> {}
             }
         }
-        viewModel.isEditFinishEnable.observe(this)
-        {
+
+        viewModel.isEditFinishEnable.observe(this) {
             with(binding.tvCourseDetailEditFinish) {
                 isActivated = it
                 isClickable = it
             }
         }
-        viewModel.courseUpdateState.observe(this)
-        { state ->
+
+        viewModel.courseUpdateState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> handleSuccessfulCourseUpdate()
