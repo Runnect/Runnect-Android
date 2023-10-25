@@ -547,6 +547,5 @@
             app:constraint_referenced_ids="sv_course_detail_edit,
             tv_course_detail_edit_finish" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

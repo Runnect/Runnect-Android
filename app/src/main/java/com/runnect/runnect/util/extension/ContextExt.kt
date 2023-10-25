@@ -1,6 +1,5 @@
 package com.runnect.runnect.util.extension
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -21,9 +20,12 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.runnect.runnect.R
-import kotlinx.android.synthetic.main.custom_dialog_delete.*
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
 
 fun Context.showToast(message: String) {

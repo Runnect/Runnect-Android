@@ -41,6 +41,7 @@ import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.custom.RunnectToast
 import com.runnect.runnect.util.extension.*
+import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
@@ -64,14 +65,17 @@ class CourseDetailActivity :
     private var isVisitorMode: Boolean = MainActivity.isVisitorMode
     private var isFromDeepLink: Boolean = false
     private val touchList = arrayListOf<LatLng>()
+    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.vm = viewModel
+        binding.lifecycleOwner = this
+
         initDetailCourseId()
+        initDeepLink()
 
         addListener()
-        initDeepLink()
-        initView()
         addObserver()
         registerBackPressedCallback()
 
@@ -90,7 +94,7 @@ class CourseDetailActivity :
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 handleBackButtonFromDeepLink()
-                navigateToPreviousScreen()
+                handleBackButtonByCurrentScreenMode()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
@@ -203,43 +207,50 @@ class CourseDetailActivity :
         getCourseDetail()
     }
 
+    private fun addListener() {
+        initBackButtonClickListener()
 
-    private fun initView() {
-        binding.vm = viewModel
-        binding.lifecycleOwner = this
+        initScrapButtonClickListener()
+
+        initRunStartButtonClickListener()
+
+        initShareButtonClickListener()
+
+        initEditFinishButtonClickListener()
+
+        initShowMoreButtonClickListener()
     }
 
-    private fun addListener() {
-        binding.ivCourseDetailBack.setOnClickListener {
-            handleBackButtonFromDeepLink()
-
-            if (viewModel.editMode.value == true) {
-                editInterruptDialog.show()
-                return@setOnClickListener
-            }
-
-            if (!viewModel.isEdited) {
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                return@setOnClickListener
-            }
-
-            navigateToPreviousScreen()
-        }
-
-        binding.ivCourseDetailScrap.setOnClickListener {
-            if (isVisitorMode) {
-                RunnectToast.createToast(
-                    this@CourseDetailActivity,
-                    "러넥트에 가입하면 코스를 스크랩할 수 있어요"
-                ).show()
+    private fun initShowMoreButtonClickListener() {
+        binding.btnShowMore.setOnClickListener { view ->
+            if (isMyUploadCourseDetailScreen()) {
+//                editBottomSheet.show()
+                // todo: 수정/삭제 팝업메뉴 띄우기
+                showPopupMenu(view)
             } else {
-                it.isSelected = !it.isSelected
-                viewModel.postCourseScrap(publicCourseId, it.isSelected)
-                viewModel.isEdited = true
+//                bottomSheet()
+                // todo: 신고하기 팝업메뉴 띄우기
             }
         }
+    }
 
+    private fun initEditFinishButtonClickListener() {
+        binding.tvCourseDetailEditFinish.setOnClickListener {
+            viewModel.patchUpdatePublicCourse(publicCourseId)
+        }
+    }
+
+    private fun initShareButtonClickListener() {
+        binding.btnShare.setOnClickListener {
+            sendKakaoLink(
+                title = viewModel.title.value.toString(),
+                desc = viewModel.description.value.toString(),
+                image = viewModel.imageUrl.value.toString()
+            )
+        }
+    }
+
+    private fun initRunStartButtonClickListener() {
         binding.btnCourseDetailFinish.setOnClickListener {
             if (isVisitorMode) {
                 requireLogin()
@@ -261,29 +272,60 @@ class CourseDetailActivity :
                 startActivity(intent)
             }
         }
+    }
 
-        binding.btnShare.setOnClickListener {
-            sendKakaoLink(
-                title = viewModel.title.value.toString(),
-                desc = viewModel.description.value.toString(),
-                image = viewModel.imageUrl.value.toString()
-            )
-        }
-
-        binding.tvCourseDetailEditFinish.setOnClickListener {
-            viewModel.patchUpdatePublicCourse(publicCourseId)
-        }
-
-        binding.btnShowMore.setOnClickListener { view ->
-            if (isMyUploadCourseDetailScreen()) {
-//                editBottomSheet.show()
-                // todo: 수정/삭제 팝업메뉴 띄우기
-                showPopupMenu(view)
+    private fun initScrapButtonClickListener() {
+        binding.ivCourseDetailScrap.setOnClickListener {
+            if (isVisitorMode) {
+                RunnectToast.createToast(
+                    this@CourseDetailActivity,
+                    "러넥트에 가입하면 코스를 스크랩할 수 있어요"
+                ).show()
             } else {
-//                bottomSheet()
-                // todo: 신고하기 팝업메뉴 띄우기
+                it.isSelected = !it.isSelected
+                viewModel.postCourseScrap(publicCourseId, it.isSelected)
+                viewModel.isEdited = true
             }
         }
+    }
+
+    private fun initBackButtonClickListener() {
+        binding.ivCourseDetailBack.setOnClickListener {
+            handleBackButtonFromDeepLink()
+            handleBackButtonByCurrentScreenMode()
+
+//            if (viewModel.editMode.value == true) {
+//                editInterruptDialog.show()
+//                return@setOnClickListener
+//            }
+//            if (!viewModel.isEdited) {
+//                finish()
+//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+//                return@setOnClickListener
+//            }
+        }
+    }
+
+    private fun handleBackButtonByCurrentScreenMode() {
+        when(currentScreenMode) {
+            is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
+            is ScreenMode.EditMode -> showStopEditingDialog()
+        }
+    }
+
+    private fun showStopEditingDialog() {
+        val dialog = CommonDialogFragment(
+            stringOf(R.string.dialog_my_upload_course_detail_stop_editing_desc),
+            stringOf(R.string.dialog_course_detail_stop_editing_no),
+            stringOf(R.string.dialog_course_detail_stop_editing_yes),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = {
+                // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
+                //viewModel.updateHistoryTitle(temporarilySavedTitle)
+                enterReadMode()
+            }
+        )
+        dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_EDIT_DIALOG)
     }
 
     private fun showPopupMenu(anchorView: View) {
@@ -602,5 +644,6 @@ class CourseDetailActivity :
         private const val POPUP_MENU_Y_OFFSET = -10
 
         private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
+        private const val TAG_MY_UPLOAD_COURSE_EDIT_DIALOG = "MY_UPLOAD_COURSE_EDIT_DIALOG"
     }
 }
