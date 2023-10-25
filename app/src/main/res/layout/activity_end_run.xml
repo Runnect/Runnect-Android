@@ -59,15 +59,13 @@
                 android:text="@string/end_run_page_title"
                 android:textColor="@color/G1"
                 android:textSize="17sp" />
-
-
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_endRun_capture"
+            setRemoteImageByUrl="@{model.captureUri.toString()}"
             android:layout_width="match_parent"
             android:layout_height="362dp"
-            app:endRunImage="@{model.captureUri.toString()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/storage_toolbar"

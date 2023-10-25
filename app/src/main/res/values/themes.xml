@@ -2,20 +2,27 @@
     <!-- Base application theme. -->
     <style name="Theme.Runnect" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/M1</item>
+        <item name="colorPrimaryVariant">@color/M2</item>
         <item name="colorOnPrimary">@color/white</item>
+
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/M1</item>
+        <item name="colorSecondaryVariant">@color/M2</item>
         <item name="colorOnSecondary">@color/black</item>
+
         <!-- Status bar color. -->
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/transparent_00</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
         <!-- Customize your theme here. -->
         <item name="android:includeFontPadding">false</item>
+
         <!-- BottomSheetDialog -->
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+
+        <!-- EditText -->
+        <item name="editTextStyle">@style/Widget.Runnect.EditText</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -24,7 +31,7 @@
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
-    <!-- 신고하기 BottomSheet 테마-->
+    <!-- 신고하기 BottomSheet 테마 -->
     <style name="BottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
     </style>

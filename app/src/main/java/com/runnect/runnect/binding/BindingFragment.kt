@@ -9,13 +9,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
-// Fragment의 기본을 작성, 뷰 바인딩 활용
 abstract class BindingFragment<B : ViewDataBinding>(
     @LayoutRes private val layoutResId: Int
 ) : Fragment() {
     private var _binding: B? = null
     protected val binding
-        get() = requireNotNull(_binding!!) { "${this::class.java.simpleName} error" }
+        get() = requireNotNull(_binding) { "binding object is not initialized" }
 
     override fun onCreateView(
         inflater: LayoutInflater,

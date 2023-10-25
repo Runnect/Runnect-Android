@@ -11,17 +11,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemMypageUploadBinding
-import com.runnect.runnect.util.CourseUploadedDiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnUploadItemClick
+import com.runnect.runnect.util.callback.ItemDiffCallback
 
 class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
-    ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(
-        CourseUploadedDiffUtilItemCallback()
-    ) {
+    ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(diffUtil) {
     private val inflater by lazy { LayoutInflater.from(context) }
     private var selectedItems: MutableList<View>? = mutableListOf()
     private var selectedBoxes: MutableList<View>? = mutableListOf()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyUploadViewHolder {
         return MyUploadViewHolder(ItemMypageUploadBinding.inflate(inflater, parent, false))
@@ -60,10 +57,15 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
         fun onBind(data: UserUploadCourseDTO) {
             with(binding) {
                 selectedBoxes?.add(ivCheckbox)
-                Glide.with(itemView).load(data.img).thumbnail(0.3f)
+
+                Glide.with(itemView)
+                    .load(data.img)
+                    .thumbnail(0.3f)
                     .format(DecodeFormat.PREFER_RGB_565).into(ivMyPageUploadCourse)
+
                 tvMyPageUploadCourseTitle.text = data.title
                 tvMyPageUploadCourseLocation.text = data.departure
+
                 ivMyPageUploadCourseSelectBackground.setOnClickListener {
                     val isEditMode = listener.selectItem(data.id)
                     if (isEditMode) {
@@ -83,5 +85,11 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
             }
         }
     }
-}
 
+    companion object {
+        private val diffUtil = ItemDiffCallback<UserUploadCourseDTO>(
+            onItemsTheSame = { old, new -> old.id == new.id },
+            onContentsTheSame = { old, new -> old == new }
+        )
+    }
+}

@@ -1,4 +1,4 @@
-package com.runnect.runnect.util
+package com.runnect.runnect.util.custom
 
 import android.content.Context
 import android.content.res.Resources
@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.CustomToastBinding
 
-object CustomToast {
+object RunnectToast {
     fun createToast(context: Context, message: String): Toast {
         val inflater = LayoutInflater.from(context)
         val binding: CustomToastBinding =

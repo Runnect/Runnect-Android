@@ -12,7 +12,7 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityGiveNicknameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -107,7 +107,7 @@ class GiveNicknameActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

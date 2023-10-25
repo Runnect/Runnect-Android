@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.HistoryInfoDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -108,7 +108,7 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
                     count = DEFAULT_SELECTED_COUNT
                 )
                 userRepository.putDeleteHistory(
-                    RequestDeleteHistory(
+                    RequestDeleteHistoryDto(
                         recordIdList = _itemsToDelete
                     )
                 )

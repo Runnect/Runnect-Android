@@ -16,10 +16,10 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnUploadItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
-import com.runnect.runnect.util.extension.setDialogClickListener
+import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
@@ -114,7 +114,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     private fun setDialogClickEvent() {
-        dialog.setDialogClickListener { which ->
+        dialog.setDialogButtonClickListener { which ->
             when (which) {
                 dialog.btn_delete_yes -> {
                     viewModel.deleteUploadCourse()

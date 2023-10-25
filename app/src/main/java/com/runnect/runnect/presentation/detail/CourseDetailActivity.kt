@@ -35,7 +35,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.CustomToast
+import com.runnect.runnect.util.custom.RunnectToast
 import com.runnect.runnect.util.extension.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
@@ -212,7 +212,7 @@ class CourseDetailActivity :
 
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                CustomToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
+                RunnectToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
                     .show()
             } else {
                 it.isSelected = !it.isSelected
@@ -465,7 +465,7 @@ class CourseDetailActivity :
     }
 
     private fun setDeleteDialogClickEvent() {
-        deleteDialog.setDialogClickListener { which ->
+        deleteDialog.setDialogButtonClickListener { which ->
             when (which) {
                 deleteDialog.btn_delete_yes -> viewModel.deleteUploadCourse(publicCourseId)
             }
@@ -483,7 +483,7 @@ class CourseDetailActivity :
     }
 
     private fun setEditInterruptedDialog() {
-        editInterruptDialog.setDialogClickListener { which ->
+        editInterruptDialog.setDialogButtonClickListener { which ->
             when (which) {
                 editInterruptDialog.btn_delete_yes -> enterReadMode()
             }
@@ -521,7 +521,7 @@ class CourseDetailActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

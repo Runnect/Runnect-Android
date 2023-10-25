@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ItemDiscoverLoadSelectBinding
-import com.runnect.runnect.util.DiffUtilItemCallback
 import com.runnect.runnect.util.callback.OnRecommendCourseClick
+import com.runnect.runnect.util.callback.ItemDiffCallback
 import timber.log.Timber
 
 class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCourseClick) :
-    ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(DiffUtilItemCallback()) {
+    ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(diffUtil) {
 
     private val inflater by lazy { LayoutInflater.from(context) }
     private var beforeSelected: View? = null
@@ -64,7 +64,12 @@ class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCou
                 }
             }
         }
-
     }
 
+    companion object {
+        private val diffUtil = ItemDiffCallback<CourseLoadInfoDTO>(
+            onItemsTheSame = { old, new -> old.id == new.id },
+            onContentsTheSame = { old, new -> old == new }
+        )
+    }
 }

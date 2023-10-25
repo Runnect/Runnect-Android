@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">Runnect</string>
 
-
     <string name="discover_title">코스 발견</string>
     <string name="discover_recommend_title">코스 추천</string>
-
     <string name="discover_recommend_subtitle">새로운 코스를 발견해나가요</string>
     <string name="main_menu_drawing">코스 그리기</string>
     <string name="main_menu_storage">보관함</string>
@@ -119,4 +117,21 @@
     <string name="draw_custom_departure_guide">지도를 움직여 출발지를 설정해주세요</string>
     <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
     <string name="draw_next">다음으로</string>
+
+    <!-- popup menu -->
+    <string name="popup_menu_item_edit">수정하기</string>
+    <string name="popup_menu_item_delete">삭제하기</string>
+
+    <!-- my history detail -->
+    <string name="dialog_my_history_detail_delete_desc">러닝 기록을 정말로 삭제하시겠어요?</string>
+    <string name="dialog_my_history_detail_delete_yes">삭제하기</string>
+    <string name="dialog_my_history_detail_delete_no">취소</string>
+    <string name="dialog_my_history_detail_stop_editing_desc">러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
+    <string name="dialog_my_history_detail_stop_editing_yes">예</string>
+    <string name="dialog_my_history_detail_stop_editing_no">아니오</string>
+    <string name="my_history_detail_title_hint">글 제목</string>
+    <string name="my_history_detail_title_edit_success_toast">수정이 완료되었습니다</string>
+
+    <!-- visitor mode -->
+    <string name="visitor_mode_require_login_desc">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
 </resources>

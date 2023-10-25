@@ -34,10 +34,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_item_storage_scrap_map"
+                    setRemoteImageByUrl="@{storage_scrap.image}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    app:storageImage="@{storage_scrap.image}" />
+                    android:scaleType="centerCrop" />
 
             </com.google.android.material.card.MaterialCardView>
 

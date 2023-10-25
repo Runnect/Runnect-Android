@@ -9,6 +9,9 @@
             name="vm"
             type="com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailViewModel" />
 
+        <variable
+            name="historyDto"
+            type="com.runnect.runnect.data.dto.HistoryInfoDTO" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +21,7 @@
         tools:context=".presentation.mypage.history.detail.MyHistoryDetailActivity">
 
         <ProgressBar
-            android:id="@+id/indeterminateBar"
+            android:id="@+id/pb_my_history_detail_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="2dp"
@@ -49,7 +52,6 @@
                 app:layout_constraintStart_toStartOf="@id/toolbar_history_detail"
                 app:layout_constraintTop_toTopOf="@id/toolbar_history_detail" />
 
-
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_show_more"
                 android:layout_width="wrap_content"
@@ -59,15 +61,16 @@
                 android:backgroundTint="@color/W1"
                 android:padding="10dp"
                 android:src="@drawable/showmorebtn" />
+
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image"
+            setLocalImageByUri="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G3"
             android:scaleType="centerCrop"
-            app:imgUri="@{vm.mapImg}"
             app:layout_constraintDimensionRatio="360:410"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,12 +78,12 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image_edit"
+            setLocalImageByUri="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G4"
             android:scaleType="centerCrop"
             android:visibility="visible"
-            app:imgUri="@{vm.mapImg}"
             app:layout_constraintDimensionRatio="360:362"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -95,10 +98,11 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/W1"
             android:fontFamily="@font/pretendard_bold"
-            android:hint="@string/end_run_title_hint"
+            android:hint="@string/my_history_detail_title_hint"
+            android:imeOptions="actionDone"
             android:maxLength="20"
             android:singleLine="true"
-            android:text="@={vm.title}"
+            android:text="@={vm._title}"
             android:textColor="@color/G1"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/divider_course_title"
@@ -111,7 +115,7 @@
             android:layout_height="2dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="56dp"
-            android:background="@color/G5"
+            app:dividerColor="@color/G5"
             app:layout_constraintTop_toBottomOf="@id/iv_detail_course_image" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -141,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{vm.date}"
+            android:text="@{historyDto.date}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_record_date"
@@ -175,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_regular"
-            android:text="@{vm.departure}"
+            android:text="@{historyDto.location}"
             android:textColor="@color/G1"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_departure"
@@ -217,15 +221,15 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            app:layout_constraintBottom_toBottomOf="@id/view_1"
             android:id="@+id/tv_distance_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{vm.distance}"
+            android:text="@{historyDto.distance}"
             android:textColor="@color/G1"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
             app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/tv_total_distance"
@@ -285,7 +289,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{vm.time}"
+            android:text="@{historyDto.time}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_distance_unit"
@@ -332,7 +336,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="@{vm.pace}"
+            android:text="@{historyDto.pace}"
             android:textColor="@color/G1"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_time_data"
@@ -340,15 +344,16 @@
             app:layout_constraintStart_toStartOf="@id/tv_pace"
             tools:text="5’31’’" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_history_edit_finish"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_my_history_detail_edit_finish"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/all_finish_btn_selector"
+            android:background="@drawable/sel_my_history_edit_finish_button_color"
+            android:enabled="@{vm.isValidTitle}"
             android:fontFamily="@font/pretendard_semibold"
-            android:gravity="center"
+            android:stateListAnimator="@null"
             android:text="@string/history_edit_finish"
             android:textColor="@color/W1"
             android:textSize="15sp"

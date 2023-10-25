@@ -3,83 +3,89 @@ package com.runnect.runnect.presentation.mypage.history.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
-import com.runnect.runnect.data.dto.request.RequestEditHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
+import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitleDto
 import com.runnect.runnect.domain.UserRepository
-import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
-    val deleteState: LiveData<UiState>
-        get() = _deleteState
-    private val _deleteState = MutableLiveData<UiState>()
+    private val _historyDeleteState =
+        MutableLiveData<UiStateV2<ResponseDeleteHistoryDto?>>()
+    val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistoryDto?>>
+        get() = _historyDeleteState
 
-    val editState: LiveData<UiState>
-        get() = _editState
-    private val _editState = MutableLiveData<UiState>()
+    private val _titlePatchState = MutableLiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>()
+    val titlePatchState: LiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>
+        get() = _titlePatchState
 
-    val errorMessage = MutableLiveData<String>()
+    val _title = MutableLiveData("")
+    val title: String get() = _title.value ?: ""
 
-    var editMode = MutableLiveData(READ_MODE)
+    val isValidTitle: LiveData<Boolean> = _title.map { it.isNotBlank() }
 
-    var mapImg: MutableLiveData<String> = MutableLiveData<String>(DEFAULT_IMAGE)
-    val title: MutableLiveData<String> = MutableLiveData()
-    var titleForInterruption = ""
-    var date = DEFAULT_DATE
-    var departure = DEFAULT_DEPARTURE
-    var distance = DEFAULT_DISTANCE
-    var time = DEFAULT_TIME
-    var pace = DEFAULT_PACE
-    var historyIdToDelete = listOf(0)
+    private var historyId: Int = -1
 
-    fun setTitle(titleParam: String) {
-        title.value = titleParam
+    fun updateHistoryTitle(title: String) {
+        _title.value = title
+    }
+
+    fun updateHistoryId(id: Int) {
+        historyId = id
     }
 
     fun deleteHistory() {
         viewModelScope.launch {
-            runCatching {
-                _deleteState.value = UiState.Loading
-                userRepository.putDeleteHistory(RequestDeleteHistory(historyIdToDelete))
-            }.onSuccess {
-                _deleteState.value = UiState.Success
-            }.onFailure {
-                _deleteState.value = UiState.Failure
-                errorMessage.value = it.message
-            }
+            _historyDeleteState.value = UiStateV2.Loading
+
+            val deleteItems = listOf(historyId)
+            userRepository.putDeleteHistory(RequestDeleteHistoryDto(deleteItems))
+                .onSuccess { response ->
+                    _historyDeleteState.value = UiStateV2.Success(response)
+                    Timber.d("SUCCESS DELETE HISTORY")
+                }.onFailure { t ->
+                    _historyDeleteState.value = UiStateV2.Failure(t.message.toString())
+
+                    if (t is HttpException) {
+                        Timber.e("HTTP FAIL DELETE HISTORY: ${t.code()} ${t.message()}")
+                        return@launch
+                    }
+
+                    Timber.e("FAIL DELETE HISTORY: ${t.message}")
+                }
         }
     }
 
-    fun editHistoryTitle() {
+    fun patchHistoryTitle() {
         viewModelScope.launch {
-            runCatching {
-                _editState.value = UiState.Loading
-                userRepository.patchHistoryTitle(
-                    historyIdToDelete[0],
-                    RequestEditHistoryTitle(title.value.toString())
-                )
-            }.onSuccess {
-                _editState.value = UiState.Success
-            }.onFailure {
-                _editState.value = UiState.Failure
-                errorMessage.value = it.message
+            _titlePatchState.value = UiStateV2.Loading
+
+            userRepository.patchHistoryTitle(
+                historyId = historyId,
+                requestPatchHistoryTitleDto = RequestPatchHistoryTitleDto(title)
+            ).onSuccess { response ->
+                _titlePatchState.value = UiStateV2.Success(response)
+                Timber.d("SUCCESS PATCH HISTORY TITLE")
+            }.onFailure { t ->
+                _titlePatchState.value = UiStateV2.Failure(t.message.toString())
+
+                if (t is HttpException) {
+                    Timber.e("HTTP FAIL PATCH HISTORY TITLE: ${t.code()} ${t.message()}")
+                    return@launch
+                }
+
+                Timber.e("FAIL PATCH HISTORY TITLE: ${t.message}")
             }
         }
-    }
-
-    companion object {
-        const val DEFAULT_IMAGE =
-            "https://insopt-bucket-rin.s3.ap-northeast-2.amazonaws.com/1683259309418_temprentpk5892730152618614049.png"
-        const val DEFAULT_DATE = "2023.00.00"
-        const val DEFAULT_DEPARTURE = "서울시"
-        const val DEFAULT_PACE = "0’00"
-        const val DEFAULT_TIME = "00:00:00"
-        const val DEFAULT_DISTANCE = "0.0"
-        const val READ_MODE = "readMode"
     }
 }

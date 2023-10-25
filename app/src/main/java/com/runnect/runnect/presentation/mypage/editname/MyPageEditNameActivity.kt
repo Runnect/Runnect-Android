@@ -7,14 +7,13 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyPageEditNameBinding
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,9 +32,9 @@ class MyPageEditNameActivity :
 
     private fun initLayout() {
         val nickName = intent.getStringExtra(EXTRA_NICK_NAME)
-        val profileImg = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
+        val profileImgResId = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
         viewModel.setNickName(nickName = nickName!!)
-        viewModel.setProfileImg(profileImg = profileImg)
+        viewModel.setProfileImg(profileImgResId = profileImgResId)
     }
 
     private fun addListener() {
@@ -52,7 +51,7 @@ class MyPageEditNameActivity :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    clearFocus(binding.etMyPageEditName)
+                    hideKeyboard(binding.etMyPageEditName)
                     return true
                 }
                 return false
@@ -104,7 +103,7 @@ class MyPageEditNameActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

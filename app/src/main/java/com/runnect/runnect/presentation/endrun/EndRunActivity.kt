@@ -17,8 +17,8 @@ import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.CustomToast
-import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.custom.RunnectToast
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.round
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -195,7 +195,7 @@ class EndRunActivity :
     }
 
     private fun notifyUploadFinish() {
-        CustomToast.createToast(this@EndRunActivity, "저장한 러닝 기록은 마이페이지에서 볼 수 있어요").show()
+        RunnectToast.createToast(this@EndRunActivity, "저장한 러닝 기록은 마이페이지에서 볼 수 있어요").show()
         Timber.tag(ContentValues.TAG).d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
     }
 
@@ -226,7 +226,7 @@ class EndRunActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

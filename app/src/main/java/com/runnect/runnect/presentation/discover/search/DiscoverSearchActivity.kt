@@ -17,10 +17,10 @@ import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -70,7 +70,7 @@ class DiscoverSearchActivity :
                     viewModel.getCourseSearch(
                         keyword = binding.etDiscoverSearchTitle.text.toString()
                     )
-                    clearFocus(binding.etDiscoverSearchTitle)
+                    hideKeyboard(binding.etDiscoverSearchTitle)
                     return true
                 }
                 return false
@@ -131,7 +131,7 @@ class DiscoverSearchActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)

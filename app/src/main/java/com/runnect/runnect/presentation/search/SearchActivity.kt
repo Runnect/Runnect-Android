@@ -22,7 +22,7 @@ import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.callback.OnSearchClick
-import com.runnect.runnect.util.extension.clearFocus
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -220,7 +220,7 @@ class SearchActivity :
             val x = ev!!.x.toInt()
             val y = ev.y.toInt()
             if (!rect.contains(x, y)) {
-                clearFocus(focusView)
+                hideKeyboard(focusView)
             }
         }
         return super.dispatchTouchEvent(ev)
