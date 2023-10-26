@@ -6,6 +6,7 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.*
+import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -31,7 +32,7 @@ interface CourseService {
     @GET("/api/public-course/detail/{publicCourseId}")
     suspend fun getCourseDetail(
         @Path("publicCourseId") publicCourseId: Int,
-    ): ResponseCourseDetail
+    ): BaseResponse<ResponseCourseDetailDto>
 
     @GET("/api/course/private/user")
     suspend fun getMyCourseLoad(

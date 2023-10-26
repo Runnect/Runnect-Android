@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.repository
 
-import com.runnect.runnect.data.dto.CourseDetailDTO
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.RecommendCourseDTO
@@ -38,8 +38,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.getCourseSearch(keyword = keyword).data.publicCourses.map { it.toData() }.toMutableList()
     }
 
-    override suspend fun getCourseDetail(publicCourseId: Int): CourseDetailDTO {
-        return remoteCourseDataSource.getCourseDetail(publicCourseId = publicCourseId).data.toData()
+    override suspend fun getCourseDetail(publicCourseId: Int): Result<CourseDetail?> = runCatching {
+        remoteCourseDataSource.getCourseDetail(publicCourseId = publicCourseId).data?.toCourseDetail()
     }
 
     override suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO> {

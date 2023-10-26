@@ -1,6 +1,6 @@
 package com.runnect.runnect.domain
 
-import com.runnect.runnect.data.dto.CourseDetailDTO
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.RecommendCourseDTO
@@ -22,19 +22,27 @@ import retrofit2.Response
 
 interface CourseRepository {
     suspend fun getRecommendCourse(pageNo: String?): MutableList<RecommendCourseDTO>
+
     suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap
+
     suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO>
-    suspend fun getCourseDetail(publicCourseId: Int): CourseDetailDTO
+
+    suspend fun getCourseDetail(publicCourseId: Int): Result<CourseDetail?>
+
     suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO>
+
     suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse): ResponseUploadMyCourse
+
     suspend fun patchUpdatePublicCourse(
         publicCourseId: Int, requestUpdatePublicCourse: RequestUpdatePublicCourse
     ): ResponseUpdatePublicCourse
 
-
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO>
+
     suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetailDTO>
+
     suspend fun postRecord(request: RequestPostRecordDTO): Response<ResponsePostRecordDTO>
+
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
     ): Response<ResponsePostCourseDTO>
