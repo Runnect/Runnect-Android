@@ -466,9 +466,54 @@ class CourseDetailActivity :
 
     private fun addObserver() {
         setupFromDeepLinkObserver()
+        setupCourseDetailGetStateObserver()
+        setupCourseDeleteStateObserver()
+        setupCoursePatchStateObserver()
 
-        setupCourseDetailStateObserver()
+        viewModel.isEditFinishEnable.observe(this) {
+            with(binding.tvCourseDetailEditFinish) {
+                isActivated = it
+                isClickable = it
+            }
+        }
+    }
 
+    private fun setupFromDeepLinkObserver() {
+        viewModel.isDeepLinkLogin.observe(this) {
+            // 딥링크로 진입했는데 로그인이 안 되어있는 경우
+            if (viewModel.isDeepLinkLogin.value == false) {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                viewModel.isDeepLinkLogin.value = true
+            }
+        }
+    }
+
+    private fun setupCourseDetailGetStateObserver() {
+        viewModel.courseDetailState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    courseDetail = state.data ?: return@observe
+
+                    binding.courseDetailDto = courseDetail
+                    updateUserProfileStamp()
+                    updateUserLevel()
+                    updateScrapState()
+
+                    setDepartureLatLng()
+                    setTouchList()
+                }
+
+                is UiStateV2.Failure -> {
+                    snackBar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupCourseDeleteStateObserver() {
         viewModel.myUploadDeleteState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
@@ -490,14 +535,9 @@ class CourseDetailActivity :
                 else -> {}
             }
         }
+    }
 
-        viewModel.isEditFinishEnable.observe(this) {
-            with(binding.tvCourseDetailEditFinish) {
-                isActivated = it
-                isClickable = it
-            }
-        }
-
+    private fun setupCoursePatchStateObserver() {
         viewModel.courseUpdateState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
@@ -505,41 +545,6 @@ class CourseDetailActivity :
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun setupFromDeepLinkObserver() {
-        viewModel.isDeepLinkLogin.observe(this) {
-            // 딥링크로 진입했는데 로그인이 안 되어있는 경우
-            if (viewModel.isDeepLinkLogin.value == false) {
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                viewModel.isDeepLinkLogin.value = true
-            }
-        }
-    }
-
-    private fun setupCourseDetailStateObserver() {
-        viewModel.courseDetailState.observe(this) { state ->
-            when (state) {
-                is UiStateV2.Success -> {
-                    courseDetail = state.data ?: return@observe
-
-                    binding.courseDetailDto = courseDetail
-                    updateUserProfileStamp()
-                    updateUserLevel()
-                    updateScrapState()
-
-                    setDepartureLatLng()
-                    setTouchList()
-                }
-
-                is UiStateV2.Failure -> {
-                    snackBar(binding.root, state.msg)
                 }
 
                 else -> {}
