@@ -5,16 +5,18 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.CourseDetailDTO
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.extension.addSourceList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,8 +24,8 @@ import javax.inject.Inject
 class CourseDetailViewModel @Inject constructor(
     private val courseRepository: CourseRepository, private val userRepository: UserRepository
 ) : ViewModel() {
-    private var _courseDetailState = MutableLiveData<UiState>(UiState.Loading)
-    val courseDetailState: LiveData<UiState>
+    private var _courseDetailState = MutableLiveData<UiStateV2<CourseDetail?>>()
+    val courseDetailState: LiveData<UiStateV2<CourseDetail?>>
         get() = _courseDetailState
 
     private var _myUploadDeleteState = MutableLiveData<UiState>()
@@ -69,11 +71,11 @@ class CourseDetailViewModel @Inject constructor(
     val editMode: LiveData<Boolean>
         get() = _editMode
 
-    private var _courseDetail = CourseDetailDTO(
+    private var _courseDetail = CourseDetail(
         "CSPR0", "1", "1", 1, "1", "1", "1", 1, "1", false, "1", listOf(listOf(1.1))
     )
 
-    val courseDetail: CourseDetailDTO
+    val courseDetail: CourseDetail
         get() = _courseDetail
 
     val errorMessage = MutableLiveData<String>()
@@ -84,31 +86,39 @@ class CourseDetailViewModel @Inject constructor(
 
     fun getCourseDetail(courseId: Int) {
         viewModelScope.launch {
-            runCatching {
-                _courseDetailState.value = UiState.Loading
-                courseRepository.getCourseDetail(
-                    publicCourseId = courseId
-                )
-            }.onSuccess {
-                imageUrl.value = it.image
-                title.value = it.title
-                description.value = it.description
+            _courseDetailState.value = UiStateV2.Loading
 
-                _courseDetail = it
-                stampId.value = it.stampId
-                mapImage.value = it.image
-                editTitle.value = it.title
-                editContent.value = it.description
-                distance.value = it.distance
-                departure.value = it.departure
-                _courseDetailState.value = UiState.Success
-            }.onFailure {
-                _courseDetailState.value = UiState.Failure
-                errorMessage.value = it.message
+            courseRepository.getCourseDetail(
+                publicCourseId = courseId
+            ).onSuccess { response ->
+                _courseDetailState.value = UiStateV2.Success(response)
+                Timber.d("SUCCESS GET COURSE DETAIL")
 
-                if(errorMessage.value == "HTTP 401 Unauthorized"){ //딥링크 접속 && 미로그인의 경우
-                    isDeepLinkLogin.value = false
+//                imageUrl.value = it.image
+//                title.value = it.title
+//                description.value = it.description
+
+//                _courseDetail = it
+//                stampId.value = it.stampId
+//                mapImage.value = it.image
+//                editTitle.value = it.title
+//                editContent.value = it.description
+//                distance.value = it.distance
+//                departure.value = it.departure
+            }.onFailure { t ->
+                _courseDetailState.value = UiStateV2.Failure(t.message.toString())
+
+                if (t is HttpException) {
+                    // 딥링크 접속 && 미로그인의 경우
+                    if (t.code() == CODE_AUTHORIZATION_ERROR) {
+                        isDeepLinkLogin.value = false
+                    }
+
+                    Timber.e("HTTP FAIL GET COURSE DETAIL: ${t.code()} ${t.message()}")
+                    return@launch
                 }
+
+                Timber.e("FAIL GET COURSE DETAIL: ${t.message}")
             }
         }
     }
@@ -166,7 +176,9 @@ class CourseDetailViewModel @Inject constructor(
     }
 
     companion object {
-        const val DEFAULT_MAP_IMAGE =
+        private const val DEFAULT_MAP_IMAGE =
             "https://insopt-bucket-rin.s3.ap-northeast-2.amazonaws.com/1682263387937_temprentpk745355331421921473.png"
+
+        private const val CODE_AUTHORIZATION_ERROR = 401
     }
 }
