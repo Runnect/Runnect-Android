@@ -32,7 +32,7 @@ import com.runnect.runnect.util.custom.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnBannerClick
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.extension.startWebView
+import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Timer
@@ -340,7 +340,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun selectBanner(item: DiscoverPromotionItemDTO) {
         if (item.linkUrl.isNotEmpty()) {
-            requireContext().startWebView(item.linkUrl)
+            requireContext().showWebBrowser(item.linkUrl)
         }
     }
 
