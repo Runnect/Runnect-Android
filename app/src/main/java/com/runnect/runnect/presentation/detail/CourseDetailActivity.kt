@@ -31,11 +31,13 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
@@ -55,6 +57,8 @@ class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
     private lateinit var departureLatLng: LatLng
+    private lateinit var courseDetail: CourseDetail
+
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
     private lateinit var editInterruptDialog: AlertDialog
@@ -209,15 +213,10 @@ class CourseDetailActivity :
 
     private fun addListener() {
         initBackButtonClickListener()
-
         initScrapButtonClickListener()
-
         initStartRunButtonClickListener()
-
         initShareButtonClickListener()
-
         initEditFinishButtonClickListener()
-
         initShowMoreButtonClickListener()
     }
 
@@ -225,14 +224,19 @@ class CourseDetailActivity :
         binding.btnShowMore.setOnClickListener { view ->
             if (isMyUploadCourseDetailScreen()) {
 //                editBottomSheet.show()
-                // todo: 수정/삭제 팝업메뉴 띄우기
-                showPopupMenu(view)
-            } else {
-//                bottomSheet()
-                // todo: 신고하기 팝업메뉴 띄우기
+                // todo: 자신이 작성한 글은 수정/삭제 팝업메뉴
+                showEditDeletePopupMenu(view)
+                return@setOnClickListener
             }
+
+            // todo: 다른 사람이 작성한 글은 신고하기 팝업메뉴
+            //  글 작성자의 id와 현재 유저의 id 비교해야 함.
+            showReportPopupMenu(view)
         }
     }
+
+    private fun isMyUploadCourseDetailScreen() =
+        rootScreen == CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName
 
     private fun initEditFinishButtonClickListener() {
         binding.tvCourseDetailEditFinish.setOnClickListener {
@@ -263,13 +267,13 @@ class CourseDetailActivity :
             ).apply {
                 putExtra(
                     EXTRA_COURSE_DATA, CourseData(
-                        courseId = viewModel.courseDetail.courseId,
-                        publicCourseId = viewModel.courseDetail.id,
+                        courseId = courseDetail.courseId,
+                        publicCourseId = courseDetail.id,
                         touchList = touchList,
                         startLatLng = departureLatLng,
-                        departure = viewModel.courseDetail.departure,
-                        distance = viewModel.courseDetail.distance.toFloat(),
-                        image = viewModel.courseDetail.image,
+                        departure = courseDetail.departure,
+                        distance = courseDetail.distance.toFloat(),
+                        image = courseDetail.image,
                         dataFrom = "detail"
                     )
                 )
@@ -333,10 +337,10 @@ class CourseDetailActivity :
         dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_EDIT_DIALOG)
     }
 
-    private fun showPopupMenu(anchorView: View) {
+    private fun showEditDeletePopupMenu(anchorView: View) {
         val popupItems = listOf(
-            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
-            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
+            PopupItem(R.drawable.ic_detail_more_edit, stringOf(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, stringOf(R.string.popup_menu_item_delete))
         )
 
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
@@ -360,13 +364,24 @@ class CourseDetailActivity :
         dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_DELETE_DIALOG)
     }
 
+    private fun showReportPopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(
+                R.drawable.ic_detail_more_report,
+                stringOf(R.string.popup_menu_item_report)
+            )
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, _ ->
+            showWebBrowser(REPORT_URL)
+        }.apply {
+            showCustomPosition(anchorView)
+        }
+    }
+
     private fun RunnectPopupMenu.showCustomPosition(anchorView: View) {
         showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
     }
-
-
-    private fun isMyUploadCourseDetailScreen() =
-        rootScreen == CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName
 
     private fun requireLogin() {
         val (dialog, dialogLayout) = setActivityDialog(
@@ -438,56 +453,21 @@ class CourseDetailActivity :
     }
 
     private fun setDepartureLatLng() {
-        departureLatLng =
-            LatLng(viewModel.courseDetail.path[0][0], viewModel.courseDetail.path[0][1])
+        departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
     }
 
     private fun setTouchList() {
-        for (i in 1 until viewModel.courseDetail.path.size) {
+        for (i in 1 until courseDetail.path.size) {
             touchList.add(
-                LatLng(
-                    viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]
-                )
+                LatLng(courseDetail.path[i][0], courseDetail.path[i][1])
             )
         }
     }
 
     private fun addObserver() {
-        viewModel.isDeepLinkLogin.observe(this) {
-            if (viewModel.isDeepLinkLogin.value == false) { //딥링크로 진입했는데 로그인이 안 돼있을 경우
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                viewModel.isDeepLinkLogin.value = true
-            }
-        }
+        setupFromDeepLinkObserver()
 
-        viewModel.courseDetailState.observe(this) { state ->
-            if (state == UiState.Success) {
-                with(binding) {
-                    with(viewModel.courseDetail) {
-                        val stampResId = this@CourseDetailActivity.getStampResId(
-                            stampId = viewModel.stampId.value,
-                            resNameParam = RES_NAME,
-                            resType = RES_STAMP_TYPE,
-                            packageName = packageName
-                        )
-                        ivCourseDetailProfileStamp.load(stampResId)
-                        ivCourseDetailProfileNickname.text = nickname
-                        if (level == "알 수 없음") {
-                            tvCourseDetailProfileLv.isVisible = false
-                            tvCourseDetailProfileLvIndicator.isVisible = false
-                        } else {
-                            tvCourseDetailProfileLv.text = level
-                        }
-                        ivCourseDetailScrap.isSelected = scrap
-
-                    }
-
-                }
-                setDepartureLatLng()
-                setTouchList()
-            }
-        }
+        setupCourseDetailStateObserver()
 
         viewModel.myUploadDeleteState.observe(this) { state ->
             when (state) {
@@ -530,6 +510,64 @@ class CourseDetailActivity :
                 else -> {}
             }
         }
+    }
+
+    private fun setupFromDeepLinkObserver() {
+        viewModel.isDeepLinkLogin.observe(this) {
+            // 딥링크로 진입했는데 로그인이 안 되어있는 경우
+            if (viewModel.isDeepLinkLogin.value == false) {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                viewModel.isDeepLinkLogin.value = true
+            }
+        }
+    }
+
+    private fun setupCourseDetailStateObserver() {
+        viewModel.courseDetailState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    courseDetail = state.data ?: return@observe
+
+                    binding.courseDetailDto = courseDetail
+                    updateUserProfileStamp()
+                    updateUserLevel()
+                    updateScrapState()
+
+                    setDepartureLatLng()
+                    setTouchList()
+                }
+
+                is UiStateV2.Failure -> {
+                    snackBar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun updateUserProfileStamp() {
+        val stampResId = getStampResId(
+            stampId = courseDetail.stampId,
+            resNameParam = RES_NAME,
+            resType = RES_STAMP_TYPE,
+            packageName = packageName
+        )
+        binding.ivCourseDetailProfileStamp.load(stampResId)
+    }
+
+    private fun updateUserLevel() {
+        if (courseDetail.level == stringOf(R.string.course_detail_user_level_unknown_error)) {
+            binding.tvCourseDetailProfileLv.isVisible = false
+            binding.tvCourseDetailProfileLvIndicator.isVisible = false
+        } else {
+            binding.tvCourseDetailProfileLv.text = courseDetail.level
+        }
+    }
+
+    private fun updateScrapState() {
+        binding.ivCourseDetailScrap.isSelected = courseDetail.isScrap
     }
 
     private fun handleSuccessfulCourseUpdate() {
@@ -600,7 +638,7 @@ class CourseDetailActivity :
         )
         // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
         bottomSheetView.findViewById<View>(R.id.view_go_to_report_frame).setOnClickListener {
-            startWebView(REPORT_URL)
+            showWebBrowser(REPORT_URL)
             bottomSheetDialog.dismiss()
         }
         // bottomSheetDialog 뷰 생성
@@ -630,8 +668,10 @@ class CourseDetailActivity :
     companion object {
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
+
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
+
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
         const val EXTRA_COURSE_DATA = "CourseData"

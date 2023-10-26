@@ -162,7 +162,7 @@ fun Context.getStampResId(
     }
 }
 
-fun Context.startWebView(url: String) {
+fun Context.showWebBrowser(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     startActivity(intent)
 }

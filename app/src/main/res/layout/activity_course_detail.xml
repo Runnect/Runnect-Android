@@ -8,6 +8,10 @@
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.detail.CourseDetailViewModel" />
+
+        <variable
+            name="courseDetailDto"
+            type="com.runnect.runnect.domain.entity.CourseDetail" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -79,7 +83,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_map"
-                    setLocalImageByUri="@{vm.mapImage}"
+                    setRemoteImageByUrl="@{courseDetailDto.image}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
@@ -105,6 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:fontFamily="@font/pretendard_semibold"
+                    android:text="@{courseDetailDto.nickname}"
                     android:textColor="@color/G1"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="@id/iv_course_detail_profile_stamp"
@@ -191,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:fontFamily="@font/pretendard_regular"
-                    android:text="@{vm.distance}"
+                    android:text="@{courseDetailDto.distance}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_distance_title"
@@ -242,7 +247,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/pretendard_regular"
                     android:maxLength="25"
-                    android:text="@{vm.departure}"
+                    android:text="@{courseDetailDto.departure}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_departure_title"
@@ -331,7 +336,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_edit_map"
-                    setLocalImageByUri="@{vm.mapImage}"
+                    setRemoteImageByUrl="@{courseDetailDto.image}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
@@ -404,7 +409,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:fontFamily="@font/pretendard_regular"
-                    android:text="@{vm.distance}"
+                    android:text="@{courseDetailDto.distance}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_distance_title"
@@ -453,7 +458,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="23dp"
                     android:fontFamily="@font/pretendard_regular"
-                    android:text="@{vm.departure}"
+                    android:text="@{courseDetailDto.departure}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_departure_title"
