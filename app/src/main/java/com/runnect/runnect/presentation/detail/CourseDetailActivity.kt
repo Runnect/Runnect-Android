@@ -68,7 +68,6 @@ class CourseDetailActivity :
     // todo: 뷰모델로 이전시키기
     private lateinit var courseDetail: CourseDetail
     private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
-    private var editContent = EditContent("", "")
 
     // todo: 앞으로 삭제할 바텀시트, 다이얼로그
     private lateinit var deleteDialog: AlertDialog
@@ -429,17 +428,17 @@ class CourseDetailActivity :
 //        viewModel.convertMode()
         currentScreenMode = ScreenMode.EditMode
 
-        saveCurrentCourseContent()
+        //saveCurrentCourseContent()
 
         viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
         viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
         updateLayoutForEditMode()
     }
 
-    private fun saveCurrentCourseContent() {
-        editContent = EditContent(courseDetail.title, courseDetail.description)
-
-    }
+//    private fun saveCurrentCourseContent() {
+//        editContent = EditContent(courseDetail.title, courseDetail.description)
+//
+//    }
 
     private fun updateLayoutForEditMode() {
         with(binding) {
