@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.detail
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -50,34 +49,39 @@ import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
-import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
-    private lateinit var departureLatLng: LatLng
-    private lateinit var courseDetail: CourseDetail
+    private val isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private var isFromDeepLink: Boolean = false
 
+    // todo: 인텐트 부가데이터
+    private lateinit var rootScreen: String
+    private var publicCourseId: Int = -1
+
+    // todo: 러닝 시작하기 버튼 눌렀을 때, 출발지 위치 정보 전달
+    private lateinit var departureLatLng: LatLng
+    private lateinit var connectedSpots: ArrayList<LatLng>
+
+    // todo: 뷰모델로 이전시키기
+    private lateinit var courseDetail: CourseDetail
+    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
+    private var editContent = EditContent("", "")
+
+    // todo: 앞으로 삭제할 바텀시트, 다이얼로그
     private lateinit var deleteDialog: AlertDialog
     private lateinit var editBottomSheet: BottomSheetDialog
     private lateinit var editInterruptDialog: AlertDialog
-
-    private val rootScreen by lazy { intent.getStringExtra(EXTRA_ROOT).toString() }
-    private var publicCourseId by Delegates.notNull<Int>()
-
-    private var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    private var isFromDeepLink: Boolean = false
-    private val touchList = arrayListOf<LatLng>()
-    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
 
-        initDetailCourseId()
-        initDeepLink()
+        initIntentExtraData()
+        checkFromDeepLink()
 
         addListener()
         addObserver()
@@ -90,7 +94,8 @@ class CourseDetailActivity :
         setEditInterruptedDialog()
     }
 
-    private fun initDetailCourseId() {
+    private fun initIntentExtraData() {
+        rootScreen = intent.getStringExtra(EXTRA_ROOT).toString()
         publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
     }
 
@@ -117,6 +122,13 @@ class CourseDetailActivity :
         }
     }
 
+    private fun handleBackButtonByCurrentScreenMode() {
+        when (currentScreenMode) {
+            is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
+            is ScreenMode.EditMode -> showStopEditingDialog()
+        }
+    }
+
     private fun navigateToPreviousScreen() {
         when (rootScreen) {
             CourseDetailRootScreen.COURSE_STORAGE_SCRAP.extraName ->
@@ -128,11 +140,34 @@ class CourseDetailActivity :
             CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName ->
                 handleReturnToMyUpload()
         }
-
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
+    // todo: 하드 코딩한 문자열 -> 상수화 시켜주는 게 좋을 거 같아요!
+    private fun checkFromDeepLink() {
+        // 딥링크를 통해 열린 경우
+        if (Intent.ACTION_VIEW == intent.action) {
+            isFromDeepLink = true
+
+            val uri = intent.data
+            if (uri != null) {
+                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음.
+                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
+                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
+            }
+        }
+
+        // 위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어
+        // getCourseDetail()을 돌려줄 수 있습니다.
+        getCourseDetail()
+    }
+
+    private fun getCourseDetail() {
+        viewModel.getCourseDetail(publicCourseId)
+    }
+
+    // todo: 함수를 더 작게 쪼개는 게 좋을 거 같아요!
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -197,20 +232,6 @@ class CourseDetailActivity :
         }
     }
 
-    private fun initDeepLink() {
-        if (Intent.ACTION_VIEW == intent.action) { //딥링크를 통해 열린 경우
-            isFromDeepLink = true
-            val uri = intent.data
-            if (uri != null) {
-                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음
-                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
-                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
-            }
-        }
-        //위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어 getCourseDetail()을 돌려줄 수 있습니다.
-        getCourseDetail()
-    }
-
     private fun addListener() {
         initBackButtonClickListener()
         initScrapButtonClickListener()
@@ -222,21 +243,13 @@ class CourseDetailActivity :
 
     private fun initShowMoreButtonClickListener() {
         binding.btnShowMore.setOnClickListener { view ->
-            if (isMyUploadCourseDetailScreen()) {
-//                editBottomSheet.show()
-                // todo: 자신이 작성한 글은 수정/삭제 팝업메뉴
+            if (courseDetail.isNowUser) {
                 showEditDeletePopupMenu(view)
-                return@setOnClickListener
+            } else {
+                showReportPopupMenu(view)
             }
-
-            // todo: 다른 사람이 작성한 글은 신고하기 팝업메뉴
-            //  글 작성자의 id와 현재 유저의 id 비교해야 함.
-            showReportPopupMenu(view)
         }
     }
-
-    private fun isMyUploadCourseDetailScreen() =
-        rootScreen == CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName
 
     private fun initEditFinishButtonClickListener() {
         binding.tvCourseDetailEditFinish.setOnClickListener {
@@ -247,9 +260,9 @@ class CourseDetailActivity :
     private fun initShareButtonClickListener() {
         binding.btnShare.setOnClickListener {
             sendKakaoLink(
-                title = viewModel.title.value.toString(),
-                desc = viewModel.description.value.toString(),
-                image = viewModel.imageUrl.value.toString()
+                title = courseDetail.title,
+                desc = courseDetail.description,
+                image = courseDetail.image
             )
         }
     }
@@ -269,7 +282,7 @@ class CourseDetailActivity :
                     EXTRA_COURSE_DATA, CourseData(
                         courseId = courseDetail.courseId,
                         publicCourseId = courseDetail.id,
-                        touchList = touchList,
+                        touchList = connectedSpots,
                         startLatLng = departureLatLng,
                         departure = courseDetail.departure,
                         distance = courseDetail.distance.toFloat(),
@@ -315,13 +328,6 @@ class CourseDetailActivity :
         }
     }
 
-    private fun handleBackButtonByCurrentScreenMode() {
-        when (currentScreenMode) {
-            is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
-            is ScreenMode.EditMode -> showStopEditingDialog()
-        }
-    }
-
     private fun showStopEditingDialog() {
         val dialog = CommonDialogFragment(
             stringOf(R.string.dialog_my_upload_course_detail_stop_editing_desc),
@@ -359,7 +365,7 @@ class CourseDetailActivity :
             stringOf(R.string.dialog_course_detail_delete_no),
             stringOf(R.string.dialog_course_detail_delete_yes),
             onNegativeButtonClicked = {},
-            onPositiveButtonClicked = { /** todo: 뷰모델에서 코스 삭제하기 */ }
+            onPositiveButtonClicked = { viewModel.deleteUploadCourse(courseDetail.id) }
         )
         dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_DELETE_DIALOG)
     }
@@ -420,10 +426,19 @@ class CourseDetailActivity :
     }
 
     private fun enterEditMode() {
-        viewModel.convertMode()
+//        viewModel.convertMode()
+        currentScreenMode = ScreenMode.EditMode
+
+        saveCurrentCourseContent()
+
         viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
         viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
         updateLayoutForEditMode()
+    }
+
+    private fun saveCurrentCourseContent() {
+        editContent = EditContent(courseDetail.title, courseDetail.description)
+
     }
 
     private fun updateLayoutForEditMode() {
@@ -436,7 +451,9 @@ class CourseDetailActivity :
     }
 
     private fun enterReadMode() {
-        viewModel.convertMode()
+//        viewModel.convertMode()
+        currentScreenMode = ScreenMode.ReadOnlyMode
+
         updateLayoutForReadMode()
     }
 
@@ -445,22 +462,6 @@ class CourseDetailActivity :
             groupCourseDetailEditMode.isVisible = false
             binding.groupCourseDetailReadMode.isVisible = true
             btnShowMore.isVisible = true
-        }
-    }
-
-    private fun getCourseDetail() {
-        viewModel.getCourseDetail(publicCourseId)
-    }
-
-    private fun setDepartureLatLng() {
-        departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
-    }
-
-    private fun setTouchList() {
-        for (i in 1 until courseDetail.path.size) {
-            touchList.add(
-                LatLng(courseDetail.path[i][0], courseDetail.path[i][1])
-            )
         }
     }
 
@@ -494,14 +495,19 @@ class CourseDetailActivity :
             when (state) {
                 is UiStateV2.Success -> {
                     courseDetail = state.data ?: return@observe
-
                     binding.courseDetailDto = courseDetail
+
+                    viewModel.apply {
+                        updateCourseTitle(courseDetail.title)
+                        updateCourseDescription(courseDetail.description)
+                    }
+
                     updateUserProfileStamp()
                     updateUserLevel()
                     updateScrapState()
 
-                    setDepartureLatLng()
-                    setTouchList()
+                    initDepartureLatLng()
+                    initConnectedSpots()
                 }
 
                 is UiStateV2.Failure -> {
@@ -513,13 +519,28 @@ class CourseDetailActivity :
         }
     }
 
+    private fun initDepartureLatLng() {
+        departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
+    }
+
+    private fun initConnectedSpots() {
+        connectedSpots = arrayListOf()
+
+        for (i in 1 until courseDetail.path.size) {
+            connectedSpots.add(
+                LatLng(courseDetail.path[i][0], courseDetail.path[i][1])
+            )
+        }
+    }
+
     private fun setupCourseDeleteStateObserver() {
         viewModel.myUploadDeleteState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
+
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    if (rootScreen == MY_UPLOAD_ACTIVITY_TAG) {
+                    if (rootScreen == CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName) {
                         val intent = Intent(this, MyUploadActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
@@ -529,7 +550,6 @@ class CourseDetailActivity :
 
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
 
                 else -> {}
@@ -544,7 +564,6 @@ class CourseDetailActivity :
                 UiState.Success -> handleSuccessfulCourseUpdate()
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
                 }
 
                 else -> {}
@@ -666,7 +685,6 @@ class CourseDetailActivity :
                 hideKeyboard(focusView)
             }
         }
-
         return super.dispatchTouchEvent(ev)
     }
 
@@ -677,20 +695,16 @@ class CourseDetailActivity :
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
 
-        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT = "root"
+        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+
         const val EXTRA_COURSE_DATA = "CourseData"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
 
         // ---------------------------------------------------
 
-        private const val STORAGE_SCRAP_TAG = "storageScrap"
-        private const val COURSE_DISCOVER_TAG = "discover"
-        private const val MY_UPLOAD_ACTIVITY_TAG = "upload"
-
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
-
         private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
         private const val TAG_MY_UPLOAD_COURSE_EDIT_DIALOG = "MY_UPLOAD_COURSE_EDIT_DIALOG"
     }
