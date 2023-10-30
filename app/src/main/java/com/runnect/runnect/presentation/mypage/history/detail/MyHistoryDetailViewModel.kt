@@ -34,6 +34,10 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
 
     val isValidTitle: LiveData<Boolean> = _title.map { it.isNotBlank() }
 
+    private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
+    val currentScreenMode get() = _currentScreenMode
+
+    private var savedTitle: String = ""
     private var historyId: Int = -1
 
     fun updateHistoryTitle(title: String) {
@@ -42,6 +46,18 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
 
     fun updateHistoryId(id: Int) {
         historyId = id
+    }
+
+    fun saveCurrentTitle() {
+        savedTitle = title
+    }
+
+    fun restoreOriginalTitle() {
+        _title.value = savedTitle
+    }
+
+    fun updateCurrentScreenMode(mode: ScreenMode) {
+        _currentScreenMode = mode
     }
 
     fun deleteHistory() {

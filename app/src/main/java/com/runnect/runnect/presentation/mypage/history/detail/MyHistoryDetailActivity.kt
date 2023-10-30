@@ -30,8 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MyHistoryDetailActivity :
     BindingActivity<ActivityMyHistoryDetailBinding>(R.layout.activity_my_history_detail) {
     private val viewModel: MyHistoryDetailViewModel by viewModels()
-    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
-    private var temporarilySavedTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,29 +61,21 @@ class MyHistoryDetailActivity :
     }
 
     private fun enterReadMode() {
-        updateCurrentScreenMode(ScreenMode.ReadOnlyMode)
+        viewModel.updateCurrentScreenMode(ScreenMode.ReadOnlyMode)
         updateTitleInputType()
         updateMoreButtonVisibility(true)
         updateConstraintForReadMode()
     }
 
     private fun enterEditMode() {
-        updateCurrentScreenMode(ScreenMode.EditMode)
+        viewModel.updateCurrentScreenMode(ScreenMode.EditMode)
         updateTitleInputType()
         updateMoreButtonVisibility(false)
         updateConstraintForEditMode()
 
         // 중간에 수정을 취소하면 원래 제목으로 되돌리기 위해
-        // 현재 제목을 전역 변수에 저장해둔다.
-        saveTemporarilyCurrentTitle()
-    }
-
-    private fun saveTemporarilyCurrentTitle() {
-        temporarilySavedTitle = viewModel.title
-    }
-
-    private fun updateCurrentScreenMode(mode: ScreenMode) {
-        currentScreenMode = mode
+        // 현재 제목을 뷰모델에 저장해둔다.
+        viewModel.saveCurrentTitle()
     }
 
     private fun updateMoreButtonVisibility(isVisible: Boolean) {
@@ -116,7 +106,7 @@ class MyHistoryDetailActivity :
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
-        when (currentScreenMode) {
+        when (viewModel.currentScreenMode) {
             is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
             is ScreenMode.EditMode -> showStopEditingDialog()
         }
@@ -252,7 +242,7 @@ class MyHistoryDetailActivity :
     }
 
     private fun updateTitleInputType() {
-        when (currentScreenMode) {
+        when (viewModel.currentScreenMode) {
             is ScreenMode.ReadOnlyMode -> {
                 binding.etCourseTitle.inputType = InputType.TYPE_NULL
             }
@@ -285,7 +275,7 @@ class MyHistoryDetailActivity :
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
-                viewModel.updateHistoryTitle(temporarilySavedTitle)
+                viewModel.restoreOriginalTitle()
                 enterReadMode()
             }
         )
