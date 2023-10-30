@@ -11,6 +11,7 @@ import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitleDto
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
