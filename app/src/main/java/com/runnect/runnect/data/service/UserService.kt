@@ -30,15 +30,15 @@ interface UserService {
     suspend fun getUserUploadCourse(
     ): ResponseUserUploadCourse
 
-    @PUT("api/record")
-    suspend fun putDeleteHistory(
-        @Body requestDeleteHistoryDto: RequestDeleteHistoryDto
-    ): BaseResponse<ResponseDeleteHistoryDto>
-
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
         @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): ResponseDeleteUploadCourse
+
+    @PUT("api/record")
+    suspend fun putDeleteHistory(
+        @Body requestDeleteHistoryDto: RequestDeleteHistoryDto
+    ): BaseResponse<ResponseDeleteHistoryDto>
 
     @PATCH("api/record/{recordId}")
     suspend fun patchHistoryTitle(

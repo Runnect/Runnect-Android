@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintSet
@@ -19,6 +22,7 @@ import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.snackBar
@@ -82,17 +86,41 @@ class MyHistoryDetailActivity :
     }
 
     private fun addListener() {
+        initBackButtonClickListener()
+        initShowMoreButtonClickListener()
+        initEditFinishButtonClickListener()
+        initTitleEditorActionDoneListener()
+    }
+
+    private fun initBackButtonClickListener() {
         binding.ivBackBtn.setOnClickListener {
             handleBackButtonByCurrentScreenMode()
         }
+    }
 
+    private fun initShowMoreButtonClickListener() {
         binding.ivShowMore.setOnClickListener { view ->
             showPopupMenu(view)
         }
+    }
 
+    private fun initEditFinishButtonClickListener() {
         binding.btnMyHistoryDetailEditFinish.setOnClickListener {
             viewModel.patchHistoryTitle()
         }
+    }
+
+    private fun initTitleEditorActionDoneListener() {
+        binding.etCourseTitle.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(view: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    viewModel.patchHistoryTitle()
+                    hideKeyboard(currentFocus ?: View(this@MyHistoryDetailActivity))
+                    return true
+                }
+                return false
+            }
+        })
     }
 
     private fun registerBackPressedCallback() {
