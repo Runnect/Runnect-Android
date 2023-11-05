@@ -258,7 +258,6 @@
             app:layout_constraintEnd_toEndOf="@id/view_1"
             app:layout_constraintTop_toTopOf="@id/tv_total_distance" />
 
-
         <!--이동시간-->
 
         <View
@@ -270,7 +269,6 @@
             app:layout_constraintEnd_toStartOf="@id/view_3"
             app:layout_constraintStart_toEndOf="@id/view_1"
             app:layout_constraintTop_toTopOf="@id/view_1" />
-
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_time"
@@ -317,7 +315,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/view_2"
             app:layout_constraintTop_toTopOf="@id/view_2" />
-
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_pace"
