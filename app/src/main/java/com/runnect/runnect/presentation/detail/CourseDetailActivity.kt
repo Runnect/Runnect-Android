@@ -170,6 +170,41 @@ class CourseDetailActivity :
         startActivity(intent)
     }
 
+    private fun addListener() {
+        initBackButtonClickListener()
+        initScrapButtonClickListener()
+        initStartRunButtonClickListener()
+        initShareButtonClickListener()
+        initEditFinishButtonClickListener()
+        initShowMoreButtonClickListener()
+    }
+
+    private fun initShowMoreButtonClickListener() {
+        binding.btnShowMore.setOnClickListener { view ->
+            if (courseDetail.isNowUser) {
+                showEditDeletePopupMenu(view)
+            } else {
+                showReportPopupMenu(view)
+            }
+        }
+    }
+
+    private fun initEditFinishButtonClickListener() {
+        binding.tvCourseDetailEditFinish.setOnClickListener {
+            viewModel.patchUpdatePublicCourse(publicCourseId)
+        }
+    }
+
+    private fun initShareButtonClickListener() {
+        binding.btnShare.setOnClickListener {
+            sendKakaoLink(
+                title = courseDetail.title,
+                desc = courseDetail.description,
+                image = courseDetail.image
+            )
+        }
+    }
+
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -231,41 +266,6 @@ class CourseDetailActivity :
                 // 인터넷 브라우저가 없을 때
                 Toast.makeText(context, "chrome 또는 인터넷 브라우저를 설치해주세요", Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    private fun addListener() {
-        initBackButtonClickListener()
-        initScrapButtonClickListener()
-        initStartRunButtonClickListener()
-        initShareButtonClickListener()
-        initEditFinishButtonClickListener()
-        initShowMoreButtonClickListener()
-    }
-
-    private fun initShowMoreButtonClickListener() {
-        binding.btnShowMore.setOnClickListener { view ->
-            if (courseDetail.isNowUser) {
-                showEditDeletePopupMenu(view)
-            } else {
-                showReportPopupMenu(view)
-            }
-        }
-    }
-
-    private fun initEditFinishButtonClickListener() {
-        binding.tvCourseDetailEditFinish.setOnClickListener {
-            viewModel.patchUpdatePublicCourse(publicCourseId)
-        }
-    }
-
-    private fun initShareButtonClickListener() {
-        binding.btnShare.setOnClickListener {
-            sendKakaoLink(
-                title = courseDetail.title,
-                desc = courseDetail.description,
-                image = courseDetail.image
-            )
         }
     }
 
