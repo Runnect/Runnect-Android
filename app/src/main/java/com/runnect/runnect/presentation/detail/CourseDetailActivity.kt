@@ -39,6 +39,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
+import com.runnect.runnect.util.custom.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.custom.RunnectToast
 import com.runnect.runnect.util.extension.*
@@ -172,11 +173,30 @@ class CourseDetailActivity :
 
     private fun addListener() {
         initBackButtonClickListener()
+
         initScrapButtonClickListener()
         initStartRunButtonClickListener()
-        initShareButtonClickListener()
         initEditFinishButtonClickListener()
+
+        initShareButtonClickListener()
         initShowMoreButtonClickListener()
+    }
+
+    private fun initBackButtonClickListener() {
+        binding.ivCourseDetailBack.setOnClickListener {
+            handleBackButtonFromDeepLink()
+            handleBackButtonByCurrentScreenMode()
+
+//            if (viewModel.editMode.value == true) {
+//                editInterruptDialog.show()
+//                return@setOnClickListener
+//            }
+//            if (!viewModel.isEdited) {
+//                finish()
+//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+//                return@setOnClickListener
+//            }
+        }
     }
 
     private fun initShowMoreButtonClickListener() {
@@ -272,7 +292,7 @@ class CourseDetailActivity :
     private fun initStartRunButtonClickListener() {
         binding.btnCourseDetailStartRun.setOnClickListener {
             if (isVisitorMode) {
-                requireLogin()
+                showRequireLoginDialog()
                 return@setOnClickListener
             }
 
@@ -302,7 +322,7 @@ class CourseDetailActivity :
             if (isVisitorMode) {
                 RunnectToast.createToast(
                     this@CourseDetailActivity,
-                    stringOf(R.string.visitor_mode_require_login_desc)
+                    stringOf(R.string.visitor_mode_require_login_msg)
                 ).show()
                 return@setOnClickListener
             }
@@ -313,22 +333,7 @@ class CourseDetailActivity :
         }
     }
 
-    private fun initBackButtonClickListener() {
-        binding.ivCourseDetailBack.setOnClickListener {
-            handleBackButtonFromDeepLink()
-            handleBackButtonByCurrentScreenMode()
 
-//            if (viewModel.editMode.value == true) {
-//                editInterruptDialog.show()
-//                return@setOnClickListener
-//            }
-//            if (!viewModel.isEdited) {
-//                finish()
-//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-//                return@setOnClickListener
-//            }
-        }
-    }
 
     private fun showStopEditingDialog() {
         val dialog = CommonDialogFragment(
@@ -391,25 +396,8 @@ class CourseDetailActivity :
         showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
     }
 
-    private fun requireLogin() {
-        val (dialog, dialogLayout) = setActivityDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            resId = R.layout.custom_dialog_require_login,
-            cancel = false
-        )
-        with(dialogLayout) {
-            this.btn_login.setOnClickListener {
-                val intent = Intent(this@CourseDetailActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-                dialog.dismiss()
-            }
-            this.btn_cancel.setOnClickListener {
-                dialog.dismiss()
-            }
-        }
-        dialog.show()
+    private fun showRequireLoginDialog() {
+        RequireLoginDialogFragment().show(supportFragmentManager, TAG_REQUIRE_LOGIN_DIALOG)
     }
 
     private fun enterEditMode() {
@@ -693,5 +681,6 @@ class CourseDetailActivity :
         private const val POPUP_MENU_Y_OFFSET = -10
         private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
         private const val TAG_MY_UPLOAD_COURSE_EDIT_DIALOG = "MY_UPLOAD_COURSE_EDIT_DIALOG"
+        private const val TAG_REQUIRE_LOGIN_DIALOG = "REQUIRE_LOGIN_DIALOG"
     }
 }

@@ -23,7 +23,7 @@ import com.runnect.runnect.R
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_require_login_dialog_desc
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
@@ -78,7 +78,7 @@ fun Context.setCustomDialog(
 ): AlertDialog {
     val dialogLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
     with(dialogLayout) {
-        tv_dialog.text = description
+        tv_require_login_dialog_desc.text = description
         btn_delete_no.text = noBtnText
         btn_delete_yes.text = yesBtnText
     }

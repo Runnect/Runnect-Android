@@ -118,22 +118,25 @@
     <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
     <string name="draw_next">다음으로</string>
 
+    <!-- toast message -->
+    <string name="my_history_upload_detail_title_edit_success_msg">수정이 완료되었습니다</string>
+    <string name="visitor_mode_require_login_msg">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
+
     <!-- visitor mode -->
-    <string name="visitor_mode_require_login_desc">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
+    <string name="dialog_visitor_mode_require_login_desc">가입 후 로그인 시 코스를 저장하고 달릴 수 있어요!</string>
+    <string name="dialog_visitor_mode_require_login_cancel">닫기</string>
+    <string name="dialog_visitor_mode_require_login_confirm">가입하기</string>
 
     <!-- popup menu -->
     <string name="popup_menu_item_edit">수정하기</string>
     <string name="popup_menu_item_delete">삭제하기</string>
     <string name="popup_menu_item_report">신고하기</string>
 
-    <!-- dialog -->
+    <!-- common dialog -->
     <string name="dialog_course_detail_delete_yes">삭제하기</string>
     <string name="dialog_course_detail_delete_no">취소</string>
     <string name="dialog_course_detail_stop_editing_yes">예</string>
     <string name="dialog_course_detail_stop_editing_no">아니오</string>
-
-    <!-- toast -->
-    <string name="my_history_upload_detail_title_edit_success_msg">수정이 완료되었습니다</string>
 
     <!-- my history detail -->
     <string name="dialog_my_history_detail_delete_desc">러닝 기록을 정말로 삭제하시겠어요?</string>

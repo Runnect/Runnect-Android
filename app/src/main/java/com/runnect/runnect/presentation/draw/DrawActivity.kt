@@ -42,15 +42,14 @@ import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.custom.RequireLoginDialogFragment
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import com.runnect.runnect.util.extension.setActivityDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -66,7 +65,7 @@ class DrawActivity :
     OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var currentLocation: LatLng
-    private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수)
+    private lateinit var fusedLocation: FusedLocationProviderClient // 현재 위치 반환 객체 변수
 
     var isCustomLocationMode: Boolean = false
     var isSearchLocationMode: Boolean = false
@@ -135,6 +134,7 @@ class DrawActivity :
         setLocationChangedListener()
         setCameraFinishedListener()
     }
+
     private fun initMode() {
         when (searchResult.mode) {
             "searchLocation" -> initSearchLocationMode()
@@ -142,10 +142,11 @@ class DrawActivity :
             "customLocation" -> initCustomLocationMode()
         }
     }
+
     private fun initSearchLocationMode() {
         isSearchLocationMode = true
 
-        with(binding){
+        with(binding) {
             tvGuide.isVisible = false
             btnDraw.text = CREATE_COURSE
         }
@@ -168,6 +169,7 @@ class DrawActivity :
             }
         }
     }
+
     private fun initCurrentLocationMode() {
         isCurrentLocationMode = true
         isMarkerAvailable = true
@@ -180,6 +182,7 @@ class DrawActivity :
         hideDeparture()
         showDrawCourse()
     }
+
     private fun initCustomLocationMode() {
         isCustomLocationMode = true
 
@@ -216,7 +219,7 @@ class DrawActivity :
         viewModel.getLocationInfoUsingLatLng(lat = lat, lon = lon)
     }
 
-    fun setZoomControl() {
+    private fun setZoomControl() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
 
@@ -224,7 +227,7 @@ class DrawActivity :
         uiSettings.isZoomControlEnabled = false
     }
 
-    fun setCurrentLocationIcon() {
+    private fun setCurrentLocationIcon() {
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
     }
@@ -241,10 +244,11 @@ class DrawActivity :
         }
     }
 
-    fun getCenterPosition(): LatLng {
+    private fun getCenterPosition(): LatLng {
         val cameraPosition = naverMap.cameraPosition
         return cameraPosition.target // 중심 좌표
     }
+
     private fun setLocationChangedListener() {
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
@@ -256,7 +260,7 @@ class DrawActivity :
             //같은 scope 안에 넣었으니 setDepartureLatLng 다음에 drawCourse가 실행되는 것이 보장됨
             //이때 isFirstInit의 초기값을 true로 줘서 최초 1회는 실행되게 하고 이후 drawCourse 내에서 isFirstInit 값을 false로 바꿔줌
             //뒤의 조건을 안 달아주면 다른 mode에서는 버튼을 클릭하기도 전에 drawCourse()가 돌 거라 안 됨.
-            if(isFirstInit && isCurrentLocationMode){
+            if (isFirstInit && isCurrentLocationMode) {
                 drawCourse(departureLatLng = departureLatLng)
             }
         }
@@ -274,7 +278,7 @@ class DrawActivity :
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
             if (isVisitorMode) {
-                requireVisitorLogin()
+                showRequireLoginDialog()
                 return@setOnClickListener
             }
             when {
@@ -475,26 +479,8 @@ class DrawActivity :
         dialog.show()
     }
 
-    private fun requireVisitorLogin() {
-        val (dialog, dialogLayout) = setActivityDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            resId = R.layout.custom_dialog_require_login,
-            cancel = false
-        )
-
-        with(dialogLayout) {
-            this.btn_login.setOnClickListener {
-                val intent = Intent(this@DrawActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-                dialog.dismiss()
-            }
-            this.btn_cancel.setOnClickListener {
-                dialog.dismiss()
-            }
-        }
-        dialog.show()
+    private fun showRequireLoginDialog() {
+        RequireLoginDialogFragment().show(supportFragmentManager, TAG_REQUIRE_LOGIN_DIALOG)
     }
 
     private fun backButton() {
@@ -747,6 +733,8 @@ class DrawActivity :
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        private const val TAG_REQUIRE_LOGIN_DIALOG = "REQUIRE_LOGIN_DIALOG"
+
         const val MAX_MARKER_NUM = 20
         const val DISTANCE_UNIT = "kilometer"
         const val LEAST_CONDITION_CREATE_PATH = 2
