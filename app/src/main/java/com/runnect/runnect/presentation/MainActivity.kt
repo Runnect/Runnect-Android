@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.fragment.app.commit
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -150,11 +149,11 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         var discoverFragment: DiscoverFragment? = null
         var storageScrapFragment: StorageScrapFragment? = null
 
-        fun updateDiscoverFragment() {
+        fun updateCourseDiscoverScreen() {
             discoverFragment?.getRecommendCourses(pageNo = "")
         }
 
-        fun updateStorageScrap() {
+        fun updateStorageScrapScreen() {
             storageScrapFragment?.getCourse()
         }
     }

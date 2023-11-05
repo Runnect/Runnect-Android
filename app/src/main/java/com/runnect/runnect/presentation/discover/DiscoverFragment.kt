@@ -105,7 +105,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun handleReturnToDiscover() {
-        MainActivity.updateStorageScrap()
+        MainActivity.updateStorageScrapScreen()
         requireActivity().finish()
         requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
 

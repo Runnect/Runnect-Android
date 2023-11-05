@@ -152,16 +152,22 @@ class CourseDetailActivity :
     private fun navigateToPreviousScreen() {
         when (rootScreen) {
             CourseDetailRootScreen.COURSE_STORAGE_SCRAP.extraName ->
-                handleReturnToStorageScrap()
+                MainActivity.updateStorageScrapScreen()
 
             CourseDetailRootScreen.COURSE_DISCOVER.extraName ->
-                handleReturnToDiscover()
+                MainActivity.updateCourseDiscoverScreen()
 
             CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName ->
-                handleReturnToMyUpload()
+                navigateToMyUploadCourseScreen()
         }
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun navigateToMyUploadCourseScreen() {
+        val intent = Intent(this, MyUploadActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
     }
 
     private fun sendKakaoLink(title: String, desc: String, image: String) {
@@ -404,21 +410,6 @@ class CourseDetailActivity :
             }
         }
         dialog.show()
-    }
-
-
-    private fun handleReturnToMyUpload() {
-        val intent = Intent(this, MyUploadActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-    }
-
-    private fun handleReturnToDiscover() {
-        MainActivity.updateDiscoverFragment()
-    }
-
-    private fun handleReturnToStorageScrap() {
-        MainActivity.updateStorageScrap()
     }
 
     private fun enterEditMode() {
