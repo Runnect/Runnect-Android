@@ -80,7 +80,7 @@ class CourseDetailActivity :
         binding.lifecycleOwner = this
 
         initIntentExtraData()
-        checkFromDeepLink()
+        showCurrentCourseDetailFromDeepLink()
 
         addListener()
         addObserver()
@@ -96,6 +96,24 @@ class CourseDetailActivity :
     private fun initIntentExtraData() {
         rootScreen = intent.getStringExtra(EXTRA_ROOT).toString()
         publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
+    }
+
+    private fun showCurrentCourseDetailFromDeepLink() {
+        // 딥링크를 통해 열린 경우
+        if (Intent.ACTION_VIEW == intent.action) {
+            isFromDeepLink = true
+
+            val uri = intent.data
+            if (uri != null) {
+                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음.
+                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
+                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
+            }
+        }
+
+        // 위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어
+        // getCourseDetail()을 돌려줄 수 있습니다.
+        viewModel.getCourseDetail(publicCourseId)
     }
 
     private fun registerBackPressedCallback() {
@@ -144,28 +162,6 @@ class CourseDetailActivity :
         }
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
-    private fun checkFromDeepLink() {
-        // 딥링크를 통해 열린 경우
-        if (Intent.ACTION_VIEW == intent.action) {
-            isFromDeepLink = true
-
-            val uri = intent.data
-            if (uri != null) {
-                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음.
-                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
-                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
-            }
-        }
-
-        // 위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어
-        // getCourseDetail()을 돌려줄 수 있습니다.
-        getCourseDetail()
-    }
-
-    private fun getCourseDetail() {
-        viewModel.getCourseDetail(publicCourseId)
     }
 
     private fun sendKakaoLink(title: String, desc: String, image: String) {
