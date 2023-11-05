@@ -110,15 +110,18 @@ class CourseDetailActivity :
 
     private fun handleBackButtonFromDeepLink() {
         if (isFromDeepLink) {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            }
-            startActivity(intent)
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToMainScreenWithBundle()
             isFromDeepLink = false
         }
+    }
+
+    private fun navigateToMainScreenWithBundle() {
+        Intent(this@CourseDetailActivity, MainActivity::class.java).apply {
+            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(this)
+        }
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
@@ -143,7 +146,6 @@ class CourseDetailActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    // todo: 하드 코딩한 문자열 -> 상수화 시켜주는 게 좋을 거 같아요!
     private fun checkFromDeepLink() {
         // 딥링크를 통해 열린 경우
         if (Intent.ACTION_VIEW == intent.action) {
@@ -166,7 +168,6 @@ class CourseDetailActivity :
         viewModel.getCourseDetail(publicCourseId)
     }
 
-    // todo: 함수를 더 작게 쪼개는 게 좋을 거 같아요!
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -690,14 +691,13 @@ class CourseDetailActivity :
     companion object {
         const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
-
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
 
         const val EXTRA_ROOT = "root"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-
         const val EXTRA_COURSE_DATA = "CourseData"
+
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
 
         // ---------------------------------------------------
