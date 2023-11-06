@@ -44,8 +44,9 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.multipart.ContentUriRequestBody
+import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
@@ -135,17 +136,21 @@ class DrawActivity :
         setLocationChangedListener()
         setCameraFinishedListener()
     }
+
     private fun initMode() {
         when (searchResult.mode) {
-            "searchLocation" -> initSearchLocationMode()
-            "currentLocation" -> initCurrentLocationMode()
-            "customLocation" -> initCustomLocationMode()
+            DepartureSetMode.SEARCH.mode -> initSearchLocationMode()
+            DepartureSetMode.CURRENT.mode -> initCurrentLocationMode()
+            DepartureSetMode.CUSTOM.mode -> initCustomLocationMode()
+            else -> throw IllegalArgumentException("Unknown mode: ${searchResult.mode}")
         }
     }
+
+
     private fun initSearchLocationMode() {
         isSearchLocationMode = true
 
-        with(binding){
+        with(binding) {
             tvGuide.isVisible = false
             btnDraw.text = CREATE_COURSE
         }
@@ -168,6 +173,7 @@ class DrawActivity :
             }
         }
     }
+
     private fun initCurrentLocationMode() {
         isCurrentLocationMode = true
         isMarkerAvailable = true
@@ -180,6 +186,7 @@ class DrawActivity :
         hideDeparture()
         showDrawCourse()
     }
+
     private fun initCustomLocationMode() {
         isCustomLocationMode = true
 
@@ -245,6 +252,7 @@ class DrawActivity :
         val cameraPosition = naverMap.cameraPosition
         return cameraPosition.target // 중심 좌표
     }
+
     private fun setLocationChangedListener() {
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
@@ -256,7 +264,7 @@ class DrawActivity :
             //같은 scope 안에 넣었으니 setDepartureLatLng 다음에 drawCourse가 실행되는 것이 보장됨
             //이때 isFirstInit의 초기값을 true로 줘서 최초 1회는 실행되게 하고 이후 drawCourse 내에서 isFirstInit 값을 false로 바꿔줌
             //뒤의 조건을 안 달아주면 다른 mode에서는 버튼을 클릭하기도 전에 drawCourse()가 돌 거라 안 됨.
-            if(isFirstInit && isCurrentLocationMode){
+            if (isFirstInit && isCurrentLocationMode) {
                 drawCourse(departureLatLng = departureLatLng)
             }
         }
