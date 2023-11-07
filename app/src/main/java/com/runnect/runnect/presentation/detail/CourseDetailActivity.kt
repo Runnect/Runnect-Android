@@ -176,16 +176,6 @@ class CourseDetailActivity :
         binding.ivCourseDetailBack.setOnClickListener {
             handleBackButtonFromDeepLink()
             handleBackButtonByCurrentScreenMode()
-
-//            if (viewModel.editMode.value == true) {
-//                editInterruptDialog.show()
-//                return@setOnClickListener
-//            }
-//            if (!viewModel.isEdited) {
-//                finish()
-//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-//                return@setOnClickListener
-//            }
         }
     }
 
@@ -320,7 +310,6 @@ class CourseDetailActivity :
 
             it.isSelected = !it.isSelected
             viewModel.postCourseScrap(publicCourseId, it.isSelected)
-            viewModel.isEdited = true
         }
     }
 
@@ -391,20 +380,13 @@ class CourseDetailActivity :
     }
 
     private fun enterEditMode() {
-//        viewModel.convertMode()
         currentScreenMode = ScreenMode.EditMode
-
-        //saveCurrentCourseContent()
 
         viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
         viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
+
         updateLayoutForEditMode()
     }
-
-//    private fun saveCurrentCourseContent() {
-//        editContent = EditContent(courseDetail.title, courseDetail.description)
-//
-//    }
 
     private fun updateLayoutForEditMode() {
         with(binding) {
@@ -415,9 +397,7 @@ class CourseDetailActivity :
     }
 
     private fun enterReadMode() {
-//        viewModel.convertMode()
         currentScreenMode = ScreenMode.ReadOnlyMode
-
         updateLayoutForReadMode()
     }
 
@@ -562,7 +542,6 @@ class CourseDetailActivity :
         binding.indeterminateBar.isVisible = false
         viewModel.editTitle.value = viewModel.titleForInterruption.value
         viewModel.editContent.value = viewModel.contentForInterruption.value
-        viewModel.isEdited = true
         enterReadMode()
         showToast("수정이 완료되었습니다")
     }

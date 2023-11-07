@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.detail.CourseDetailViewModel" />
@@ -160,7 +159,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="68dp"
                     android:fontFamily="@font/pretendard_bold"
-                    android:text="@{vm.editTitle}"
+                    android:text="@{vm.title}"
                     android:textColor="@color/G1"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -273,7 +272,7 @@
                     android:fontFamily="@font/pretendard_regular"
                     android:lineHeight="24dp"
                     android:maxLength="150"
-                    android:text="@{vm.editContent}"
+                    android:text="@{vm.contents}"
                     android:textColor="@color/G1"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -357,7 +356,7 @@
                     android:inputType="text"
                     android:maxLength="20"
                     android:paddingVertical="0dp"
-                    android:text="@={vm.titleForInterruption}"
+                    android:text="@={vm._title}"
                     android:textColor="@color/G1"
                     android:textColorHint="@color/G3"
                     android:textCursorDrawable="@color/M1"
@@ -495,7 +494,7 @@
                     android:maxLength="150"
                     android:paddingBottom="20dp"
                     android:scrollHorizontally="false"
-                    android:text="@={vm.contentForInterruption}"
+                    android:text="@={vm._contents}"
                     android:textColorHint="@color/G2"
                     android:textCursorDrawable="@color/M1"
                     android:textSize="14sp"
