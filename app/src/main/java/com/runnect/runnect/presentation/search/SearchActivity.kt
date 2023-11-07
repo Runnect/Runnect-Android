@@ -178,40 +178,28 @@ class SearchActivity :
         }
     }
 
-    override fun startSearchLocation(item: SearchResultEntity) {
+    private fun setDeparture(mode: String, item: SearchResultEntity) {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 putExtra(EXTRA_SEARCH_RESULT, item)
-                putExtra(EXTRA_DEPARTURE_SET_MODE, "searchLocation")
+                putExtra(EXTRA_DEPARTURE_SET_MODE, mode)
             }
         )
+    }
+
+    override fun startSearchLocation(item: SearchResultEntity) {
+        setDeparture("searchLocation", item)
     }
 
     private fun startCurrentLocation() {
-        startActivity(
-            Intent(this, DrawActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra(
-                    EXTRA_SEARCH_RESULT,
-                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
-                )
-                putExtra(EXTRA_DEPARTURE_SET_MODE, "currentLocation")
-            }
-        )
+        val emptyItem = SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
+        setDeparture("currentLocation", emptyItem)
     }
 
     private fun startCustomLocation() {
-        startActivity(
-            Intent(this, DrawActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra(
-                    EXTRA_SEARCH_RESULT,
-                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
-                )
-                putExtra(EXTRA_DEPARTURE_SET_MODE, "customLocation")
-            }
-        )
+        val emptyItem = SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
+        setDeparture("customLocation", emptyItem)
     }
 
     //키보드 밖 터치 시, 키보드 내림
