@@ -1,16 +1,14 @@
 package com.runnect.runnect.presentation.detail
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -33,6 +31,9 @@ import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -42,15 +43,16 @@ import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.custom.RunnectToast
-import com.runnect.runnect.util.extension.*
+import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
+import com.runnect.runnect.util.extension.getStampResId
+import com.runnect.runnect.util.extension.hideKeyboard
+import com.runnect.runnect.util.extension.showSnackbar
+import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.extension.showWebBrowser
+import com.runnect.runnect.util.extension.stringOf
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
 
 @AndroidEntryPoint
 class CourseDetailActivity :
@@ -62,7 +64,7 @@ class CourseDetailActivity :
     private var isFromDeepLink: Boolean = false
     private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
 
-    // 인텐트 부가데이터
+    // 인텐트 부가 데이터
     private lateinit var rootScreen: CourseDetailRootScreen
     private var publicCourseId: Int = -1
 
@@ -70,11 +72,6 @@ class CourseDetailActivity :
     private lateinit var courseDetail: CourseDetail
     private lateinit var departureLatLng: LatLng
     private lateinit var connectedSpots: ArrayList<LatLng>
-
-    // todo: 앞으로 삭제할 바텀시트, 다이얼로그
-    private lateinit var deleteDialog: AlertDialog
-    private lateinit var editBottomSheet: BottomSheetDialog
-    private lateinit var editInterruptDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,12 +84,6 @@ class CourseDetailActivity :
         addListener()
         addObserver()
         registerBackPressedCallback()
-
-        initEditBottomSheet()
-        initDeleteDialog()
-        setDeleteDialogClickEvent()
-        initEditInterruptedDialog()
-        setEditInterruptedDialog()
     }
 
     private fun initIntentExtraData() {
@@ -421,7 +412,6 @@ class CourseDetailActivity :
             groupCourseDetailEditMode.isVisible = true
             btnShowMore.isVisible = false
         }
-        editBottomSheet.dismiss()
     }
 
     private fun enterReadMode() {
@@ -514,7 +504,7 @@ class CourseDetailActivity :
 
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    if (rootScreen == MY_PAGE_UPLOAD_COURSE.extraName) {
+                    if (rootScreen == MY_PAGE_UPLOAD_COURSE) {
                         val intent = Intent(this, MyUploadActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
@@ -577,89 +567,23 @@ class CourseDetailActivity :
         showToast("수정이 완료되었습니다")
     }
 
-    private fun initEditBottomSheet() {
-        editBottomSheet = setEditBottomSheet()
-        setEditBottomSheetClickEvent()
-    }
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            currentFocus?.let { view ->
+                if (view is EditText) {
+                    val focusView = Rect()
+                    view.getGlobalVisibleRect(focusView)
 
-    private fun setEditBottomSheetClickEvent() {
-        editBottomSheet.setEditBottomSheetClickListener { which ->
-            when (which) {
-                editBottomSheet.layout_edit_frame -> enterEditMode()
-                editBottomSheet.layout_delete_frame -> deleteDialog.show()
+                    val touchedX = event.x.toInt()
+                    val touchedY = event.y.toInt()
+
+                    if (!focusView.contains(touchedX, touchedY)) {
+                        hideKeyboard(view)
+                    }
+                }
             }
         }
-    }
-
-    private fun initDeleteDialog() {
-        deleteDialog = setCustomDialog(
-            layoutInflater, binding.root, DELETE_DIALOG_DESC, DELETE_DIALOG_YES_BTN
-        )
-    }
-
-    private fun setDeleteDialogClickEvent() {
-        deleteDialog.setDialogButtonClickListener { which ->
-            when (which) {
-                deleteDialog.btn_delete_yes -> viewModel.deleteUploadCourse(publicCourseId)
-            }
-        }
-    }
-
-    private fun initEditInterruptedDialog() {
-        editInterruptDialog = setCustomDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            description = EDIT_INTERRUPT_DIALOG_DESC,
-            yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
-            noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
-        )
-    }
-
-    private fun setEditInterruptedDialog() {
-        editInterruptDialog.setDialogButtonClickListener { which ->
-            when (which) {
-                editInterruptDialog.btn_delete_yes -> enterReadMode()
-            }
-        }
-    }
-
-    @SuppressLint("MissingInflatedId")
-    fun bottomSheet() {
-        // bottomSheetDialog 객체 생성
-        val bottomSheetDialog = BottomSheetDialog(
-            this@CourseDetailActivity, R.style.BottomSheetDialogTheme
-        )
-
-        // layout_bottom_sheet를 뷰 객체로 생성
-        val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
-            R.layout.custom_dialog_report, findViewById<LinearLayout>(R.id.bottomSheet)
-        )
-        // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
-        bottomSheetView.findViewById<View>(R.id.view_go_to_report_frame).setOnClickListener {
-            showWebBrowser(REPORT_URL)
-            bottomSheetDialog.dismiss()
-        }
-        // bottomSheetDialog 뷰 생성
-        bottomSheetDialog.setContentView(bottomSheetView)
-        // bottomSheetDialog 호출
-        bottomSheetDialog.show()
-    }
-
-    // 키보드 밖 터치 시, 키보드 내림
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val focusView = currentFocus
-        if (focusView != null) {
-            val rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-
-            val x = ev!!.x.toInt()
-            val y = ev.y.toInt()
-
-            if (!rect.contains(x, y)) {
-                hideKeyboard(focusView)
-            }
-        }
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
 
     companion object {
