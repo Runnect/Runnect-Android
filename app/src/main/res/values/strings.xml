@@ -137,7 +137,6 @@
     <!-- my history detail -->
     <string name="dialog_my_history_detail_delete_desc">러닝 기록을 정말로 삭제하시겠어요?</string>
     <string name="dialog_my_history_detail_stop_editing_desc">러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
-    <string name="my_history_detail_title_edit_success_msg">수정이 완료되었습니다</string>
     <string name="my_history_detail_title_hint">글 제목</string>
 
     <!-- my upload course detail -->
@@ -147,4 +146,5 @@
 
     <!-- course detail -->
     <string name="course_detail_visitor_mode_scrap_warning_msg">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
+    <string name="course_detail_title_edit_success_msg">수정이 완료되었습니다</string>
 </resources>

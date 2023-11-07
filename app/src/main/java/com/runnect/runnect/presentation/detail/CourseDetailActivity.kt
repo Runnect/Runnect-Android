@@ -533,10 +533,11 @@ class CourseDetailActivity :
     private fun handleSuccessfulCourseUpdate() {
         binding.indeterminateBar.isVisible = false
 
-        viewModel.editTitle.value = viewModel.titleForInterruption.value
-        viewModel.editContent.value = viewModel.contentForInterruption.value
+//        viewModel.editTitle.value = viewModel.titleForInterruption.value
+//        viewModel.editContent.value = viewModel.contentForInterruption.value
+
         enterReadMode()
-        showToast("수정이 완료되었습니다")
+        showToast(stringOf(R.string.course_detail_title_edit_success_msg))
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

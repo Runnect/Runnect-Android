@@ -207,7 +207,7 @@ class MyHistoryDetailActivity :
                     val newTitle = response.record.title
                     viewModel.updateHistoryTitle(newTitle)
 
-                    showToast(stringOf(R.string.my_history_detail_title_edit_success_msg))
+                    showToast(stringOf(R.string.course_detail_title_edit_success_msg))
                 }
 
                 is UiStateV2.Failure -> {
