@@ -51,6 +51,7 @@ import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.extension.stringOf
 import com.runnect.runnect.util.mode.ScreenMode
+import com.runnect.runnect.util.mode.ScreenMode.*
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -62,7 +63,6 @@ class CourseDetailActivity :
 
     // 플래그 변수
     private var isFromDeepLink: Boolean = false
-    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
 
     // 인텐트 부가 데이터
     private lateinit var rootScreen: CourseDetailRootScreen
@@ -138,9 +138,9 @@ class CourseDetailActivity :
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
-        when (currentScreenMode) {
-            is ScreenMode.ReadOnlyMode -> navigateToPreviousScreen()
-            is ScreenMode.EditMode -> showStopEditingDialog()
+        when (viewModel.currentScreenMode) {
+            is ReadOnlyMode -> navigateToPreviousScreen()
+            is EditMode -> showStopEditingDialog()
         }
     }
 
@@ -322,7 +322,7 @@ class CourseDetailActivity :
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
-                //viewModel.updateHistoryTitle(temporarilySavedTitle)
+                viewModel.restoreOriginalContents()
                 enterReadMode()
             }
         )
@@ -380,11 +380,10 @@ class CourseDetailActivity :
     }
 
     private fun enterEditMode() {
-        currentScreenMode = ScreenMode.EditMode
-
-        viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
-        viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
-
+        viewModel.apply {
+            updateCurrentScreenMode(EditMode)
+            saveCurrentContents()
+        }
         updateLayoutForEditMode()
     }
 
@@ -397,7 +396,7 @@ class CourseDetailActivity :
     }
 
     private fun enterReadMode() {
-        currentScreenMode = ScreenMode.ReadOnlyMode
+        viewModel.updateCurrentScreenMode(ReadOnlyMode)
         updateLayoutForReadMode()
     }
 
@@ -414,13 +413,6 @@ class CourseDetailActivity :
         setupCourseDetailGetStateObserver()
         setupCourseDeleteStateObserver()
         setupCoursePatchStateObserver()
-
-        viewModel.isEditFinishEnable.observe(this) {
-            with(binding.tvCourseDetailEditFinish) {
-                isActivated = it
-                isClickable = it
-            }
-        }
     }
 
     private fun setupFromDeepLinkObserver() {
@@ -540,6 +532,7 @@ class CourseDetailActivity :
 
     private fun handleSuccessfulCourseUpdate() {
         binding.indeterminateBar.isVisible = false
+
         viewModel.editTitle.value = viewModel.titleForInterruption.value
         viewModel.editContent.value = viewModel.contentForInterruption.value
         enterReadMode()

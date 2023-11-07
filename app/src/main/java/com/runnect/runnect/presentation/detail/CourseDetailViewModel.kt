@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.detail
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,8 @@ import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.addSourceList
+import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -45,31 +48,50 @@ class CourseDetailViewModel @Inject constructor(
     val _title = MutableLiveData<String>()
     val title: String get() = _title.value ?: ""
 
-    val _contents = MutableLiveData<String>()
-    val contents: String get() = _contents.value ?: ""
+    val _description = MutableLiveData<String>()
+    val description: String get() = _description.value ?: ""
+
+    val isValidContents = MutableLiveData(false)
+
+    // todo: 액티비티에서 참조하는 변수들
+    private var savedContents = CourseDetailContents("", "")
+
+    private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
+    val currentScreenMode get() = _currentScreenMode
 
     // todo: 기존 방식의 코드들
 //    var editTitle: MutableLiveData<String> = MutableLiveData("")
 //    var editContent: MutableLiveData<String> = MutableLiveData("")
 //    var isEditFinishEnable = MutableLiveData(true)
-
 //    var titleForInterruption = MutableLiveData("")
 //    var contentForInterruption = MutableLiveData("")
-//    private val editMediator = MediatorLiveData<Unit>()
+    private val editMediator = MediatorLiveData<Unit>()
 //
-//    init {
-//        editMediator.addSourceList(titleForInterruption, contentForInterruption) {
-//            isEditFinishEnable.value =
-//                !(titleForInterruption.value.isNullOrEmpty() or contentForInterruption.value.isNullOrEmpty())
-//        }
-//    }
+    init {
+        editMediator.addSourceList(_title, _description) {
+            isValidContents.value = title.isNotBlank() and description.isNotBlank()
+        }
+    }
 
     fun updateCourseTitle(title: String) {
         _title.value = title
     }
 
     fun updateCourseDescription(desc: String) {
-        _contents.value = desc
+        _description.value = desc
+    }
+
+    fun saveCurrentContents() {
+        savedContents = CourseDetailContents(title, description)
+    }
+
+    fun restoreOriginalContents() {
+        _title.value = savedContents.title
+        _description.value = savedContents.description
+    }
+
+    fun updateCurrentScreenMode(mode: ScreenMode){
+        _currentScreenMode = mode
     }
 
     fun getCourseDetail(courseId: Int) {
@@ -141,11 +163,13 @@ class CourseDetailViewModel @Inject constructor(
                 courseRepository.patchUpdatePublicCourse(
                     id, RequestUpdatePublicCourse(
                         title = title,
-                        description = contents
+                        description = description
                     )
                 )
             }.onSuccess {
                 _courseUpdateState.value = UiState.Success
+
+
             }.onFailure {
                 _courseUpdateState.value = UiState.Failure
             }

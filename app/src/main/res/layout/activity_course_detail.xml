@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.detail.CourseDetailViewModel" />
@@ -272,7 +273,7 @@
                     android:fontFamily="@font/pretendard_regular"
                     android:lineHeight="24dp"
                     android:maxLength="150"
-                    android:text="@{vm.contents}"
+                    android:text="@{vm.description}"
                     android:textColor="@color/G1"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -494,7 +495,7 @@
                     android:maxLength="150"
                     android:paddingBottom="20dp"
                     android:scrollHorizontally="false"
-                    android:text="@={vm._contents}"
+                    android:text="@={vm._description}"
                     android:textColorHint="@color/G2"
                     android:textCursorDrawable="@color/M1"
                     android:textSize="14sp"
@@ -505,15 +506,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tv_course_detail_edit_finish"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/all_finish_btn_selector"
+            android:background="@drawable/sel_edit_finish_btn_bg_color"
+            android:enabled="@{vm.isValidContents}"
             android:fontFamily="@font/pretendard_semibold"
-            android:gravity="center"
+            android:stateListAnimator="@null"
             android:text="@string/history_edit_finish"
             android:textColor="@color/W1"
             android:textSize="15sp"
