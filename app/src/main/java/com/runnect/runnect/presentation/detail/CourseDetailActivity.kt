@@ -225,6 +225,7 @@ class CourseDetailActivity :
         }
     }
 
+    // todo: 함수를 더 작게 분리해주는 게 좋을 거 같아요! @우남
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -320,10 +321,7 @@ class CourseDetailActivity :
     private fun initScrapButtonClickListener() {
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                RunnectToast.createToast(
-                    this@CourseDetailActivity,
-                    stringOf(R.string.visitor_mode_require_login_msg)
-                ).show()
+                RunnectToast.createToast(this, stringOf(R.string.course_detail_visitor_mode_scrap_warning_msg)).show()
                 return@setOnClickListener
             }
 
@@ -486,7 +484,7 @@ class CourseDetailActivity :
                 }
 
                 is UiStateV2.Failure -> {
-                    snackBar(binding.root, state.msg)
+                    showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -668,11 +666,9 @@ class CourseDetailActivity :
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
-
         const val EXTRA_ROOT = "root"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_COURSE_DATA = "CourseData"
-
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
 
         // ---------------------------------------------------

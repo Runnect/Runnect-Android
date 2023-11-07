@@ -118,10 +118,6 @@
     <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
     <string name="draw_next">다음으로</string>
 
-    <!-- toast message -->
-    <string name="my_history_upload_detail_title_edit_success_msg">수정이 완료되었습니다</string>
-    <string name="visitor_mode_require_login_msg">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
-
     <!-- visitor mode -->
     <string name="dialog_visitor_mode_require_login_desc">가입 후 로그인 시 코스를 저장하고 달릴 수 있어요!</string>
     <string name="dialog_visitor_mode_require_login_cancel">닫기</string>
@@ -141,10 +137,14 @@
     <!-- my history detail -->
     <string name="dialog_my_history_detail_delete_desc">러닝 기록을 정말로 삭제하시겠어요?</string>
     <string name="dialog_my_history_detail_stop_editing_desc">러닝 기록 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
+    <string name="my_history_detail_title_edit_success_msg">수정이 완료되었습니다</string>
     <string name="my_history_detail_title_hint">글 제목</string>
 
     <!-- my upload course detail -->
     <string name="dialog_my_upload_course_detail_delete_desc">코스를 정말로 삭제하시겠어요?</string>
     <string name="dialog_my_upload_course_detail_stop_editing_desc">게시글 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요.</string>
     <string name="course_detail_user_level_unknown_error">알 수 없음</string>
+
+    <!-- course detail -->
+    <string name="course_detail_visitor_mode_scrap_warning_msg">러넥트에 가입하면 코스를 스크랩할 수 있어요</string>
 </resources>

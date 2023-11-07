@@ -22,7 +22,7 @@ import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import com.runnect.runnect.util.extension.showToast
-import com.runnect.runnect.util.extension.snackBar
+import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.stringOf
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -158,7 +158,7 @@ class MyHistoryDetailActivity :
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    snackBar(binding.root, state.msg)
+                    showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -179,7 +179,7 @@ class MyHistoryDetailActivity :
                     val newTitle = response.record.title
                     viewModel.updateHistoryTitle(newTitle)
 
-                    showToast(stringOf(R.string.my_history_upload_detail_title_edit_success_msg))
+                    showToast(stringOf(R.string.my_history_detail_title_edit_success_msg))
                 }
 
                 is UiStateV2.Failure -> {

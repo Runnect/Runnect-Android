@@ -23,20 +23,10 @@ import com.runnect.runnect.R
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_require_login_dialog_desc
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
-
-fun Context.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-}
-
-fun Context.hideKeyboard(view: View) {
-    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    view.clearFocus()
-}
+import kotlinx.android.synthetic.main.fragment_require_login_dialog.view.tv_require_login_dialog_desc
 
 fun Context.setActivityDialog(
     layoutInflater: LayoutInflater,
@@ -162,12 +152,22 @@ fun Context.getStampResId(
     }
 }
 
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    view.clearFocus()
+}
+
 fun Context.showWebBrowser(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     startActivity(intent)
 }
 
-fun Context.snackBar(anchorView: View, message: String) {
+fun Context.showToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.showSnackbar(anchorView: View, message: String) {
     Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
 }
 
