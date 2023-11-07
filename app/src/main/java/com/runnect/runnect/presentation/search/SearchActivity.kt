@@ -81,15 +81,6 @@ class SearchActivity :
         binding.recyclerViewSearch.adapter = searchAdapter
     }
 
-    override fun selectItem(item: SearchResultEntity) {
-        startActivity(
-            Intent(this, DrawActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra(EXTRA_SEARCH_RESULT, item) //mode == "searchLocation"
-            }
-        )
-    }
-
     private fun showEmptyView() {
         with(binding) {
             ivNoSearchResult.isVisible = true
@@ -187,26 +178,38 @@ class SearchActivity :
         }
     }
 
-    fun startCurrentLocation() {
+    override fun startSearchLocation(item: SearchResultEntity) {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra(
-                    EXTRA_SEARCH_RESULT,
-                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null, mode = "currentLocation")
-                )
+                putExtra(EXTRA_SEARCH_RESULT, item)
+                putExtra(EXTRA_DEPARTURE_SET_MODE, "searchLocation")
             }
         )
     }
 
-    fun startCustomLocation() {
+    private fun startCurrentLocation() {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 putExtra(
                     EXTRA_SEARCH_RESULT,
-                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null, mode = "customLocation")
+                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
                 )
+                putExtra(EXTRA_DEPARTURE_SET_MODE, "currentLocation")
+            }
+        )
+    }
+
+    private fun startCustomLocation() {
+        startActivity(
+            Intent(this, DrawActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                putExtra(
+                    EXTRA_SEARCH_RESULT,
+                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
+                )
+                putExtra(EXTRA_DEPARTURE_SET_MODE, "customLocation")
             }
         )
     }
@@ -228,6 +231,7 @@ class SearchActivity :
 
     companion object {
         const val EXTRA_SEARCH_RESULT = "searchResult"
+        const val EXTRA_DEPARTURE_SET_MODE = "departureSetMode"
     }
 
 }
