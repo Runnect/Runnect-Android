@@ -15,6 +15,7 @@ import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.custom.GridSpacingItemDecoration
@@ -174,7 +175,7 @@ class StorageScrapFragment :
 
         val intent = Intent(activity, CourseDetailActivity::class.java)
         intent.putExtra(EXTRA_PUBLIC_COURSE_ID, item.publicCourseId)
-        intent.putExtra(EXTRA_ROOT, "storageScrap")
+        intent.putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_STORAGE_SCRAP)
         startActivity(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
@@ -186,6 +187,6 @@ class StorageScrapFragment :
         var isFromStorageNoScrap = false
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT = "root"
+        const val EXTRA_ROOT_SCREEN = "rootScreen"
     }
 }

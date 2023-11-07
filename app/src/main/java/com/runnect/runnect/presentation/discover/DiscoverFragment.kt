@@ -21,6 +21,7 @@ import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
@@ -330,7 +331,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun selectItem(publicCourseId: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java)
         intent.putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-        intent.putExtra(EXTRA_ROOT, COURSE_DISCOVER_TAG)
+        intent.putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
         startForResult.launch(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
@@ -347,9 +348,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
-        const val COURSE_DISCOVER_TAG = "discover"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT = "root"
+        const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val END_PAGE = "HTTP 400 Bad Request"
         const val VISITOR_REQUIRE_LOGIN = "러넥트에 가입하면 코스를 업로드할 수 있어요"
     }

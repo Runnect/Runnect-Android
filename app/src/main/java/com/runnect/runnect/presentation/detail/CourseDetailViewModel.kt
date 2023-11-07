@@ -97,6 +97,7 @@ class CourseDetailViewModel @Inject constructor(
 //                imageUrl.value = it.image
 //                title.value = it.title
 //                description.value = it.description
+
 //                _courseDetail = it
 //                stampId.value = it.stampId
 //                mapImage.value = it.image

@@ -50,25 +50,26 @@ import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
 import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
     private val isVisitorMode: Boolean = MainActivity.isVisitorMode
-    private var isFromDeepLink: Boolean = false
 
-    // todo: 인텐트 부가데이터
-    private lateinit var rootScreen: String
+    // 플래그 변수
+    private var isFromDeepLink: Boolean = false
+    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
+
+    // 인텐트 부가데이터
+    private lateinit var rootScreen: CourseDetailRootScreen
     private var publicCourseId: Int = -1
 
-    // todo: 러닝 시작하기 버튼 눌렀을 때, 출발지 위치 정보 전달
+    // 서버통신으로 초기화 할 데이터
+    private lateinit var courseDetail: CourseDetail
     private lateinit var departureLatLng: LatLng
     private lateinit var connectedSpots: ArrayList<LatLng>
-
-    // todo: 뷰모델로 이전시키기
-    private lateinit var courseDetail: CourseDetail
-    private var currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
 
     // todo: 앞으로 삭제할 바텀시트, 다이얼로그
     private lateinit var deleteDialog: AlertDialog
@@ -95,7 +96,9 @@ class CourseDetailActivity :
     }
 
     private fun initIntentExtraData() {
-        rootScreen = intent.getStringExtra(EXTRA_ROOT).toString()
+        intent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)?.let {
+            rootScreen = it
+        }
         publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
     }
 
@@ -136,7 +139,7 @@ class CourseDetailActivity :
 
     private fun navigateToMainScreenWithBundle() {
         Intent(this@CourseDetailActivity, MainActivity::class.java).apply {
-            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
+            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, EXTRA_FROM_COURSE_DETAIL)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(this)
         }
@@ -152,23 +155,19 @@ class CourseDetailActivity :
 
     private fun navigateToPreviousScreen() {
         when (rootScreen) {
-            CourseDetailRootScreen.COURSE_STORAGE_SCRAP.extraName ->
-                MainActivity.updateStorageScrapScreen()
-
-            CourseDetailRootScreen.COURSE_DISCOVER.extraName ->
-                MainActivity.updateCourseDiscoverScreen()
-
-            CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName ->
-                navigateToMyUploadCourseScreen()
+            COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
+            COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
+            MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun navigateToMyUploadCourseScreen() {
-        val intent = Intent(this, MyUploadActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
+        Intent(this, MyUploadActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(this)
+        }
     }
 
     private fun addListener() {
@@ -321,7 +320,10 @@ class CourseDetailActivity :
     private fun initScrapButtonClickListener() {
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                RunnectToast.createToast(this, stringOf(R.string.course_detail_visitor_mode_scrap_warning_msg)).show()
+                RunnectToast.createToast(
+                    this,
+                    stringOf(R.string.course_detail_visitor_mode_scrap_warning_msg)
+                ).show()
                 return@setOnClickListener
             }
 
@@ -330,7 +332,6 @@ class CourseDetailActivity :
             viewModel.isEdited = true
         }
     }
-
 
 
     private fun showStopEditingDialog() {
@@ -513,7 +514,7 @@ class CourseDetailActivity :
 
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    if (rootScreen == CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE.extraName) {
+                    if (rootScreen == MY_PAGE_UPLOAD_COURSE.extraName) {
                         val intent = Intent(this, MyUploadActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
@@ -662,14 +663,17 @@ class CourseDetailActivity :
     }
 
     companion object {
-        const val REPORT_URL =
+        private const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
-        const val RES_NAME = "mypage_img_stamp_"
-        const val RES_STAMP_TYPE = "drawable"
-        const val EXTRA_ROOT = "root"
-        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_COURSE_DATA = "CourseData"
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        private const val RES_NAME = "mypage_img_stamp_"
+        private const val RES_STAMP_TYPE = "drawable"
+
+        private const val EXTRA_ROOT_SCREEN = "rootScreen"
+        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        private const val EXTRA_COURSE_DATA = "CourseData"
+
+        private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
 
         // ---------------------------------------------------
 
