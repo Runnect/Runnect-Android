@@ -22,7 +22,6 @@ class DepartureSearchRepositoryImpl @Inject constructor(private val departureSou
                 fullAddress = makeMainAddress(it),
                 name = it.name ?: "",
                 locationLatLng = LatLng(it.noorLat.toDouble(), it.noorLon.toDouble()),
-                mode = "searchLocation" //현위치, 지도에서 출발과 구분하기 위한 식별자
             )
         }
         return changedData

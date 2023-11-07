@@ -9,5 +9,4 @@ data class SearchResultEntity(
     val fullAddress: String,
     val name: String,
     val locationLatLng: LatLng?,
-    val mode: String
 ) : Parcelable
