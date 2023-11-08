@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.detail
 
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Rect
@@ -14,7 +13,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import coil.load
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gun0912.tedpermission.provider.TedPermissionProvider.context
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.link.LinkClient
@@ -50,7 +48,6 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.extension.stringOf
-import com.runnect.runnect.util.mode.ScreenMode
 import com.runnect.runnect.util.mode.ScreenMode.*
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -79,7 +76,8 @@ class CourseDetailActivity :
         binding.lifecycleOwner = this
 
         initIntentExtraData()
-        showCurrentCourseDetailFromDeepLink()
+        updatePublicCourseIdFromDeepLink()
+        getCourseDetail()
 
         addListener()
         addObserver()
@@ -93,11 +91,10 @@ class CourseDetailActivity :
         publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
     }
 
-    private fun showCurrentCourseDetailFromDeepLink() {
+    private fun updatePublicCourseIdFromDeepLink() {
         // 딥링크를 통해 열린 경우
         if (Intent.ACTION_VIEW == intent.action) {
             isFromDeepLink = true
-
             val uri = intent.data
             if (uri != null) {
                 // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음.
@@ -105,9 +102,9 @@ class CourseDetailActivity :
                 Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
             }
         }
+    }
 
-        // 위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어
-        // getCourseDetail()을 돌려줄 수 있습니다.
+    private fun getCourseDetail() {
         viewModel.getCourseDetail(publicCourseId)
     }
 
@@ -191,7 +188,7 @@ class CourseDetailActivity :
 
     private fun initEditFinishButtonClickListener() {
         binding.tvCourseDetailEditFinish.setOnClickListener {
-            viewModel.patchUpdatePublicCourse(publicCourseId)
+            viewModel.patchPublicCourse(publicCourseId)
         }
     }
 
@@ -411,8 +408,8 @@ class CourseDetailActivity :
     private fun addObserver() {
         setupFromDeepLinkObserver()
         setupCourseDetailGetStateObserver()
-        setupCourseDeleteStateObserver()
         setupCoursePatchStateObserver()
+        setupCourseDeleteStateObserver()
     }
 
     private fun setupFromDeepLinkObserver() {
@@ -427,7 +424,7 @@ class CourseDetailActivity :
     }
 
     private fun setupCourseDetailGetStateObserver() {
-        viewModel.courseDetailState.observe(this) { state ->
+        viewModel.courseGetState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     courseDetail = state.data ?: return@observe
@@ -469,6 +466,34 @@ class CourseDetailActivity :
         }
     }
 
+    private fun setupCoursePatchStateObserver() {
+        viewModel.coursePatchState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Loading -> binding.indeterminateBar.isVisible = true
+
+                is UiStateV2.Success -> {
+                    binding.indeterminateBar.isVisible = false
+
+                    val response = state.data ?: return@observe
+                    viewModel.apply {
+                        updateCourseTitle(response.title)
+                        updateCourseDescription(response.description)
+                    }
+
+                    enterReadMode()
+                    showToast(stringOf(R.string.course_detail_title_edit_success_msg))
+                }
+
+                is UiStateV2.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     private fun setupCourseDeleteStateObserver() {
         viewModel.myUploadDeleteState.observe(this) { state ->
             when (state) {
@@ -484,20 +509,6 @@ class CourseDetailActivity :
                     }
                 }
 
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun setupCoursePatchStateObserver() {
-        viewModel.courseUpdateState.observe(this) { state ->
-            when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> handleSuccessfulCourseUpdate()
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                 }
@@ -528,16 +539,6 @@ class CourseDetailActivity :
 
     private fun updateScrapState() {
         binding.ivCourseDetailScrap.isSelected = courseDetail.isScrap
-    }
-
-    private fun handleSuccessfulCourseUpdate() {
-        binding.indeterminateBar.isVisible = false
-
-//        viewModel.editTitle.value = viewModel.titleForInterruption.value
-//        viewModel.editContent.value = viewModel.contentForInterruption.value
-
-        enterReadMode()
-        showToast(stringOf(R.string.course_detail_title_edit_success_msg))
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
