@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -42,6 +43,7 @@ class DiscoverSearchActivity :
         initLayout()
         addObserver()
         addListener()
+        registerBackPressedCallback()
     }
 
     private fun initLayout() {
@@ -56,9 +58,14 @@ class DiscoverSearchActivity :
         }
     }
 
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun registerBackPressedCallback() {
+        val callback = object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun addListener() {
