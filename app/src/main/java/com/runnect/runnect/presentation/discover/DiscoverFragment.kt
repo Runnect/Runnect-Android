@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,25 +61,31 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.vm = viewModel
-        binding.lifecycleOwner = this.viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
+
         initLayout()
         getBannerData()
         getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
         setResultDetail()
+        registerBackPressedCallback()
+        initRefreshLayoutListener()
+    }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if (isFromStorageScrap) {
-                StorageScrapFragment.isFromStorageNoScrap = false
-                handleReturnToDiscover()
-            } else {
-                activity?.onBackPressed()
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isFromStorageScrap) {
+                    StorageScrapFragment.isFromStorageNoScrap = false
+                    MainActivity.updateStorageScrapScreen()
+                }
+                requireActivity().finish()
+                requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
-        pullToRefresh()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun initScrollListener() {
@@ -92,7 +99,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun pullToRefresh() {
+    private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
             viewModel.recommendCourseList.clear() //새로고침 시 다시 pageNo가 1부터 시작되는데 기존에 끝까지 받아온 거에 addAll로 계속 누적돼서 clear()로 비워주는 것.
             getRecommendCourses(pageNo = "1")
@@ -104,14 +111,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.getBannerData()
 
     }
-
-    private fun handleReturnToDiscover() {
-        MainActivity.updateStorageScrapScreen()
-        requireActivity().finish()
-        requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-
-    }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
