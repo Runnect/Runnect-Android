@@ -63,9 +63,10 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_endRun_capture"
-            setRemoteImageByUrl="@{model.captureUri.toString()}"
+            setImageUrl="@{model.captureUri.toString()}"
             android:layout_width="match_parent"
             android:layout_height="362dp"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/storage_toolbar"

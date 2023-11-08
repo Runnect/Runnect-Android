@@ -66,7 +66,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image"
-            setLocalImageByUri="@{historyDto.img}"
+            setImageUrl="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G3"
@@ -78,7 +78,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image_edit"
-            setLocalImageByUri="@{historyDto.img}"
+            setImageUrl="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G4"

@@ -83,7 +83,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_map"
-                    setRemoteImageByUrl="@{courseDetailDto.image}"
+                    setImageUrl="@{courseDetailDto.image}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
@@ -336,7 +336,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_edit_map"
-                    setRemoteImageByUrl="@{courseDetailDto.image}"
+                    setImageUrl="@{courseDetailDto.image}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
