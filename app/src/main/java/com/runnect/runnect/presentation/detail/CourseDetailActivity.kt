@@ -96,7 +96,7 @@ class CourseDetailActivity :
             isFromDeepLink = true
             val uri = intent.data
             if (uri != null) {
-                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음.
+                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세 페이지를 띄울지 결정할 수 있음.
                 publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
                 Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
             }
@@ -110,18 +110,10 @@ class CourseDetailActivity :
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                handleBackButtonFromDeepLink()
                 handleBackButtonByCurrentScreenMode()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun handleBackButtonFromDeepLink() {
-        if (isFromDeepLink) {
-            navigateToMainScreenWithBundle()
-            isFromDeepLink = false
-        }
     }
 
     private fun navigateToMainScreenWithBundle() {
@@ -141,12 +133,19 @@ class CourseDetailActivity :
     }
 
     private fun navigateToPreviousScreen() {
+        if (isFromDeepLink) {
+            navigateToMainScreenWithBundle()
+            isFromDeepLink = false
+            return
+        }
+
         when (rootScreen) {
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
             COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
             COURSE_DISCOVER_SEARCH -> navigateToDiscoverSearchScreen()
             MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
+
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
@@ -180,7 +179,6 @@ class CourseDetailActivity :
 
     private fun initBackButtonClickListener() {
         binding.ivCourseDetailBack.setOnClickListener {
-            handleBackButtonFromDeepLink()
             handleBackButtonByCurrentScreenMode()
         }
     }
