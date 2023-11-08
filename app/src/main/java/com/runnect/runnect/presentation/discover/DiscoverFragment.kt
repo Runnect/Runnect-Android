@@ -152,8 +152,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 R.anim.slide_out_left
             )
         }
-        binding.btnDiscoverUpload.setOnClickListener {
 
+        binding.btnDiscoverUpload.setOnClickListener {
             if (isVisitorMode) {
                 RunnectToast.createToast(requireContext(), VISITOR_REQUIRE_LOGIN).show()
             } else {
@@ -209,7 +209,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             }
         }
     }
-
 
     private fun setRecommendCourseAdapter() {
         courseRecommendAdapter =

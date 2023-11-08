@@ -30,12 +30,9 @@ import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
@@ -144,11 +141,19 @@ class CourseDetailActivity :
 
     private fun navigateToPreviousScreen() {
         when (rootScreen) {
-            COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
-            COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
+            COURSE_STORAGE_SCRAP -> {
+                MainActivity.updateStorageScrapScreen()
+                finish()
+            }
+
+            COURSE_DISCOVER -> {
+                MainActivity.updateCourseDiscoverScreen()
+                finish()
+            }
+
+            COURSE_DISCOVER_SEARCH -> finish()
             MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
-        finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
