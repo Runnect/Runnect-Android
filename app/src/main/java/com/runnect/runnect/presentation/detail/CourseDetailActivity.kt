@@ -508,21 +508,25 @@ class CourseDetailActivity :
     private fun setupCourseDeleteStateObserver() {
         viewModel.courseDeleteState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                is UiStateV2.Loading -> binding.indeterminateBar.isVisible = true
 
-                UiState.Success -> {
+                is UiStateV2.Success -> {
                     binding.indeterminateBar.isVisible = false
 
-                    if (rootScreen == MY_PAGE_UPLOAD_COURSE) {
-                        val intent = Intent(this, MyUploadActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(intent)
-                        finish()
-                    }
+                    // todo: 이전 화면으로 돌아가기
+                    navigateToPreviousScreen()
+
+//                    if (rootScreen == MY_PAGE_UPLOAD_COURSE) {
+//                        val intent = Intent(this, MyUploadActivity::class.java)
+//                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                        startActivity(intent)
+//                        finish()
+//                    }
                 }
 
-                UiState.Failure -> {
+                is UiStateV2.Failure -> {
                     binding.indeterminateBar.isVisible = false
+                    showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}

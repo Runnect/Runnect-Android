@@ -38,7 +38,6 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
     ): BaseResponse<ResponsePatchPublicCourseDto> =
         courseService.patchPublicCourse(publicCourseId, requestPatchPublicCourseDto)
 
-
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO) =
         courseService.deleteMyDrawCourse(deleteCourseList)
 

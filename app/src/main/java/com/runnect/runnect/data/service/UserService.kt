@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
@@ -32,8 +32,8 @@ interface UserService {
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
-        @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): ResponseDeleteUploadCourse
+        @Body requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
+    ): BaseResponse<ResponseDeleteUploadCourseDto>
 
     @PUT("api/record")
     suspend fun putDeleteHistory(

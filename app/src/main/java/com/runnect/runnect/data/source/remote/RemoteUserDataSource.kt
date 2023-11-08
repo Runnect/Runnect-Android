@@ -2,7 +2,7 @@ package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.*
@@ -18,8 +18,10 @@ class RemoteUserDataSource @Inject constructor(private val userService: UserServ
     suspend fun getRecord(): ResponseRecordInfo = userService.getRecord()
     suspend fun getUserUploadCourse(): ResponseUserUploadCourse = userService.getUserUploadCourse()
 
-    suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse =
-        userService.putDeleteUploadCourse(requestDeleteUploadCourse)
+    suspend fun putDeleteUploadCourse(
+        requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
+    ): BaseResponse<ResponseDeleteUploadCourseDto> =
+        userService.putDeleteUploadCourse(requestDeleteUploadCourseDto)
 
     suspend fun putDeleteHistory(requestDeleteHistoryDto: RequestDeleteHistoryDto): BaseResponse<ResponseDeleteHistoryDto> =
         userService.putDeleteHistory(requestDeleteHistoryDto)
