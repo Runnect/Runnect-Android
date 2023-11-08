@@ -518,16 +518,7 @@ class CourseDetailActivity :
 
                 is UiStateV2.Success -> {
                     binding.indeterminateBar.isVisible = false
-
-                    // todo: 이전 화면으로 돌아가기
                     navigateToPreviousScreen()
-
-//                    if (rootScreen == MY_PAGE_UPLOAD_COURSE) {
-//                        val intent = Intent(this, MyUploadActivity::class.java)
-//                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-//                        startActivity(intent)
-//                        finish()
-//                    }
                 }
 
                 is UiStateV2.Failure -> {
