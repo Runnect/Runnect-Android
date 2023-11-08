@@ -582,11 +582,8 @@ class CourseDetailActivity :
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_COURSE_DATA = "CourseData"
-
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
-
-        // ---------------------------------------------------
 
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
