@@ -136,7 +136,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     companion object {
-
         const val UPDATE_DIALOG_TITLE = "업데이트"
         const val UPDATE_DIALOG_MESSAGE = "더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다."
         const val UPDATE_DIALOG_BTN_TEXT = "업데이트"
@@ -158,5 +157,3 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         }
     }
 }
-
-

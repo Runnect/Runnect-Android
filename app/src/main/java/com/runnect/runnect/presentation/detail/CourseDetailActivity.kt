@@ -31,6 +31,7 @@ import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
+import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -141,20 +142,22 @@ class CourseDetailActivity :
 
     private fun navigateToPreviousScreen() {
         when (rootScreen) {
-            COURSE_STORAGE_SCRAP -> {
-                MainActivity.updateStorageScrapScreen()
-                finish()
-            }
-
-            COURSE_DISCOVER -> {
-                MainActivity.updateCourseDiscoverScreen()
-                finish()
-            }
-
-            COURSE_DISCOVER_SEARCH -> finish()
+            COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
+            COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
+            COURSE_DISCOVER_SEARCH -> navigateToDiscoverSearchScreen()
             MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
+        finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    // todo: 코스 검색 화면으로 돌아갔을 때, 방금 전 검색 결과가 보존되면서도
+    //  상세 페이지에서 수정한 내용이 반영되려면 목록에서 해당 아이템만 일부 수정하는 로직이 필요하다.
+    private fun navigateToDiscoverSearchScreen() {
+        Intent(this, DiscoverSearchActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(this)
+        }
     }
 
     private fun navigateToMyUploadCourseScreen() {
