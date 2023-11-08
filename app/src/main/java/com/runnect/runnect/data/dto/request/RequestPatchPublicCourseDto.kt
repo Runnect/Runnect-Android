@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestUpdatePublicCourse(
+data class RequestPatchPublicCourseDto(
     @SerializedName("title")
     val title: String,
     @SerializedName("description")
