@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
@@ -52,20 +53,14 @@ class CourseDetailViewModel @Inject constructor(
     val _description = MutableLiveData<String>()
     val description: String get() = _description.value ?: ""
 
-    private val editMediator = MediatorLiveData<Unit>()
-    val isValidContents = MutableLiveData(false)
+    val isValidTitle: LiveData<Boolean> = _title.map { it.isNotBlank() }
+    val isValidDescription: LiveData<Boolean> = _description.map { it.isNotBlank() }
 
     // todo: 액티비티에서 참조하는 변수들
     private var savedContents = CourseDetailContents("", "")
 
     private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
     val currentScreenMode get() = _currentScreenMode
-
-    init {
-        editMediator.addSourceList(_title, _description) {
-            isValidContents.value = title.isNotBlank() and description.isNotBlank()
-        }
-    }
 
     fun updateCourseTitle(title: String) {
         _title.value = title

@@ -508,12 +508,14 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tv_course_detail_edit_finish"
+            isValidDescription="@{vm.isValidDescription}"
+            isValidTitle="@{vm.isValidTitle}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="18dp"
             android:background="@drawable/sel_edit_finish_btn_bg_color"
-            android:enabled="@{vm.isValidContents}"
+            android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
             android:stateListAnimator="@null"
             android:text="@string/history_edit_finish"

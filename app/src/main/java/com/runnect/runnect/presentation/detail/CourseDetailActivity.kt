@@ -25,6 +25,7 @@ import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.MainActivity
@@ -407,7 +408,7 @@ class CourseDetailActivity :
 
     private fun addObserver() {
         setupFromDeepLinkObserver()
-        setupCourseDetailGetStateObserver()
+        setupCourseGetStateObserver()
         setupCoursePatchStateObserver()
         setupCourseDeleteStateObserver()
     }
@@ -423,7 +424,7 @@ class CourseDetailActivity :
         }
     }
 
-    private fun setupCourseDetailGetStateObserver() {
+    private fun setupCourseGetStateObserver() {
         viewModel.courseGetState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
@@ -474,10 +475,9 @@ class CourseDetailActivity :
                 is UiStateV2.Success -> {
                     binding.indeterminateBar.isVisible = false
 
-                    val response = state.data ?: return@observe
-                    viewModel.apply {
-                        updateCourseTitle(response.title)
-                        updateCourseDescription(response.description)
+                    state.data?.let {
+                        updateEditText(it)
+                        updateTextView(it)
                     }
 
                     enterReadMode()
@@ -491,6 +491,20 @@ class CourseDetailActivity :
 
                 else -> {}
             }
+        }
+    }
+
+    private fun updateEditText(publicCourse: PublicCourse) {
+        viewModel.apply {
+            updateCourseTitle(publicCourse.title)
+            updateCourseDescription(publicCourse.description)
+        }
+    }
+
+    private fun updateTextView(publicCourse: PublicCourse) {
+        binding.apply {
+            tvCourseDetailTitle.text = publicCourse.title
+            tvCourseDetailDesc.text = publicCourse.description
         }
     }
 
