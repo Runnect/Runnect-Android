@@ -336,14 +336,14 @@ class CourseDetailActivity :
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
             when (pos) {
                 0 -> enterEditMode()
-                1 -> showMyUploadCourseDeleteDialog()
+                1 -> showCourseDeleteDialog()
             }
         }.apply {
             showCustomPosition(anchorView)
         }
     }
 
-    private fun showMyUploadCourseDeleteDialog() {
+    private fun showCourseDeleteDialog() {
         val dialog = CommonDialogFragment(
             stringOf(R.string.dialog_my_upload_course_detail_delete_desc),
             stringOf(R.string.dialog_course_detail_delete_no),
@@ -459,11 +459,8 @@ class CourseDetailActivity :
 
     private fun initConnectedSpots() {
         connectedSpots = arrayListOf()
-
-        for (i in 1 until courseDetail.path.size) {
-            connectedSpots.add(
-                LatLng(courseDetail.path[i][0], courseDetail.path[i][1])
-            )
+        for (spot in courseDetail.path) {
+            connectedSpots.add(LatLng(spot[0], spot[1]))
         }
     }
 
@@ -509,12 +506,13 @@ class CourseDetailActivity :
     }
 
     private fun setupCourseDeleteStateObserver() {
-        viewModel.myUploadDeleteState.observe(this) { state ->
+        viewModel.courseDeleteState.observe(this) { state ->
             when (state) {
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
 
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
+
                     if (rootScreen == MY_PAGE_UPLOAD_COURSE) {
                         val intent = Intent(this, MyUploadActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
