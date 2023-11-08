@@ -7,14 +7,15 @@ import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
-import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
+import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
 import com.runnect.runnect.data.dto.response.ResponsePostRecordDTO
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
-import com.runnect.runnect.data.dto.response.ResponseUpdatePublicCourse
+import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourseDto
 import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -33,9 +34,10 @@ interface CourseRepository {
 
     suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse): ResponseUploadMyCourse
 
-    suspend fun patchUpdatePublicCourse(
-        publicCourseId: Int, requestUpdatePublicCourse: RequestUpdatePublicCourse
-    ): ResponseUpdatePublicCourse
+    suspend fun patchPublicCourse(
+        publicCourseId: Int,
+        requestPatchPublicCourse: RequestPatchPublicCourseDto
+    ): Result<PublicCourse?>
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO>
 
