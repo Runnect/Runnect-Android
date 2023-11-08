@@ -1,11 +1,8 @@
 package com.runnect.runnect.util.binding
 
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import coil.load
-import com.bumptech.glide.Glide
 
 object BindingAdapter {
     @BindingAdapter("setLocalImageByResourceId")
@@ -22,10 +19,8 @@ object BindingAdapter {
 
     @BindingAdapter("setRemoteImageByUrl")
     @JvmStatic
-    fun setRemoteImageByUrl(view: ImageView, imageUrl: String) {
-        Glide.with(view.context)
-            .load(imageUrl)
-            .centerCrop()
-            .into(view)
+    fun setRemoteImageByUrl(imageView: ImageView, url: String?) {
+        if(url == null) return
+        imageView.load(url)
     }
 }
