@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
-import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
+import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -26,17 +27,17 @@ class CourseDetailViewModel @Inject constructor(
     private val courseRepository: CourseRepository, private val userRepository: UserRepository
 ) : ViewModel() {
     // TODO: 서버통신 코드 UiState 통일시키기
-    private var _courseDetailState = MutableLiveData<UiStateV2<CourseDetail?>>()
-    val courseDetailState: LiveData<UiStateV2<CourseDetail?>>
-        get() = _courseDetailState
+    private var _courseGetState = MutableLiveData<UiStateV2<CourseDetail?>>()
+    val courseGetState: LiveData<UiStateV2<CourseDetail?>>
+        get() = _courseGetState
+
+    private var _coursePatchState = MutableLiveData<UiStateV2<PublicCourse?>>()
+    val coursePatchState: LiveData<UiStateV2<PublicCourse?>>
+        get() = _coursePatchState
 
     private var _myUploadDeleteState = MutableLiveData<UiState>()
     val myUploadDeleteState: LiveData<UiState>
         get() = _myUploadDeleteState
-
-    private var _courseUpdateState = MutableLiveData<UiState>()
-    val courseUpdateState: LiveData<UiState>
-        get() = _courseUpdateState
 
     // 플래그 변수
     var isDeepLinkLogin = MutableLiveData(true)
@@ -51,6 +52,7 @@ class CourseDetailViewModel @Inject constructor(
     val _description = MutableLiveData<String>()
     val description: String get() = _description.value ?: ""
 
+    private val editMediator = MediatorLiveData<Unit>()
     val isValidContents = MutableLiveData(false)
 
     // todo: 액티비티에서 참조하는 변수들
@@ -59,14 +61,6 @@ class CourseDetailViewModel @Inject constructor(
     private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
     val currentScreenMode get() = _currentScreenMode
 
-    // todo: 기존 방식의 코드들
-//    var editTitle: MutableLiveData<String> = MutableLiveData("")
-//    var editContent: MutableLiveData<String> = MutableLiveData("")
-//    var isEditFinishEnable = MutableLiveData(true)
-//    var titleForInterruption = MutableLiveData("")
-//    var contentForInterruption = MutableLiveData("")
-    private val editMediator = MediatorLiveData<Unit>()
-//
     init {
         editMediator.addSourceList(_title, _description) {
             isValidContents.value = title.isNotBlank() and description.isNotBlank()
@@ -90,21 +84,21 @@ class CourseDetailViewModel @Inject constructor(
         _description.value = savedContents.description
     }
 
-    fun updateCurrentScreenMode(mode: ScreenMode){
+    fun updateCurrentScreenMode(mode: ScreenMode) {
         _currentScreenMode = mode
     }
 
     fun getCourseDetail(courseId: Int) {
         viewModelScope.launch {
-            _courseDetailState.value = UiStateV2.Loading
+            _courseGetState.value = UiStateV2.Loading
 
             courseRepository.getCourseDetail(
                 publicCourseId = courseId
             ).onSuccess { response ->
-                _courseDetailState.value = UiStateV2.Success(response)
+                _courseGetState.value = UiStateV2.Success(response)
                 Timber.d("SUCCESS GET COURSE DETAIL")
             }.onFailure { t ->
-                _courseDetailState.value = UiStateV2.Failure(t.message.toString())
+                _courseGetState.value = UiStateV2.Failure(t.message.toString())
 
                 if (t is HttpException) {
                     // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
@@ -117,6 +111,32 @@ class CourseDetailViewModel @Inject constructor(
 
                 Timber.e("FAIL GET COURSE DETAIL: ${t.message}")
             }
+        }
+    }
+
+    fun patchPublicCourse(id: Int) {
+        viewModelScope.launch {
+            _coursePatchState.value = UiStateV2.Loading
+
+            val requestDto = RequestPatchPublicCourseDto(
+                title = title,
+                description = description
+            )
+
+            courseRepository.patchPublicCourse(id, requestDto)
+                .onSuccess { response ->
+                    _coursePatchState.value = UiStateV2.Success(response)
+                    Timber.d("SUCCESS PATCH COURSE DETAIL CONTENTS")
+                }.onFailure { t ->
+                    _coursePatchState.value = UiStateV2.Failure(t.message.toString())
+
+                    if (t is HttpException) {
+                        Timber.e("HTTP FAIL PATCH COURSE DETAIL CONTENTS: ${t.code()} ${t.message()}")
+                        return@launch
+                    }
+
+                    Timber.e("FAIL PATCH COURSE DETAIL CONTENTS: ${t.message}")
+                }
         }
     }
 
@@ -151,27 +171,6 @@ class CourseDetailViewModel @Inject constructor(
                 _myUploadDeleteState.value = UiState.Success
             }.onFailure {
                 _myUploadDeleteState.value = UiState.Failure
-            }
-        }
-    }
-
-    fun patchUpdatePublicCourse(id: Int) {
-        viewModelScope.launch {
-            runCatching {
-                _courseUpdateState.value = UiState.Loading
-
-                courseRepository.patchUpdatePublicCourse(
-                    id, RequestUpdatePublicCourse(
-                        title = title,
-                        description = description
-                    )
-                )
-            }.onSuccess {
-                _courseUpdateState.value = UiState.Success
-
-
-            }.onFailure {
-                _courseUpdateState.value = UiState.Failure
             }
         }
     }
