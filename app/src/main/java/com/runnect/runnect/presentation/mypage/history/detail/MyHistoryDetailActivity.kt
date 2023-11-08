@@ -161,12 +161,11 @@ class MyHistoryDetailActivity :
     }
 
     private fun navigateToPreviousScreen() {
-        // 수정 & 삭제 사항이 반영되도록 이전 액티비티를 새로 띄운다.
+        // todo: 일부 아이템에 대해서만 수정/삭제가 반영되고 전체는 리프레시 하지 않도록 수정하기
         Intent(this, MyHistoryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addObserver() {
