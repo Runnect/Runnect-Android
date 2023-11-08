@@ -2,39 +2,58 @@ package com.runnect.runnect.data.dto.response
 
 
 import com.runnect.runnect.domain.entity.CourseDetail
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseCourseDetailDto(
+data class ResponseGetCourseDetailDto(
+    @SerialName("user")
     val user: User,
+    @SerialName("publicCourse")
     val publicCourse: PublicCourse
 ) {
     @Serializable
     data class User(
+        @SerialName("nickname")
         val nickname: String,
+        @SerialName("level")
         val level: Int,
+        @SerialName("image")
         val image: String,
+        @SerialName("isNowUser")
         val isNowUser: Boolean
     )
 
     @Serializable
     data class PublicCourse(
+        @SerialName("id")
         val id: Int,
+        @SerialName("courseId")
         val courseId: Int,
-        val isScrap: Boolean,
-        val scrapCount: Long,
+        @SerialName("scrap")
+        val scrap: Boolean,
+        @SerialName("image")
         val image: String,
+        @SerialName("title")
         val title: String,
+        @SerialName("description")
         val description: String,
+        @SerialName("path")
         val path: List<List<Double>>,
+        @SerialName("distance")
         val distance: Double,
+        @SerialName("departure")
         val departure: Departure
     ) {
         @Serializable
         data class Departure(
+            @SerialName("region")
             val region: String,
+            @SerialName("city")
             val city: String,
+            @SerialName("town")
             val town: String,
+            @SerialName("name")
             val name: String?
         )
     }
@@ -53,7 +72,7 @@ data class ResponseCourseDetailDto(
         description = publicCourse.description,
         distance = publicCourse.distance.toString(),
         image = publicCourse.image,
-        isScrap = publicCourse.isScrap,
+        isScrap = publicCourse.scrap,
         title = publicCourse.title,
         path = publicCourse.path
     )
