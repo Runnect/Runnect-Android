@@ -127,7 +127,6 @@
                         android:overScrollMode="never"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.482"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:listitem="@layout/item_mypage_history" />
@@ -196,9 +195,9 @@
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginBottom="18dp"
                 android:background="@drawable/radius_10_g3_button"
+                android:enabled="false"
                 android:fontFamily="@font/pretendard_semibold"
                 android:gravity="center"
-                android:enabled="false"
                 android:outlineProvider="none"
                 android:text="@string/history_delete"
                 android:textColor="@color/W1"
