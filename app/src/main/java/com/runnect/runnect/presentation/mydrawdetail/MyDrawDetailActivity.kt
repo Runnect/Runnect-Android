@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.mydrawdetail
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -57,6 +58,8 @@ class MyDrawDetailActivity :
                     putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDeleteMyDrawDetail")
                 }
                 startActivity(intent)
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
             this.btn_delete_no.setOnClickListener {
                 dialog.dismiss()
@@ -78,12 +81,14 @@ class MyDrawDetailActivity :
         }
     }
 
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
     }
 
-    fun getMyDrawDetail() {
+    private fun getMyDrawDetail() {
         val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
         Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
 
@@ -101,6 +106,8 @@ class MyDrawDetailActivity :
 
     fun addObserver() {
         observeGetResult()
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
     private fun setImage(src: ResponseGetMyDrawDetailDTO) {
