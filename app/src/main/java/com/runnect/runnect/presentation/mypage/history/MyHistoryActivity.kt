@@ -57,7 +57,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         binding.rvMyPageHistory.addItemDecoration(RecyclerOffsetDecorationHeight(this, 10))
     }
 
-    private fun getRecord(){
+    private fun getRecord() {
         viewModel.getRecord()
     }
 
@@ -145,8 +145,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                 exitEditMode()
             }
         }
-        viewModel.itemsToDeleteLiveData.observe(this) {
-            count -> updateDeleteButton(count.size)
+        viewModel.itemsToDeleteLiveData.observe(this) { count ->
+            updateDeleteButton(count.size)
         }
     }
 
@@ -201,9 +201,12 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun updateDeleteButton(count: Int) {
+        val deleteBtnColor =
+            if (count > 0) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button
         with(binding.btnMyPageHistoryDelete) {
             isEnabled = count != 0
             text = updateDeleteButtonLabel(count)
+            setBackgroundResource(deleteBtnColor)
         }
     }
 
@@ -214,7 +217,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             "$DELETE_BTN(${count})"
         }
     }
-
 
     override fun selectItem(data: HistoryInfoDTO): Boolean {
         return if (viewModel.editMode.value == true) {
