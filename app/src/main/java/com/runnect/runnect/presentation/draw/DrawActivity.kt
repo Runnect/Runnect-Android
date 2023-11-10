@@ -313,13 +313,14 @@ class DrawActivity :
             Timber.tag("EditTextValue").d("${viewModel.departureName.value}")
         }
 
-        btnCreateCourse.setOnClickListener {
-            hideKeyboard(etCourseName)
-            createMbr()
-        }
-
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetView)
+
+        btnCreateCourse.setOnClickListener {
+            hideKeyboard(etCourseName)
+            bottomSheetDialog.dismiss()
+            createMbr()
+        }
 
         return bottomSheetDialog
     }
