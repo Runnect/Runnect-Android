@@ -47,6 +47,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
@@ -313,9 +314,7 @@ class DrawActivity :
         }
 
         btnCreateCourse.setOnClickListener {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(etCourseName.windowToken, 0)
-
+            hideKeyboard(etCourseName)
             createMbr()
         }
 
