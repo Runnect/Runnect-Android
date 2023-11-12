@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.draw
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
@@ -45,6 +47,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
@@ -310,12 +313,14 @@ class DrawActivity :
             Timber.tag("EditTextValue").d("${viewModel.departureName.value}")
         }
 
-        btnCreateCourse.setOnClickListener {
-            createMbr()
-        }
-
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetView)
+
+        btnCreateCourse.setOnClickListener {
+            hideKeyboard(etCourseName)
+            bottomSheetDialog.dismiss()
+            createMbr()
+        }
 
         return bottomSheetDialog
     }
