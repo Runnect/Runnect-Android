@@ -88,19 +88,19 @@ class CourseDetailViewModel @Inject constructor(
             ).onSuccess { response ->
                 _courseGetState.value = UiStateV2.Success(response)
                 Timber.d("[SUCCESS] GET COURSE DETAIL")
-            }.onFailure { t ->
-                _courseGetState.value = UiStateV2.Failure(t.message.toString())
+            }.onFailure { exception ->
+                _courseGetState.value = UiStateV2.Failure(exception.message.toString())
 
-                if (t is HttpException) {
+                if (exception is HttpException) {
                     // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
-                    if (t.code() == CODE_AUTHORIZATION_ERROR) {
+                    if (exception.code() == CODE_AUTHORIZATION_ERROR) {
                         isDeepLinkLogin.value = false
-                        Timber.e("[HTTP FAIL] GET COURSE DETAIL: ${t.code()} ${t.message()}")
+                        Timber.e("[HTTP FAIL] GET COURSE DETAIL: ${exception.code()} ${exception.message()}")
                     }
                     return@launch
                 }
 
-                Timber.e("[FAIL] GET COURSE DETAIL: ${t.message}")
+                Timber.e("[FAIL] GET COURSE DETAIL: ${exception.message}")
             }
         }
     }
@@ -118,15 +118,15 @@ class CourseDetailViewModel @Inject constructor(
                 .onSuccess { response ->
                     _coursePatchState.value = UiStateV2.Success(response)
                     Timber.d("[SUCCESS] PATCH COURSE DETAIL")
-                }.onFailure { t ->
-                    _coursePatchState.value = UiStateV2.Failure(t.message.toString())
+                }.onFailure { exception ->
+                    _coursePatchState.value = UiStateV2.Failure(exception.message.toString())
 
-                    if (t is HttpException) {
-                        Timber.e("[HTTP FAIL] PATCH COURSE DETAIL: ${t.code()} ${t.message()}")
+                    if (exception is HttpException) {
+                        Timber.e("[HTTP FAIL] PATCH COURSE DETAIL: ${exception.code()} ${exception.message()}")
                         return@launch
                     }
 
-                    Timber.e("[FAIL] PATCH COURSE DETAIL: ${t.message}")
+                    Timber.e("[FAIL] PATCH COURSE DETAIL: ${exception.message}")
                 }
         }
     }
@@ -140,15 +140,15 @@ class CourseDetailViewModel @Inject constructor(
             ).onSuccess { response ->
                 _courseDeleteState.value = UiStateV2.Success(response)
                 Timber.d("[SUCCESS] DELETE PUBLIC COURSE")
-            }.onFailure { t ->
-                _courseDeleteState.value = UiStateV2.Failure(t.message.toString())
+            }.onFailure { exception ->
+                _courseDeleteState.value = UiStateV2.Failure(exception.message.toString())
 
-                if (t is HttpException) {
-                    Timber.e("[HTTP FAIL] DELETE PUBLIC COURSE: ${t.code()} ${t.message()}")
+                if (exception is HttpException) {
+                    Timber.e("[HTTP FAIL] DELETE PUBLIC COURSE: ${exception.code()} ${exception.message()}")
                     return@launch
                 }
 
-                Timber.e("[FAIL] DELETE PUBLIC COURSE: ${t.message}")
+                Timber.e("[FAIL] DELETE PUBLIC COURSE: ${exception.message}")
             }
         }
     }
