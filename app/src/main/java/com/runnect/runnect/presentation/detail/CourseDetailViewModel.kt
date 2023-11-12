@@ -13,7 +13,6 @@ import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.UserRepository
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,12 +57,11 @@ class CourseDetailViewModel @Inject constructor(
 
     private var savedContents = CourseDetailContents("", "")
 
-    fun updateCourseTitle(title: String) {
-        _title.value = title
-    }
-
-    fun updateCourseDescription(desc: String) {
-        _description.value = desc
+    fun updateCourseDetailContents(contents: CourseDetailContents?) {
+        contents?.let {
+            _title.value = contents.title
+            _description.value = contents.description
+        }
     }
 
     fun saveCurrentContents() {
@@ -71,8 +69,7 @@ class CourseDetailViewModel @Inject constructor(
     }
 
     fun restoreOriginalContents() {
-        _title.value = savedContents.title
-        _description.value = savedContents.description
+        updateCourseDetailContents(savedContents)
     }
 
     fun updateCurrentScreenMode(mode: ScreenMode) {

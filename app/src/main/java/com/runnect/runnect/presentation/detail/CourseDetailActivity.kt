@@ -437,11 +437,7 @@ class CourseDetailActivity :
                     courseDetail = state.data ?: return@observe
                     binding.courseDetailDto = courseDetail
 
-                    viewModel.apply {
-                        updateCourseTitle(courseDetail.title)
-                        updateCourseDescription(courseDetail.description)
-                    }
-
+                    viewModel.updateCourseDetailContents(courseDetail.toCourseDetailContents())
                     updateUserProfileStamp()
                     updateUserLevel()
                     updateScrapState()
@@ -456,6 +452,14 @@ class CourseDetailActivity :
 
                 else -> {}
             }
+        }
+    }
+
+    private fun <T: Any> T.toCourseDetailContents(): CourseDetailContents? {
+        return when (this) {
+            is CourseDetail -> CourseDetailContents(title, description)
+            is PublicCourse -> CourseDetailContents(title, description)
+            else -> null
         }
     }
 
@@ -478,9 +482,9 @@ class CourseDetailActivity :
                 is UiStateV2.Success -> {
                     binding.indeterminateBar.isVisible = false
 
-                    state.data?.let {
-                        updateEditText(it)
-                        updateTextView(it)
+                    state.data?.let { response ->
+                        viewModel.updateCourseDetailContents(response.toCourseDetailContents())
+                        updateTextView(response)
                     }
 
                     enterReadMode()
@@ -494,13 +498,6 @@ class CourseDetailActivity :
 
                 else -> {}
             }
-        }
-    }
-
-    private fun updateEditText(publicCourse: PublicCourse) {
-        viewModel.apply {
-            updateCourseTitle(publicCourse.title)
-            updateCourseDescription(publicCourse.description)
         }
     }
 
