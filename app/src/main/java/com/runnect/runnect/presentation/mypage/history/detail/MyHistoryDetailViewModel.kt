@@ -14,8 +14,6 @@ import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,16 +67,8 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
             userRepository.putDeleteHistory(RequestDeleteHistoryDto(deleteItems))
                 .onSuccess { response ->
                     _historyDeleteState.value = UiStateV2.Success(response)
-                    Timber.d("SUCCESS DELETE HISTORY")
                 }.onFailure { t ->
                     _historyDeleteState.value = UiStateV2.Failure(t.message.toString())
-
-                    if (t is HttpException) {
-                        Timber.e("HTTP FAIL DELETE HISTORY: ${t.code()} ${t.message()}")
-                        return@launch
-                    }
-
-                    Timber.e("FAIL DELETE HISTORY: ${t.message}")
                 }
         }
     }
@@ -92,16 +82,8 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
                 requestPatchHistoryTitleDto = RequestPatchHistoryTitleDto(title)
             ).onSuccess { response ->
                 _titlePatchState.value = UiStateV2.Success(response)
-                Timber.d("SUCCESS PATCH HISTORY TITLE")
             }.onFailure { t ->
                 _titlePatchState.value = UiStateV2.Failure(t.message.toString())
-
-                if (t is HttpException) {
-                    Timber.e("HTTP FAIL PATCH HISTORY TITLE: ${t.code()} ${t.message()}")
-                    return@launch
-                }
-
-                Timber.e("FAIL PATCH HISTORY TITLE: ${t.message}")
             }
         }
     }

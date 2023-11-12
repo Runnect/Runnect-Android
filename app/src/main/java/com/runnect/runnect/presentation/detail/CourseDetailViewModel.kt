@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
@@ -13,12 +12,12 @@ import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,7 +83,6 @@ class CourseDetailViewModel @Inject constructor(
                 publicCourseId = courseId
             ).onSuccess { response ->
                 _courseGetState.value = UiStateV2.Success(response)
-                Timber.d("[SUCCESS] GET COURSE DETAIL")
             }.onFailure { exception ->
                 _courseGetState.value = UiStateV2.Failure(exception.message.toString())
 
@@ -92,12 +90,9 @@ class CourseDetailViewModel @Inject constructor(
                     // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
                     if (exception.code() == CODE_AUTHORIZATION_ERROR) {
                         isDeepLinkLogin.value = false
-                        Timber.e("[HTTP FAIL] GET COURSE DETAIL: ${exception.code()} ${exception.message()}")
                     }
                     return@launch
                 }
-
-                Timber.e("[FAIL] GET COURSE DETAIL: ${exception.message}")
             }
         }
     }
@@ -114,16 +109,8 @@ class CourseDetailViewModel @Inject constructor(
             courseRepository.patchPublicCourse(id, requestDto)
                 .onSuccess { response ->
                     _coursePatchState.value = UiStateV2.Success(response)
-                    Timber.d("[SUCCESS] PATCH COURSE DETAIL")
                 }.onFailure { exception ->
                     _coursePatchState.value = UiStateV2.Failure(exception.message.toString())
-
-                    if (exception is HttpException) {
-                        Timber.e("[HTTP FAIL] PATCH COURSE DETAIL: ${exception.code()} ${exception.message()}")
-                        return@launch
-                    }
-
-                    Timber.e("[FAIL] PATCH COURSE DETAIL: ${exception.message}")
                 }
         }
     }
@@ -136,16 +123,8 @@ class CourseDetailViewModel @Inject constructor(
                 RequestDeleteUploadCourseDto(publicCourseIdList = listOf(id))
             ).onSuccess { response ->
                 _courseDeleteState.value = UiStateV2.Success(response)
-                Timber.d("[SUCCESS] DELETE PUBLIC COURSE")
             }.onFailure { exception ->
                 _courseDeleteState.value = UiStateV2.Failure(exception.message.toString())
-
-                if (exception is HttpException) {
-                    Timber.e("[HTTP FAIL] DELETE PUBLIC COURSE: ${exception.code()} ${exception.message()}")
-                    return@launch
-                }
-
-                Timber.e("[FAIL] DELETE PUBLIC COURSE: ${exception.message}")
             }
         }
     }
