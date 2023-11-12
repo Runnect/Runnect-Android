@@ -18,16 +18,15 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.util.mode.ScreenMode
 import com.runnect.runnect.util.custom.CommonDialogFragment
 import com.runnect.runnect.util.custom.PopupItem
 import com.runnect.runnect.util.custom.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
-import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showSnackbar
-import com.runnect.runnect.util.extension.stringOf
+import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -142,8 +141,8 @@ class MyHistoryDetailActivity :
 
     private fun showPopupMenu(anchorView: View) {
         val popupItems = listOf(
-            PopupItem(R.drawable.ic_detail_more_edit, stringOf(R.string.popup_menu_item_edit)),
-            PopupItem(R.drawable.ic_detail_more_delete, stringOf(R.string.popup_menu_item_delete))
+            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
         )
 
         RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
@@ -206,7 +205,7 @@ class MyHistoryDetailActivity :
                     val newTitle = response.record.title
                     viewModel.updateHistoryTitle(newTitle)
 
-                    showToast(stringOf(R.string.course_detail_title_edit_success_msg))
+                    showToast(getString(R.string.course_detail_title_edit_success_msg))
                 }
 
                 is UiStateV2.Failure -> {
@@ -285,9 +284,9 @@ class MyHistoryDetailActivity :
 
     private fun showHistoryDeleteDialog() {
         val dialog = CommonDialogFragment(
-            stringOf(R.string.dialog_my_history_detail_delete_desc),
-            stringOf(R.string.dialog_course_detail_delete_no),
-            stringOf(R.string.dialog_course_detail_delete_yes),
+            getString(R.string.dialog_my_history_detail_delete_desc),
+            getString(R.string.dialog_course_detail_delete_no),
+            getString(R.string.dialog_course_detail_delete_yes),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = { viewModel.deleteHistory() }
         )
@@ -296,9 +295,9 @@ class MyHistoryDetailActivity :
 
     private fun showStopEditingDialog() {
         val dialog = CommonDialogFragment(
-            stringOf(R.string.dialog_my_history_detail_stop_editing_desc),
-            stringOf(R.string.dialog_course_detail_stop_editing_no),
-            stringOf(R.string.dialog_course_detail_stop_editing_yes),
+            getString(R.string.dialog_my_history_detail_stop_editing_desc),
+            getString(R.string.dialog_course_detail_stop_editing_no),
+            getString(R.string.dialog_course_detail_stop_editing_yes),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.

@@ -172,8 +172,6 @@ fun Context.showSnackbar(anchorView: View, message: String) {
     Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
 }
 
-fun Context.stringOf(@StringRes resId: Int) = getString(resId)
-
 fun Context.colorOf(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
 
 fun Context.drawableOf(@DrawableRes resId: Int) = ContextCompat.getDrawable(this, resId)
