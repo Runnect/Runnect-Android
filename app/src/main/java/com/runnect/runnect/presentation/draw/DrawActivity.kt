@@ -46,7 +46,9 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.RequireLoginDialogFragment
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
+import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
@@ -137,9 +139,10 @@ class DrawActivity :
 
     private fun initMode() {
         when (searchResult.mode) {
-            "searchLocation" -> initSearchLocationMode()
-            "currentLocation" -> initCurrentLocationMode()
-            "customLocation" -> initCustomLocationMode()
+            DepartureSetMode.SEARCH.mode -> initSearchLocationMode()
+            DepartureSetMode.CURRENT.mode -> initCurrentLocationMode()
+            DepartureSetMode.CUSTOM.mode -> initCustomLocationMode()
+            else -> throw IllegalArgumentException("Unknown mode: ${searchResult.mode}")
         }
     }
 
