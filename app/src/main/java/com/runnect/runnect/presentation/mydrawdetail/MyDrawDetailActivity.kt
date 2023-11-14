@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.mydrawdetail
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -13,6 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setActivityDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
@@ -57,6 +59,7 @@ class MyDrawDetailActivity :
                     putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDeleteMyDrawDetail")
                 }
                 startActivity(intent)
+                navigateToPreviousScreenWithAnimation()
             }
             this.btn_delete_no.setOnClickListener {
                 dialog.dismiss()
@@ -73,17 +76,11 @@ class MyDrawDetailActivity :
 
     private fun backButton() { //png가 imgBtn으로 하면 잘리길래 어차피 임시로 해놓는 거니까 imgView로 component를 추가해줬음
         binding.imgBtnBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            navigateToPreviousScreenWithAnimation()
         }
     }
 
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
-    fun getMyDrawDetail() {
+    private fun getMyDrawDetail() {
         val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
         Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
 
@@ -101,6 +98,16 @@ class MyDrawDetailActivity :
 
     fun addObserver() {
         observeGetResult()
+        registerBackPressedCallback()
+    }
+
+    private fun registerBackPressedCallback() { // 이 함수를 addObserver에서 호출
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreenWithAnimation()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun setImage(src: ResponseGetMyDrawDetailDTO) {
