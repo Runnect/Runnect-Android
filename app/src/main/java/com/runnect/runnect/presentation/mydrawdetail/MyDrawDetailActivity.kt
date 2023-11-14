@@ -14,6 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setActivityDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
@@ -58,7 +59,7 @@ class MyDrawDetailActivity :
                     putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDeleteMyDrawDetail")
                 }
                 startActivity(intent)
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
             this.btn_delete_no.setOnClickListener {
                 dialog.dismiss()
@@ -75,7 +76,7 @@ class MyDrawDetailActivity :
 
     private fun backButton() { //png가 imgBtn으로 하면 잘리길래 어차피 임시로 해놓는 거니까 imgView로 component를 추가해줬음
         binding.imgBtnBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
     }
 
@@ -103,15 +104,10 @@ class MyDrawDetailActivity :
     private fun registerBackPressedCallback() { // 이 함수를 addObserver에서 호출
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setImage(src: ResponseGetMyDrawDetailDTO) {
