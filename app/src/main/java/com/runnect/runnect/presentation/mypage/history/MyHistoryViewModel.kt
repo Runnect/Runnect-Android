@@ -11,6 +11,7 @@ import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,23 +33,13 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
     val editMode: LiveData<Boolean>
         get() = _editMode
 
-    private var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
+    private var _itemsToDeleteLiveData = MutableLiveData<List<Int>>()
+    val itemsToDeleteLiveData: MutableLiveData<List<Int>>
+        get() = _itemsToDeleteLiveData
 
     private var _itemsToDelete: MutableList<Int> = mutableListOf()
     val itemsToDelete: List<Int>
         get() = _itemsToDelete
-
-    val selectCountMediator = MediatorLiveData<List<Int>>()
-
-    init {
-        selectCountMediator.addSource(itemsToDeleteLiveData) {
-            setSelectedItemsCount(_itemsToDelete.count())
-        }
-    }
-
-    private var _selectedItemsCount = MutableLiveData(DEFAULT_SELECTED_COUNT)
-    val selectedItemsCount: LiveData<Int>
-        get() = _selectedItemsCount
 
     val errorMessage = MutableLiveData<String>()
 
@@ -65,11 +56,6 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
         _itemsToDelete.clear()
         itemsToDeleteLiveData.value = _itemsToDelete
     }
-
-    private fun setSelectedItemsCount(count: Int) {
-        _selectedItemsCount.value = count
-    }
-
 
     fun getHistoryCount(): String {
         return "총 기록 ${_historyItems.size}개"
@@ -104,9 +90,7 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
         viewModelScope.launch {
             runCatching {
                 _historyDeleteState.value = UiState.Loading
-                setSelectedItemsCount(
-                    count = DEFAULT_SELECTED_COUNT
-                )
+
                 userRepository.putDeleteHistory(
                     RequestDeleteHistoryDto(
                         recordIdList = _itemsToDelete
