@@ -43,11 +43,6 @@ class MyDrawDetailActivity :
         deleteButton()
     }
 
-    private fun finishViewAnimLeftRight() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
     private fun deletingDialog() {
         val (dialog, dialogLayout) = setActivityDialog(
             layoutInflater = layoutInflater,
@@ -63,7 +58,7 @@ class MyDrawDetailActivity :
                     putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDeleteMyDrawDetail")
                 }
                 startActivity(intent)
-                finishViewAnimLeftRight()
+                navigateToPreviousScreen()
             }
             this.btn_delete_no.setOnClickListener {
                 dialog.dismiss()
@@ -80,13 +75,7 @@ class MyDrawDetailActivity :
 
     private fun backButton() { //png가 imgBtn으로 하면 잘리길래 어차피 임시로 해놓는 거니까 imgView로 component를 추가해줬음
         binding.imgBtnBack.setOnClickListener {
-            finishViewAnimLeftRight()
-        }
-    }
-
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            finishViewAnimLeftRight()
+            navigateToPreviousScreen()
         }
     }
 
@@ -108,8 +97,21 @@ class MyDrawDetailActivity :
 
     fun addObserver() {
         observeGetResult()
+        registerBackPressedCallback()
+    }
 
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    private fun registerBackPressedCallback() { // 이 함수를 addObserver에서 호출
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreen()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun navigateToPreviousScreen() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setImage(src: ResponseGetMyDrawDetailDTO) {
