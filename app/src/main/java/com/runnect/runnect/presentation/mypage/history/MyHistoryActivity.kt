@@ -195,7 +195,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             btnMyPageHistoryEditHistory.text = EDIT_MODE
             tvMyPageHistoryTotalCourseCount.text = viewModel.getHistoryCount()
             if (::adapter.isInitialized) adapter.clearSelection()
-            btnMyPageHistoryDelete.isVisible = viewModel.editMode.value!!
+            btnMyPageHistoryDelete.isVisible = viewModel.editMode.value ?: true
             viewModel.clearItemsToDelete()
         }
     }
