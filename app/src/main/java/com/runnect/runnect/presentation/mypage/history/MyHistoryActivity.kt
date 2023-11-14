@@ -145,8 +145,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
                 exitEditMode()
             }
         }
-        viewModel.itemsToDeleteLiveData.observe(this) { count ->
-            updateDeleteButton(count.size)
+        viewModel.itemsToDeleteLiveData.observe(this) {
+            updateDeleteButton(it.size)
         }
     }
 
