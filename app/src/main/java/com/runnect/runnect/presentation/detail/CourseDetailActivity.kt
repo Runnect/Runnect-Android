@@ -36,6 +36,7 @@ import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
+import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
@@ -318,10 +319,12 @@ class CourseDetailActivity :
 
 
     private fun showStopEditingDialog() {
-        val dialog = CommonDialogFragment(
-            getString(R.string.dialog_my_upload_course_detail_stop_editing_desc),
-            getString(R.string.dialog_course_detail_stop_editing_no),
-            getString(R.string.dialog_course_detail_stop_editing_yes),
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_upload_course_detail_stop_editing_desc),
+                getString(R.string.dialog_course_detail_stop_editing_no),
+                getString(R.string.dialog_course_detail_stop_editing_yes)
+            ),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
@@ -349,10 +352,12 @@ class CourseDetailActivity :
     }
 
     private fun showCourseDeleteDialog() {
-        val dialog = CommonDialogFragment(
-            getString(R.string.dialog_my_upload_course_detail_delete_desc),
-            getString(R.string.dialog_course_detail_delete_no),
-            getString(R.string.dialog_course_detail_delete_yes),
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_upload_course_detail_delete_desc),
+                getString(R.string.dialog_course_detail_delete_no),
+                getString(R.string.dialog_course_detail_delete_yes)
+            ),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = { viewModel.deleteUploadCourse(courseDetail.id) }
         )
@@ -454,7 +459,7 @@ class CourseDetailActivity :
         }
     }
 
-    private fun <T: Any> T.toCourseDetailContents(): CourseDetailContents? {
+    private fun <T : Any> T.toCourseDetailContents(): CourseDetailContents? {
         return when (this) {
             is CourseDetail -> CourseDetailContents(title, description)
             is PublicCourse -> CourseDetailContents(title, description)

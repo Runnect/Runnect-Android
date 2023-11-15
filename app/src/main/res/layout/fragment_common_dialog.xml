@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="dialogText"
+            type="com.runnect.runnect.util.custom.dialog.CommonDialogText" />
+    </data>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -22,6 +29,7 @@
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center"
                 android:lineHeight="22sp"
+                android:text="@{dialogText.description}"
                 android:textColor="@color/G2"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +57,7 @@
                     android:fontFamily="@font/pretendard_semibold"
                     android:padding="12dp"
                     android:stateListAnimator="@null"
+                    android:text="@{dialogText.negativeButtonText}"
                     android:textColor="@color/M1"
                     android:textSize="15sp"
                     tools:text="취소" />
@@ -63,6 +72,7 @@
                     android:fontFamily="@font/pretendard_semibold"
                     android:padding="12dp"
                     android:stateListAnimator="@null"
+                    android:text="@{dialogText.positiveButtonText}"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     tools:text="삭제하기" />
