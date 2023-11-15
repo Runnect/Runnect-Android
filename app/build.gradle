@@ -1,21 +1,26 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+
     id 'kotlin-android-extensions'
-    //serialization
+    //id 'kotlin-parcelize'
+
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20'
-    //hilt
     id 'dagger.hilt.android.plugin'
-    //plugin for databinding & hilt
+
+    // plugin for data binding, hilt
     id 'kotlin-kapt'
-    //for hiding keys used in manifest
+
+    // plugin for hiding keys used in manifest
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
     // Add the Google services Gradle plugin
-    id("com.google.gms.google-services")
+    id 'com.google.gms.google-services'
 }
+
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.runnect.runnect'
     compileSdk 33
@@ -36,6 +41,7 @@ android {
         buildConfigField "String", "REMOTE_KEY_APP_VERSION", properties["REMOTE_KEY_APP_VERSION"]
 
     }
+
     buildFeatures {
         buildConfig = true
     }
@@ -46,13 +52,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     buildFeatures {
         dataBinding true
         viewBinding true
@@ -60,7 +69,6 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.8.0'
