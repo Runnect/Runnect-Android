@@ -38,8 +38,8 @@ class RequireLoginDialogFragment
         }
     }
 
-//    companion object {
-//        @JvmStatic
-//        fun newInstance() = RequireLoginDialogFragment()
-//    }
+    companion object {
+        @JvmStatic
+        fun newInstance() = RequireLoginDialogFragment()
+    }
 }
