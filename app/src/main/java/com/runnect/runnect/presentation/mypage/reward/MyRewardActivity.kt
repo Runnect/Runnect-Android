@@ -12,7 +12,7 @@ import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ActivityMyRewardBinding
 import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

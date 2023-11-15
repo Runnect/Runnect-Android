@@ -1,4 +1,4 @@
-package com.runnect.runnect.util.custom
+package com.runnect.runnect.util.custom.toast
 
 import android.content.Context
 import android.content.res.Resources

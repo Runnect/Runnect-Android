@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.draw
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
@@ -45,7 +43,7 @@ import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.RequireLoginDialogFragment
+import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.extension.hideKeyboard

@@ -17,7 +17,7 @@ import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.RunnectToast
+import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.round
 import dagger.hilt.android.AndroidEntryPoint

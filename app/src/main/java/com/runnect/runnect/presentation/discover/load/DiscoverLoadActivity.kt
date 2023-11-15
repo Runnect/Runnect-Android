@@ -14,7 +14,7 @@ import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapte
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnRecommendCourseClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

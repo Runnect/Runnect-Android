@@ -21,7 +21,7 @@ import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
-import com.runnect.runnect.util.custom.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import com.runnect.runnect.util.extension.setFragmentDialog

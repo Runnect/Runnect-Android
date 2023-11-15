@@ -18,9 +18,9 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.util.custom.CommonDialogFragment
-import com.runnect.runnect.util.custom.PopupItem
-import com.runnect.runnect.util.custom.RunnectPopupMenu
+import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
+import com.runnect.runnect.util.custom.popup.PopupItem
+import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard

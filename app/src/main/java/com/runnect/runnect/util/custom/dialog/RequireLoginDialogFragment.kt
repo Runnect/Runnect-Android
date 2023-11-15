@@ -1,4 +1,4 @@
-package com.runnect.runnect.util.custom
+package com.runnect.runnect.util.custom.dialog
 
 import android.content.Intent
 import android.os.Bundle
@@ -37,4 +37,9 @@ class RequireLoginDialogFragment
             startActivity(this)
         }
     }
+
+//    companion object {
+//        @JvmStatic
+//        fun newInstance() = RequireLoginDialogFragment()
+//    }
 }

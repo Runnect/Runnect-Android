@@ -17,7 +17,7 @@ import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.RecyclerOffsetDecorationHeight
+import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
 import com.runnect.runnect.util.callback.OnHistoryItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener

@@ -35,11 +35,11 @@ import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.util.custom.CommonDialogFragment
-import com.runnect.runnect.util.custom.PopupItem
-import com.runnect.runnect.util.custom.RequireLoginDialogFragment
-import com.runnect.runnect.util.custom.RunnectPopupMenu
-import com.runnect.runnect.util.custom.RunnectToast
+import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
+import com.runnect.runnect.util.custom.popup.PopupItem
+import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
+import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.getStampResId
 import com.runnect.runnect.util.extension.hideKeyboard
