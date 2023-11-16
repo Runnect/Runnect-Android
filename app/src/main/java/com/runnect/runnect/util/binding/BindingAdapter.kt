@@ -1,11 +1,9 @@
 package com.runnect.runnect.util.binding
 
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.BindingAdapter
 import coil.load
-import com.bumptech.glide.Glide
 
 object BindingAdapter {
     @BindingAdapter("setLocalImageByResourceId")
@@ -14,18 +12,20 @@ object BindingAdapter {
         imageView.load(resId)
     }
 
-    @BindingAdapter("setLocalImageByUri")
+    @BindingAdapter("setImageUrl")
     @JvmStatic
-    fun setLocalImageByUri(imageView: ImageView, uri: String) {
-        imageView.load(uri)
+    fun setImageUrl(imageView: ImageView, url: String?) {
+        if(url == null) return
+        imageView.load(url)
     }
 
-    @BindingAdapter("setRemoteImageByUrl")
+    @BindingAdapter("isValidTitle", "isValidDescription")
     @JvmStatic
-    fun setRemoteImageByUrl(view: ImageView, imageUrl: String) {
-        Glide.with(view.context)
-            .load(imageUrl)
-            .centerCrop()
-            .into(view)
+    fun updateEditFinishButtonBackground(
+        button: AppCompatButton,
+        isValidTitle: Boolean,
+        isValidDescription: Boolean
+    ) {
+        button.isEnabled = isValidTitle && isValidDescription
     }
 }

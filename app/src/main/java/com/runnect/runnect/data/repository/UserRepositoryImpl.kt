@@ -3,11 +3,11 @@ package com.runnect.runnect.data.repository
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
 import com.runnect.runnect.data.dto.request.RequestUpdateNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
-import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitleDto
 import com.runnect.runnect.data.dto.response.ResponseUpdateNickName
@@ -36,8 +36,10 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
             .toMutableList()
     }
 
-    override suspend fun putDeleteUploadCourse(requestDeleteUploadCourse: RequestDeleteUploadCourse): ResponseDeleteUploadCourse {
-        return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse)
+    override suspend fun putDeleteUploadCourse(
+        requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
+    ): Result<ResponseDeleteUploadCourseDto?> = runCatching {
+        remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourseDto).data
     }
 
     override suspend fun putDeleteHistory(

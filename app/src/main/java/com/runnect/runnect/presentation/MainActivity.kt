@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.fragment.app.commit
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -137,7 +136,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     companion object {
-
         const val UPDATE_DIALOG_TITLE = "업데이트"
         const val UPDATE_DIALOG_MESSAGE = "더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다."
         const val UPDATE_DIALOG_BTN_TEXT = "업데이트"
@@ -149,14 +147,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         var isVisitorMode = false
         var discoverFragment: DiscoverFragment? = null
         var storageScrapFragment: StorageScrapFragment? = null
-        fun updateDiscoverFragment() {
+
+        fun updateCourseDiscoverScreen() {
             discoverFragment?.getRecommendCourses(pageNo = "")
         }
 
-        fun updateStorageScrap() {
+        fun updateStorageScrapScreen() {
             storageScrapFragment?.getCourse()
         }
     }
 }
-
-

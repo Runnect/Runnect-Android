@@ -10,10 +10,9 @@ import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
-import com.runnect.runnect.util.custom.RunnectToast
+import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.extension.stringOf
 import com.runnect.runnect.util.callback.ItemDiffCallback
 
 class CourseRecommendAdapter(
@@ -51,7 +50,7 @@ class CourseRecommendAdapter(
                     if (isVisitorMode) {
                         RunnectToast.createToast(
                             context = context,
-                            message = context.stringOf(R.string.visitor_mode_require_login_desc)
+                            message = context.getString(R.string.course_detail_visitor_mode_scrap_warning_msg)
                         ).show()
                     } else {
                         it.isSelected = !it.isSelected

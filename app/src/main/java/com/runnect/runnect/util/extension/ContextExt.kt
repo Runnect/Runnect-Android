@@ -1,6 +1,5 @@
 package com.runnect.runnect.util.extension
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -21,20 +20,14 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.runnect.runnect.R
-import kotlinx.android.synthetic.main.custom_dialog_delete.*
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
+import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
+import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
+import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
-
-fun Context.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-}
-
-fun Context.hideKeyboard(view: View) {
-    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    view.clearFocus()
-}
+import kotlinx.android.synthetic.main.fragment_require_login_dialog.view.tv_require_login_dialog_desc
 
 fun Context.setActivityDialog(
     layoutInflater: LayoutInflater,
@@ -160,16 +153,24 @@ fun Context.getStampResId(
     }
 }
 
-fun Context.startWebView(url: String) {
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    view.clearFocus()
+}
+
+fun Context.showWebBrowser(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     startActivity(intent)
 }
 
-fun Context.snackBar(anchorView: View, message: String) {
-    Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
+fun Context.showToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.stringOf(@StringRes resId: Int) = getString(resId)
+fun Context.showSnackbar(anchorView: View, message: String) {
+    Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
+}
 
 fun Context.colorOf(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
 

@@ -40,7 +40,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_my_page_upload_course"
-                    setRemoteImageByUrl="@{storageItem.image}"
+                    setImageUrl="@{storageItem.image}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop" />

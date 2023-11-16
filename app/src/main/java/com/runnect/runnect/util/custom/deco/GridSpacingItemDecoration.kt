@@ -1,4 +1,4 @@
-package com.runnect.runnect.util.custom
+package com.runnect.runnect.util.custom.deco
 
 import android.content.Context
 import android.graphics.Rect

@@ -10,7 +10,7 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingBinding
 import com.runnect.runnect.presentation.mypage.MyPageFragment
 import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
-import com.runnect.runnect.util.extension.startWebView
+import com.runnect.runnect.util.extension.showWebBrowser
 
 class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fragment_my_setting) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,10 +36,10 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
             moveToMySettingAccountInfo()
         }
         binding.viewSettingReportFrame.setOnClickListener {
-            requireContext().startWebView(REPORT_URL)
+            requireContext().showWebBrowser(REPORT_URL)
         }
         binding.viewSettingTermsFrame.setOnClickListener {
-            requireContext().startWebView(TERMS_URL)
+            requireContext().showWebBrowser(TERMS_URL)
         }
     }
 

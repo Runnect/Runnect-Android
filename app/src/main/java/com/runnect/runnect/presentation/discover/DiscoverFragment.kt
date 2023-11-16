@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.activity.addCallback
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -21,18 +21,19 @@ import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
-import com.runnect.runnect.util.custom.RunnectToast
-import com.runnect.runnect.util.custom.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnBannerClick
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.extension.startWebView
+import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Timer
@@ -59,25 +60,31 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.vm = viewModel
-        binding.lifecycleOwner = this.viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
+
         initLayout()
         getBannerData()
         getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
         setResultDetail()
+        registerBackPressedCallback()
+        initRefreshLayoutListener()
+    }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if (isFromStorageScrap) {
-                StorageScrapFragment.isFromStorageNoScrap = false
-                handleReturnToDiscover()
-            } else {
-                activity?.onBackPressed()
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isFromStorageScrap) {
+                    StorageScrapFragment.isFromStorageNoScrap = false
+                    MainActivity.updateStorageScrapScreen()
+                }
+                requireActivity().finish()
+                requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
-        pullToRefresh()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun initScrollListener() {
@@ -91,7 +98,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun pullToRefresh() {
+    private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
             viewModel.recommendCourseList.clear() //새로고침 시 다시 pageNo가 1부터 시작되는데 기존에 끝까지 받아온 거에 addAll로 계속 누적돼서 clear()로 비워주는 것.
             getRecommendCourses(pageNo = "1")
@@ -103,14 +110,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.getBannerData()
 
     }
-
-    private fun handleReturnToDiscover() {
-        MainActivity.updateStorageScrap()
-        requireActivity().finish()
-        requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-
-    }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -151,8 +150,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 R.anim.slide_out_left
             )
         }
-        binding.btnDiscoverUpload.setOnClickListener {
 
+        binding.btnDiscoverUpload.setOnClickListener {
             if (isVisitorMode) {
                 RunnectToast.createToast(requireContext(), VISITOR_REQUIRE_LOGIN).show()
             } else {
@@ -208,7 +207,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             }
         }
     }
-
 
     private fun setRecommendCourseAdapter() {
         courseRecommendAdapter =
@@ -330,7 +328,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun selectItem(publicCourseId: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java)
         intent.putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-        intent.putExtra(EXTRA_ROOT, COURSE_DISCOVER_TAG)
+        intent.putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
         startForResult.launch(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
@@ -340,16 +338,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     override fun selectBanner(item: DiscoverPromotionItemDTO) {
         if (item.linkUrl.isNotEmpty()) {
-            requireContext().startWebView(item.linkUrl)
+            requireContext().showWebBrowser(item.linkUrl)
         }
     }
 
     companion object {
         const val PAGE_NUM = 900
         const val INTERVAL_TIME = 5000L
-        const val COURSE_DISCOVER_TAG = "discover"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT = "root"
+        const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val END_PAGE = "HTTP 400 Bad Request"
         const val VISITOR_REQUIRE_LOGIN = "러넥트에 가입하면 코스를 업로드할 수 있어요"
     }

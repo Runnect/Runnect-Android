@@ -3,9 +3,10 @@ package com.runnect.runnect.data.service
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
-import com.runnect.runnect.data.dto.request.RequestUpdatePublicCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.*
+import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -31,7 +32,7 @@ interface CourseService {
     @GET("/api/public-course/detail/{publicCourseId}")
     suspend fun getCourseDetail(
         @Path("publicCourseId") publicCourseId: Int,
-    ): ResponseCourseDetail
+    ): BaseResponse<ResponseGetCourseDetailDto>
 
     @GET("/api/course/private/user")
     suspend fun getMyCourseLoad(
@@ -43,10 +44,10 @@ interface CourseService {
     ): ResponseUploadMyCourse
 
     @PATCH("/api/public-course/{publicCourseId}")
-    suspend fun patchUpdatePublicCourse(
+    suspend fun patchPublicCourse(
         @Path("publicCourseId") publicCourseId: Int,
-        @Body requestUpdatePublicCourse: RequestUpdatePublicCourse
-    ): ResponseUpdatePublicCourse
+        @Body requestPatchPublicCourseDto: RequestPatchPublicCourseDto
+    ): BaseResponse<ResponsePatchPublicCourseDto>
 
     //스크랩 - 지훈이랑 나랑 타입 통일이 안 돼있음. 일단 DataSource 통일부터하고 나중에 여기 타입 맞춰줘서 스크랩 함수 둘 중 하나 삭제해야 함.
     @POST("/api/scrap")

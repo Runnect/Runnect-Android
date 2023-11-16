@@ -45,24 +45,6 @@ fun SearchPublicCourse.toData(): CourseSearchDTO {
     )
 }
 
-fun DetailData.toData(): CourseDetailDTO {
-    return CourseDetailDTO(
-        stampId = user.image,
-        level = user.level,
-        nickname = user.nickname,
-        courseId = publicCourse.courseId,
-        departure = publicCourse.departure.region + ' ' + publicCourse.departure.city + ' ' + publicCourse.departure.town + ' ' + ((publicCourse.departure.name)
-            ?: ""),
-        description = publicCourse.description,
-        distance = publicCourse.distance.toString(),
-        id = publicCourse.id,
-        image = publicCourse.image,
-        scrap = publicCourse.scrap,
-        title = publicCourse.title,
-        path = publicCourse.path
-    )
-}
-
 fun PrivateCourse.toData(): CourseLoadInfoDTO {
     return CourseLoadInfoDTO(
         id = id,

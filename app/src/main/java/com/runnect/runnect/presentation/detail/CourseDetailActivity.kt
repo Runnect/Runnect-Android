@@ -1,22 +1,18 @@
 package com.runnect.runnect.presentation.detail
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import coil.load
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gun0912.tedpermission.provider.TedPermissionProvider.context
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.link.LinkClient
@@ -29,81 +25,191 @@ import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
+import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
+import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.RunnectToast
-import com.runnect.runnect.util.extension.*
+import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
+import com.runnect.runnect.util.custom.dialog.CommonDialogText
+import com.runnect.runnect.util.custom.popup.PopupItem
+import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
+import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
+import com.runnect.runnect.util.extension.getStampResId
+import com.runnect.runnect.util.extension.hideKeyboard
+import com.runnect.runnect.util.extension.showSnackbar
+import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.extension.showWebBrowser
+import com.runnect.runnect.util.mode.ScreenMode.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.*
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.*
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import timber.log.Timber
-import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
     private val viewModel: CourseDetailViewModel by viewModels()
-    var publicCourseId by Delegates.notNull<Int>()
-    private var root: String = ""
-    lateinit var departureLatLng: LatLng
-    private val touchList = arrayListOf<LatLng>()
-    private lateinit var deleteDialog: AlertDialog
-    private lateinit var editBottomSheet: BottomSheetDialog
-    private lateinit var editInterruptDialog: AlertDialog
+    private val isVisitorMode: Boolean = MainActivity.isVisitorMode
 
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    var isFromDeepLink: Boolean = false
+    // 플래그 변수
+    private var isFromDeepLink: Boolean = false
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            gestureBackWhenDeepLink()
+    // 인텐트 부가 데이터
+    private lateinit var rootScreen: CourseDetailRootScreen
+    private var publicCourseId: Int = -1
 
-            root = intent.getStringExtra(EXTRA_ROOT).toString()
-            when (root) {
-                MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
-                COURSE_DISCOVER_TAG -> handleReturnToDiscover()
-                STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
-            }
-        }
-    }
-
-    private fun gestureBackWhenDeepLink(){
-        if (isFromDeepLink) {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromCourseDetail")
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            }
-            startActivity(intent)
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            isFromDeepLink = false
-        }
-    }
+    // 서버통신으로 초기화 할 데이터
+    private lateinit var courseDetail: CourseDetail
+    private lateinit var departureLatLng: LatLng
+    private lateinit var connectedSpots: ArrayList<LatLng>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.vm = viewModel
+        binding.lifecycleOwner = this
 
-        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
-        Timber.tag(ContentValues.TAG).d("상세페이지 코스 아이디 : $publicCourseId")
-        root = intent.getStringExtra(EXTRA_ROOT).toString()
+        initIntentExtraData()
+        updatePublicCourseIdFromDeepLink()
+        getCourseDetail()
+
         addListener()
-        initDeepLink()
-        initView()
         addObserver()
-        initEditBottomSheet()
-        initDeleteDialog()
-        setDeleteDialogClickEvent()
-        initEditInterruptedDialog()
-        setEditInterruptedDialog()
+        registerBackPressedCallback()
     }
 
-    //    title: String, desc: String, image: String
+    private fun initIntentExtraData() {
+        intent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)?.let {
+            rootScreen = it
+        }
+        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
+    }
+
+    private fun updatePublicCourseIdFromDeepLink() {
+        // 딥링크를 통해 열린 경우
+        if (Intent.ACTION_VIEW == intent.action) {
+            isFromDeepLink = true
+            val uri = intent.data
+            if (uri != null) {
+                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세 페이지를 띄울지 결정할 수 있음.
+                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
+                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
+            }
+        }
+    }
+
+    private fun getCourseDetail() {
+        viewModel.getCourseDetail(publicCourseId)
+    }
+
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackButtonByCurrentScreenMode()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun navigateToMainScreenWithBundle() {
+        Intent(this@CourseDetailActivity, MainActivity::class.java).apply {
+            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, EXTRA_FROM_COURSE_DETAIL)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(this)
+        }
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun handleBackButtonByCurrentScreenMode() {
+        when (viewModel.currentScreenMode) {
+            is ReadOnlyMode -> navigateToPreviousScreen()
+            is EditMode -> showStopEditingDialog()
+        }
+    }
+
+    private fun navigateToPreviousScreen() {
+        if (isFromDeepLink) {
+            navigateToMainScreenWithBundle()
+            isFromDeepLink = false
+            return
+        }
+
+        when (rootScreen) {
+            COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
+            COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
+            COURSE_DISCOVER_SEARCH -> navigateToDiscoverSearchScreen()
+            MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
+        }
+
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    // todo: 코스 검색 화면으로 돌아갔을 때, 방금 전 검색 결과가 보존되면서도
+    //  상세 페이지에서 수정한 내용이 반영되려면 목록에서 해당 아이템만 일부 수정하는 로직이 필요하다.
+    private fun navigateToDiscoverSearchScreen() {
+        Intent(this, DiscoverSearchActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(this)
+        }
+    }
+
+    private fun navigateToMyUploadCourseScreen() {
+        Intent(this, MyUploadActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(this)
+        }
+    }
+
+    private fun addListener() {
+        initBackButtonClickListener()
+
+        initScrapButtonClickListener()
+        initStartRunButtonClickListener()
+        initEditFinishButtonClickListener()
+
+        initShareButtonClickListener()
+        initShowMoreButtonClickListener()
+    }
+
+    private fun initBackButtonClickListener() {
+        binding.ivCourseDetailBack.setOnClickListener {
+            handleBackButtonByCurrentScreenMode()
+        }
+    }
+
+    private fun initShowMoreButtonClickListener() {
+        binding.btnShowMore.setOnClickListener { view ->
+            if (courseDetail.isNowUser) {
+                showEditDeletePopupMenu(view)
+            } else {
+                showReportPopupMenu(view)
+            }
+        }
+    }
+
+    private fun initEditFinishButtonClickListener() {
+        binding.tvCourseDetailEditFinish.setOnClickListener {
+            viewModel.patchPublicCourse(publicCourseId)
+        }
+    }
+
+    private fun initShareButtonClickListener() {
+        binding.btnShare.setOnClickListener {
+            sendKakaoLink(
+                title = courseDetail.title,
+                desc = courseDetail.description,
+                image = courseDetail.image
+            )
+        }
+    }
+
+    // todo: 함수를 더 작게 분리해주는 게 좋을 거 같아요! @우남
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -168,148 +274,124 @@ class CourseDetailActivity :
         }
     }
 
-    private fun initDeepLink() {
-        if (Intent.ACTION_VIEW == intent.action) { //딥링크를 통해 열린 경우
-            isFromDeepLink = true
-            val uri = intent.data
-            if (uri != null) {
-                // 여기서 androidExecutionParams 값들을 받아와 어떠한 상세페이지를 띄울지 결정할 수 있음
-                publicCourseId = uri.getQueryParameter("publicCourseId")!!.toInt()
-                Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
-            }
-        }
-        //위의 if문을 작성해줌으로써 어떤 경우에도 publicCourseId 값이 세팅이 돼있어 getCourseDetail()을 돌려줄 수 있습니다.
-        getCourseDetail()
-    }
-
-
-    private fun initView() {
-        binding.vm = viewModel
-        binding.lifecycleOwner = this
-    }
-
-    private fun addListener() {
-        binding.ivCourseDetailBack.setOnClickListener {
-            gestureBackWhenDeepLink()
-
-            if (viewModel.editMode.value == true) {
-                editInterruptDialog.show()
+    private fun initStartRunButtonClickListener() {
+        binding.btnCourseDetailStartRun.setOnClickListener {
+            if (isVisitorMode) {
+                showRequireLoginDialog()
                 return@setOnClickListener
             }
 
-            if (!viewModel.isEdited) {
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                return@setOnClickListener
-            }
-
-            when (root) {
-                MY_UPLOAD_ACTIVITY_TAG -> handleReturnToMyUpload()
-                COURSE_DISCOVER_TAG -> handleReturnToDiscover()
-                STORAGE_SCRAP_TAG -> handleReturnToStorageScrap()
+            Intent(
+                this@CourseDetailActivity,
+                CountDownActivity::class.java
+            ).apply {
+                putExtra(
+                    EXTRA_COURSE_DATA, CourseData(
+                        courseId = courseDetail.courseId,
+                        publicCourseId = courseDetail.id,
+                        touchList = connectedSpots,
+                        startLatLng = departureLatLng,
+                        departure = courseDetail.departure,
+                        distance = courseDetail.distance.toFloat(),
+                        image = courseDetail.image,
+                        dataFrom = "detail"
+                    )
+                )
+                startActivity(this)
             }
         }
+    }
 
+    private fun initScrapButtonClickListener() {
         binding.ivCourseDetailScrap.setOnClickListener {
             if (isVisitorMode) {
-                RunnectToast.createToast(this@CourseDetailActivity, "러넥트에 가입하면 코스를 스크랩할 수 있어요")
-                    .show()
-            } else {
-                it.isSelected = !it.isSelected
-                viewModel.postCourseScrap(publicCourseId, it.isSelected)
-                viewModel.isEdited = true
+                RunnectToast.createToast(
+                    this,
+                    getString(R.string.course_detail_visitor_mode_scrap_warning_msg)
+                ).show()
+                return@setOnClickListener
             }
-        }
-        binding.btnCourseDetailFinish.setOnClickListener {
 
-            if (isVisitorMode) {
-                requireLogin()
-            } else {
-                val intent = Intent(this, CountDownActivity::class.java).apply {
-                    putExtra(
-                        EXTRA_COURSE_DATA, CourseData(
-                            courseId = viewModel.courseDetail.courseId,
-                            publicCourseId = viewModel.courseDetail.id,
-                            touchList = touchList,
-                            startLatLng = departureLatLng,
-                            departure = viewModel.courseDetail.departure,
-                            distance = viewModel.courseDetail.distance.toFloat(),
-                            image = viewModel.courseDetail.image,
-                            dataFrom = "detail"
-                        )
-                    )
-                }
-                startActivity(intent)
-            }
+            it.isSelected = !it.isSelected
+            viewModel.postCourseScrap(publicCourseId, it.isSelected)
         }
-
-        binding.btnShare.setOnClickListener {
-            sendKakaoLink(
-                title = viewModel.title.value.toString(),
-                desc = viewModel.description.value.toString(),
-                image = viewModel.imageUrl.value.toString()
-            )
-        }
-
-        binding.btnShowMore.setOnClickListener {
-            if (root == MY_UPLOAD_ACTIVITY_TAG) {
-                editBottomSheet.show()
-            } else {
-                bottomSheet()
-            }
-        }
-        binding.tvCourseDetailEditFinish.setOnClickListener {
-            viewModel.patchUpdatePublicCourse(publicCourseId)
-        }
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
-    private fun requireLogin() {
-        val (dialog, dialogLayout) = setActivityDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            resId = R.layout.custom_dialog_require_login,
-            cancel = false
+
+    private fun showStopEditingDialog() {
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_upload_course_detail_stop_editing_desc),
+                getString(R.string.dialog_course_detail_stop_editing_no),
+                getString(R.string.dialog_course_detail_stop_editing_yes)
+            ),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = {
+                // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
+                viewModel.restoreOriginalContents()
+                enterReadMode()
+            }
         )
-        with(dialogLayout) {
-            this.btn_login.setOnClickListener {
-                val intent = Intent(this@CourseDetailActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-                dialog.dismiss()
+        dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_EDIT_DIALOG)
+    }
+
+    private fun showEditDeletePopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
+            when (pos) {
+                0 -> enterEditMode()
+                1 -> showCourseDeleteDialog()
             }
-            this.btn_cancel.setOnClickListener {
-                dialog.dismiss()
-            }
+        }.apply {
+            showCustomPosition(anchorView)
         }
-        dialog.show()
     }
 
-
-    private fun handleReturnToMyUpload() {
-        val intent = Intent(this, MyUploadActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun showCourseDeleteDialog() {
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_upload_course_detail_delete_desc),
+                getString(R.string.dialog_course_detail_delete_no),
+                getString(R.string.dialog_course_detail_delete_yes)
+            ),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = { viewModel.deleteUploadCourse(courseDetail.id) }
+        )
+        dialog.show(supportFragmentManager, TAG_MY_UPLOAD_COURSE_DELETE_DIALOG)
     }
 
-    private fun handleReturnToDiscover() {
-        MainActivity.updateDiscoverFragment()
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun showReportPopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(
+                R.drawable.ic_detail_more_report,
+                getString(R.string.popup_menu_item_report)
+            )
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, _ ->
+            showWebBrowser(REPORT_URL)
+        }.apply {
+            showCustomPosition(anchorView)
+        }
     }
 
-    private fun handleReturnToStorageScrap() {
-        MainActivity.updateStorageScrap()
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    private fun RunnectPopupMenu.showCustomPosition(anchorView: View) {
+        showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
+    }
+
+    private fun showRequireLoginDialog() {
+        RequireLoginDialogFragment().show(supportFragmentManager, TAG_REQUIRE_LOGIN_DIALOG)
     }
 
     private fun enterEditMode() {
-        viewModel.convertMode()
-        viewModel.titleForInterruption.value = viewModel.editTitle.value.toString()
-        viewModel.contentForInterruption.value = viewModel.editContent.value.toString()
+        viewModel.apply {
+            updateCurrentScreenMode(EditMode)
+            saveCurrentContents()
+        }
         updateLayoutForEditMode()
     }
 
@@ -319,11 +401,10 @@ class CourseDetailActivity :
             groupCourseDetailEditMode.isVisible = true
             btnShowMore.isVisible = false
         }
-        editBottomSheet.dismiss()
     }
 
     private fun enterReadMode() {
-        viewModel.convertMode()
+        viewModel.updateCurrentScreenMode(ReadOnlyMode)
         updateLayoutForReadMode()
     }
 
@@ -335,214 +416,180 @@ class CourseDetailActivity :
         }
     }
 
-    private fun getCourseDetail() {
-        viewModel.getCourseDetail(publicCourseId)
-    }
-
-    private fun setDepartureLatLng() {
-        departureLatLng =
-            LatLng(viewModel.courseDetail.path[0][0], viewModel.courseDetail.path[0][1])
-    }
-
-    private fun setTouchList() {
-        for (i in 1 until viewModel.courseDetail.path.size) {
-            touchList.add(
-                LatLng(
-                    viewModel.courseDetail.path[i][0], viewModel.courseDetail.path[i][1]
-                )
-            )
-        }
-    }
-
     private fun addObserver() {
+        setupFromDeepLinkObserver()
+        setupCourseGetStateObserver()
+        setupCoursePatchStateObserver()
+        setupCourseDeleteStateObserver()
+    }
+
+    private fun setupFromDeepLinkObserver() {
         viewModel.isDeepLinkLogin.observe(this) {
-            if (viewModel.isDeepLinkLogin.value == false) { //딥링크로 진입했는데 로그인이 안 돼있을 경우
+            // 딥링크로 진입했는데 로그인이 안 되어있는 경우
+            if (viewModel.isDeepLinkLogin.value == false) {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 viewModel.isDeepLinkLogin.value = true
             }
         }
+    }
 
-        viewModel.courseDetailState.observe(this) { state ->
-            if (state == UiState.Success) {
-                with(binding) {
-                    with(viewModel.courseDetail) {
-                        val stampResId = this@CourseDetailActivity.getStampResId(
-                            stampId = viewModel.stampId.value,
-                            resNameParam = RES_NAME,
-                            resType = RES_STAMP_TYPE,
-                            packageName = packageName
-                        )
-                        ivCourseDetailProfileStamp.load(stampResId)
-                        ivCourseDetailProfileNickname.text = nickname
-                        if (level == "알 수 없음") {
-                            tvCourseDetailProfileLv.isVisible = false
-                            tvCourseDetailProfileLvIndicator.isVisible = false
-                        } else {
-                            tvCourseDetailProfileLv.text = level
-                        }
-                        ivCourseDetailScrap.isSelected = scrap
-
-                    }
-
-                }
-                setDepartureLatLng()
-                setTouchList()
-            }
-        }
-
-
-        viewModel.myUploadDeleteState.observe(this)
-        { state ->
+    private fun setupCourseGetStateObserver() {
+        viewModel.courseGetState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    if (root == MY_UPLOAD_ACTIVITY_TAG) {
-                        val intent = Intent(this, MyUploadActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(intent)
-                        finish()
-                    }
+                is UiStateV2.Success -> {
+                    courseDetail = state.data ?: return@observe
+                    binding.courseDetailDto = courseDetail
+
+                    viewModel.updateCourseDetailContents(courseDetail.toCourseDetailContents())
+                    updateUserProfileStamp()
+                    updateUserLevel()
+                    updateScrapState()
+
+                    initDepartureLatLng()
+                    initConnectedSpots()
                 }
 
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+                is UiStateV2.Failure -> {
+                    showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
             }
         }
-        viewModel.isEditFinishEnable.observe(this)
-        {
-            with(binding.tvCourseDetailEditFinish) {
-                isActivated = it
-                isClickable = it
-            }
+    }
+
+    private fun <T : Any> T.toCourseDetailContents(): CourseDetailContents? {
+        return when (this) {
+            is CourseDetail -> CourseDetailContents(title, description)
+            is PublicCourse -> CourseDetailContents(title, description)
+            else -> null
         }
-        viewModel.courseUpdateState.observe(this)
-        { state ->
+    }
+
+    private fun initDepartureLatLng() {
+        departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
+    }
+
+    private fun initConnectedSpots() {
+        connectedSpots = arrayListOf()
+        for (spot in courseDetail.path) {
+            connectedSpots.add(LatLng(spot[0], spot[1]))
+        }
+    }
+
+    private fun setupCoursePatchStateObserver() {
+        viewModel.coursePatchState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> handleSuccessfulCourseUpdate()
-                UiState.Failure -> {
+                is UiStateV2.Loading -> binding.indeterminateBar.isVisible = true
+
+                is UiStateV2.Success -> {
                     binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+
+                    state.data?.let { response ->
+                        viewModel.updateCourseDetailContents(response.toCourseDetailContents())
+                        updateTextView(response)
+                    }
+
+                    enterReadMode()
+                    showToast(getString(R.string.course_detail_title_edit_success_msg))
                 }
+
+                is UiStateV2.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    showSnackbar(binding.root, state.msg)
+                }
+
                 else -> {}
             }
         }
     }
 
-    private fun handleSuccessfulCourseUpdate() {
-        binding.indeterminateBar.isVisible = false
-        viewModel.editTitle.value = viewModel.titleForInterruption.value
-        viewModel.editContent.value = viewModel.contentForInterruption.value
-        viewModel.isEdited = true
-        enterReadMode()
-        showToast("수정이 완료되었습니다")
+    private fun updateTextView(publicCourse: PublicCourse) {
+        binding.apply {
+            tvCourseDetailTitle.text = publicCourse.title
+            tvCourseDetailDesc.text = publicCourse.description
+        }
     }
 
-    private fun initEditBottomSheet() {
-        editBottomSheet = setEditBottomSheet()
-        setEditBottomSheetClickEvent()
-    }
+    private fun setupCourseDeleteStateObserver() {
+        viewModel.courseDeleteState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Loading -> binding.indeterminateBar.isVisible = true
 
-    private fun setEditBottomSheetClickEvent() {
-        editBottomSheet.setEditBottomSheetClickListener { which ->
-            when (which) {
-                editBottomSheet.layout_edit_frame -> enterEditMode()
-                editBottomSheet.layout_delete_frame -> deleteDialog.show()
+                is UiStateV2.Success -> {
+                    binding.indeterminateBar.isVisible = false
+                    navigateToPreviousScreen()
+                }
+
+                is UiStateV2.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
             }
         }
     }
 
-    private fun initDeleteDialog() {
-        deleteDialog = setCustomDialog(
-            layoutInflater, binding.root, DELETE_DIALOG_DESC, DELETE_DIALOG_YES_BTN
+    private fun updateUserProfileStamp() {
+        val stampResId = getStampResId(
+            stampId = courseDetail.stampId,
+            resNameParam = RES_NAME,
+            resType = RES_STAMP_TYPE,
+            packageName = packageName
         )
+        binding.ivCourseDetailProfileStamp.load(stampResId)
     }
 
-    private fun setDeleteDialogClickEvent() {
-        deleteDialog.setDialogButtonClickListener { which ->
-            when (which) {
-                deleteDialog.btn_delete_yes -> viewModel.deleteUploadCourse(publicCourseId)
+    private fun updateUserLevel() {
+        if (courseDetail.level == getString(R.string.course_detail_user_level_unknown_error)) {
+            binding.tvCourseDetailProfileLv.isVisible = false
+            binding.tvCourseDetailProfileLvIndicator.isVisible = false
+        } else {
+            binding.tvCourseDetailProfileLv.text = courseDetail.level
+        }
+    }
+
+    private fun updateScrapState() {
+        binding.ivCourseDetailScrap.isSelected = courseDetail.isScrap
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            currentFocus?.let { view ->
+                if (view is EditText) {
+                    val focusView = Rect()
+                    view.getGlobalVisibleRect(focusView)
+
+                    val touchedX = event.x.toInt()
+                    val touchedY = event.y.toInt()
+
+                    if (!focusView.contains(touchedX, touchedY)) {
+                        hideKeyboard(view)
+                    }
+                }
             }
         }
-    }
-
-    private fun initEditInterruptedDialog() {
-        editInterruptDialog = setCustomDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            description = EDIT_INTERRUPT_DIALOG_DESC,
-            yesBtnText = EDIT_INTERRUPT_DIALOG_YES_BTN,
-            noBtnText = EDIT_INTERRUPT_DIALOG_NO_BTN
-        )
-    }
-
-    private fun setEditInterruptedDialog() {
-        editInterruptDialog.setDialogButtonClickListener { which ->
-            when (which) {
-                editInterruptDialog.btn_delete_yes -> enterReadMode()
-            }
-        }
-    }
-
-    @SuppressLint("MissingInflatedId")
-    fun bottomSheet() {
-        // bottomSheetDialog 객체 생성
-        val bottomSheetDialog = BottomSheetDialog(
-            this@CourseDetailActivity, R.style.BottomSheetDialogTheme
-        )
-
-        // layout_bottom_sheet를 뷰 객체로 생성
-        val bottomSheetView = LayoutInflater.from(applicationContext).inflate(
-            R.layout.custom_dialog_report, findViewById<LinearLayout>(R.id.bottomSheet)
-        )
-        // bottomSheetDialog의 dismiss 버튼 선택시 dialog disappear
-        bottomSheetView.findViewById<View>(R.id.view_go_to_report_frame).setOnClickListener {
-            startWebView(REPORT_URL)
-            bottomSheetDialog.dismiss()
-        }
-        // bottomSheetDialog 뷰 생성
-        bottomSheetDialog.setContentView(bottomSheetView)
-        // bottomSheetDialog 호출
-        bottomSheetDialog.show()
-    }
-
-    //키보드 밖 터치 시, 키보드 내림
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val focusView = currentFocus
-        if (focusView != null) {
-            val rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-            val x = ev!!.x.toInt()
-            val y = ev.y.toInt()
-            if (!rect.contains(x, y)) {
-                hideKeyboard(focusView)
-            }
-        }
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
 
     companion object {
-        const val DELETE_DIALOG_DESC = "코스를 정말로 삭제하시겠어요?"
-        const val DELETE_DIALOG_YES_BTN = "삭제하기"
-        const val EDIT_INTERRUPT_DIALOG_DESC = "     게시글 수정을 종료할까요?\n종료 시 수정 내용이 반영되지 않아요."
-        const val EDIT_INTERRUPT_DIALOG_YES_BTN = "예"
-        const val EDIT_INTERRUPT_DIALOG_NO_BTN = "아니오"
-        const val MY_UPLOAD_ACTIVITY_TAG = "upload"
-        const val COURSE_DISCOVER_TAG = "discover"
-        const val STORAGE_SCRAP_TAG = "storageScrap"
-        const val REPORT_URL =
+        private const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
-        const val RES_NAME = "mypage_img_stamp_"
-        const val RES_STAMP_TYPE = "drawable"
-        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT = "root"
-        const val EXTRA_COURSE_DATA = "CourseData"
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        private const val RES_NAME = "mypage_img_stamp_"
+        private const val RES_STAMP_TYPE = "drawable"
+
+        private const val EXTRA_ROOT_SCREEN = "rootScreen"
+        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        private const val EXTRA_COURSE_DATA = "CourseData"
+        private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
+
+        private const val POPUP_MENU_X_OFFSET = 17
+        private const val POPUP_MENU_Y_OFFSET = -10
+        private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
+        private const val TAG_MY_UPLOAD_COURSE_EDIT_DIALOG = "MY_UPLOAD_COURSE_EDIT_DIALOG"
+        private const val TAG_REQUIRE_LOGIN_DIALOG = "REQUIRE_LOGIN_DIALOG"
     }
 }

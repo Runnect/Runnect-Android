@@ -66,7 +66,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image"
-            setLocalImageByUri="@{historyDto.img}"
+            setImageUrl="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G3"
@@ -78,7 +78,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_detail_course_image_edit"
-            setLocalImageByUri="@{historyDto.img}"
+            setImageUrl="@{historyDto.img}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/G4"
@@ -347,7 +347,7 @@
             android:layout_height="40dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/sel_my_history_edit_finish_button_color"
+            android:background="@drawable/sel_edit_finish_btn_bg_color"
             android:enabled="@{vm.isValidTitle}"
             android:fontFamily="@font/pretendard_semibold"
             android:stateListAnimator="@null"

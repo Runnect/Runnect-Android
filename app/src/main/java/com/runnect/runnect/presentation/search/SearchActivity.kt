@@ -31,11 +31,8 @@ import timber.log.Timber
 class SearchActivity :
     com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
     OnSearchClick {
-
     val viewModel: SearchViewModel by viewModels()
-
     private lateinit var searchAdapter: SearchAdapter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,5 +226,4 @@ class SearchActivity :
     companion object {
         const val EXTRA_SEARCH_RESULT = "searchResult"
     }
-
 }

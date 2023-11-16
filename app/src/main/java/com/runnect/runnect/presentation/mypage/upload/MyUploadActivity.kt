@@ -13,10 +13,11 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnUploadItemClick
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -249,7 +250,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         } else {
             val intent = Intent(this, CourseDetailActivity::class.java).apply {
                 putExtra(EXTRA_PUBLIC_COURSE_ID, id)
-                putExtra(EXTRA_ROOT, "upload")
+                putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE)
             }
             startActivity(intent)
             false
@@ -263,6 +264,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         const val DESCRIPTION_DIALOG = "코스를 정말로 삭제하시겠어요?"
         const val DELETE_BTN = "삭제하기"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT = "root"
+        const val EXTRA_ROOT_SCREEN = "rootScreen"
     }
 }

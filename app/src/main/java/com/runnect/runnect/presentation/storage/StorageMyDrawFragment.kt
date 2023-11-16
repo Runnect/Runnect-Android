@@ -21,7 +21,7 @@ import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
-import com.runnect.runnect.util.custom.GridSpacingItemDecoration
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.OnMyDrawClick
 import com.runnect.runnect.util.extension.setFragmentDialog
@@ -295,11 +295,10 @@ class StorageMyDrawFragment :
         }
     }
 
-
     private fun requireCourse() {
         binding.btnStorageNoCourse.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java)
-            intent.putExtra(EXTRA_ROOT, "storageNoScrap")
+            intent.putExtra(EXTRA_ROOT_SCREEN, "storageNoScrap")
             startActivity(intent)
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right,
@@ -354,13 +353,7 @@ class StorageMyDrawFragment :
 
     companion object {
         const val EXTRA_COURSE_ID = "courseId"
-        const val EXTRA_ROOT = "root"
+        const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EDIT_MODE = "선택"
     }
 }
-
-
-
-
-
-

@@ -30,10 +30,12 @@ class DiscoverSearchAdapter(
             binding.tvItemDiscoverCourseInfoTitle.text = data.title
             binding.tvItemDiscoverCourseInfoLocation.text = data.departure
             binding.ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
+
             binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
                 it.isSelected = !it.isSelected
                 heartClick.scrapCourse(data.id, it.isSelected)
             }
+
             binding.ivItemDiscoverCourseInfoMap.setOnClickListener {
                 itemClick.selectItem(data.id)
             }

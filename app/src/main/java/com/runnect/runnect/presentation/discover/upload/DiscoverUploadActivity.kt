@@ -100,7 +100,7 @@ class DiscoverUploadActivity :
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
-        MainActivity.updateDiscoverFragment()
+        MainActivity.updateCourseDiscoverScreen()
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }

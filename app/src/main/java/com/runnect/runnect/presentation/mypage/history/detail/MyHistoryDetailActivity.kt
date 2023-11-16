@@ -18,15 +18,16 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.util.custom.CommonDialogFragment
-import com.runnect.runnect.util.custom.PopupItem
-import com.runnect.runnect.util.custom.RunnectPopupMenu
+import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
+import com.runnect.runnect.util.custom.dialog.CommonDialogText
+import com.runnect.runnect.util.custom.popup.PopupItem
+import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
+import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
-import com.runnect.runnect.util.extension.snackBar
-import com.runnect.runnect.util.extension.stringOf
+import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -160,12 +161,11 @@ class MyHistoryDetailActivity :
     }
 
     private fun navigateToPreviousScreen() {
-        // 수정 & 삭제 사항이 반영되도록 이전 액티비티를 새로 띄운다.
+        // todo: 일부 아이템에 대해서만 수정/삭제가 반영되고 전체는 리프레시 하지 않도록 수정하기
         Intent(this, MyHistoryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun addObserver() {
@@ -185,7 +185,7 @@ class MyHistoryDetailActivity :
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    snackBar(binding.root, state.msg)
+                    showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -206,7 +206,7 @@ class MyHistoryDetailActivity :
                     val newTitle = response.record.title
                     viewModel.updateHistoryTitle(newTitle)
 
-                    showToast(stringOf(R.string.my_history_detail_title_edit_success_toast))
+                    showToast(getString(R.string.course_detail_title_edit_success_msg))
                 }
 
                 is UiStateV2.Failure -> {
@@ -284,10 +284,12 @@ class MyHistoryDetailActivity :
     }
 
     private fun showHistoryDeleteDialog() {
-        val dialog = CommonDialogFragment(
-            stringOf(R.string.dialog_my_history_detail_delete_desc),
-            stringOf(R.string.dialog_my_history_detail_delete_no),
-            stringOf(R.string.dialog_my_history_detail_delete_yes),
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_history_detail_delete_desc),
+                getString(R.string.dialog_course_detail_delete_no),
+                getString(R.string.dialog_course_detail_delete_yes)
+            ),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = { viewModel.deleteHistory() }
         )
@@ -295,10 +297,12 @@ class MyHistoryDetailActivity :
     }
 
     private fun showStopEditingDialog() {
-        val dialog = CommonDialogFragment(
-            stringOf(R.string.dialog_my_history_detail_stop_editing_desc),
-            stringOf(R.string.dialog_my_history_detail_stop_editing_no),
-            stringOf(R.string.dialog_my_history_detail_stop_editing_yes),
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_history_detail_stop_editing_desc),
+                getString(R.string.dialog_course_detail_stop_editing_no),
+                getString(R.string.dialog_course_detail_stop_editing_yes)
+            ),
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.

@@ -8,6 +8,10 @@
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.detail.CourseDetailViewModel" />
+
+        <variable
+            name="courseDetailDto"
+            type="com.runnect.runnect.domain.entity.CourseDetail" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -79,11 +83,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_map"
+                    setImageUrl="@{courseDetailDto.image}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
-                    setLocalImageByUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:251"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,6 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:fontFamily="@font/pretendard_semibold"
+                    android:text="@{courseDetailDto.nickname}"
                     android:textColor="@color/G1"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="@id/iv_course_detail_profile_stamp"
@@ -155,7 +160,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="68dp"
                     android:fontFamily="@font/pretendard_bold"
-                    android:text="@{vm.editTitle}"
+                    android:text="@{courseDetailDto.title}"
                     android:textColor="@color/G1"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -191,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:fontFamily="@font/pretendard_regular"
-                    android:text="@{vm.distance}"
+                    android:text="@{courseDetailDto.distance}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_distance_title"
@@ -242,7 +247,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/pretendard_regular"
                     android:maxLength="25"
-                    android:text="@{vm.departure}"
+                    android:text="@{courseDetailDto.departure}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_departure_title"
@@ -268,7 +273,7 @@
                     android:fontFamily="@font/pretendard_regular"
                     android:lineHeight="24dp"
                     android:maxLength="150"
-                    android:text="@{vm.editContent}"
+                    android:text="@{courseDetailDto.description}"
                     android:textColor="@color/G1"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -284,44 +289,33 @@
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
             android:background="@color/G3"
-            app:layout_constraintBottom_toTopOf="@id/btn_course_detail_finish" />
-
+            app:layout_constraintBottom_toTopOf="@id/btn_course_detail_start_run" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_course_detail_finish"
+            android:id="@+id/btn_course_detail_start_run"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="56dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="18dp"
             android:background="@drawable/course_detail_finish_btn"
+            android:fontFamily="@font/pretendard_semibold"
+            android:stateListAnimator="@null"
             android:text="@string/course_detail_start_run_button"
             android:textColor="@color/W1"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_course_detail_finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/pretendard_semibold"
-            android:text="@string/course_detail_start"
-            android:textColor="@color/M4"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_course_detail_finish"
-            app:layout_constraintEnd_toEndOf="@id/btn_course_detail_finish"
-            app:layout_constraintStart_toStartOf="@id/btn_course_detail_finish"
-            app:layout_constraintTop_toTopOf="@id/btn_course_detail_finish" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_course_detail_scrap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="17dp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_course_detail_finish"
-            app:layout_constraintEnd_toStartOf="@id/btn_course_detail_finish"
-            app:layout_constraintTop_toTopOf="@id/btn_course_detail_finish"
+            app:layout_constraintBottom_toBottomOf="@id/btn_course_detail_start_run"
+            app:layout_constraintEnd_toStartOf="@id/btn_course_detail_start_run"
+            app:layout_constraintTop_toTopOf="@id/btn_course_detail_start_run"
             app:srcCompat="@drawable/course_detail_scrap_selector" />
 
         <ScrollView
@@ -342,11 +336,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_course_detail_edit_map"
+                    setImageUrl="@{courseDetailDto.image}"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/G4"
                     android:scaleType="centerCrop"
-                    setLocalImageByUri="@{vm.mapImage}"
                     app:layout_constraintDimensionRatio="360:304"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -363,7 +357,7 @@
                     android:inputType="text"
                     android:maxLength="20"
                     android:paddingVertical="0dp"
-                    android:text="@={vm.titleForInterruption}"
+                    android:text="@={vm._title}"
                     android:textColor="@color/G1"
                     android:textColorHint="@color/G3"
                     android:textCursorDrawable="@color/M1"
@@ -415,7 +409,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:fontFamily="@font/pretendard_regular"
-                    android:text="@{vm.distance}"
+                    android:text="@{courseDetailDto.distance}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_distance_title"
@@ -464,7 +458,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="23dp"
                     android:fontFamily="@font/pretendard_regular"
-                    android:text="@{vm.departure}"
+                    android:text="@{courseDetailDto.departure}"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_detail_edit_departure_title"
@@ -501,7 +495,7 @@
                     android:maxLength="150"
                     android:paddingBottom="20dp"
                     android:scrollHorizontally="false"
-                    android:text="@={vm.contentForInterruption}"
+                    android:text="@={vm._description}"
                     android:textColorHint="@color/G2"
                     android:textCursorDrawable="@color/M1"
                     android:textSize="14sp"
@@ -512,15 +506,18 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tv_course_detail_edit_finish"
+            isValidDescription="@{vm.isValidDescription}"
+            isValidTitle="@{vm.isValidTitle}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/all_finish_btn_selector"
+            android:background="@drawable/sel_edit_finish_btn_bg_color"
+            android:enabled="false"
             android:fontFamily="@font/pretendard_semibold"
-            android:gravity="center"
+            android:stateListAnimator="@null"
             android:text="@string/history_edit_finish"
             android:textColor="@color/W1"
             android:textSize="15sp"
@@ -534,8 +531,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="sv_course_detail,
-                btn_course_detail_finish,
-                tv_course_detail_finish,
+                btn_course_detail_start_run,
                 iv_course_detail_scrap,
                 divider_course_detail_bottom" />
 
@@ -546,7 +542,6 @@
             android:visibility="invisible"
             app:constraint_referenced_ids="sv_course_detail_edit,
             tv_course_detail_edit_finish" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

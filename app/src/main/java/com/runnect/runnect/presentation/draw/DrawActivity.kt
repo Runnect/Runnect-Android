@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.draw
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
@@ -44,17 +42,15 @@ import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
-import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_cancel
-import kotlinx.android.synthetic.main.custom_dialog_require_login.view.btn_login
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -70,7 +66,7 @@ class DrawActivity :
     OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var currentLocation: LatLng
-    private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수)
+    private lateinit var fusedLocation: FusedLocationProviderClient // 현재 위치 반환 객체 변수
 
     var isCustomLocationMode: Boolean = false
     var isSearchLocationMode: Boolean = false
@@ -149,7 +145,6 @@ class DrawActivity :
         }
     }
 
-
     private fun initSearchLocationMode() {
         isSearchLocationMode = true
 
@@ -226,7 +221,7 @@ class DrawActivity :
         viewModel.getLocationInfoUsingLatLng(lat = lat, lon = lon)
     }
 
-    fun setZoomControl() {
+    private fun setZoomControl() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
 
@@ -234,7 +229,7 @@ class DrawActivity :
         uiSettings.isZoomControlEnabled = false
     }
 
-    fun setCurrentLocationIcon() {
+    private fun setCurrentLocationIcon() {
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
     }
@@ -251,7 +246,7 @@ class DrawActivity :
         }
     }
 
-    fun getCenterPosition(): LatLng {
+    private fun getCenterPosition(): LatLng {
         val cameraPosition = naverMap.cameraPosition
         return cameraPosition.target // 중심 좌표
     }
@@ -285,7 +280,7 @@ class DrawActivity :
     private fun courseFinish() {
         binding.btnDraw.setOnClickListener {
             if (isVisitorMode) {
-                requireVisitorLogin()
+                showRequireLoginDialog()
                 return@setOnClickListener
             }
             when {
@@ -488,26 +483,8 @@ class DrawActivity :
         dialog.show()
     }
 
-    private fun requireVisitorLogin() {
-        val (dialog, dialogLayout) = setActivityDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
-            resId = R.layout.custom_dialog_require_login,
-            cancel = false
-        )
-
-        with(dialogLayout) {
-            this.btn_login.setOnClickListener {
-                val intent = Intent(this@DrawActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-                dialog.dismiss()
-            }
-            this.btn_cancel.setOnClickListener {
-                dialog.dismiss()
-            }
-        }
-        dialog.show()
+    private fun showRequireLoginDialog() {
+        RequireLoginDialogFragment().show(supportFragmentManager, TAG_REQUIRE_LOGIN_DIALOG)
     }
 
     private fun backButton() {
@@ -760,6 +737,8 @@ class DrawActivity :
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        private const val TAG_REQUIRE_LOGIN_DIALOG = "REQUIRE_LOGIN_DIALOG"
+
         const val MAX_MARKER_NUM = 20
         const val DISTANCE_UNIT = "kilometer"
         const val LEAST_CONDITION_CREATE_PATH = 2

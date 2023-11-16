@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -80,7 +80,7 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
             runCatching {
                 _myUploadDeleteState.value = UiState.Loading
                 setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
-                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(_itemsToDelete))
+                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourseDto(_itemsToDelete))
             }.onSuccess {
                 _myUploadCourses =
                     _myUploadCourses.filter { !itemsToDelete.contains(it.id) }.toMutableList()
