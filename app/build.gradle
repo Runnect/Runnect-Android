@@ -39,7 +39,7 @@ android {
         buildConfigField "String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"]
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["GOOGLE_CLIENT_ID"]
         buildConfigField "String", "REMOTE_KEY_APP_VERSION", properties["REMOTE_KEY_APP_VERSION"]
-
+        buildConfigField "String", "KAKAO_CHANNEL_ID", properties["KAKAO_CHANNEL_ID"]
     }
 
     buildFeatures {
