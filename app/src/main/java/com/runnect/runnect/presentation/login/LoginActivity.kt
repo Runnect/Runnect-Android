@@ -124,6 +124,8 @@ class LoginActivity :
             key = TOKEN_KEY_REFRESH,
             value = viewModel.loginResult.value?.refreshToken
         )
+        Timber.e("ACCESS TOKEN: ${viewModel.loginResult.value?.accessToken}")
+        Timber.e("REFRESH TOKEN: ${viewModel.loginResult.value?.refreshToken}")
     }
 
     private fun moveToMain() {
