@@ -178,28 +178,26 @@ class SearchActivity :
         }
     }
 
-    private fun setDeparture(mode: String, item: SearchResultEntity) {
+    private fun navigateToCourseDrawScreen(mode: String, searchResult: SearchResultEntity? = null) {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                putExtra(EXTRA_SEARCH_RESULT, item)
+                putExtra(EXTRA_SEARCH_RESULT, searchResult)
                 putExtra(EXTRA_DEPARTURE_SET_MODE, mode)
             }
         )
     }
 
-    override fun startSearchLocation(item: SearchResultEntity) {
-        setDeparture("searchLocation", item)
+    override fun startSearchLocation(data: SearchResultEntity) {
+        navigateToCourseDrawScreen(mode = "searchLocation", searchResult = data)
     }
 
     private fun startCurrentLocation() {
-        val emptyItem = SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
-        setDeparture("currentLocation", emptyItem)
+        navigateToCourseDrawScreen(mode = "currentLocation")
     }
 
     private fun startCustomLocation() {
-        val emptyItem = SearchResultEntity(fullAddress = "", name = "", locationLatLng = null)
-        setDeparture("customLocation", emptyItem)
+        navigateToCourseDrawScreen(mode = "customLocation")
     }
 
     //키보드 밖 터치 시, 키보드 내림
