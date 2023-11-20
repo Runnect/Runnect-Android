@@ -180,4 +180,7 @@ dependencies {
     //firebase remote config - update dialog
     implementation 'com.google.firebase:firebase-config-ktx'
 
+    //firebase dynamic link
+    implementation 'com.google.firebase:firebase-dynamic-links:21.2.0'
+
 }
