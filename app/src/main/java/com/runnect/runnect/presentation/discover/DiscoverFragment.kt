@@ -64,9 +64,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         initLayout()
         addListener()
         addObserver()
-
         registerBackPressedCallback()
         initRefreshLayoutListener()
+    }
+
+    fun getRecommendCourses(pageNo: String?) {
+        viewModel.getRecommendCourse(pageNo = pageNo)
     }
 
     private fun registerBackPressedCallback() {
@@ -99,26 +102,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.recommendCourseList.clear() //새로고침 시 다시 pageNo가 1부터 시작되는데 기존에 끝까지 받아온 거에 addAll로 계속 누적돼서 clear()로 비워주는 것.
+            // 기존에 조회했던 리스트에 아이템이 누적으로 더해지기 때문에 clear()로 비워줘야 한다.
+            viewModel.recommendCourseList.clear()
             getRecommendCourses(pageNo = "1")
             binding.refreshLayout.isRefreshing = false
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is MainActivity) {
-            MainActivity.discoverFragment = this
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MainActivity.discoverFragment = null
-    }
-
-    fun getRecommendCourses(pageNo: String?) {
-        viewModel.getRecommendCourse(pageNo = pageNo)
     }
 
     private fun initLayout() {
@@ -322,6 +310,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         if (item.linkUrl.isNotEmpty()) {
             requireContext().showWebBrowser(item.linkUrl)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            MainActivity.discoverFragment = this
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MainActivity.discoverFragment = null
     }
 
     companion object {
