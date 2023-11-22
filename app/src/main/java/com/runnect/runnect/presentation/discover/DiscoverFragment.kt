@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover
 
-import android.app.Activity.RESULT_OK
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -9,15 +8,13 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
+import com.runnect.runnect.data.dto.DiscoverPromotionItem
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -45,9 +42,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
+    // 리사이클러뷰 어댑터
     private lateinit var courseRecommendAdapter: CourseRecommendAdapter
+
     private val promotionAdapter: DiscoverPromotionAdapter by lazy {
-        DiscoverPromotionAdapter(requireContext(), this)
+        DiscoverPromotionAdapter(this)
     }
 
     // 프로모션 배너 관련 변수들
@@ -330,7 +329,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
-    override fun selectBanner(item: DiscoverPromotionItemDTO) {
+    override fun selectBanner(item: DiscoverPromotionItem) {
         if (item.linkUrl.isNotEmpty()) {
             requireContext().showWebBrowser(item.linkUrl)
         }

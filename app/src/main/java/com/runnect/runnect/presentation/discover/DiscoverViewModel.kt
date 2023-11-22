@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
+import com.runnect.runnect.data.dto.DiscoverPromotionItem
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
 import com.runnect.runnect.domain.BannerRepository
@@ -34,7 +34,7 @@ class DiscoverViewModel @Inject constructor(
 
     val errorMessage = MutableLiveData<String>()
 
-    var bannerData = mutableListOf<DiscoverPromotionItemDTO>()
+    var bannerData = mutableListOf<DiscoverPromotionItem>()
 
     private var _bannerState = MutableLiveData<UiState>(UiState.Empty)
     val bannerState: LiveData<UiState>
