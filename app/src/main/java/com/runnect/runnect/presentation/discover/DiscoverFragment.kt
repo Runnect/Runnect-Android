@@ -33,6 +33,7 @@ import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnBannerClick
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -78,18 +79,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isFromStorageScrap) {
-                    StorageScrapFragment.isFromStorageNoScrap = false
-                    MainActivity.updateStorageScrapScreen()
-                }
-                requireActivity().finish()
-                requireActivity().overridePendingTransition(
-                    R.anim.slide_in_left,
-                    R.anim.slide_out_right
-                )
+                handleFromStorageScrap()
+                requireActivity().navigateToPreviousScreenWithAnimation()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun handleFromStorageScrap() {
+        if (isFromStorageScrap) {
+            StorageScrapFragment.isFromStorageNoScrap = false
+            MainActivity.updateStorageScrapScreen()
+        }
     }
 
     private fun initScrollListener() {
