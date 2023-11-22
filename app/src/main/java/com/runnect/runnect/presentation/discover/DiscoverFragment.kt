@@ -42,12 +42,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
-    // 리사이클러뷰 어댑터
+    private val promotionAdapter: DiscoverPromotionAdapter by lazy { DiscoverPromotionAdapter(this) }
     private lateinit var courseRecommendAdapter: CourseRecommendAdapter
-
-    private val promotionAdapter: DiscoverPromotionAdapter by lazy {
-        DiscoverPromotionAdapter(this)
-    }
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -66,8 +62,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = viewLifecycleOwner
 
         initLayout()
-        getBannerData()
-        getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
 
@@ -109,11 +103,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             getRecommendCourses(pageNo = "1")
             binding.refreshLayout.isRefreshing = false
         }
-    }
-
-    private fun getBannerData() {
-        viewModel.getBannerData()
-
     }
 
     override fun onAttach(context: Context) {

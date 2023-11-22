@@ -44,8 +44,12 @@ class DiscoverViewModel @Inject constructor(
     val bannerCount: Int
         get() = _bannerCount
 
+    init {
+        getBannerData()
+        getRecommendCourse(pageNo = "1")
+    }
 
-    fun getBannerData() {
+   private fun getBannerData() {
         viewModelScope.launch {
             runCatching {
                 _bannerState.value = UiState.Loading
