@@ -19,6 +19,7 @@ import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnUploadItemClick
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +59,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
     private fun addListener() {
         binding.ivMyPageUploadBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
         binding.btnMyPageUploadEditCourse.setOnClickListener {
             handleEditClicked()
@@ -73,15 +74,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         }
     }
 
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)

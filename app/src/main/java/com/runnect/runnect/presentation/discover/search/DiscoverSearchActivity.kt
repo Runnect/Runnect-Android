@@ -23,6 +23,7 @@ import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.extension.hideKeyboard
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -59,8 +60,7 @@ class DiscoverSearchActivity :
     private fun registerBackPressedCallback() {
         val callback = object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)

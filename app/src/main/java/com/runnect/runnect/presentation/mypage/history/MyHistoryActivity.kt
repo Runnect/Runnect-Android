@@ -19,6 +19,7 @@ import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
 import com.runnect.runnect.util.callback.OnHistoryItemClick
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,7 +81,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun addListener() {
         binding.ivMyPageHistoryBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
             startDrawCourseSearchActivity()
@@ -238,15 +239,10 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     companion object {

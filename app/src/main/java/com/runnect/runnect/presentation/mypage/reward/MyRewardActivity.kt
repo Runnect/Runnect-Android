@@ -14,6 +14,7 @@ import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.getStampResId
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -71,22 +72,17 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
 
     private fun initBackButtonClickListener() {
         binding.ivMyPageRewardBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
     }
 
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setupGetStampListStateObserver() {

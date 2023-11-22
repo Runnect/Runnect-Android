@@ -16,6 +16,7 @@ import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnRecommendCourseClick
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -41,17 +42,11 @@ class DiscoverLoadActivity :
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
-
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
 
     private fun initLayout() {
         binding.rvDiscoverLoadSelect.apply {
