@@ -43,16 +43,18 @@ import java.util.TimerTask
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
     OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
+
     private lateinit var courseRecommendAdapter: CourseRecommendAdapter
     private val promotionAdapter: DiscoverPromotionAdapter by lazy {
         DiscoverPromotionAdapter(requireContext(), this)
     }
-    private lateinit var startForResult: ActivityResultLauncher<Intent>
+
+    // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
-    private lateinit var pageRegisterCallback:ViewPager2.OnPageChangeCallback
+    private lateinit var pageRegisterCallback: ViewPager2.OnPageChangeCallback
     private var currentPosition = PAGE_NUM / 2
 
     var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
@@ -68,7 +70,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
-        setResultDetail()
+
         registerBackPressedCallback()
         initRefreshLayoutListener()
     }
@@ -81,7 +83,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     MainActivity.updateStorageScrapScreen()
                 }
                 requireActivity().finish()
-                requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                requireActivity().overridePendingTransition(
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+                )
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -315,25 +320,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.postCourseScrap(id!!, scrapTF)
     }
 
-    private fun setResultDetail() {
-        startForResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                getRecommendCourses(pageNo = "1")
-            }
-        }
-    }
-
     override fun selectItem(publicCourseId: Int) {
-        val intent = Intent(requireContext(), CourseDetailActivity::class.java)
-        intent.putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-        intent.putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-        startForResult.launch(intent)
-        requireActivity().overridePendingTransition(
-            R.anim.slide_in_right,
-            R.anim.slide_out_left
-        )
+        Intent(requireContext(), CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+            startActivity(this)
+        }
+        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     override fun selectBanner(item: DiscoverPromotionItemDTO) {
