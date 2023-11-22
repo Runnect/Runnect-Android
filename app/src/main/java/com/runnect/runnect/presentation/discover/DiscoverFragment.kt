@@ -113,10 +113,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverRecommend.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvDiscoverRecommend.addItemDecoration(
             GridSpacingItemDecoration(
-                requireContext(),
-                2,
-                6,
-                16
+                context = requireContext(),
+                spanCount = 2,
+                horizontalSpacing = 6,
+                topSpacing = 20
             )
         )
         setPromotionBanner(binding.vpDiscoverPromotion)

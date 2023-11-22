@@ -20,8 +20,7 @@ import javax.inject.Inject
 class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
-) :
-    ViewModel() {
+) : ViewModel() {
     private var _courseInfoState = MutableLiveData<UiState>(UiState.Empty)
     val courseInfoState: LiveData<UiState>
         get() = _courseInfoState
