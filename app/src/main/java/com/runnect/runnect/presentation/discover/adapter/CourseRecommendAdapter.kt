@@ -50,7 +50,7 @@ class CourseRecommendAdapter(
                     if (isVisitorMode) {
                         RunnectToast.createToast(
                             context = context,
-                            message = context.getString(R.string.course_detail_visitor_mode_scrap_warning_msg)
+                            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
                         ).show()
                     } else {
                         it.isSelected = !it.isSelected

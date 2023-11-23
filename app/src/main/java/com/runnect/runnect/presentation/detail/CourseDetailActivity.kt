@@ -307,7 +307,7 @@ class CourseDetailActivity :
             if (isVisitorMode) {
                 RunnectToast.createToast(
                     this,
-                    getString(R.string.course_detail_visitor_mode_scrap_warning_msg)
+                    getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
                 ).show()
                 return@setOnClickListener
             }
