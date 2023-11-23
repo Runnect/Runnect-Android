@@ -180,7 +180,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupRecommendCourseStateObserver() {
-        viewModel.courseInfoState.observe(viewLifecycleOwner) {
+        viewModel.courseState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> {}
 
@@ -217,8 +217,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 submitList(viewModel.recommendCourseList)
             }
 
-        binding.rvDiscoverRecommend.setHasFixedSize(true)
-        binding.rvDiscoverRecommend.adapter = recommendCourseAdapter
+        binding.rvDiscoverRecommend.apply {
+            setHasFixedSize(true)
+            adapter = recommendCourseAdapter
+        }
     }
 
     private fun setPromotionBanner(vp: ViewPager2) {

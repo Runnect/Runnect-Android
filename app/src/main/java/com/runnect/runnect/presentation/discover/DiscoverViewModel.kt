@@ -21,9 +21,13 @@ class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
-    private var _courseInfoState = MutableLiveData<UiState>(UiState.Empty)
-    val courseInfoState: LiveData<UiState>
-        get() = _courseInfoState
+    private var _courseState = MutableLiveData<UiState>(UiState.Empty)
+    val courseState: LiveData<UiState>
+        get() = _courseState
+
+    private var _bannerState = MutableLiveData<UiState>(UiState.Empty)
+    val bannerState: LiveData<UiState>
+        get() = _bannerState
 
     private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
     val recommendCourseList: MutableList<RecommendCourseDTO>
@@ -35,13 +39,8 @@ class DiscoverViewModel @Inject constructor(
 
     var bannerData = mutableListOf<DiscoverPromotionItem>()
 
-    private var _bannerState = MutableLiveData<UiState>(UiState.Empty)
-    val bannerState: LiveData<UiState>
-        get() = _bannerState
-
     private var _bannerCount = 0
-    val bannerCount: Int
-        get() = _bannerCount
+    val bannerCount: Int get() = _bannerCount
 
     init {
         getBannerData()
@@ -52,6 +51,7 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 _bannerState.value = UiState.Loading
+
                 bannerRepository.getBannerData().collect { bannerList ->
                     bannerData = bannerList
                     _bannerCount = bannerData.size
@@ -66,17 +66,17 @@ class DiscoverViewModel @Inject constructor(
     fun getRecommendCourse(pageNo: String?) {
         viewModelScope.launch {
             runCatching {
-                _courseInfoState.value = UiState.Loading
+                _courseState.value = UiState.Loading
                 courseRepository.getRecommendCourse(pageNo = pageNo)
             }.onSuccess {
                 _recommendCourseList.addAll(it)
                 currentPageNo.value = it[0].pageNo
-                _courseInfoState.value = UiState.Success
+                _courseState.value = UiState.Success
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
             }.onFailure {
                 Timber.tag(ContentValues.TAG).d("데이터 수신 실패")
                 errorMessage.value = it.message
-                _courseInfoState.value = UiState.Failure
+                _courseState.value = UiState.Failure
             }
         }
     }
