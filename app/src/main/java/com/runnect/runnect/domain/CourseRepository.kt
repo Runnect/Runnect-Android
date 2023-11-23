@@ -15,7 +15,6 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
 import com.runnect.runnect.data.dto.response.ResponsePostRecordDTO
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
-import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourseDto
 import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
