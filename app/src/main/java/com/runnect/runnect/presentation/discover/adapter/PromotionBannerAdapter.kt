@@ -37,8 +37,7 @@ class PromotionBannerAdapter(
         private val binding: ItemDiscoverPromotionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(item: DiscoverPromotionItem) {
-            binding.promotionItem = item
-
+            binding.item = item
             binding.ivItemDiscoverPromotionBanner.setOnClickListener {
                 bannerClickListener.selectBanner(item)
             }

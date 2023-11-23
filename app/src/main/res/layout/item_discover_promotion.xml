@@ -4,7 +4,7 @@
     <data>
 
         <variable
-            name="promotionItem"
+            name="item"
             type="com.runnect.runnect.data.dto.DiscoverPromotionItem" />
     </data>
 
@@ -14,7 +14,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_item_discover_promotion_banner"
-            setDiscoverPromotionImage="@{promotionItem.imageUrl}"
+            setDiscoverItemImage="@{item.imageUrl}"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
