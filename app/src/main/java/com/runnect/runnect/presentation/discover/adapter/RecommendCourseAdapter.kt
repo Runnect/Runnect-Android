@@ -15,12 +15,12 @@ import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
 import com.runnect.runnect.util.callback.ItemDiffCallback
 
-class CourseRecommendAdapter(
+class RecommendCourseAdapter(
     private var context: Context,
     private var heartClick: OnHeartClick,
     private var itemClick: OnItemClick,
     private var isVisitorMode: Boolean
-) : ListAdapter<RecommendCourseDTO, CourseRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
+) : ListAdapter<RecommendCourseDTO, RecommendCourseAdapter.CourseInfoViewHolder>(diffUtil) {
     private val inflater by lazy { LayoutInflater.from(context) }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {

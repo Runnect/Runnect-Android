@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -10,10 +9,10 @@ import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
 import com.runnect.runnect.util.callback.ItemDiffCallback
 import com.runnect.runnect.util.callback.OnBannerClick
 
-class DiscoverPromotionAdapter(
+class PromotionBannerAdapter(
     private val bannerClickListener: OnBannerClick,
 ) : ListAdapter<DiscoverPromotionItem,
-        DiscoverPromotionAdapter.DiscoverPromotionViewHolder>(diffUtil) {
+        PromotionBannerAdapter.DiscoverPromotionViewHolder>(diffUtil) {
     private var bannerCount: Int = 0
 
     fun setBannerCount(bannerCount: Int) {

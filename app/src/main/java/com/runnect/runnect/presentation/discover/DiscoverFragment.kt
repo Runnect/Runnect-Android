@@ -19,8 +19,8 @@ import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
-import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
+import com.runnect.runnect.presentation.discover.adapter.RecommendCourseAdapter
+import com.runnect.runnect.presentation.discover.adapter.PromotionBannerAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -43,8 +43,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnItemClick, OnHeartClick, OnBannerClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
-    private val promotionAdapter: DiscoverPromotionAdapter by lazy { DiscoverPromotionAdapter(this) }
-    private lateinit var courseRecommendAdapter: CourseRecommendAdapter
+    private val promotionAdapter: PromotionBannerAdapter by lazy { PromotionBannerAdapter(this) }
+    private lateinit var recommendCourseAdapter: RecommendCourseAdapter
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -183,6 +183,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.courseInfoState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> {}
+
                 UiState.Loading -> {
                     binding.shimmerLayout.startShimmer()
                     binding.shimmerLayout.isVisible = true
@@ -191,7 +192,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 UiState.Success -> {
                     binding.shimmerLayout.stopShimmer()
                     binding.shimmerLayout.isVisible = false
-                    setRecommendCourseAdapter()
+                    initRecommendCourseAdapter()
                 }
 
                 UiState.Failure -> {
@@ -206,13 +207,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun setRecommendCourseAdapter() {
-        courseRecommendAdapter =
-            CourseRecommendAdapter(requireContext(), this, this, isVisitorMode).apply {
+    private fun initRecommendCourseAdapter() {
+        recommendCourseAdapter =
+            RecommendCourseAdapter(requireContext(), this, this, isVisitorMode).apply {
                 submitList(viewModel.recommendCourseList)
             }
         binding.rvDiscoverRecommend.setHasFixedSize(true)
-        binding.rvDiscoverRecommend.adapter = courseRecommendAdapter
+        binding.rvDiscoverRecommend.adapter = recommendCourseAdapter
     }
 
     private fun setPromotionBanner(vp: ViewPager2) {
