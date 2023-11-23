@@ -2,9 +2,7 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
-import com.runnect.runnect.data.dto.request.RequestPostScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDTO
 import com.runnect.runnect.data.dto.response.ResponseGetScrapDTO
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
@@ -13,13 +11,12 @@ import com.runnect.runnect.domain.StorageRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-
 class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSource: RemoteStorageDataSource) :
     StorageRepository {
-
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
         return changeMyDrawData(
-            data = remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses).toMutableList()
+            data = remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses
+        ).toMutableList()
     }
 
     private fun changeMyDrawData(data: List<ResponseGetCourseDTO.Data.Course>): List<MyDrawCourse> {
@@ -40,11 +37,8 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
 
     override suspend fun getMyScrapCourse(): MutableList<MyScrapCourse> {
         return changeMyScrapData(
-            data = remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps).toMutableList()
-    }
-
-    override suspend fun postMyScrapCourse(requestPostScrap: RequestPostScrap): Response<ResponseCourseScrap> {
-        return remoteStorageDataSource.postMyScrapCourse(requestPostScrap = requestPostScrap)
+            data = remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps
+        ).toMutableList()
     }
 
     private fun changeMyScrapData(data: List<ResponseGetScrapDTO.Data.Scrap>): List<MyScrapCourse> {
@@ -61,6 +55,4 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
         }
         return changedData
     }
-
-
 }

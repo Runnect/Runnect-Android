@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
-import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
+import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,9 +18,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class StorageViewModel @Inject constructor(private val storageRepository: StorageRepository) :
-    ViewModel() {
-
+class StorageViewModel @Inject constructor(
+    private val storageRepository: StorageRepository,
+    private val courseRepository: CourseRepository
+) : ViewModel() {
     private var _myDrawCoursesDeleteState = MutableLiveData<UiState>()
     val myDrawCourseDeleteState: LiveData<UiState>
         get() = _myDrawCoursesDeleteState
@@ -28,19 +30,18 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
     val myDrawCourses: List<MyDrawCourse>
         get() = _myDrawCourses
 
-    val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
+    private var _storageState = MutableLiveData<UiState>(UiState.Empty)
+    val storageState: LiveData<UiState>
+        get() = _storageState
 
+    val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
     val errorMessage = MutableLiveData<String>()
+
     val itemSize = MutableLiveData<Int>()
     val myDrawSize = MutableLiveData<Int>()
 
     var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
-
     var itemsToDelete: MutableList<Int> = mutableListOf()
-
-    private var _storageState = MutableLiveData<UiState>(UiState.Empty)
-    val storageState: LiveData<UiState>
-        get() = _storageState
 
     fun getMyDrawList() {
         viewModelScope.launch {
@@ -95,22 +96,16 @@ class StorageViewModel @Inject constructor(private val storageRepository: Storag
                 _storageState.value = UiState.Failure
             }
         }
-
     }
 
+    // todo: id를 non-null 타입으로 바꾸기
     fun postCourseScrap(id: Int?, scrapTF: Boolean) {
         viewModelScope.launch {
-            runCatching {
-                storageRepository.postMyScrapCourse(
-                    RequestPostScrap(
-                        publicCourseId = id!!, scrapTF = scrapTF.toString()
-                    )
+            courseRepository.postCourseScrap(
+                RequestPostCourseScrap(
+                    publicCourseId = id!!, scrapTF = scrapTF.toString()
                 )
-            }.onSuccess {
-                Timber.d("onSuccess 메세지 : $it")
-            }.onFailure {
-                Timber.d("onFailure 메세지 : $it")
-            }
+            )
         }
     }
 

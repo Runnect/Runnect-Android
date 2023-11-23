@@ -14,15 +14,15 @@ import com.runnect.runnect.util.callback.OnScrapClick
 
 class DiscoverSearchAdapter(
     context: Context,
-    private val itemClick: OnCourseItemClick,
-    private val heartClick: OnScrapClick
+    private val onCourseItemClick: OnCourseItemClick,
+    private val onScrapClick: OnScrapClick
 ) : ListAdapter<CourseSearchDTO, DiscoverSearchAdapter.SearchViewHolder>(diffUtil) {
     private val inflater by lazy { LayoutInflater.from(context) }
 
     class SearchViewHolder(
         private val binding: ItemDiscoverCourseBinding,
-        private val itemClick: OnCourseItemClick,
-        private val heartClick: OnScrapClick
+        private val onCourseItemClick: OnCourseItemClick,
+        private val onScrapClick: OnScrapClick
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: CourseSearchDTO) {
@@ -33,11 +33,11 @@ class DiscoverSearchAdapter(
 
             binding.ivItemDiscoverCourseScrap.setOnClickListener {
                 it.isSelected = !it.isSelected
-                heartClick.scrapCourse(data.id, it.isSelected)
+                onScrapClick.scrapCourse(data.id, it.isSelected)
             }
 
             binding.ivItemDiscoverCourseMap.setOnClickListener {
-                itemClick.selectItem(data.id)
+                onCourseItemClick.selectItem(data.id)
             }
         }
     }
@@ -45,7 +45,7 @@ class DiscoverSearchAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
             ItemDiscoverCourseBinding.inflate(inflater, parent, false),
-            itemClick, heartClick
+            onCourseItemClick, onScrapClick
         )
     }
 

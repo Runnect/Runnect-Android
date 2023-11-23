@@ -24,6 +24,7 @@ import com.runnect.runnect.presentation.discover.adapter.PromotionBannerAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
@@ -32,6 +33,7 @@ import com.runnect.runnect.util.callback.OnScrapClick
 import com.runnect.runnect.util.callback.OnCourseItemClick
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
+import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -156,12 +158,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addObserver() {
-        setupPromotionBannerStateObserver()
-        setupRecommendCourseStateObserver()
+        setupBannerGetStateObserver()
+        setupCourseGetStateObserver()
+        setupCourseScrapStateObserver()
     }
 
-    private fun setupPromotionBannerStateObserver() {
-        viewModel.bannerState.observe(viewLifecycleOwner) {
+    private fun setupBannerGetStateObserver() {
+        viewModel.bannerGetState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
                 UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
@@ -179,8 +182,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun setupRecommendCourseStateObserver() {
-        viewModel.courseState.observe(viewLifecycleOwner) {
+    private fun setupCourseGetStateObserver() {
+        viewModel.courseGetState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> {}
 
@@ -203,6 +206,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                         binding.shimmerLayout.isVisible = false
                     }
                 }
+            }
+        }
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
+            if (state is UiStateV2.Failure) {
+                requireContext().showSnackbar(binding.root, state.msg)
             }
         }
     }

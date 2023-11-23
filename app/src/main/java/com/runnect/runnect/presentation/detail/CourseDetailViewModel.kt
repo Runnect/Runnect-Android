@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
@@ -36,6 +36,11 @@ class CourseDetailViewModel @Inject constructor(
     private var _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourseDto?>>()
     val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourseDto?>>
         get() = _courseDeleteState
+
+    private var _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
+    val courseScrapState: LiveData<UiStateV2<Unit?>>
+        get() = _courseScrapState
+
 
     // 플래그 변수
     var isDeepLinkLogin = MutableLiveData(true)
@@ -131,11 +136,17 @@ class CourseDetailViewModel @Inject constructor(
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
+            _courseScrapState.value = UiStateV2.Loading
+
             courseRepository.postCourseScrap(
-                RequestPostScrap(
+                RequestPostCourseScrap(
                     publicCourseId = id, scrapTF = scrapTF.toString()
                 )
-            )
+            ).onSuccess { response ->
+                _courseScrapState.value = UiStateV2.Success(response)
+            }.onFailure { exception ->
+                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
+            }
         }
     }
 

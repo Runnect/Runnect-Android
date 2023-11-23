@@ -7,10 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.DiscoverPromotionItem
 import com.runnect.runnect.data.dto.RecommendCourseDTO
-import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.BannerRepository
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,13 +22,17 @@ class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
-    private var _courseState = MutableLiveData<UiState>(UiState.Empty)
-    val courseState: LiveData<UiState>
-        get() = _courseState
+    private val _courseGetState = MutableLiveData<UiState>(UiState.Empty)
+    val courseGetState: LiveData<UiState>
+        get() = _courseGetState
 
-    private var _bannerState = MutableLiveData<UiState>(UiState.Empty)
-    val bannerState: LiveData<UiState>
-        get() = _bannerState
+    private val _bannerGetState = MutableLiveData<UiState>(UiState.Empty)
+    val bannerGetState: LiveData<UiState>
+        get() = _bannerGetState
+
+    private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
+    val courseScrapState: LiveData<UiStateV2<Unit?>>
+        get() = _courseScrapState
 
     private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
     val recommendCourseList: MutableList<RecommendCourseDTO>
@@ -47,18 +52,18 @@ class DiscoverViewModel @Inject constructor(
         getRecommendCourse(pageNo = "1")
     }
 
-   private fun getBannerData() {
+    private fun getBannerData() {
         viewModelScope.launch {
             runCatching {
-                _bannerState.value = UiState.Loading
+                _bannerGetState.value = UiState.Loading
 
                 bannerRepository.getBannerData().collect { bannerList ->
                     bannerData = bannerList
                     _bannerCount = bannerData.size
-                    _bannerState.value = UiState.Success
+                    _bannerGetState.value = UiState.Success
                 }
             }.onFailure {
-                _bannerState.value = UiState.Failure
+                _bannerGetState.value = UiState.Failure
             }
         }
     }
@@ -66,33 +71,33 @@ class DiscoverViewModel @Inject constructor(
     fun getRecommendCourse(pageNo: String?) {
         viewModelScope.launch {
             runCatching {
-                _courseState.value = UiState.Loading
+                _courseGetState.value = UiState.Loading
                 courseRepository.getRecommendCourse(pageNo = pageNo)
             }.onSuccess {
                 _recommendCourseList.addAll(it)
                 currentPageNo.value = it[0].pageNo
-                _courseState.value = UiState.Success
+                _courseGetState.value = UiState.Success
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
             }.onFailure {
                 Timber.tag(ContentValues.TAG).d("데이터 수신 실패")
                 errorMessage.value = it.message
-                _courseState.value = UiState.Failure
+                _courseGetState.value = UiState.Failure
             }
         }
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
-            runCatching {
-                courseRepository.postCourseScrap(
-                    RequestPostScrap(
-                        publicCourseId = id, scrapTF = scrapTF.toString()
-                    )
+            _courseScrapState.value = UiStateV2.Loading
+
+            courseRepository.postCourseScrap(
+                RequestPostCourseScrap(
+                    publicCourseId = id, scrapTF = scrapTF.toString()
                 )
-            }.onSuccess {
-                Timber.d("스크랩 성공")
-            }.onFailure {
-                Timber.d("스크랩 실패")
+            ).onSuccess { response ->
+                _courseScrapState.value = UiStateV2.Success(response)
+            }.onFailure { exception ->
+                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
     }

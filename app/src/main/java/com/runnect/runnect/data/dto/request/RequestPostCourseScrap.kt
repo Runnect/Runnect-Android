@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestPostScrap(
+data class RequestPostCourseScrap(
     @SerialName("publicCourseId")
     val publicCourseId: Int,
     @SerialName("scrapTF")

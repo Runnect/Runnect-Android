@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.CourseService
-import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
@@ -19,8 +19,8 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
     suspend fun getRecommendCourse(pageNo: String?): ResponseRecommendCourse =
         courseService.getRecommendCourse(pageNo = pageNo)
 
-    suspend fun postCourseScrap(requestPostScrap: RequestPostScrap): ResponseCourseScrap =
-        courseService.postCourseScrap(requestPostScrap)
+    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): BaseResponse<Unit> =
+        courseService.postCourseScrap(requestPostCourseScrap)
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
 

@@ -421,6 +421,7 @@ class CourseDetailActivity :
         setupCourseGetStateObserver()
         setupCoursePatchStateObserver()
         setupCourseDeleteStateObserver()
+        setupCourseScrapStateObserver()
     }
 
     private fun setupFromDeepLinkObserver() {
@@ -528,6 +529,14 @@ class CourseDetailActivity :
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(this) { state ->
+            if (state is UiStateV2.Failure) {
+                showSnackbar(binding.root, state.msg)
             }
         }
     }

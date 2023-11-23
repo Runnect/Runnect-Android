@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.service
 
-import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
@@ -20,8 +20,8 @@ interface CourseService {
 
     @POST("/api/scrap")
     suspend fun postCourseScrap(
-        @Body requestPostScrap: RequestPostScrap,
-    ): ResponseCourseScrap
+        @Body requestPostCourseScrap: RequestPostCourseScrap,
+    ): BaseResponse<Unit>
 
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(
@@ -47,12 +47,6 @@ interface CourseService {
         @Path("publicCourseId") publicCourseId: Int,
         @Body requestPatchPublicCourse: RequestPatchPublicCourse
     ): BaseResponse<ResponsePatchPublicCourseDto>
-
-    //스크랩 - 지훈이랑 나랑 타입 통일이 안 돼있음. 일단 DataSource 통일부터하고 나중에 여기 타입 맞춰줘서 스크랩 함수 둘 중 하나 삭제해야 함.
-    @POST("/api/scrap")
-    suspend fun postScrap(
-        @Body requestPostScrap: RequestPostScrap,
-    ): Response<ResponseCourseScrap>
 
     // {id}와 같이 동적인 경로 변수가 없다면 @Path 생략 가능
     //내가 그린 코스 수정
