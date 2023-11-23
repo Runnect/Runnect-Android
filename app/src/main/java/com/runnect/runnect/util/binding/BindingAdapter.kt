@@ -26,8 +26,8 @@ fun AppCompatButton.updateEditFinishButtonBackground(
     isEnabled = isValidTitle && isValidDescription
 }
 
-@BindingAdapter("setDiscoverPromotionImage")
-fun ImageView.setDiscoverPromotionImage(imageUrl: String) {
+@BindingAdapter("setDiscoverItemImage")
+fun ImageView.setDiscoverItemImage(imageUrl: String) {
     Glide.with(context)
         .load(imageUrl)
         .thumbnail(0.3f)
