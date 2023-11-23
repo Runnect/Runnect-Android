@@ -1,11 +1,10 @@
 package com.runnect.runnect.data.dto.request
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestPostRecordDTO(
+data class RequestPostRunningHistory(
     @SerialName("courseId")
     val courseId: Int,
     @SerialName("publicCourseId")

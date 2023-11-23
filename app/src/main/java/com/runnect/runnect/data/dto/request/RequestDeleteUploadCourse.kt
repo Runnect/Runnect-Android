@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestDeleteUploadCourseDto(
+data class RequestDeleteUploadCourse(
     @SerializedName("publicCourseIdList")
     val publicCourseIdList: List<Int>
 )

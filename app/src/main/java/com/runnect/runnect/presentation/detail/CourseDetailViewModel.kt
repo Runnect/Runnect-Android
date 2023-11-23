@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
+import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
 import com.runnect.runnect.domain.CourseRepository
@@ -101,7 +101,7 @@ class CourseDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _coursePatchState.value = UiStateV2.Loading
 
-            val requestDto = RequestPatchPublicCourseDto(
+            val requestDto = RequestPatchPublicCourse(
                 title = title,
                 description = description
             )
@@ -120,7 +120,7 @@ class CourseDetailViewModel @Inject constructor(
             _courseDeleteState.value = UiStateV2.Loading
 
             userRepository.putDeleteUploadCourse(
-                RequestDeleteUploadCourseDto(publicCourseIdList = listOf(id))
+                RequestDeleteUploadCourse(publicCourseIdList = listOf(id))
             ).onSuccess { response ->
                 _courseDeleteState.value = UiStateV2.Success(response)
             }.onFailure { exception ->
@@ -132,7 +132,7 @@ class CourseDetailViewModel @Inject constructor(
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             courseRepository.postCourseScrap(
-                RequestCourseScrap(
+                RequestPostScrap(
                     publicCourseId = id, scrapTF = scrapTF.toString()
                 )
             )

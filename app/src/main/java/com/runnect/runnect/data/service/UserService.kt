@@ -1,9 +1,9 @@
 package com.runnect.runnect.data.service
 
-import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
-import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import retrofit2.http.*
@@ -15,7 +15,7 @@ interface UserService {
 
     @PATCH("api/user")
     suspend fun updateNickName(
-        @Body requestUpdateNickName: RequestUpdateNickName,
+        @Body requestPatchNickName: RequestPatchNickName,
     ): ResponseUpdateNickName
 
     @GET("api/stamp/user")
@@ -32,18 +32,18 @@ interface UserService {
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
-        @Body requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
+        @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): BaseResponse<ResponseDeleteUploadCourseDto>
 
     @PUT("api/record")
     suspend fun putDeleteHistory(
-        @Body requestDeleteHistoryDto: RequestDeleteHistoryDto
+        @Body requestDeleteHistory: RequestDeleteHistory
     ): BaseResponse<ResponseDeleteHistoryDto>
 
     @PATCH("api/record/{recordId}")
     suspend fun patchHistoryTitle(
         @Path("recordId") historyId: Int,
-        @Body requestPatchHistoryTitleDto: RequestPatchHistoryTitleDto
+        @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): BaseResponse<ResponsePatchHistoryTitleDto>
 
     @DELETE("api/user")

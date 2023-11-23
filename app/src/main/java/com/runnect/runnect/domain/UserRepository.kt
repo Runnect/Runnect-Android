@@ -2,16 +2,16 @@ package com.runnect.runnect.domain
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
-import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
 
 interface UserRepository {
     suspend fun getUserInfo(): ResponseUser
 
-    suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName
+    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponseUpdateNickName
 
     suspend fun getMyStamp(): MutableList<String>
 
@@ -20,14 +20,14 @@ interface UserRepository {
     suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO>
 
     suspend fun putDeleteUploadCourse(
-        requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
+        requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): Result<ResponseDeleteUploadCourseDto?>
 
-    suspend fun putDeleteHistory(requestDeleteHistoryDto: RequestDeleteHistoryDto): Result<ResponseDeleteHistoryDto?>
+    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistoryDto?>
 
     suspend fun patchHistoryTitle(
         historyId: Int,
-        requestPatchHistoryTitleDto: RequestPatchHistoryTitleDto
+        requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): Result<ResponsePatchHistoryTitleDto?>
 
     suspend fun deleteUser(): ResponseDeleteUser

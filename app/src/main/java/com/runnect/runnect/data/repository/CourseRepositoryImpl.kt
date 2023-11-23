@@ -4,11 +4,11 @@ import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.RecommendCourseDTO
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
-import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
+import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
@@ -31,8 +31,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             .toMutableList()
     }
 
-    override suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap {
-        return remoteCourseDataSource.postCourseScrap(requestCourseScrap = requestCourseScrap)
+    override suspend fun postCourseScrap(requestPostScrap: RequestPostScrap): ResponseCourseScrap {
+        return remoteCourseDataSource.postCourseScrap(requestPostScrap = requestPostScrap)
     }
 
     override suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO> {
@@ -49,21 +49,21 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             .toMutableList()
     }
 
-    override suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse): ResponseUploadMyCourse {
-        return remoteCourseDataSource.postUploadMyCourse(requestUploadMyCourse = requestUploadMyCourse)
+    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponseUploadMyCourse {
+        return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse)
     }
 
     override suspend fun patchPublicCourse(
         publicCourseId: Int,
-        requestPatchPublicCourse: RequestPatchPublicCourseDto
+        requestPatchPublicCourse: RequestPatchPublicCourse
     ): Result<PublicCourse?> = runCatching {
         remoteCourseDataSource.patchPublicCourse(
             publicCourseId = publicCourseId,
-            requestPatchPublicCourseDto = requestPatchPublicCourse
+            requestPatchPublicCourse = requestPatchPublicCourse
         ).data?.publicCourse
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO> {
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO> {
         return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
@@ -71,7 +71,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.getMyDrawDetail(courseId = courseId)
     }
 
-    override suspend fun postRecord(request: RequestPostRecordDTO): Response<ResponsePostRecordDTO> {
+    override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostRecordDTO> {
         return remoteCourseDataSource.postRecord(request = request)
     }
 

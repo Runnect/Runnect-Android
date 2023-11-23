@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestLogin
+import com.runnect.runnect.data.dto.request.RequestPostLogin
 import com.runnect.runnect.data.dto.LoginDTO
 import com.runnect.runnect.domain.LoginRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -25,12 +25,12 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         get() = _loginState
 
 
-    fun postLogin(request: RequestLogin) {
+    fun postLogin(request: RequestPostLogin) {
         viewModelScope.launch {
             runCatching {
                 _loginState.value = UiState.Loading
                 loginRepository.postLogin(
-                    RequestLogin(
+                    RequestPostLogin(
                         token = request.token, provider = request.provider
                     )
                 )

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestDeleteHistoryDto(
+data class RequestDeleteHistory(
     @SerialName("recordIdList")
     val recordIdList: List<Int>
 )

@@ -4,11 +4,11 @@ import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.RecommendCourseDTO
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
-import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
+import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
@@ -23,7 +23,7 @@ import retrofit2.Response
 interface CourseRepository {
     suspend fun getRecommendCourse(pageNo: String?): MutableList<RecommendCourseDTO>
 
-    suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap
+    suspend fun postCourseScrap(requestPostScrap: RequestPostScrap): ResponseCourseScrap
 
     suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO>
 
@@ -31,18 +31,18 @@ interface CourseRepository {
 
     suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO>
 
-    suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse): ResponseUploadMyCourse
+    suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponseUploadMyCourse
 
     suspend fun patchPublicCourse(
         publicCourseId: Int,
-        requestPatchPublicCourse: RequestPatchPublicCourseDto
+        requestPatchPublicCourse: RequestPatchPublicCourse
     ): Result<PublicCourse?>
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO>
 
     suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetailDTO>
 
-    suspend fun postRecord(request: RequestPostRecordDTO): Response<ResponsePostRecordDTO>
+    suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostRecordDTO>
 
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody

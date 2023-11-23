@@ -2,8 +2,8 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
+import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDTO
 import com.runnect.runnect.data.dto.response.ResponseGetScrapDTO
@@ -34,7 +34,7 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
         return changedData
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO> {
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO> {
         return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
@@ -43,8 +43,8 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
             data = remoteStorageDataSource.getMyScrapCourse().body()!!.data.scraps).toMutableList()
     }
 
-    override suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> {
-        return remoteStorageDataSource.postMyScrapCourse(requestCourseScrap = requestCourseScrap)
+    override suspend fun postMyScrapCourse(requestPostScrap: RequestPostScrap): Response<ResponseCourseScrap> {
+        return remoteStorageDataSource.postMyScrapCourse(requestPostScrap = requestPostScrap)
     }
 
     private fun changeMyScrapData(data: List<ResponseGetScrapDTO.Data.Scrap>): List<MyScrapCourse> {

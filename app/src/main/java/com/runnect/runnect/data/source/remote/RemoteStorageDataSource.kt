@@ -1,9 +1,9 @@
 package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.CourseService
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostScrap
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDTO
 import com.runnect.runnect.data.dto.response.ResponseGetScrapDTO
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
@@ -14,12 +14,12 @@ class RemoteStorageDataSource @Inject constructor(private val courseService: Cou
     suspend fun getMyDrawCourse(): Response<ResponseGetCourseDTO> =
         courseService.getCourseList()
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO): Response<ResponsePutMyDrawDTO> =
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO> =
         courseService.deleteMyDrawCourse(deleteCourseList)
 
     suspend fun getMyScrapCourse(): Response<ResponseGetScrapDTO> =
         courseService.getScrapList()
 
-    suspend fun postMyScrapCourse(requestCourseScrap: RequestCourseScrap): Response<ResponseCourseScrap> =
-        courseService.postScrap(requestCourseScrap)
+    suspend fun postMyScrapCourse(requestPostScrap: RequestPostScrap): Response<ResponseCourseScrap> =
+        courseService.postScrap(requestPostScrap)
 }

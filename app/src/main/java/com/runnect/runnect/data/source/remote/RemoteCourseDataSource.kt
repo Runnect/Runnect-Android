@@ -1,11 +1,11 @@
 package com.runnect.runnect.data.source.remote
 
 import com.runnect.runnect.data.service.CourseService
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
-import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
-import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
+import com.runnect.runnect.data.dto.request.RequestPostScrap
+import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetailDto
 import com.runnect.runnect.data.dto.response.ResponseCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourseDto
@@ -19,8 +19,8 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
     suspend fun getRecommendCourse(pageNo: String?): ResponseRecommendCourse =
         courseService.getRecommendCourse(pageNo = pageNo)
 
-    suspend fun postCourseScrap(requestCourseScrap: RequestCourseScrap): ResponseCourseScrap =
-        courseService.postCourseScrap(requestCourseScrap)
+    suspend fun postCourseScrap(requestPostScrap: RequestPostScrap): ResponseCourseScrap =
+        courseService.postCourseScrap(requestPostScrap)
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
 
@@ -29,21 +29,21 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
 
     suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()
 
-    suspend fun postUploadMyCourse(requestUploadMyCourse: RequestUploadMyCourse) =
-        courseService.postUploadMyCourse(requestUploadMyCourse)
+    suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse) =
+        courseService.postUploadMyCourse(requestPostPublicCourse)
 
     suspend fun patchPublicCourse(
         publicCourseId: Int,
-        requestPatchPublicCourseDto: RequestPatchPublicCourseDto
+        requestPatchPublicCourse: RequestPatchPublicCourse
     ): BaseResponse<ResponsePatchPublicCourseDto> =
-        courseService.patchPublicCourse(publicCourseId, requestPatchPublicCourseDto)
+        courseService.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawDTO) =
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) =
         courseService.deleteMyDrawCourse(deleteCourseList)
 
     suspend fun getMyDrawDetail(courseId: Int) = courseService.getMyDrawDetail(courseId)
 
-    suspend fun postRecord(request: RequestPostRecordDTO) = courseService.postRecord(request)
+    suspend fun postRecord(request: RequestPostRunningHistory) = courseService.postRecord(request)
 
     suspend fun uploadCourse(image: MultipartBody.Part, data: RequestBody) =
         courseService.uploadCourse(image, data)

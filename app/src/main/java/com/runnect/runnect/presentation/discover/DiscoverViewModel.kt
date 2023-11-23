@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.DiscoverPromotionItem
 import com.runnect.runnect.data.dto.RecommendCourseDTO
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostScrap
 import com.runnect.runnect.domain.BannerRepository
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -85,7 +85,7 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 courseRepository.postCourseScrap(
-                    RequestCourseScrap(
+                    RequestPostScrap(
                         publicCourseId = id, scrapTF = scrapTF.toString()
                     )
                 )

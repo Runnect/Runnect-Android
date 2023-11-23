@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseSearchDTO
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostScrap
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,7 +50,7 @@ class DiscoverSearchViewModel @Inject constructor(private val courseRepository: 
         viewModelScope.launch {
             runCatching {
                 courseRepository.postCourseScrap(
-                    RequestCourseScrap(
+                    RequestPostScrap(
                         publicCourseId = id, scrapTF = scrapTF.toString()
                     )
                 )

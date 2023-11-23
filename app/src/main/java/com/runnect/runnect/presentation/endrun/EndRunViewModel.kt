@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
+import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.response.ResponsePostRecordDTO
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -35,12 +35,12 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
         get() = _endRunState
 
 
-    fun postRecord(request: RequestPostRecordDTO) {
+    fun postRecord(request: RequestPostRunningHistory) {
         viewModelScope.launch {
             runCatching {
                 _endRunState.value = UiState.Loading
                 courseRepository.postRecord(
-                    RequestPostRecordDTO(
+                    RequestPostRunningHistory(
                         courseId = request.courseId,
                         publicCourseId = request.publicCourseId,
                         title = request.title,

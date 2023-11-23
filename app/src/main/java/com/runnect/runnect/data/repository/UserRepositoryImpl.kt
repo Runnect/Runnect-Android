@@ -2,10 +2,10 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
-import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
@@ -20,8 +20,8 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: RemoteUserDataSource) :
     UserRepository {
     override suspend fun getUserInfo(): ResponseUser = remoteUserDataSource.getUserInfo()
-    override suspend fun updateNickName(requestUpdateNickName: RequestUpdateNickName): ResponseUpdateNickName =
-        remoteUserDataSource.updateNickName(requestUpdateNickName)
+    override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponseUpdateNickName =
+        remoteUserDataSource.updateNickName(requestPatchNickName)
 
     override suspend fun getMyStamp(): MutableList<String> {
         return remoteUserDataSource.getMyStamp().data.stamps.map { it.id }.toMutableList()
@@ -37,21 +37,21 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
     }
 
     override suspend fun putDeleteUploadCourse(
-        requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
+        requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): Result<ResponseDeleteUploadCourseDto?> = runCatching {
-        remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourseDto).data
+        remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse).data
     }
 
     override suspend fun putDeleteHistory(
-        requestDeleteHistoryDto: RequestDeleteHistoryDto
+        requestDeleteHistory: RequestDeleteHistory
     ): Result<ResponseDeleteHistoryDto?> = runCatching {
-        remoteUserDataSource.putDeleteHistory(requestDeleteHistoryDto).data
+        remoteUserDataSource.putDeleteHistory(requestDeleteHistory).data
     }
 
     override suspend fun patchHistoryTitle(
-        historyId: Int, requestPatchHistoryTitleDto: RequestPatchHistoryTitleDto
+        historyId: Int, requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): Result<ResponsePatchHistoryTitleDto?> = runCatching {
-        remoteUserDataSource.patchHistoryTitle(historyId, requestPatchHistoryTitleDto).data
+        remoteUserDataSource.patchHistoryTitle(historyId, requestPatchHistoryTitle).data
     }
 
     override suspend fun deleteUser(): ResponseDeleteUser {
