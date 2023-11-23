@@ -53,12 +53,19 @@ class DiscoverSearchActivity :
         binding.etDiscoverSearchTitle.setFocusAndShowKeyboard(this)
         binding.rvDiscoverSearch.apply {
             layoutManager = GridLayoutManager(this@DiscoverSearchActivity, 2)
-            addItemDecoration(GridSpacingItemDecoration(this@DiscoverSearchActivity, 2, 6, 16))
+            addItemDecoration(
+                GridSpacingItemDecoration(
+                    context = this@DiscoverSearchActivity,
+                    spanCount = 2,
+                    horizontalSpacing = 6,
+                    topSpacing = 20
+                )
+            )
         }
     }
 
     private fun registerBackPressedCallback() {
-        val callback = object: OnBackPressedCallback(true) {
+        val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navigateToPreviousScreenWithAnimation()
             }

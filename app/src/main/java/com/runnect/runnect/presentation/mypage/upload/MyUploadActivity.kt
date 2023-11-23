@@ -54,7 +54,14 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
     private fun initRecyclerView() {
         binding.rvMyPageUpload.layoutManager = GridLayoutManager(this, 2)
-        binding.rvMyPageUpload.addItemDecoration(GridSpacingItemDecoration(this, 2, 6, 18))
+        binding.rvMyPageUpload.addItemDecoration(
+            GridSpacingItemDecoration(
+                context = this,
+                spanCount = 2,
+                horizontalSpacing = 6,
+                topSpacing = 20
+            )
+        )
     }
 
     private fun addListener() {

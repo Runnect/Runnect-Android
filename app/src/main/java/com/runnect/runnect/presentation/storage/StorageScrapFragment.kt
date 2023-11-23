@@ -74,10 +74,10 @@ class StorageScrapFragment :
             .layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerViewStorageScrap.addItemDecoration(
             GridSpacingItemDecoration(
-                requireContext(),
-                2,
-                6,
-                16
+                context = requireContext(),
+                spanCount = 2,
+                horizontalSpacing = 6,
+                topSpacing = 20
             )
         )
     }

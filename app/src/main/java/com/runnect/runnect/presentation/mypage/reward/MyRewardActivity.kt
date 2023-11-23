@@ -67,7 +67,14 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
     private fun initRecyclerView() {
         binding.rvMyPageRewardStamps.setHasFixedSize(true)
         binding.rvMyPageRewardStamps.layoutManager = GridLayoutManager(this, 3)
-        binding.rvMyPageRewardStamps.addItemDecoration(GridSpacingItemDecoration(this, 3, 28, 28))
+        binding.rvMyPageRewardStamps.addItemDecoration(
+            GridSpacingItemDecoration(
+                context = this,
+                spanCount = 3,
+                horizontalSpacing = 28,
+                topSpacing = 28
+            )
+        )
     }
 
     private fun initBackButtonClickListener() {

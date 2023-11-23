@@ -53,7 +53,10 @@ class DiscoverLoadActivity :
             layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
             addItemDecoration(
                 GridSpacingItemDecoration(
-                    this@DiscoverLoadActivity, 2, 6, 18
+                    context = this@DiscoverLoadActivity,
+                    spanCount = 2,
+                    horizontalSpacing = 6,
+                    topSpacing = 20
                 )
             )
         }
