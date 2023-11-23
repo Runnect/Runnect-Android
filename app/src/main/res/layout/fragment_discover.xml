@@ -133,9 +133,9 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <include layout="@layout/item_discover_course_info_shimmer" />
-                        <include layout="@layout/item_discover_course_info_shimmer" />
-                        <include layout="@layout/item_discover_course_info_shimmer" />
+                        <include layout="@layout/item_discover_course_shimmer" />
+                        <include layout="@layout/item_discover_course_shimmer" />
+                        <include layout="@layout/item_discover_course_shimmer" />
                     </LinearLayout>
 
                 </com.facebook.shimmer.ShimmerFrameLayout>
@@ -155,7 +155,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
-                    tools:listitem="@layout/item_discover_course_info" />
+                    tools:listitem="@layout/item_discover_course" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 

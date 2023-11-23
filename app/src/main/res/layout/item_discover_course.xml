@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -16,7 +15,7 @@
         app:scale_base_width="162">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_item_discover_course_info_scrap"
+            android:id="@+id/cv_item_discover_course_scrap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/G4"
@@ -25,14 +24,14 @@
             app:scale_width="162">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_item_discover_course_info_map"
+                android:id="@+id/iv_item_discover_course_map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_item_discover_course_info_scrap"
+            android:id="@+id/iv_item_discover_course_scrap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -42,7 +41,7 @@
             app:srcCompat="@drawable/discover_course_scrap_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_item_discover_course_info_title"
+            android:id="@+id/tv_item_discover_course_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -57,7 +56,7 @@
             tools:text="제목" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_item_discover_course_info_location"
+            android:id="@+id/tv_item_discover_course_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_regular"

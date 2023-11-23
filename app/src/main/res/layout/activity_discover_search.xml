@@ -122,7 +122,7 @@
                     android:orientation="vertical"
                     android:paddingBottom="20dp"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    tools:listitem="@layout/item_discover_course_info"/>
+                    tools:listitem="@layout/item_discover_course"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
