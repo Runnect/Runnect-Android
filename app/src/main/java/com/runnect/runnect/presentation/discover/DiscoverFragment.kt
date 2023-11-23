@@ -319,7 +319,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
             startActivity(this)
         }
-        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        requireActivity().applyScreenEnterAnimation()
     }
 
     override fun selectBanner(item: DiscoverPromotionItem) {
