@@ -12,6 +12,7 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.databinding.ActivityEndRunBinding
@@ -26,9 +27,7 @@ import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class EndRunActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
-
+class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
     val viewModel: EndRunViewModel by viewModels()
     val currentTime: Long = System.currentTimeMillis()
 
