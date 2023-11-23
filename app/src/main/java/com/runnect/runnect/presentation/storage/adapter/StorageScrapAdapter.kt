@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnHeartClick
+import com.runnect.runnect.util.callback.OnScrapButtonClicked
 import com.runnect.runnect.util.callback.OnScrapCourseClick
 
 class StorageScrapAdapter(
     val scrapClickListener: OnScrapCourseClick,
-    val heartListener: OnHeartClick, val itemCount: ItemCount
+    val heartListener: OnScrapButtonClicked, val itemCount: ItemCount
 ) :
     ListAdapter<MyScrapCourse, StorageScrapAdapter.ItemViewHolder>(Differ()) {
 
