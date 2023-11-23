@@ -10,19 +10,19 @@ import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
 import com.runnect.runnect.util.callback.ItemDiffCallback
 import com.runnect.runnect.util.callback.OnCourseItemClicked
-import com.runnect.runnect.util.callback.OnScrapButtonClicked
+import com.runnect.runnect.util.callback.OnScrapClicked
 
 class DiscoverSearchAdapter(
     context: Context,
     private val itemClick: OnCourseItemClicked,
-    private val heartClick: OnScrapButtonClicked
+    private val heartClick: OnScrapClicked
 ) : ListAdapter<CourseSearchDTO, DiscoverSearchAdapter.SearchViewHolder>(diffUtil) {
     private val inflater by lazy { LayoutInflater.from(context) }
 
     class SearchViewHolder(
         private val binding: ItemDiscoverCourseBinding,
         private val itemClick: OnCourseItemClicked,
-        private val heartClick: OnScrapButtonClicked
+        private val heartClick: OnScrapClicked
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: CourseSearchDTO) {

@@ -1,5 +1,5 @@
 package com.runnect.runnect.util.callback
 
-interface OnScrapButtonClicked {
+interface OnScrapClicked {
     fun scrapCourse(id: Int?, scrapTF:Boolean)
 }

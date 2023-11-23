@@ -20,7 +20,7 @@ import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnScrapButtonClicked
+import com.runnect.runnect.util.callback.OnScrapClicked
 import com.runnect.runnect.util.callback.OnCourseItemClicked
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
@@ -31,7 +31,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DiscoverSearchActivity :
     BindingActivity<ActivityDiscoverSearchBinding>(R.layout.activity_discover_search),
-    OnCourseItemClicked, OnScrapButtonClicked {
+    OnCourseItemClicked, OnScrapClicked {
     private val viewModel: DiscoverSearchViewModel by viewModels()
     private lateinit var adapter: DiscoverSearchAdapter
 
