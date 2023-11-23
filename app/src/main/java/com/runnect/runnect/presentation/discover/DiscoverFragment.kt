@@ -30,6 +30,7 @@ import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.OnBannerClick
 import com.runnect.runnect.util.callback.OnHeartClick
 import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,26 +90,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun initScrollListener() {
-        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            val contentView = binding.nestedScrollView.getChildAt(0)
-            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
-                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
-                currentPageNo++
-                getRecommendCourses(pageNo = currentPageNo.toString())
-            }
-        }
-    }
-
-    private fun initRefreshLayoutListener() {
-        binding.refreshLayout.setOnRefreshListener {
-            // 기존에 조회했던 리스트에 아이템이 누적으로 더해지기 때문에 clear()로 비워줘야 한다.
-            viewModel.recommendCourseList.clear()
-            getRecommendCourses(pageNo = "1")
-            binding.refreshLayout.isRefreshing = false
-        }
-    }
-
     private fun initLayout() {
         binding.rvDiscoverRecommend.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvDiscoverRecommend.addItemDecoration(
@@ -123,30 +104,82 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
-        initScrollListener()
+        initScrollChangedListener()
+        initCourseSearchButtonClickListener()
+        initCourseUploadButtonClickListener()
+    }
 
-        binding.ivDiscoverSearch.setOnClickListener {
-            startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
-        }
-
-        binding.btnDiscoverUpload.setOnClickListener {
-            if (isVisitorMode) {
-                RunnectToast.createToast(requireContext(), VISITOR_REQUIRE_LOGIN).show()
-            } else {
-                startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
-                requireActivity().overridePendingTransition(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left
-                )
+    private fun initScrollChangedListener() {
+        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            val contentView = binding.nestedScrollView.getChildAt(0)
+            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
+                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
+                currentPageNo++
+                getRecommendCourses(pageNo = currentPageNo.toString())
             }
         }
     }
 
+    private fun initCourseSearchButtonClickListener() {
+        binding.ivDiscoverSearch.setOnClickListener {
+            startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
+            requireActivity().applyScreenEnterAnimation()
+        }
+    }
+
+    private fun initCourseUploadButtonClickListener() {
+        binding.btnDiscoverUpload.setOnClickListener {
+            if (isVisitorMode) {
+                showCourseUploadWarningToast()
+                return@setOnClickListener
+            }
+
+            startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
+            requireActivity().applyScreenEnterAnimation()
+        }
+    }
+
+    private fun showCourseUploadWarningToast() {
+        RunnectToast.createToast(
+            requireContext(),
+            getString(R.string.visitor_mode_course_discover_upload_warning_msg)
+        ).show()
+    }
+
+    private fun initRefreshLayoutListener() {
+        binding.refreshLayout.setOnRefreshListener {
+            // 기존에 조회했던 리스트에 아이템이 누적으로 더해지므로 clear()로 비워주었다.
+            viewModel.recommendCourseList.clear()
+            getRecommendCourses(pageNo = "1")
+            binding.refreshLayout.isRefreshing = false
+        }
+    }
+
     private fun addObserver() {
+        setupPromotionBannerStateObserver()
+        setupRecommendCourseStateObserver()
+    }
+
+    private fun setupPromotionBannerStateObserver() {
+        viewModel.bannerState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
+                UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
+                UiState.Success -> {
+                    binding.indeterminateBarBanner.isVisible = false
+                    setBannerData()
+                }
+
+                UiState.Failure -> {
+                    binding.indeterminateBarBanner.isVisible = false
+                    Timber.tag(ContentValues.TAG)
+                        .d("Failure : ${viewModel.errorMessage.value}")
+                }
+            }
+        }
+    }
+
+    private fun setupRecommendCourseStateObserver() {
         viewModel.courseInfoState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> {}
@@ -168,23 +201,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                         binding.shimmerLayout.stopShimmer()
                         binding.shimmerLayout.isVisible = false
                     }
-                }
-            }
-        }
-
-        viewModel.bannerState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
-                UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBarBanner.isVisible = false
-                    setBannerData()
-                }
-
-                UiState.Failure -> {
-                    binding.indeterminateBarBanner.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
                 }
             }
         }
@@ -330,6 +346,5 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val END_PAGE = "HTTP 400 Bad Request"
-        const val VISITOR_REQUIRE_LOGIN = "러넥트에 가입하면 코스를 업로드할 수 있어요"
     }
 }
