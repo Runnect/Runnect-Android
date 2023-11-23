@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.dto.DiscoverPromotionItem
 import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
 import com.runnect.runnect.util.callback.ItemDiffCallback
-import com.runnect.runnect.util.callback.OnBannerClick
+import com.runnect.runnect.util.callback.OnBannerItemClick
 
 class PromotionBannerAdapter(
-    private val bannerClickListener: OnBannerClick,
+    private val bannerClickListener: OnBannerItemClick,
 ) : ListAdapter<DiscoverPromotionItem,
         PromotionBannerAdapter.DiscoverPromotionViewHolder>(diffUtil) {
     private var bannerCount: Int = 0

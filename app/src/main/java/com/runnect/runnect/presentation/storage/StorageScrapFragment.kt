@@ -20,14 +20,14 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnScrapClicked
+import com.runnect.runnect.util.callback.OnScrapClick
 import com.runnect.runnect.util.callback.OnScrapCourseClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class StorageScrapFragment :
-    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnScrapClicked,
+    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnScrapClick,
     OnScrapCourseClick,
     ItemCount {
 

@@ -1,5 +1,5 @@
 package com.runnect.runnect.util.callback
 
-interface OnCourseItemClicked {
+interface OnCourseItemClick {
     fun selectItem(publicCourseId: Int)
 }

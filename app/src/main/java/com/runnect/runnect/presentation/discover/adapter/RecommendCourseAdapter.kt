@@ -11,13 +11,13 @@ import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
 import com.runnect.runnect.util.callback.ItemDiffCallback
-import com.runnect.runnect.util.callback.OnCourseItemClicked
-import com.runnect.runnect.util.callback.OnScrapClicked
+import com.runnect.runnect.util.callback.OnCourseItemClick
+import com.runnect.runnect.util.callback.OnScrapClick
 import com.runnect.runnect.util.custom.toast.RunnectToast
 
 class RecommendCourseAdapter(
-    private val onScrapClicked: OnScrapClicked,
-    private val onCourseItemClicked: OnCourseItemClicked,
+    private val onScrapClick: OnScrapClick,
+    private val onCourseItemClick: OnCourseItemClick,
     private val isVisitorMode: Boolean
 ) : ListAdapter<RecommendCourseDTO, RecommendCourseAdapter.CourseInfoViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
@@ -58,7 +58,7 @@ class RecommendCourseAdapter(
             }
 
             view.isSelected = !view.isSelected
-            onScrapClicked.scrapCourse(id = course.id, scrapTF = view.isSelected)
+            onScrapClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
         }
     }
 
@@ -67,7 +67,7 @@ class RecommendCourseAdapter(
         course: RecommendCourseDTO
     ) {
         itemView.setOnClickListener {
-            onCourseItemClicked.selectItem(publicCourseId = course.id)
+            onCourseItemClick.selectItem(publicCourseId = course.id)
         }
     }
 

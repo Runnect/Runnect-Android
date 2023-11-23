@@ -27,9 +27,9 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnBannerClick
-import com.runnect.runnect.util.callback.OnScrapClicked
-import com.runnect.runnect.util.callback.OnCourseItemClicked
+import com.runnect.runnect.util.callback.OnBannerItemClick
+import com.runnect.runnect.util.callback.OnScrapClick
+import com.runnect.runnect.util.callback.OnCourseItemClick
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showWebBrowser
@@ -40,7 +40,7 @@ import java.util.TimerTask
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnCourseItemClicked, OnScrapClicked, OnBannerClick {
+    OnCourseItemClick, OnScrapClick, OnBannerItemClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
     private val promotionAdapter: PromotionBannerAdapter by lazy { PromotionBannerAdapter(this) }
@@ -210,8 +210,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initRecommendCourseAdapter() {
         recommendCourseAdapter =
             RecommendCourseAdapter(
-                onScrapClicked = this,
-                onCourseItemClicked = this,
+                onScrapClick = this,
+                onCourseItemClick = this,
                 isVisitorMode = isVisitorMode
             ).apply {
                 submitList(viewModel.recommendCourseList)
