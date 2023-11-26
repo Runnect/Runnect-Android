@@ -32,6 +32,7 @@ data class PublicCourseUpload(
     @SerializedName("title")
     val title: String
 )
+
 @Serializable
 data class DepartureUpload(
     @SerializedName("city")

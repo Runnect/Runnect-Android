@@ -1,4 +1,4 @@
-package com.runnect.runnect.util.callback
+package com.runnect.runnect.util.callback.diff
 
 import androidx.recyclerview.widget.DiffUtil
 

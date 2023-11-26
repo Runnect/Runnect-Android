@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.search
 
-
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
@@ -16,21 +15,21 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.callback.OnSearchClick
+import com.runnect.runnect.util.callback.listener.OnSearchItemClick
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SearchActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
-    OnSearchClick {
+class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
+    OnSearchItemClick {
     val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
 

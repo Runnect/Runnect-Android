@@ -1,7 +1,7 @@
-package com.runnect.runnect.util.callback
+package com.runnect.runnect.util.callback.listener
 
 import com.runnect.runnect.data.dto.MyScrapCourse
 
-interface OnScrapCourseClick {
+interface OnScrapItemClick {
     fun selectItem(item: MyScrapCourse)
 }

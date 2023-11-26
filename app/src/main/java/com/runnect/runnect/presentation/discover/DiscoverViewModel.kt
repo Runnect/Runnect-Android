@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.DiscoverPromotionItem
+import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.BannerRepository
@@ -22,6 +22,7 @@ class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
+    // todo: UiStateV2 코드로 리팩토링 하자!
     private val _courseGetState = MutableLiveData<UiState>(UiState.Empty)
     val courseGetState: LiveData<UiState>
         get() = _courseGetState
@@ -42,24 +43,26 @@ class DiscoverViewModel @Inject constructor(
 
     val errorMessage = MutableLiveData<String>()
 
-    var bannerData = mutableListOf<DiscoverPromotionItem>()
+    var bannerData = mutableListOf<DiscoverPromotionBanner>()
 
     private var _bannerCount = 0
     val bannerCount: Int get() = _bannerCount
 
     init {
-        getBannerData()
-        getRecommendCourse(pageNo = "1")
+        getPromotionBanners()
+        getRecommendCourses(pageNo = "1")
     }
 
-    private fun getBannerData() {
+    private fun getPromotionBanners() {
         viewModelScope.launch {
             runCatching {
                 _bannerGetState.value = UiState.Loading
 
-                bannerRepository.getBannerData().collect { bannerList ->
+                // todo: Success 상태에서 데이터를 프래그먼트 쪽으로 넘겨주자!
+                bannerRepository.getPromotionBanners().collect { bannerList ->
                     bannerData = bannerList
                     _bannerCount = bannerData.size
+
                     _bannerGetState.value = UiState.Success
                 }
             }.onFailure {
@@ -68,19 +71,22 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourse(pageNo: String?) {
+    fun getRecommendCourses(pageNo: String?) {
         viewModelScope.launch {
             runCatching {
                 _courseGetState.value = UiState.Loading
+
                 courseRepository.getRecommendCourse(pageNo = pageNo)
             }.onSuccess {
                 _recommendCourseList.addAll(it)
                 currentPageNo.value = it[0].pageNo
+
                 _courseGetState.value = UiState.Success
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
             }.onFailure {
                 Timber.tag(ContentValues.TAG).d("데이터 수신 실패")
                 errorMessage.value = it.message
+
                 _courseGetState.value = UiState.Failure
             }
         }

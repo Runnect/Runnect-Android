@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover.search.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -8,24 +7,22 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
-import com.runnect.runnect.util.callback.ItemDiffCallback
-import com.runnect.runnect.util.callback.OnCourseItemClick
-import com.runnect.runnect.util.callback.OnScrapClick
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
+import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 
 class DiscoverSearchAdapter(
-    context: Context,
-    private val onCourseItemClick: OnCourseItemClick,
-    private val onScrapClick: OnScrapClick
+    private val onRecommendItemClick: OnRecommendItemClick,
+    private val onHeartButtonClick: OnHeartButtonClick
 ) : ListAdapter<CourseSearchDTO, DiscoverSearchAdapter.SearchViewHolder>(diffUtil) {
-    private val inflater by lazy { LayoutInflater.from(context) }
-
     class SearchViewHolder(
         private val binding: ItemDiscoverCourseBinding,
-        private val onCourseItemClick: OnCourseItemClick,
-        private val onScrapClick: OnScrapClick
+        private val onRecommendItemClick: OnRecommendItemClick,
+        private val onHeartButtonClick: OnHeartButtonClick
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: CourseSearchDTO) {
+
             binding.ivItemDiscoverCourseMap.load(data.image)
             binding.tvItemDiscoverCourseTitle.text = data.title
             binding.tvItemDiscoverCourseLocation.text = data.departure
@@ -33,19 +30,19 @@ class DiscoverSearchAdapter(
 
             binding.ivItemDiscoverCourseScrap.setOnClickListener {
                 it.isSelected = !it.isSelected
-                onScrapClick.scrapCourse(data.id, it.isSelected)
+                onHeartButtonClick.scrapCourse(data.id, it.isSelected)
             }
 
             binding.ivItemDiscoverCourseMap.setOnClickListener {
-                onCourseItemClick.selectItem(data.id)
+                onRecommendItemClick.selectItem(data.id)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
-            ItemDiscoverCourseBinding.inflate(inflater, parent, false),
-            onCourseItemClick, onScrapClick
+            ItemDiscoverCourseBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            onRecommendItemClick, onHeartButtonClick
         )
     }
 

@@ -15,7 +15,7 @@ import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnRecommendCourseClick
+import com.runnect.runnect.util.callback.listener.OnUploadItemClick
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -23,7 +23,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DiscoverLoadActivity :
     BindingActivity<ActivityDiscoverLoadSelectBinding>(R.layout.activity_discover_load_select),
-    OnRecommendCourseClick {
+    OnUploadItemClick {
     private val viewModel: DiscoverLoadViewModel by viewModels()
     private lateinit var adapter: DiscoverLoadAdapter
 
@@ -131,7 +131,7 @@ class DiscoverLoadActivity :
     }
 
     private fun initAdapter() {
-        adapter = DiscoverLoadAdapter(this, this).apply {
+        adapter = DiscoverLoadAdapter(this).apply {
             submitList(viewModel.courseLoadList)
         }
         binding.rvDiscoverLoadSelect.adapter = this@DiscoverLoadActivity.adapter

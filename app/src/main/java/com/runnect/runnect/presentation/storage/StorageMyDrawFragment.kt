@@ -23,7 +23,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnMyDrawClick
+import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
 import com.runnect.runnect.util.extension.setFragmentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -33,7 +33,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
-    OnMyDrawClick, ItemCount {
+    OnMyDrawItemClick, ItemCount {
 
     val viewModel: StorageViewModel by viewModels()
 

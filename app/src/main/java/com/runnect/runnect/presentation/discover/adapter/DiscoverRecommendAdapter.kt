@@ -10,16 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
-import com.runnect.runnect.util.callback.ItemDiffCallback
-import com.runnect.runnect.util.callback.OnCourseItemClick
-import com.runnect.runnect.util.callback.OnScrapClick
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
+import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
 import com.runnect.runnect.util.custom.toast.RunnectToast
 
-class RecommendCourseAdapter(
-    private val onScrapClick: OnScrapClick,
-    private val onCourseItemClick: OnCourseItemClick,
+class DiscoverRecommendAdapter(
+    private val onHeartButtonClick: OnHeartButtonClick,
+    private val onRecommendItemClick: OnRecommendItemClick,
     private val isVisitorMode: Boolean
-) : ListAdapter<RecommendCourseDTO, RecommendCourseAdapter.CourseInfoViewHolder>(diffUtil) {
+) : ListAdapter<RecommendCourseDTO, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
             ItemDiscoverCourseBinding.inflate(
@@ -58,7 +58,7 @@ class RecommendCourseAdapter(
             }
 
             view.isSelected = !view.isSelected
-            onScrapClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
+            onHeartButtonClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
         }
     }
 
@@ -67,7 +67,7 @@ class RecommendCourseAdapter(
         course: RecommendCourseDTO
     ) {
         itemView.setOnClickListener {
-            onCourseItemClick.selectItem(publicCourseId = course.id)
+            onRecommendItemClick.selectItem(publicCourseId = course.id)
         }
     }
 

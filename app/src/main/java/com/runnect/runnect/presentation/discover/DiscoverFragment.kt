@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.dto.DiscoverPromotionItem
+import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.adapter.RecommendCourseAdapter
-import com.runnect.runnect.presentation.discover.adapter.PromotionBannerAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
+import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -28,9 +28,9 @@ import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnBannerItemClick
-import com.runnect.runnect.util.callback.OnScrapClick
-import com.runnect.runnect.util.callback.OnCourseItemClick
+import com.runnect.runnect.util.callback.listener.OnBannerItemClick
+import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
+import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
@@ -42,11 +42,11 @@ import java.util.TimerTask
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnCourseItemClick, OnScrapClick, OnBannerItemClick {
+    OnRecommendItemClick, OnHeartButtonClick, OnBannerItemClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
-    private val promotionAdapter: PromotionBannerAdapter by lazy { PromotionBannerAdapter(this) }
-    private lateinit var recommendCourseAdapter: RecommendCourseAdapter
+    private val bannerAdapter: BannerAdapter by lazy { BannerAdapter(this) }
+    private lateinit var recommendAdapter: DiscoverRecommendAdapter
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -56,8 +56,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var pageRegisterCallback: ViewPager2.OnPageChangeCallback
     private var currentPosition = PAGE_NUM / 2
 
-    var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
+    private var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,7 +72,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     fun getRecommendCourses(pageNo: String?) {
-        viewModel.getRecommendCourse(pageNo = pageNo)
+        viewModel.getRecommendCourses(pageNo = pageNo)
     }
 
     private fun registerBackPressedCallback() {
@@ -87,7 +87,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun handleFromStorageScrap() {
         if (isFromStorageScrap) {
-            StorageScrapFragment.isFromStorageNoScrap = false
+            StorageScrapFragment.isFromStorageScrap = false
             MainActivity.updateStorageScrapScreen()
         }
     }
@@ -219,10 +219,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initRecommendCourseAdapter() {
-        recommendCourseAdapter =
-            RecommendCourseAdapter(
-                onScrapClick = this,
-                onCourseItemClick = this,
+        recommendAdapter =
+            DiscoverRecommendAdapter(
+                onHeartButtonClick = this,
+                onRecommendItemClick = this,
                 isVisitorMode = isVisitorMode
             ).apply {
                 submitList(viewModel.recommendCourseList)
@@ -230,38 +230,28 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
         binding.rvDiscoverRecommend.apply {
             setHasFixedSize(true)
-            adapter = recommendCourseAdapter
+            adapter = recommendAdapter
         }
     }
 
-    private fun setPromotionBanner(vp: ViewPager2) {
-        setPromotionViewPager(vp)
-        setScrollHandler()
-        setScrollPageRunnable(vp)
-        setTimerTask()
-    }
-
-    private fun setPromotionAdapter() {
-        binding.vpDiscoverPromotion.adapter = promotionAdapter
-    }
+    /** 배너 데이터 목록 초기화 */
 
     private fun setBannerData() {
         setPromotionAdapter()
-        promotionAdapter.setBannerCount(viewModel.bannerCount)
-        promotionAdapter.submitList(viewModel.bannerData)
+        bannerAdapter.setBannerCount(viewModel.bannerCount)
+        bannerAdapter.submitList(viewModel.bannerData)
         setPromotionIndicator(binding.vpDiscoverPromotion)
         registerPromotionPageCallback(binding.vpDiscoverPromotion)
+    }
+
+    private fun setPromotionAdapter() {
+        binding.vpDiscoverPromotion.adapter = bannerAdapter
     }
 
     private fun setPromotionIndicator(vp: ViewPager2) {
         val indicator = binding.ciDiscoverPromotion
         indicator.setViewPager(vp)
         indicator.createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
-    }
-
-    private fun setPromotionViewPager(vp: ViewPager2) {
-        vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        vp.setCurrentItem(PAGE_NUM / 2, false)
     }
 
     private fun registerPromotionPageCallback(vp: ViewPager2) {
@@ -284,6 +274,20 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             }
         }
         vp.registerOnPageChangeCallback(pageRegisterCallback)
+    }
+
+    /** 배너 레이아웃 초기화 */
+
+    private fun setPromotionBanner(vp: ViewPager2) {
+        setPromotionViewPager(vp)
+        setScrollHandler()
+        setScrollPageRunnable(vp)
+        setTimerTask()
+    }
+
+    private fun setPromotionViewPager(vp: ViewPager2) {
+        vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        vp.setCurrentItem(PAGE_NUM / 2, false)
     }
 
     private fun setScrollHandler() {
@@ -341,7 +345,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         requireActivity().applyScreenEnterAnimation()
     }
 
-    override fun selectBanner(item: DiscoverPromotionItem) {
+    override fun selectBanner(item: DiscoverPromotionBanner) {
         if (item.linkUrl.isNotEmpty()) {
             requireContext().showWebBrowser(item.linkUrl)
         }

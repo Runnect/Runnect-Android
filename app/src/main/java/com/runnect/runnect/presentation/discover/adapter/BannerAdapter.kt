@@ -4,15 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.dto.DiscoverPromotionItem
+import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
 import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
-import com.runnect.runnect.util.callback.ItemDiffCallback
-import com.runnect.runnect.util.callback.OnBannerItemClick
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnBannerItemClick
 
-class PromotionBannerAdapter(
-    private val bannerClickListener: OnBannerItemClick,
-) : ListAdapter<DiscoverPromotionItem,
-        PromotionBannerAdapter.DiscoverPromotionViewHolder>(diffUtil) {
+class BannerAdapter(
+    private val onBannerItemClick: OnBannerItemClick,
+) : ListAdapter<DiscoverPromotionBanner,
+        BannerAdapter.DiscoverPromotionViewHolder>(diffUtil) {
     private var bannerCount: Int = 0
 
     fun setBannerCount(bannerCount: Int) {
@@ -36,17 +36,17 @@ class PromotionBannerAdapter(
     inner class DiscoverPromotionViewHolder(
         private val binding: ItemDiscoverPromotionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun onBind(item: DiscoverPromotionItem) {
+        fun onBind(item: DiscoverPromotionBanner) {
             binding.item = item
             binding.ivItemDiscoverPromotionBanner.setOnClickListener {
-                bannerClickListener.selectBanner(item)
+                onBannerItemClick.selectBanner(item)
             }
         }
     }
 
     companion object {
         private const val PAGE_NUM = 900
-        private val diffUtil = ItemDiffCallback<DiscoverPromotionItem>(
+        private val diffUtil = ItemDiffCallback<DiscoverPromotionBanner>(
             onItemsTheSame = { old, new -> old.index == new.index },
             onContentsTheSame = { old, new -> old == new }
         )

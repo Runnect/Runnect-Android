@@ -1,8 +1,8 @@
 package com.runnect.runnect.domain
 
-import com.runnect.runnect.data.dto.DiscoverPromotionItem
+import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
 import kotlinx.coroutines.flow.Flow
 
 interface BannerRepository {
-    suspend fun getBannerData(): Flow<MutableList<DiscoverPromotionItem>>
+    suspend fun getPromotionBanners(): Flow<MutableList<DiscoverPromotionBanner>>
 }

@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover.load.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,20 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ItemDiscoverLoadSelectBinding
-import com.runnect.runnect.util.callback.OnRecommendCourseClick
-import com.runnect.runnect.util.callback.ItemDiffCallback
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnUploadItemClick
 import timber.log.Timber
 
-class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCourseClick) :
-    ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(diffUtil) {
-
-    private val inflater by lazy { LayoutInflater.from(context) }
+class DiscoverLoadAdapter(
+    private val onUploadItemClick: OnUploadItemClick
+) : ListAdapter<CourseLoadInfoDTO, DiscoverLoadAdapter.DiscoverLoadViewHolder>(diffUtil) {
     private var beforeSelected: View? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverLoadViewHolder {
         return DiscoverLoadViewHolder(
             ItemDiscoverLoadSelectBinding.inflate(
-                inflater,
+                LayoutInflater.from(parent.context),
                 parent,
                 false
             )
@@ -37,7 +35,7 @@ class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCou
         if (beforeSelected != null) {
             beforeSelected!!.isSelected = false
             beforeSelected = null
-            listener.selectCourse(0, "", "", "")
+            onUploadItemClick.selectCourse(0, "", "", "")
         }
     }
 
@@ -51,7 +49,7 @@ class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCou
                 Timber.d("1. Adapter에서 Activity에 정의된 콜백함수 호출")
                 //오직 하나의 코스만 선택되도록 함
                 if (it.isSelected) {
-                    listener.selectCourse(0, "", "", "")
+                    onUploadItemClick.selectCourse(0, "", "", "")
                     it.isSelected = false
                     beforeSelected = null
                 } else if (!it.isSelected) {
@@ -59,7 +57,7 @@ class DiscoverLoadAdapter(context: Context, private val listener: OnRecommendCou
                         beforeSelected!!.isSelected = false
                     }
                     beforeSelected = it
-                    listener.selectCourse(data.id, data.img, data.departure, data.distance)
+                    onUploadItemClick.selectCourse(data.id, data.img, data.departure, data.distance)
                     it.isSelected = true
                 }
             }

@@ -9,6 +9,7 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
@@ -21,11 +22,10 @@ import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
 import timber.log.Timber
 
+// todo: 이 액티비티는 storage 패키지 아래에 위치시키는 게 어떨까요?? @우남
 @AndroidEntryPoint
 class MyDrawDetailActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
-
-
+    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
     val viewModel: MyDrawDetailViewModel by viewModels()
 
     val selectList = arrayListOf<Int>()

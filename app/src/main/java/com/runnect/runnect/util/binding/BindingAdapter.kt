@@ -27,7 +27,7 @@ fun AppCompatButton.updateEditFinishButtonBackground(
 }
 
 @BindingAdapter("setDiscoverItemImage")
-fun ImageView.setDiscoverItemImage(imageUrl: String) {
+fun ImageView.setDiscoverItemImage(imageUrl: String?) {
     Glide.with(context)
         .load(imageUrl)
         .thumbnail(0.3f)

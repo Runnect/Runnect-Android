@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.login
 
-
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.application.PreferenceManager
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -15,9 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
-
+class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
     lateinit var socialLogin: SocialLogin
     lateinit var googleLogin: GoogleLogin
     lateinit var kakaoLogin: KakaoLogin

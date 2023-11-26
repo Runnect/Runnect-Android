@@ -124,7 +124,7 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
                 stampImgList[index].img = stampResId
             }
         }
-        adapter = MyRewardAdapter(this).apply {
+        adapter = MyRewardAdapter().apply {
             submitList(
                 stampImgList
             )

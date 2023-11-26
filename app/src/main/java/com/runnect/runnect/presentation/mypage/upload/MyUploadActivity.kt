@@ -18,7 +18,7 @@ import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnUploadItemClick
+import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -29,7 +29,7 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload),
-    OnUploadItemClick {
+    OnMyUploadItemClick {
     private val viewModel: MyUploadViewModel by viewModels()
     private lateinit var adapter: MyUploadAdapter
     private lateinit var dialog: AlertDialog
@@ -133,7 +133,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     private fun initAdapter() {
-        adapter = MyUploadAdapter(this, this).apply {
+        adapter = MyUploadAdapter(this).apply {
             submitList(
                 viewModel.myUploadCourses
             )

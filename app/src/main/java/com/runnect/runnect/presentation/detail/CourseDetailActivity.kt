@@ -209,7 +209,7 @@ class CourseDetailActivity :
         }
     }
 
-    // todo: 함수를 더 작게 분리해주는 게 좋을 거 같아요! @우남
+    // todo: 함수를 더 작게 분리하는 게 좋을 거 같아요! @우남
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
