@@ -150,7 +150,6 @@ class DrawActivity :
 
         with(binding) {
             tvGuide.isVisible = false
-            btnDraw.text = CREATE_COURSE
         }
 
         viewModel.searchResult.value = searchResult
@@ -283,10 +282,7 @@ class DrawActivity :
                 showRequireLoginDialog()
                 return@setOnClickListener
             }
-            when {
-                isSearchLocationMode -> createMbr()
-                isCurrentLocationMode || isCustomLocationMode -> requireCourseNameDialog().show()
-            }
+            requireCourseNameDialog().show()
         }
     }
 
