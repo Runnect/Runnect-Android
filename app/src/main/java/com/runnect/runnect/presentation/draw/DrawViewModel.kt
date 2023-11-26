@@ -41,6 +41,7 @@ class DrawViewModel @Inject constructor(
     val path = MutableLiveData<List<UploadLatLng>>()
     var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
+    val courseTitle = MutableLiveData<String>()
     val departureName = MutableLiveData<String>()
     val isBtnAvailable = MutableLiveData(false)
 
@@ -98,6 +99,7 @@ class DrawViewModel @Inject constructor(
                     image = _image.value!!.toFormData(),
                     data = RequestBody(
                         path = path.value!!,
+                        title = courseTitle.value!!,
                         distance = distanceSum.value!!,
                         departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
                         departureName = departureName.value!!
@@ -133,15 +135,17 @@ class DrawViewModel @Inject constructor(
 
     private fun RequestBody(
         path: List<UploadLatLng>,
+        title: String,
         distance: Float,
         departureAddress: String,
         departureName: String,
     ) = buildJsonObject {
         val jsonElement = Json.encodeToJsonElement(path)
-        put("path", jsonElement)
-        put("distance", distance)
-        put("departureAddress", departureAddress)
-        put("departureName", departureName)
+        put(key = "path", element = jsonElement)
+        put(key = "title", value = title)
+        put(key = "distance", value = distance)
+        put(key = "departureAddress", value = departureAddress)
+        put(key = "departureName", value = departureName)
     }.toString().toRequestBody("application/json".toMediaType())
 
 }

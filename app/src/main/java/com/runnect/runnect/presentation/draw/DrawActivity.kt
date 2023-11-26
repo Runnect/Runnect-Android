@@ -293,15 +293,11 @@ class DrawActivity :
         val btnCreateCourse = bottomSheetBinding.btnCreateCourse
 
         etCourseName.addTextChangedListener {
-            if (!etCourseName.text.isNullOrEmpty()) {
-                btnCreateCourse.setBackgroundResource(R.drawable.radius_10_m1_button)
-                btnCreateCourse.isEnabled = true
-                viewModel.departureName.value = etCourseName.text.toString()
-            } else {
-                btnCreateCourse.setBackgroundResource(R.drawable.radius_10_g3_button)
-                btnCreateCourse.isEnabled = false
-            }
-            Timber.tag("EditTextValue").d("${viewModel.departureName.value}")
+            val isCourseNameValid = !it.isNullOrEmpty()
+            btnCreateCourse.setBackgroundResource(if (isCourseNameValid) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
+            btnCreateCourse.isEnabled = isCourseNameValid
+            viewModel.courseTitle.value = if (isCourseNameValid) it.toString() else ""
+            Timber.tag("EditTextValue").d("${viewModel.courseTitle.value}")
         }
 
         val bottomSheetDialog = BottomSheetDialog(this)
