@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.runnect.runnect.databinding.ItemDiscoverBannerBinding
 import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
-import com.runnect.runnect.databinding.ItemDiscoverPromotionBinding
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnBannerItemClick
 
@@ -20,7 +20,7 @@ class BannerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverPromotionViewHolder {
-        val binding = ItemDiscoverPromotionBinding.inflate(
+        val binding = ItemDiscoverBannerBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false
         )
@@ -34,7 +34,7 @@ class BannerAdapter(
     override fun getItemCount(): Int = PAGE_NUM
 
     inner class DiscoverPromotionViewHolder(
-        private val binding: ItemDiscoverPromotionBinding
+        private val binding: ItemDiscoverBannerBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(item: DiscoverPromotionBanner) {
             binding.item = item
