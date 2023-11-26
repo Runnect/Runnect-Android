@@ -1,11 +1,10 @@
 package com.runnect.runnect.data.dto.response
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePutMyDrawDTO(
+data class ResponsePostMyDrawCourse(
     @SerialName("data")
     val data: Data,
     @SerialName("message")
@@ -13,11 +12,19 @@ data class ResponsePutMyDrawDTO(
     @SerialName("status")
     val status: Int,
     @SerialName("success")
-    val success: Boolean
+    val success: Boolean,
 ) {
     @Serializable
     data class Data(
-        @SerialName("deletedCourseCount")
-        val deletedCourseCount: Int
+        @SerialName("course")
+        val course: Course,
+    )
+
+    @Serializable
+    data class Course(
+        @SerialName("createdAt")
+        val createdAt: String,
+        @SerialName("id")
+        val id: Int,
     )
 }

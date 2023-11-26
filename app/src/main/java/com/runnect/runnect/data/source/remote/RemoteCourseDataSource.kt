@@ -6,17 +6,16 @@ import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
-import com.runnect.runnect.data.dto.response.ResponseGetCourseDetailDto
-import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourseDto
-import com.runnect.runnect.data.dto.response.ResponseRecommendCourse
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
+import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
 class RemoteCourseDataSource @Inject constructor(private val courseService: CourseService) {
-    suspend fun getRecommendCourse(pageNo: String?): ResponseRecommendCourse =
+    suspend fun getRecommendCourse(pageNo: String?): ResponseGetDiscoverRecommend =
         courseService.getRecommendCourse(pageNo = pageNo)
 
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): BaseResponse<Unit> =
@@ -24,7 +23,7 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
 
-    suspend fun getCourseDetail(publicCourseId: Int): BaseResponse<ResponseGetCourseDetailDto> =
+    suspend fun getCourseDetail(publicCourseId: Int): BaseResponse<ResponseGetCourseDetail> =
         courseService.getCourseDetail(publicCourseId)
 
     suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()
@@ -35,7 +34,7 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
     suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
-    ): BaseResponse<ResponsePatchPublicCourseDto> =
+    ): BaseResponse<ResponsePatchPublicCourse> =
         courseService.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) =

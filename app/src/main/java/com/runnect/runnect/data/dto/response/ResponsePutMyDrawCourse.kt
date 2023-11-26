@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePostCourseDTO(
+data class ResponsePutMyDrawCourse(
     @SerialName("data")
     val data: Data,
     @SerialName("message")
@@ -13,19 +13,11 @@ data class ResponsePostCourseDTO(
     @SerialName("status")
     val status: Int,
     @SerialName("success")
-    val success: Boolean,
+    val success: Boolean
 ) {
     @Serializable
     data class Data(
-        @SerialName("course")
-        val course: Course,
-    )
-
-    @Serializable
-    data class Course(
-        @SerialName("createdAt")
-        val createdAt: String,
-        @SerialName("id")
-        val id: Int,
+        @SerialName("deletedCourseCount")
+        val deletedCourseCount: Int
     )
 }

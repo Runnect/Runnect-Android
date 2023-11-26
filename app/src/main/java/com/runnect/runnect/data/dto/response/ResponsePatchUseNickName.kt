@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseUpdateNickName(
+data class ResponsePatchUserNickName(
     @SerializedName("data")
     val `data`: UpdateData,
     @SerializedName("message")

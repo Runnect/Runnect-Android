@@ -2,7 +2,7 @@ package com.runnect.runnect.data.dto.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseUploadMyCourse(
+data class ResponsePostDiscoverUpload(
     val `data`: UploadData,
     val message: String,
     val status: Int,

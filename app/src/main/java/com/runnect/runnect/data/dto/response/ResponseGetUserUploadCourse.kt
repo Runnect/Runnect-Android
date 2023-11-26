@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseUserUploadCourse(
+data class ResponseGetUserUploadCourse(
     @SerializedName("data")
     val `data`: DataUpload,
     @SerializedName("message")

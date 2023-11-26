@@ -16,7 +16,7 @@ interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
         @Query("pageNo") pageNo: String?,
-        ): ResponseRecommendCourse
+        ): ResponseGetDiscoverRecommend
 
     @POST("/api/scrap")
     suspend fun postCourseScrap(
@@ -26,56 +26,56 @@ interface CourseService {
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(
         @Query("keyword") keyword: String,
-    ): ResponseCourseSearch
+    ): ResponseGetDiscoverSearch
 
     @GET("/api/public-course/detail/{publicCourseId}")
     suspend fun getCourseDetail(
         @Path("publicCourseId") publicCourseId: Int,
-    ): BaseResponse<ResponseGetCourseDetailDto>
+    ): BaseResponse<ResponseGetCourseDetail>
 
     @GET("/api/course/private/user")
     suspend fun getMyCourseLoad(
-    ): ResponseMyCourseLoad
+    ): ResponseGetDiscoverPick
 
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(
         @Body requestPostPublicCourse: RequestPostPublicCourse,
-    ): ResponseUploadMyCourse
+    ): ResponsePostDiscoverUpload
 
     @PATCH("/api/public-course/{publicCourseId}")
     suspend fun patchPublicCourse(
         @Path("publicCourseId") publicCourseId: Int,
         @Body requestPatchPublicCourse: RequestPatchPublicCourse
-    ): BaseResponse<ResponsePatchPublicCourseDto>
+    ): BaseResponse<ResponsePatchPublicCourse>
 
     // {id}와 같이 동적인 경로 변수가 없다면 @Path 생략 가능
     //내가 그린 코스 수정
     @PUT("/api/course")
     suspend fun deleteMyDrawCourse(
         @Body deleteCourseList: RequestPutMyDrawCourse
-    ): Response<ResponsePutMyDrawDTO>
+    ): Response<ResponsePutMyDrawCourse>
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
     suspend fun getCourseList(
-    ): Response<ResponseGetCourseDTO>
+    ): Response<ResponseGetMyDrawCourse>
 
     //보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
     suspend fun getScrapList(
-    ): Response<ResponseGetScrapDTO>
+    ): Response<ResponseGetMyScrapCourse>
 
     //내가 그린 코스 Detail 가져오기
     @GET("/api/course/detail/{courseId}")
     suspend fun getMyDrawDetail(
         @Path("courseId") courseId: Int,
-    ): Response<ResponseGetMyDrawDetailDTO>
+    ): Response<ResponseGetMyDrawDetail>
 
     //기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
         @Body request: RequestPostRunningHistory
-    ): Response<ResponsePostRecordDTO>
+    ): Response<ResponsePostMyHistory>
 
     //코스 업로드
     @Multipart
@@ -83,5 +83,5 @@ interface CourseService {
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
         @Part("data") data: RequestBody,
-    ): Response<ResponsePostCourseDTO>
+    ): Response<ResponsePostMyDrawCourse>
 }

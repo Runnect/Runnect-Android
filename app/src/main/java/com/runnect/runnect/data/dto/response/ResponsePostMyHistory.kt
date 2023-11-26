@@ -1,11 +1,10 @@
 package com.runnect.runnect.data.dto.response
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePostRecordDTO(
+data class ResponsePostMyHistory(
     @SerialName("data")
     val data: Data,
     @SerialName("message")

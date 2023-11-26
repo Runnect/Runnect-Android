@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetMyDrawDetailDTO(
+data class ResponseGetMyDrawDetail(
     @SerialName("data")
     val data: Data,
     @SerialName("message")

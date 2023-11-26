@@ -10,12 +10,11 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
-import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
-import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
-import com.runnect.runnect.data.dto.response.ResponsePostRecordDTO
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
-import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.util.extension.toData
@@ -41,26 +40,26 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             .toMutableList()
     }
 
-    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponseUploadMyCourse {
+    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload {
         return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse)
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO> {
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
         return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
-    override suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetailDTO> {
+    override suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail> {
         return remoteCourseDataSource.getMyDrawDetail(courseId = courseId)
     }
 
-    override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostRecordDTO> {
+    override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory> {
         return remoteCourseDataSource.postRecord(request = request)
     }
 
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
         data: RequestBody
-    ): Response<ResponsePostCourseDTO> {
+    ): Response<ResponsePostMyDrawCourse> {
         return remoteCourseDataSource.uploadCourse(image = image, data = data)
     }
 

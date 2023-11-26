@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetCourseDetailDto(
+data class ResponseGetCourseDetail(
     @SerialName("user")
     val user: User,
     @SerialName("publicCourse")

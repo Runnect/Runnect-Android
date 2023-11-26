@@ -11,40 +11,40 @@ import retrofit2.http.*
 interface UserService {
     @GET("api/user")
     suspend fun getUserInfo(
-    ): ResponseUser
+    ): ResponseGetUser
 
     @PATCH("api/user")
     suspend fun updateNickName(
         @Body requestPatchNickName: RequestPatchNickName,
-    ): ResponseUpdateNickName
+    ): ResponsePatchUserNickName
 
     @GET("api/stamp/user")
     suspend fun getMyStamp(
-    ): ResponseMyStamp
+    ): ResponseGetMyStamp
 
     @GET("api/record/user")
     suspend fun getRecord(
-    ): ResponseRecordInfo
+    ): ResponseGetMyHistory
 
     @GET("api/public-course/user")
     suspend fun getUserUploadCourse(
-    ): ResponseUserUploadCourse
+    ): ResponseGetUserUploadCourse
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
         @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): BaseResponse<ResponseDeleteUploadCourseDto>
+    ): BaseResponse<ResponseDeleteUploadCourse>
 
     @PUT("api/record")
     suspend fun putDeleteHistory(
         @Body requestDeleteHistory: RequestDeleteHistory
-    ): BaseResponse<ResponseDeleteHistoryDto>
+    ): BaseResponse<ResponseDeleteHistory>
 
     @PATCH("api/record/{recordId}")
     suspend fun patchHistoryTitle(
         @Path("recordId") historyId: Int,
         @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): BaseResponse<ResponsePatchHistoryTitleDto>
+    ): BaseResponse<ResponsePatchHistoryTitle>
 
     @DELETE("api/user")
     suspend fun deleteUser(): ResponseDeleteUser

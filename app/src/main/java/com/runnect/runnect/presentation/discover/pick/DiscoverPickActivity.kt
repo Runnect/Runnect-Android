@@ -49,7 +49,7 @@ class DiscoverPickActivity :
     }
 
     private fun initLayout() {
-        binding.rvDiscoverLoadSelect.apply {
+        binding.rvDiscoverPick.apply {
             layoutManager = GridLayoutManager(this@DiscoverPickActivity, 2)
             addItemDecoration(
                 GridSpacingItemDecoration(
@@ -65,7 +65,7 @@ class DiscoverPickActivity :
     private fun addObserver() {
         viewModel.idSelectedItem.observe(this) {
             Timber.d("4. ViewModel에서 변경된 라이브데이터 관찰")
-            binding.ivDiscoverLoadSelectFinish.isActivated = it != 0
+            binding.ivDiscoverPickFinish.isActivated = it != 0
         }
 
         viewModel.courseLoadState.observe(this) {
@@ -81,9 +81,9 @@ class DiscoverPickActivity :
     private fun handleEmptyCourseLoad() {
         with(binding) {
             indeterminateBar.isVisible = false
-            layoutDiscoverLoadSelect.isVisible = true
-            tvDiscoverLoadSelectFinish.isVisible = false
-            ivDiscoverLoadSelectFinish.isVisible = false
+            layoutDiscoverPick.isVisible = true
+            tvDiscoverPickFinish.isVisible = false
+            ivDiscoverPickFinish.isVisible = false
         }
     }
 
@@ -91,9 +91,9 @@ class DiscoverPickActivity :
         initAdapter()
         with(binding) {
             indeterminateBar.isVisible = false
-            layoutDiscoverLoadSelect.isVisible = false
-            tvDiscoverLoadSelectFinish.isVisible = true
-            ivDiscoverLoadSelectFinish.isVisible = true
+            layoutDiscoverPick.isVisible = false
+            tvDiscoverPickFinish.isVisible = true
+            ivDiscoverPickFinish.isVisible = true
         }
     }
 
@@ -104,11 +104,11 @@ class DiscoverPickActivity :
     }
 
     private fun addListener() {
-        binding.ivDiscoverLoadSelectBack.setOnClickListener {
+        binding.ivDiscoverPickBack.setOnClickListener {
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
-        binding.ivDiscoverLoadSelectFinish.setOnClickListener {
+        binding.ivDiscoverPickFinish.setOnClickListener {
             if (it.isActivated) {
                 val intent = Intent(this, DiscoverUploadActivity::class.java)
                 intent.apply {
@@ -134,9 +134,8 @@ class DiscoverPickActivity :
         adapter = DiscoverPickAdapter(this).apply {
             submitList(viewModel.courseLoadList)
         }
-        binding.rvDiscoverLoadSelect.adapter = this@DiscoverPickActivity.adapter
+        binding.rvDiscoverPick.adapter = this@DiscoverPickActivity.adapter
     }
-
 
     override fun selectCourse(id: Int, img: String, departure: String, distance: String) {
         Timber.d("2. Adapter로부터 호출되는 콜백함수 selectItem")

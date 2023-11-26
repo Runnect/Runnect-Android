@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseMyCourseLoad(
+data class ResponseGetDiscoverPick(
     @SerializedName("data")
     val `data`: LoadData,
     @SerializedName("message")

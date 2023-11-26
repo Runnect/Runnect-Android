@@ -3,9 +3,9 @@ package com.runnect.runnect.data.repository
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponseGetCourseDTO
-import com.runnect.runnect.data.dto.response.ResponseGetScrapDTO
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
 import com.runnect.runnect.domain.StorageRepository
 import retrofit2.Response
@@ -19,7 +19,7 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
         ).toMutableList()
     }
 
-    private fun changeMyDrawData(data: List<ResponseGetCourseDTO.Data.Course>): List<MyDrawCourse> {
+    private fun changeMyDrawData(data: List<ResponseGetMyDrawCourse.Data.Course>): List<MyDrawCourse> {
         val changedData = data.map {
             MyDrawCourse(
                 courseId = it.id,
@@ -31,7 +31,7 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
         return changedData
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO> {
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
         return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
@@ -41,7 +41,7 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
         ).toMutableList()
     }
 
-    private fun changeMyScrapData(data: List<ResponseGetScrapDTO.Data.Scrap>): List<MyScrapCourse> {
+    private fun changeMyScrapData(data: List<ResponseGetMyScrapCourse.Data.Scrap>): List<MyScrapCourse> {
         val changedData = data.map {
             MyScrapCourse(
                 courseId = it.courseId,

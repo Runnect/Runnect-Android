@@ -9,7 +9,7 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
-import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.domain.entity.CourseDetail
@@ -33,8 +33,8 @@ class CourseDetailViewModel @Inject constructor(
     val coursePatchState: LiveData<UiStateV2<PublicCourse?>>
         get() = _coursePatchState
 
-    private var _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourseDto?>>()
-    val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourseDto?>>
+    private var _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourse?>>()
+    val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourse?>>
         get() = _courseDeleteState
 
     private var _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()

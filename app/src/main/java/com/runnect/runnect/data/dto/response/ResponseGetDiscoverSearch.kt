@@ -2,7 +2,7 @@ package com.runnect.runnect.data.dto.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseCourseSearch(
+data class ResponseGetDiscoverSearch(
     val `data`: SearchData,
     val message: String,
     val status: Int,

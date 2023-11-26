@@ -2,7 +2,7 @@ package com.runnect.runnect.data.dto.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseRecordInfo(
+data class ResponseGetMyHistory(
     val `data`: HistoryData,
     val message: String,
     val status: Int,

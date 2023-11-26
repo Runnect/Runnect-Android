@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseRefreshToken(
+data class ResponseGetRefreshToken(
     @SerializedName("data")
     val data: Token,
     @SerializedName("message")

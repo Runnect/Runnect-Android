@@ -1,11 +1,10 @@
 package com.runnect.runnect.data.dto.response
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetCourseDTO(
+data class ResponseGetMyDrawCourse(
     @SerialName("data")
     val `data`: Data,
     @SerialName("message")

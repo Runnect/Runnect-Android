@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePatchPublicCourseDto(
+data class ResponsePatchPublicCourse(
     @SerializedName("publicCourse")
     val publicCourse: PublicCourse
 )

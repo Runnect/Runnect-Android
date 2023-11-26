@@ -2,7 +2,7 @@ package com.runnect.runnect.data.dto.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseMyStamp(
+data class ResponseGetMyStamp(
     val `data`: StampData,
     val message: String,
     val status: Int,

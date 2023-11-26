@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
-import com.runnect.runnect.data.dto.response.ResponsePostRecordDTO
+import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
     val courseId = MutableLiveData<Int>()
     val publicCourseId = MutableLiveData<Int?>()
     val editTextValue = MutableLiveData<String>()
-    val uploadResult = MutableLiveData<ResponsePostRecordDTO>()
+    val uploadResult = MutableLiveData<ResponsePostMyHistory>()
     val errorMessage = MutableLiveData<String>()
     val currentTime = MutableLiveData<String>()
     val dataFrom = MutableLiveData<String>()

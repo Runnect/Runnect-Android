@@ -7,8 +7,8 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
-import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitleDto
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.domain.UserRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
@@ -20,12 +20,12 @@ import javax.inject.Inject
 class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
     private val _historyDeleteState =
-        MutableLiveData<UiStateV2<ResponseDeleteHistoryDto?>>()
-    val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistoryDto?>>
+        MutableLiveData<UiStateV2<ResponseDeleteHistory?>>()
+    val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistory?>>
         get() = _historyDeleteState
 
-    private val _titlePatchState = MutableLiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>()
-    val titlePatchState: LiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>
+    private val _titlePatchState = MutableLiveData<UiStateV2<ResponsePatchHistoryTitle?>>()
+    val titlePatchState: LiveData<UiStateV2<ResponsePatchHistoryTitle?>>
         get() = _titlePatchState
 
     val _title = MutableLiveData("")

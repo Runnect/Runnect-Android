@@ -54,7 +54,7 @@ fun PrivateCourse.toData(): CourseLoadInfoDTO {
     )
 }
 
-fun ResponseLogin.toData(): LoginDTO {
+fun ResponsePostLogin.toData(): LoginDTO {
     with(this.data) {
         return LoginDTO(
             status = status,

@@ -9,9 +9,9 @@ import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
 
 interface UserRepository {
-    suspend fun getUserInfo(): ResponseUser
+    suspend fun getUserInfo(): ResponseGetUser
 
-    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponseUpdateNickName
+    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
 
     suspend fun getMyStamp(): MutableList<String>
 
@@ -21,14 +21,14 @@ interface UserRepository {
 
     suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Result<ResponseDeleteUploadCourseDto?>
+    ): Result<ResponseDeleteUploadCourse?>
 
-    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistoryDto?>
+    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistory?>
 
     suspend fun patchHistoryTitle(
         historyId: Int,
         requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): Result<ResponsePatchHistoryTitleDto?>
+    ): Result<ResponsePatchHistoryTitle?>
 
     suspend fun deleteUser(): ResponseDeleteUser
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseSearchTmapDTO(
+data class ResponseGetSearchTmap(
     @SerialName("searchPoiInfo")
     val searchPoiInfo: SearchPoiInfo,
 ) {

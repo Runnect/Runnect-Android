@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePatchHistoryTitleDto(
+data class ResponsePatchHistoryTitle(
     @SerialName("record")
     val record: Record
 ) {

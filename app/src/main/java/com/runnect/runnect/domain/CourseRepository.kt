@@ -10,13 +10,11 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.PublicCourse
-import com.runnect.runnect.data.dto.response.ResponseCourseScrap
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetailDTO
-import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
-import com.runnect.runnect.data.dto.response.ResponsePostRecordDTO
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawDTO
-import com.runnect.runnect.data.dto.response.ResponseUploadMyCourse
-import com.runnect.runnect.data.dto.response.base.BaseResponse
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -28,17 +26,17 @@ interface CourseRepository {
 
     suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO>
 
-    suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponseUploadMyCourse
+    suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawDTO>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse>
 
-    suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetailDTO>
+    suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail>
 
-    suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostRecordDTO>
+    suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory>
 
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
-    ): Response<ResponsePostCourseDTO>
+    ): Response<ResponsePostMyDrawCourse>
 
     // todo: ----------------------------------------------------- runCatching
 

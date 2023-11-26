@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.BuildConfig
-import com.runnect.runnect.data.dto.response.ResponseSearchTmapDTO
+import com.runnect.runnect.data.dto.response.ResponseGetSearchTmap
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -25,5 +25,5 @@ interface SearchService {
         @Query("reqCoordType") reqCoordType: String? = null,
         @Query("centerLon") centerLon: String? = null,
         @Query("centerLat") centerLat: String? = null,
-    ): Response<ResponseSearchTmapDTO>
+    ): Response<ResponseGetSearchTmap>
 }

@@ -3,7 +3,7 @@ package com.runnect.runnect.data.dto.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseUser(
+data class ResponseGetUser(
     val data: Data,
     val message: String,
     val status: Int,
