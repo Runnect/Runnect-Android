@@ -103,7 +103,7 @@
             android:name=".presentation.discover.search.DiscoverSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.discover.load.DiscoverLoadActivity"
+            android:name=".presentation.discover.pick.DiscoverPickActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.discover.upload.DiscoverUploadActivity"

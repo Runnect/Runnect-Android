@@ -21,7 +21,7 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
-import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
+import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -136,7 +136,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 return@setOnClickListener
             }
 
-            startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
+            startActivity(Intent(requireContext(), DiscoverPickActivity::class.java))
             requireActivity().applyScreenEnterAnimation()
         }
     }

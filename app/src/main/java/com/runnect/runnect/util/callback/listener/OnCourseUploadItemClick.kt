@@ -1,5 +1,5 @@
 package com.runnect.runnect.util.callback.listener
 
-interface OnUploadItemClick {
+interface OnCourseUploadItemClick {
     fun selectCourse(id:Int, img: String, departure: String,distance:String)
 }

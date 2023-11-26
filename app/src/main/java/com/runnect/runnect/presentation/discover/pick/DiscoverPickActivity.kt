@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.discover.load
+package com.runnect.runnect.presentation.discover.pick
 
 import android.content.ContentValues
 import android.content.Intent
@@ -9,23 +9,23 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.databinding.ActivityDiscoverLoadSelectBinding
-import com.runnect.runnect.presentation.discover.load.adapter.DiscoverLoadAdapter
+import com.runnect.runnect.databinding.ActivityDiscoverPickBinding
+import com.runnect.runnect.presentation.discover.pick.adapter.DiscoverPickAdapter
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.callback.listener.OnCourseUploadItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.listener.OnUploadItemClick
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class DiscoverLoadActivity :
-    BindingActivity<ActivityDiscoverLoadSelectBinding>(R.layout.activity_discover_load_select),
-    OnUploadItemClick {
-    private val viewModel: DiscoverLoadViewModel by viewModels()
-    private lateinit var adapter: DiscoverLoadAdapter
+class DiscoverPickActivity :
+    BindingActivity<ActivityDiscoverPickBinding>(R.layout.activity_discover_pick),
+    OnCourseUploadItemClick {
+    private val viewModel: DiscoverPickViewModel by viewModels()
+    private lateinit var adapter: DiscoverPickAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +50,10 @@ class DiscoverLoadActivity :
 
     private fun initLayout() {
         binding.rvDiscoverLoadSelect.apply {
-            layoutManager = GridLayoutManager(this@DiscoverLoadActivity, 2)
+            layoutManager = GridLayoutManager(this@DiscoverPickActivity, 2)
             addItemDecoration(
                 GridSpacingItemDecoration(
-                    context = this@DiscoverLoadActivity,
+                    context = this@DiscoverPickActivity,
                     spanCount = 2,
                     horizontalSpacing = 6,
                     topSpacing = 20
@@ -131,10 +131,10 @@ class DiscoverLoadActivity :
     }
 
     private fun initAdapter() {
-        adapter = DiscoverLoadAdapter(this).apply {
+        adapter = DiscoverPickAdapter(this).apply {
             submitList(viewModel.courseLoadList)
         }
-        binding.rvDiscoverLoadSelect.adapter = this@DiscoverLoadActivity.adapter
+        binding.rvDiscoverLoadSelect.adapter = this@DiscoverPickActivity.adapter
     }
 
 

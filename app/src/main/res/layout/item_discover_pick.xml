@@ -15,7 +15,7 @@
         app:scale_base_width="162">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cv_item_discover_load_select_map"
+            android:id="@+id/cv_item_discover_pick_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="5dp"
@@ -23,17 +23,17 @@
             app:scale_width="162">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_item_discover_load_select_map"
+                android:id="@+id/iv_item_discover_pick_map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
         </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_item_discover_load_select_background"
+            android:id="@+id/iv_item_discover_pick_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/discover_load_select_course_selector"
+            android:background="@drawable/discover_pick_course_selector"
             android:elevation="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +41,7 @@
             app:scale_width="162" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_item_discover_load_select_location"
+            android:id="@+id/tv_item_discover_pick_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

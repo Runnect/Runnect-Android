@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.discover.load
+package com.runnect.runnect.presentation.discover.pick
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +13,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class DiscoverLoadViewModel @Inject constructor(
+class DiscoverPickViewModel @Inject constructor(
     private val courseRepository: CourseRepository
 ) : ViewModel() {
     private var _courseLoadState = MutableLiveData<UiState>()
