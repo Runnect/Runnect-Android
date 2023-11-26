@@ -152,4 +152,12 @@
 
     <!-- course detail -->
     <string name="course_detail_title_edit_success_msg">수정이 완료되었습니다</string>
+
+    <!-- course discover -->
+    <string name="discover_marathon_header_title">2023 마라톤 코스</string>
+    <string name="discover_marathon_header_subtitle">실제 마라톤 코스를 만나보세요</string>
+    <string name="discover_recommend_header_title">이런 코스 어때요?</string>
+    <string name="discover_recommend_header_subtitle">나에게 최적화된 코스를 찾아보세요</string>
+    <string name="discover_recommend_sort_by_date">최신순</string>
+    <string name="discover_recommend_sort_by_scrap">스크랩순</string>
 </resources>
