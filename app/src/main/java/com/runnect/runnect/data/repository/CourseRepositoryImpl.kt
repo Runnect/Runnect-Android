@@ -3,7 +3,6 @@ package com.runnect.runnect.data.repository
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.CourseSearchDTO
-import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
@@ -17,6 +16,7 @@ import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.domain.entity.RecommendCourse
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,9 +25,14 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
-    override suspend fun getRecommendCourse(pageNo: String?): MutableList<RecommendCourseDTO> {
-        return remoteCourseDataSource.getRecommendCourse(pageNo = pageNo).data.publicCourses.map { it.toData() }
-            .toMutableList()
+    override suspend fun getRecommendCourses(
+        pageNo: String,
+        ordering: String
+    ): Result<List<RecommendCourse>?> = runCatching {
+        remoteCourseDataSource.getRecommendCourse(
+            pageNo = pageNo,
+            ordering = ordering
+        ).data?.toRecommendCourses()
     }
 
     override suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO> {

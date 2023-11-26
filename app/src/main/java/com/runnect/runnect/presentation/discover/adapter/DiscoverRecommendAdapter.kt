@@ -8,8 +8,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
-import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
+import com.runnect.runnect.domain.entity.RecommendCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
@@ -19,7 +19,7 @@ class DiscoverRecommendAdapter(
     private val onHeartButtonClick: OnHeartButtonClick,
     private val onRecommendItemClick: OnRecommendItemClick,
     private val isVisitorMode: Boolean
-) : ListAdapter<RecommendCourseDTO, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
+) : ListAdapter<RecommendCourse, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
             ItemDiscoverCourseBinding.inflate(
@@ -36,20 +36,20 @@ class DiscoverRecommendAdapter(
 
     inner class CourseInfoViewHolder(private val binding: ItemDiscoverCourseBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(course: RecommendCourseDTO) {
+        fun onBind(course: RecommendCourse) {
             with(binding) {
                 this.course = course
                 ivItemDiscoverCourseScrap.isSelected = course.scrap
 
-                initScrapClickListener(ivItemDiscoverCourseScrap, course)
+                initHeartButtonClickListener(ivItemDiscoverCourseScrap, course)
                 initCourseItemClickListener(root, course)
             }
         }
     }
 
-    private fun initScrapClickListener(
+    private fun initHeartButtonClickListener(
         imageView: AppCompatImageView,
-        course: RecommendCourseDTO
+        course: RecommendCourse
     ) {
         imageView.setOnClickListener { view ->
             if (isVisitorMode) {
@@ -64,7 +64,7 @@ class DiscoverRecommendAdapter(
 
     private fun initCourseItemClickListener(
         itemView: View,
-        course: RecommendCourseDTO
+        course: RecommendCourse
     ) {
         itemView.setOnClickListener {
             onRecommendItemClick.selectItem(publicCourseId = course.id)
@@ -79,7 +79,7 @@ class DiscoverRecommendAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<RecommendCourseDTO>(
+        private val diffUtil = ItemDiffCallback<RecommendCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )

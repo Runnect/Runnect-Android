@@ -16,6 +16,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
+import com.runnect.runnect.domain.entity.RecommendCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
@@ -69,10 +70,24 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addObserver()
         registerBackPressedCallback()
         initRefreshLayoutListener()
+        initRecommendCourseRecyclerView()
     }
 
-    fun getRecommendCourses(pageNo: String?) {
-        viewModel.getRecommendCourses(pageNo = pageNo)
+    fun getRecommendCourses(pageNo: String) {
+        viewModel.getRecommendCourses(pageNo = pageNo, ordering = "date")
+    }
+
+    private fun initRecommendCourseRecyclerView() {
+        recommendAdapter = DiscoverRecommendAdapter(
+            onHeartButtonClick = this,
+            onRecommendItemClick = this,
+            isVisitorMode = isVisitorMode
+        )
+
+        binding.rvDiscoverRecommend.apply {
+            setHasFixedSize(true)
+            adapter = recommendAdapter
+        }
     }
 
     private fun registerBackPressedCallback() {
@@ -151,7 +166,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
             // 기존에 조회했던 리스트에 아이템이 누적으로 더해지므로 clear()로 비워주었다.
-            viewModel.recommendCourseList.clear()
+            //viewModel.recommendCourses.clear()
             getRecommendCourses(pageNo = "1")
             binding.refreshLayout.isRefreshing = false
         }
@@ -183,31 +198,35 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupCourseGetStateObserver() {
-        viewModel.courseGetState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Empty -> {}
+        viewModel.courseGetState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Loading -> showShimmerLayout()
 
-                UiState.Loading -> {
-                    binding.shimmerLayout.startShimmer()
-                    binding.shimmerLayout.isVisible = true
+                is UiStateV2.Success -> {
+                    dismissShimmerLayout()
+
+                    if (state.data == null) return@observe
+                    recommendAdapter.submitList(state.data)
                 }
 
-                UiState.Success -> {
-                    binding.shimmerLayout.stopShimmer()
-                    binding.shimmerLayout.isVisible = false
-                    initRecommendCourseAdapter()
+                is UiStateV2.Failure -> {
+                    dismissShimmerLayout()
+                    requireContext().showSnackbar(binding.root, state.msg)
                 }
 
-                UiState.Failure -> {
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                    if (viewModel.errorMessage.value == END_PAGE) {
-                        binding.shimmerLayout.stopShimmer()
-                        binding.shimmerLayout.isVisible = false
-                    }
-                }
+                else -> {}
             }
         }
+    }
+
+    private fun showShimmerLayout() {
+        binding.shimmerLayout.startShimmer()
+        binding.shimmerLayout.isVisible = true
+    }
+
+    private fun dismissShimmerLayout() {
+        binding.shimmerLayout.stopShimmer()
+        binding.shimmerLayout.isVisible = false
     }
 
     private fun setupCourseScrapStateObserver() {
@@ -215,22 +234,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             if (state is UiStateV2.Failure) {
                 requireContext().showSnackbar(binding.root, state.msg)
             }
-        }
-    }
-
-    private fun initRecommendCourseAdapter() {
-        recommendAdapter =
-            DiscoverRecommendAdapter(
-                onHeartButtonClick = this,
-                onRecommendItemClick = this,
-                isVisitorMode = isVisitorMode
-            ).apply {
-                submitList(viewModel.recommendCourseList)
-            }
-
-        binding.rvDiscoverRecommend.apply {
-            setHasFixedSize(true)
-            adapter = recommendAdapter
         }
     }
 

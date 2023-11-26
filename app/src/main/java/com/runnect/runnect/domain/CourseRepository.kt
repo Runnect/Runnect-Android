@@ -3,7 +3,6 @@ package com.runnect.runnect.domain
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.CourseSearchDTO
-import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
@@ -15,12 +14,13 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
+import com.runnect.runnect.domain.entity.RecommendCourse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 
 interface CourseRepository {
-    suspend fun getRecommendCourse(pageNo: String?): MutableList<RecommendCourseDTO>
+    suspend fun getRecommendCourses(pageNo: String, ordering: String): Result<List<RecommendCourse>?>
 
     suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO>
 

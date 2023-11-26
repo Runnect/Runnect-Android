@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover
 
-import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,11 +9,11 @@ import com.runnect.runnect.data.dto.RecommendCourseDTO
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.BannerRepository
 import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.domain.entity.RecommendCourse
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,8 +22,8 @@ class DiscoverViewModel @Inject constructor(
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
     // todo: UiStateV2 코드로 리팩토링 하자!
-    private val _courseGetState = MutableLiveData<UiState>(UiState.Empty)
-    val courseGetState: LiveData<UiState>
+    private val _courseGetState = MutableLiveData<UiStateV2<List<RecommendCourse>?>>()
+    val courseGetState: LiveData<UiStateV2<List<RecommendCourse>?>>
         get() = _courseGetState
 
     private val _bannerGetState = MutableLiveData<UiState>(UiState.Empty)
@@ -34,10 +33,6 @@ class DiscoverViewModel @Inject constructor(
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
-
-    private var _recommendCourseList = mutableListOf<RecommendCourseDTO>()
-    val recommendCourseList: MutableList<RecommendCourseDTO>
-        get() = _recommendCourseList
 
     val currentPageNo = MutableLiveData<Int>()
 
@@ -50,7 +45,7 @@ class DiscoverViewModel @Inject constructor(
 
     init {
         getPromotionBanners()
-        getRecommendCourses(pageNo = "1")
+        getRecommendCourses(pageNo = "1", ordering = "date")
     }
 
     private fun getPromotionBanners() {
@@ -58,7 +53,6 @@ class DiscoverViewModel @Inject constructor(
             runCatching {
                 _bannerGetState.value = UiState.Loading
 
-                // todo: Success 상태에서 데이터를 프래그먼트 쪽으로 넘겨주자!
                 bannerRepository.getPromotionBanners().collect { bannerList ->
                     bannerData = bannerList
                     _bannerCount = bannerData.size
@@ -71,24 +65,17 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourses(pageNo: String?) {
+    fun getRecommendCourses(pageNo: String, ordering: String) {
         viewModelScope.launch {
-            runCatching {
-                _courseGetState.value = UiState.Loading
+            _courseGetState.value = UiStateV2.Loading
 
-                courseRepository.getRecommendCourse(pageNo = pageNo)
-            }.onSuccess {
-                _recommendCourseList.addAll(it)
-                currentPageNo.value = it[0].pageNo
-
-                _courseGetState.value = UiState.Success
-                Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("데이터 수신 실패")
-                errorMessage.value = it.message
-
-                _courseGetState.value = UiState.Failure
-            }
+            courseRepository.getRecommendCourses(pageNo = pageNo, ordering = ordering)
+                .onSuccess { response ->
+                    _courseGetState.value = UiStateV2.Success(response)
+//                    currentPageNo.value = it[0].pageNo
+                }.onFailure { exception ->
+                    _courseGetState.value = UiStateV2.Failure(exception.message.toString())
+                }
         }
     }
 
