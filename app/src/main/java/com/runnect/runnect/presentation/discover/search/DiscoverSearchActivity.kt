@@ -97,10 +97,11 @@ class DiscoverSearchActivity :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
-                    viewModel.getCourseSearch(
-                        keyword = binding.etDiscoverSearchTitle.text.toString()
-                    )
-                    hideKeyboard(binding.etDiscoverSearchTitle)
+                    val keyword = binding.etDiscoverSearchTitle.text
+                    if(!keyword.isNullOrBlank()){
+                        viewModel.getCourseSearch(keyword = keyword.toString())
+                        hideKeyboard(binding.etDiscoverSearchTitle)
+                    }
                     return true
                 }
                 return false

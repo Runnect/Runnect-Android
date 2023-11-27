@@ -143,31 +143,26 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
         }
     }
 
-
-    private fun searchKeyword(keywordString: String) {
-        viewModel.getSearchList(keywordString)
+    private fun searchKeyword(keyword: String) {
+        viewModel.getSearchList(keyword)
     }
 
     private fun imgBtnSearch() {
         binding.imgBtnSearch.setOnClickListener {
             viewModel.getSearchList(binding.etSearch.text.toString())
         }
-
     }
 
-
     private fun addListener() {
-        //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
         binding.etSearch.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
-                    searchKeyword(binding.etSearch.text.toString())
-
-                    // 키패드 내리기
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
-
+                    val keyword = binding.etSearch.text
+                    if(!keyword.isNullOrBlank()){
+                        searchKeyword(keyword.toString())
+                        hideKeyboard(binding.etSearch)
+                    }
                     return true
                 }
                 return false
@@ -183,7 +178,7 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
         }
     }
 
-    fun startCurrentLocation() {
+    private fun startCurrentLocation() {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -195,7 +190,7 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
         )
     }
 
-    fun startCustomLocation() {
+    private fun startCustomLocation() {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)

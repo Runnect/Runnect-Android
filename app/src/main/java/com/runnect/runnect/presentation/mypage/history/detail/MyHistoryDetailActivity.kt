@@ -116,7 +116,7 @@ class MyHistoryDetailActivity :
             override fun onEditorAction(view: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     viewModel.patchHistoryTitle()
-                    hideKeyboard(currentFocus ?: View(this@MyHistoryDetailActivity))
+                    hideKeyboard(binding.etCourseTitle)
                     return true
                 }
                 return false
