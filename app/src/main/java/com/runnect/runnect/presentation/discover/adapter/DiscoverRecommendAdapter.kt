@@ -11,13 +11,13 @@ import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
 import com.runnect.runnect.domain.entity.DiscoverCourse
 import com.runnect.runnect.domain.entity.EditableDiscoverCourse
+import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.custom.toast.RunnectToast
 
 class DiscoverRecommendAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onRecommendItemClick: (Int) -> Unit,
-    private val isVisitorMode: Boolean
 ) : ListAdapter<DiscoverCourse, DiscoverRecommendAdapter.DiscoverRecommendViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverRecommendViewHolder {
         return DiscoverRecommendViewHolder(
@@ -28,13 +28,13 @@ class DiscoverRecommendAdapter(
     }
 
     override fun onBindViewHolder(holder: DiscoverRecommendViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+        holder.bind(currentList[position])
     }
 
     inner class DiscoverRecommendViewHolder(
         private val binding: ItemDiscoverCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun onBind(course: DiscoverCourse) {
+        fun bind(course: DiscoverCourse) {
             with(binding) {
                 this.course = course
                 ivItemDiscoverCourseScrap.isSelected = course.scrap
@@ -43,37 +43,37 @@ class DiscoverRecommendAdapter(
                 initCourseItemClickListener(root, course)
             }
         }
-    }
 
-    private fun initHeartButtonClickListener(
-        imageView: AppCompatImageView,
-        course: DiscoverCourse
-    ) {
-        imageView.setOnClickListener { view ->
-            if (isVisitorMode) {
-                showCourseScrapWarningToast(view.context)
-                return@setOnClickListener
+        private fun initCourseItemClickListener(
+            itemView: View,
+            course: DiscoverCourse
+        ) {
+            itemView.setOnClickListener {
+                onRecommendItemClick(course.id)
             }
-
-            view.isSelected = !view.isSelected
-            onHeartButtonClick(course.id, view.isSelected)
         }
-    }
 
-    private fun initCourseItemClickListener(
-        itemView: View,
-        course: DiscoverCourse
-    ) {
-        itemView.setOnClickListener {
-            onRecommendItemClick(course.id)
+        private fun initHeartButtonClickListener(
+            imageView: AppCompatImageView,
+            course: DiscoverCourse
+        ) {
+            imageView.setOnClickListener { view ->
+                if (isVisitorMode) {
+                    showCourseScrapWarningToast(view.context)
+                    return@setOnClickListener
+                }
+
+                view.isSelected = !view.isSelected
+                onHeartButtonClick(course.id, view.isSelected)
+            }
         }
-    }
 
-    private fun showCourseScrapWarningToast(context: Context) {
-        RunnectToast.createToast(
-            context = context,
-            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
-        ).show()
+        private fun showCourseScrapWarningToast(context: Context) {
+            RunnectToast.createToast(
+                context = context,
+                message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+            ).show()
+        }
     }
 
     fun updateRecommendItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {

@@ -24,13 +24,13 @@ class DiscoverSearchAdapter(
     }
 
     override fun onBindViewHolder(holder: DiscoverSearchViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+        holder.bind(currentList[position])
     }
 
     inner class DiscoverSearchViewHolder(
         private val binding: ItemDiscoverCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun onBind(course: DiscoverCourse) {
+        fun bind(course: DiscoverCourse) {
             with(binding) {
                 this.course = course
                 ivItemDiscoverCourseScrap.isSelected = course.scrap
@@ -39,24 +39,24 @@ class DiscoverSearchAdapter(
                 initCourseItemClickListener(root, course)
             }
         }
-    }
 
-    private fun initHeartButtonClickListener(
-        imageView: AppCompatImageView,
-        course: DiscoverCourse
-    ) {
-        imageView.setOnClickListener { view ->
-            view.isSelected = !view.isSelected
-            onHeartButtonClick(course.id, view.isSelected)
+        private fun initHeartButtonClickListener(
+            imageView: AppCompatImageView,
+            course: DiscoverCourse
+        ) {
+            imageView.setOnClickListener { view ->
+                view.isSelected = !view.isSelected
+                onHeartButtonClick(course.id, view.isSelected)
+            }
         }
-    }
 
-    private fun initCourseItemClickListener(
-        itemView: View,
-        course: DiscoverCourse
-    ) {
-        itemView.setOnClickListener {
-            onRecommendItemClick(course.id)
+        private fun initCourseItemClickListener(
+            itemView: View,
+            course: DiscoverCourse
+        ) {
+            itemView.setOnClickListener {
+                onRecommendItemClick(course.id)
+            }
         }
     }
 
