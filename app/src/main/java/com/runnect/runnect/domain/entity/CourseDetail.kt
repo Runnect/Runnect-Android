@@ -8,7 +8,7 @@ data class CourseDetail(
     val id: Int,
     val courseId: Int,
     val scrap: Boolean,
-    val scrapCount: Int,
+    val scrapCount: String,
     val image: String,
     val title: String,
     val description: String,

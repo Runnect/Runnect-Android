@@ -440,7 +440,7 @@ class CourseDetailActivity :
             when (state) {
                 is UiStateV2.Success -> {
                     courseDetail = state.data ?: return@observe
-                    binding.courseDetailDto = courseDetail
+                    binding.courseDetail = courseDetail
 
                     viewModel.updateCourseDetailContents(courseDetail.toCourseDetailContents())
                     updateUserProfileStamp()

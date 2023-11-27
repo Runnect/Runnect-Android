@@ -75,7 +75,7 @@ data class ResponseGetCourseDetail(
         distance = publicCourse.distance.toString(),
         image = publicCourse.image,
         scrap = publicCourse.scrap,
-        scrapCount = publicCourse.scrapCount.toInt(),
+        scrapCount = publicCourse.scrapCount.toString(),
         title = publicCourse.title,
         path = publicCourse.path
     )
