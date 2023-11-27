@@ -41,7 +41,6 @@ class CourseDetailViewModel @Inject constructor(
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
 
-
     // 플래그 변수
     var isDeepLinkLogin = MutableLiveData(true)
 

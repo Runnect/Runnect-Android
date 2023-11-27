@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.entity.DiscoverCourse
@@ -42,9 +43,16 @@ class DiscoverViewModel @Inject constructor(
     private var _bannerCount = 0
     val bannerCount: Int get() = _bannerCount
 
+    private var _clickedCourseId = -1
+    val clickedCourseId get() = _clickedCourseId
+
     init {
         getPromotionBanners()
         getRecommendCourses(pageNo = "1", ordering = "date")
+    }
+
+    fun saveClickedCourseId(id: Int) {
+        _clickedCourseId = id
     }
 
     private fun getPromotionBanners() {

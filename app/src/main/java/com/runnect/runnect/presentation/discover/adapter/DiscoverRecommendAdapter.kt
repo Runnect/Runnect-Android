@@ -10,14 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
 import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
-import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
-import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
 import com.runnect.runnect.util.custom.toast.RunnectToast
 
 class DiscoverRecommendAdapter(
-    private val onHeartButtonClick: OnHeartButtonClick,
-    private val onRecommendItemClick: OnRecommendItemClick,
+    private val onHeartButtonClick: (Int, Boolean) -> Unit,
+    private val onRecommendItemClick: (Int) -> Unit,
     private val isVisitorMode: Boolean
 ) : ListAdapter<DiscoverCourse, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
@@ -57,7 +56,7 @@ class DiscoverRecommendAdapter(
             }
 
             view.isSelected = !view.isSelected
-            onHeartButtonClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
+            onHeartButtonClick(course.id, view.isSelected)
         }
     }
 
@@ -66,7 +65,7 @@ class DiscoverRecommendAdapter(
         course: DiscoverCourse
     ) {
         itemView.setOnClickListener {
-            onRecommendItemClick.selectItem(publicCourseId = course.id)
+            onRecommendItemClick(course.id)
         }
     }
 
@@ -75,6 +74,17 @@ class DiscoverRecommendAdapter(
             context = context,
             message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
         ).show()
+    }
+
+    fun updateRecommendItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return@forEachIndexed
+            }
+        }
     }
 
     companion object {

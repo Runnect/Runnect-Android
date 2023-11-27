@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.discover
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,6 +17,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
+import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
@@ -28,9 +31,8 @@ import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.listener.OnBannerItemClick
-import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
-import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
@@ -40,7 +42,7 @@ import java.util.TimerTask
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnRecommendItemClick, OnHeartButtonClick, OnBannerItemClick {
+    OnBannerItemClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
     private val bannerAdapter: BannerAdapter by lazy { BannerAdapter(this) }
@@ -56,6 +58,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
     private var isVisitorMode: Boolean = MainActivity.isVisitorMode
+
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val updatedCourse: EditableDiscoverCourse =
+                    result.data?.getCompatibleParcelableExtra(KEY_EDITABLE_DISCOVER_COURSE)
+                        ?: return@registerForActivityResult
+
+                recommendAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,8 +89,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRecommendCourseRecyclerView() {
         recommendAdapter = DiscoverRecommendAdapter(
-            onHeartButtonClick = this,
-            onRecommendItemClick = this,
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
+            },
+            onRecommendItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
             isVisitorMode = isVisitorMode
         )
 
@@ -85,6 +103,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             setHasFixedSize(true)
             adapter = recommendAdapter
         }
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val intent = Intent(requireContext(), CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+        }
+        resultLauncher.launch(intent)
+        requireActivity().applyScreenEnterAnimation()
     }
 
     private fun registerBackPressedCallback() {
@@ -327,25 +354,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vpDiscoverPromotion.unregisterOnPageChangeCallback(pageRegisterCallback)
     }
 
-    override fun scrapCourse(id: Int, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id, scrapTF)
-    }
-
-    override fun selectItem(publicCourseId: Int) {
-        Intent(requireContext(), CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-            startActivity(this)
-        }
-        requireActivity().applyScreenEnterAnimation()
-    }
-
-    override fun selectBanner(item: PromotionBanner) {
-        if (item.linkUrl.isNotEmpty()) {
-            requireContext().showWebBrowser(item.linkUrl)
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
@@ -358,11 +366,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         MainActivity.discoverFragment = null
     }
 
+    override fun selectBanner(item: PromotionBanner) {
+        if (item.linkUrl.isNotEmpty()) {
+            requireContext().showWebBrowser(item.linkUrl)
+        }
+    }
+
     companion object {
-        const val PAGE_NUM = 900
-        const val INTERVAL_TIME = 5000L
-        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT_SCREEN = "rootScreen"
+        private const val PAGE_NUM = 900
+        private const val INTERVAL_TIME = 5000L
+        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        private const val EXTRA_ROOT_SCREEN = "rootScreen"
+        const val KEY_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
         const val END_PAGE = "HTTP 400 Bad Request"
     }
 }

@@ -42,9 +42,7 @@
                     android:layout_gravity="end"
                     android:layout_marginEnd="18.25dp"
                     app:srcCompat="@drawable/discover_search" />
-
             </androidx.appcompat.widget.Toolbar>
-
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"

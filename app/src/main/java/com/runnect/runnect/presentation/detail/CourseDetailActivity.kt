@@ -28,9 +28,11 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.KEY_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
@@ -41,6 +43,7 @@ import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.getStampResId
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -122,7 +125,7 @@ class CourseDetailActivity :
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(this)
         }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        applyScreenExitAnimation()
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
@@ -141,13 +144,25 @@ class CourseDetailActivity :
 
         when (rootScreen) {
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
-            COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
+            COURSE_DISCOVER -> setResultForDiscoverFragment()
             COURSE_DISCOVER_SEARCH -> navigateToDiscoverSearchScreen()
             MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
 
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun setResultForDiscoverFragment() {
+        val updatedCourse = EditableDiscoverCourse(
+            title = viewModel.title,
+            scrap = binding.ivCourseDetailScrap.isSelected
+        )
+
+        Intent(this@CourseDetailActivity, MainActivity::class.java).apply {
+            putExtra(KEY_EDITABLE_DISCOVER_COURSE, updatedCourse)
+            setResult(RESULT_OK, this)
+        }
     }
 
     // todo: 코스 검색 화면으로 돌아갔을 때, 방금 전 검색 결과가 보존되면서도
