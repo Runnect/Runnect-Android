@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.discover.search
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -9,20 +10,24 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
+import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.KEY_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
 import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showKeyboard
@@ -30,10 +35,20 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DiscoverSearchActivity :
-    BindingActivity<ActivityDiscoverSearchBinding>(R.layout.activity_discover_search),
-    OnRecommendItemClick, OnHeartButtonClick {
+    BindingActivity<ActivityDiscoverSearchBinding>(R.layout.activity_discover_search) {
     private val viewModel: DiscoverSearchViewModel by viewModels()
     private lateinit var searchAdapter: DiscoverSearchAdapter
+
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val updatedCourse: EditableDiscoverCourse =
+                    result.data?.getCompatibleParcelableExtra(KEY_EDITABLE_DISCOVER_COURSE)
+                        ?: return@registerForActivityResult
+
+                searchAdapter.updateSearchItem(viewModel.clickedCourseId, updatedCourse)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +68,24 @@ class DiscoverSearchActivity :
     }
 
     private fun initSearchAdapter() {
-        searchAdapter = DiscoverSearchAdapter(this, this)
+        searchAdapter = DiscoverSearchAdapter(
+            onRecommendItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
+            }
+        )
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val intent = Intent(this@DiscoverSearchActivity, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER_SEARCH)
+        }
+        resultLauncher.launch(intent)
+        applyScreenEnterAnimation()
     }
 
     private fun initSearchRecyclerView() {
@@ -98,7 +130,7 @@ class DiscoverSearchActivity :
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
                     val keyword = binding.etDiscoverSearchTitle.text
-                    if(!keyword.isNullOrBlank()){
+                    if (!keyword.isNullOrBlank()) {
                         viewModel.getCourseSearch(keyword = keyword.toString())
                         hideKeyboard(binding.etDiscoverSearchTitle)
                     }
@@ -169,19 +201,6 @@ class DiscoverSearchActivity :
             }
         }
         return super.dispatchTouchEvent(event)
-    }
-
-    override fun selectItem(publicCourseId: Int) {
-        Intent(this@DiscoverSearchActivity, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER_SEARCH)
-            startActivity(this)
-        }
-        applyScreenEnterAnimation()
-    }
-
-    override fun scrapCourse(id: Int, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id, scrapTF)
     }
 
     companion object {

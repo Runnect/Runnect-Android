@@ -1,8 +1,10 @@
 package com.runnect.runnect.presentation.detail
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Rect
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
@@ -144,8 +146,8 @@ class CourseDetailActivity :
 
         when (rootScreen) {
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
-            COURSE_DISCOVER -> setResultForDiscoverFragment()
-            COURSE_DISCOVER_SEARCH -> navigateToDiscoverSearchScreen()
+            COURSE_DISCOVER -> setActivityResult<MainActivity>()
+            COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
 
@@ -153,30 +155,20 @@ class CourseDetailActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    private fun setResultForDiscoverFragment() {
+    private inline fun <reified E : Activity> setActivityResult() {
         val updatedCourse = EditableDiscoverCourse(
             title = viewModel.title,
             scrap = binding.ivCourseDetailScrap.isSelected
         )
 
-        Intent(this@CourseDetailActivity, MainActivity::class.java).apply {
+        Intent(this@CourseDetailActivity, E::class.java).apply {
             putExtra(KEY_EDITABLE_DISCOVER_COURSE, updatedCourse)
             setResult(RESULT_OK, this)
         }
     }
 
-    // todo: 코스 검색 화면으로 돌아갔을 때, 방금 전 검색 결과가 보존되면서도
-    //  상세 페이지에서 수정한 내용이 반영되려면 목록에서 해당 아이템만 일부 수정하는 로직이 필요하다.
-    private fun navigateToDiscoverSearchScreen() {
-        Intent(this, DiscoverSearchActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(this)
-        }
-    }
-
     private fun navigateToMyUploadCourseScreen() {
         Intent(this, MyUploadActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }
     }

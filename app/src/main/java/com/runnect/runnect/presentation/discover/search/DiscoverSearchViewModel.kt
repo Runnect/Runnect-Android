@@ -23,6 +23,13 @@ class DiscoverSearchViewModel @Inject constructor(
     val courseSearchState: LiveData<UiStateV2<List<DiscoverCourse>?>>
         get() = _courseSearchState
 
+    private var _clickedCourseId = -1
+    val clickedCourseId get() = _clickedCourseId
+
+    fun saveClickedCourseId(id: Int) {
+        _clickedCourseId = id
+    }
+
     fun getCourseSearch(keyword: String) {
         viewModelScope.launch {
             _courseSearchState.value = UiStateV2.Loading

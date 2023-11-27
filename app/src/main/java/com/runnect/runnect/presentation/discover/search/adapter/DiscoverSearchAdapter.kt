@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
 import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
 import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 
 class DiscoverSearchAdapter(
-    private val onRecommendItemClick: OnRecommendItemClick,
-    private val onHeartButtonClick: OnHeartButtonClick
+    private val onRecommendItemClick: (Int) -> Unit,
+    private val onHeartButtonClick: (Int, Boolean) -> Unit
 ) : ListAdapter<DiscoverCourse, DiscoverSearchAdapter.SearchViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
@@ -48,7 +49,7 @@ class DiscoverSearchAdapter(
     ) {
         imageView.setOnClickListener { view ->
             view.isSelected = !view.isSelected
-            onHeartButtonClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
+            onHeartButtonClick(course.id, view.isSelected)
         }
     }
 
@@ -57,7 +58,18 @@ class DiscoverSearchAdapter(
         course: DiscoverCourse
     ) {
         itemView.setOnClickListener {
-            onRecommendItemClick.selectItem(publicCourseId = course.id)
+            onRecommendItemClick(course.id)
+        }
+    }
+
+    fun updateSearchItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return@forEachIndexed
+            }
         }
     }
 
