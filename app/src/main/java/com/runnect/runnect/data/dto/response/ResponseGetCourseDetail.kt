@@ -32,6 +32,8 @@ data class ResponseGetCourseDetail(
         val courseId: Int,
         @SerialName("scrap")
         val scrap: Boolean,
+        @SerialName("scrapCount")
+        val scrapCount: Long,
         @SerialName("image")
         val image: String,
         @SerialName("title")
@@ -72,7 +74,8 @@ data class ResponseGetCourseDetail(
         description = publicCourse.description,
         distance = publicCourse.distance.toString(),
         image = publicCourse.image,
-        isScrap = publicCourse.scrap,
+        scrap = publicCourse.scrap,
+        scrapCount = publicCourse.scrapCount.toInt(),
         title = publicCourse.title,
         path = publicCourse.path
     )
