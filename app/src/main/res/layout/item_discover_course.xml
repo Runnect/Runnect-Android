@@ -7,7 +7,7 @@
 
         <variable
             name="course"
-            type="com.runnect.runnect.domain.entity.RecommendCourse" />
+            type="com.runnect.runnect.domain.entity.DiscoverCourse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,10 +17,11 @@
         <com.ssomai.android.scalablelayout.ScalableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:scale_base_height="154"
+            app:scale_base_height="157"
             app:scale_base_width="162">
 
             <com.google.android.material.card.MaterialCardView

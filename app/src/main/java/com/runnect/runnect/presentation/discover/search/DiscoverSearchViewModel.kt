@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

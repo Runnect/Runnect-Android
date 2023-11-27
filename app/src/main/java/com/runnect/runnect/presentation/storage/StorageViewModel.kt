@@ -9,8 +9,8 @@ import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.StorageRepository
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.repository.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

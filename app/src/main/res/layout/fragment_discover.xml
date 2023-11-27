@@ -61,19 +61,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ProgressBar
-                        android:id="@+id/indeterminateBar_banner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:elevation="2dp"
-                        android:indeterminateTint="@color/G3"
-                        android:outlineProvider="none"
-                        android:visibility="invisible"
-                        app:layout_constraintBottom_toBottomOf="@id/vp_discover_promotion"
-                        app:layout_constraintEnd_toEndOf="@id/vp_discover_promotion"
-                        app:layout_constraintStart_toStartOf="@id/vp_discover_promotion"
-                        app:layout_constraintTop_toTopOf="@id/vp_discover_promotion" />
-
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/vp_discover_promotion"
                         android:layout_width="match_parent"

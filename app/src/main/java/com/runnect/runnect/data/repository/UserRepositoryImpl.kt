@@ -13,7 +13,7 @@ import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import com.runnect.runnect.data.dto.response.ResponseGetUser
 import com.runnect.runnect.data.source.remote.RemoteUserDataSource
-import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.util.extension.toData
 import javax.inject.Inject
 

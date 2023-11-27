@@ -1,4 +1,4 @@
-package com.runnect.runnect.domain
+package com.runnect.runnect.domain.repository
 
 import com.runnect.runnect.data.dto.request.RequestPostLogin
 import com.runnect.runnect.data.dto.LoginDTO

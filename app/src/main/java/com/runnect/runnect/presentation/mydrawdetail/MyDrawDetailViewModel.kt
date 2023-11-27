@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
-import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.domain.repository.CourseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber

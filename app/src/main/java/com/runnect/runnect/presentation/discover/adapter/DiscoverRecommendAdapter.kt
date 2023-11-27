@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
-import com.runnect.runnect.domain.entity.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
@@ -19,7 +19,7 @@ class DiscoverRecommendAdapter(
     private val onHeartButtonClick: OnHeartButtonClick,
     private val onRecommendItemClick: OnRecommendItemClick,
     private val isVisitorMode: Boolean
-) : ListAdapter<RecommendCourse, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
+) : ListAdapter<DiscoverCourse, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
             ItemDiscoverCourseBinding.inflate(
@@ -36,20 +36,20 @@ class DiscoverRecommendAdapter(
 
     inner class CourseInfoViewHolder(private val binding: ItemDiscoverCourseBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(course: RecommendCourse) {
+        fun onBind(discoverCourse: DiscoverCourse) {
             with(binding) {
-                this.course = course
-                ivItemDiscoverCourseScrap.isSelected = course.scrap
+                this.course = discoverCourse
+                ivItemDiscoverCourseScrap.isSelected = discoverCourse.scrap
 
-                initHeartButtonClickListener(ivItemDiscoverCourseScrap, course)
-                initCourseItemClickListener(root, course)
+                initHeartButtonClickListener(ivItemDiscoverCourseScrap, discoverCourse)
+                initCourseItemClickListener(root, discoverCourse)
             }
         }
     }
 
     private fun initHeartButtonClickListener(
         imageView: AppCompatImageView,
-        course: RecommendCourse
+        discoverCourse: DiscoverCourse
     ) {
         imageView.setOnClickListener { view ->
             if (isVisitorMode) {
@@ -58,16 +58,16 @@ class DiscoverRecommendAdapter(
             }
 
             view.isSelected = !view.isSelected
-            onHeartButtonClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
+            onHeartButtonClick.scrapCourse(id = discoverCourse.id, scrapTF = view.isSelected)
         }
     }
 
     private fun initCourseItemClickListener(
         itemView: View,
-        course: RecommendCourse
+        discoverCourse: DiscoverCourse
     ) {
         itemView.setOnClickListener {
-            onRecommendItemClick.selectItem(publicCourseId = course.id)
+            onRecommendItemClick.selectItem(publicCourseId = discoverCourse.id)
         }
     }
 
@@ -79,7 +79,7 @@ class DiscoverRecommendAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<RecommendCourse>(
+        private val diffUtil = ItemDiffCallback<DiscoverCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )

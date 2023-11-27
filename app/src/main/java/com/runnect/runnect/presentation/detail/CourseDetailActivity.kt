@@ -25,9 +25,9 @@ import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
-import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
@@ -460,10 +460,10 @@ class CourseDetailActivity :
         }
     }
 
-    private fun <T : Any> T.toCourseDetailContents(): CourseDetailContents? {
+    private fun <T : Any> T.toCourseDetailContents(): EditableCourseDetail? {
         return when (this) {
-            is CourseDetail -> CourseDetailContents(title, description)
-            is PublicCourse -> CourseDetailContents(title, description)
+            is CourseDetail -> EditableCourseDetail(title, description)
+            is EditableCourseDetail -> EditableCourseDetail(title, description)
             else -> null
         }
     }
@@ -506,10 +506,10 @@ class CourseDetailActivity :
         }
     }
 
-    private fun updateTextView(publicCourse: PublicCourse) {
+    private fun updateTextView(courseDetail: EditableCourseDetail) {
         binding.apply {
-            tvCourseDetailTitle.text = publicCourse.title
-            tvCourseDetailDesc.text = publicCourse.description
+            tvCourseDetailTitle.text = courseDetail.title
+            tvCourseDetailDesc.text = courseDetail.description
         }
     }
 
@@ -561,7 +561,7 @@ class CourseDetailActivity :
     }
 
     private fun updateScrapState() {
-        binding.ivCourseDetailScrap.isSelected = courseDetail.isScrap
+        binding.ivCourseDetailScrap.isSelected = courseDetail.scrap
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

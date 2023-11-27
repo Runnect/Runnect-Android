@@ -8,15 +8,15 @@ import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
-import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.entity.RecommendCourse
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -28,11 +28,11 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun getRecommendCourses(
         pageNo: String,
         ordering: String
-    ): Result<List<RecommendCourse>?> = runCatching {
+    ): Result<List<DiscoverCourse>?> = runCatching {
         remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
             ordering = ordering
-        ).data?.toRecommendCourses()
+        ).data?.toDiscoverCourses()
     }
 
     override suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO> {
@@ -79,11 +79,11 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
-    ): Result<PublicCourse?> = runCatching {
+    ): Result<EditableCourseDetail?> = runCatching {
         remoteCourseDataSource.patchPublicCourse(
             publicCourseId = publicCourseId,
             requestPatchPublicCourse = requestPatchPublicCourse
-        ).data?.publicCourse
+        ).data?.toEditableCourseDetail()
     }
 
     override suspend fun postCourseScrap(

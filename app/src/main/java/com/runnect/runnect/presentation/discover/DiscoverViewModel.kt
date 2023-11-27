@@ -4,12 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
-import com.runnect.runnect.data.dto.RecommendCourseDTO
+import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.domain.BannerRepository
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.entity.RecommendCourse
+import com.runnect.runnect.domain.repository.BannerRepository
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.entity.DiscoverCourse
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +21,8 @@ class DiscoverViewModel @Inject constructor(
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
     // todo: UiStateV2 코드로 리팩토링 하자!
-    private val _courseGetState = MutableLiveData<UiStateV2<List<RecommendCourse>?>>()
-    val courseGetState: LiveData<UiStateV2<List<RecommendCourse>?>>
+    private val _courseGetState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
+    val courseGetState: LiveData<UiStateV2<List<DiscoverCourse>?>>
         get() = _courseGetState
 
     private val _bannerGetState = MutableLiveData<UiState>(UiState.Empty)
@@ -38,7 +37,7 @@ class DiscoverViewModel @Inject constructor(
 
     val errorMessage = MutableLiveData<String>()
 
-    var bannerData = mutableListOf<DiscoverPromotionBanner>()
+    var bannerData = mutableListOf<PromotionBanner>()
 
     private var _bannerCount = 0
     val bannerCount: Int get() = _bannerCount

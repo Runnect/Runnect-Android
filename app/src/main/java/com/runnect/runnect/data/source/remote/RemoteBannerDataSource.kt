@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.source.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
+import com.runnect.runnect.domain.entity.PromotionBanner
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,9 +11,9 @@ import javax.inject.Inject
 class RemoteBannerDataSource @Inject constructor(
     private val bannerService: FirebaseFirestore
 ) {
-    private val banners = mutableListOf<DiscoverPromotionBanner>()
+    private val banners = mutableListOf<PromotionBanner>()
 
-    fun getPromotionBanners(): Flow<MutableList<DiscoverPromotionBanner>> = callbackFlow {
+    fun getPromotionBanners(): Flow<MutableList<PromotionBanner>> = callbackFlow {
         bannerService.collection("data")
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
@@ -25,7 +25,7 @@ class RemoteBannerDataSource @Inject constructor(
                     banners.clear()
                     for (document in snapshot) {
                         banners.add(
-                            DiscoverPromotionBanner(
+                            PromotionBanner(
                                 index = document.getLong("index")!!.toInt(),
                                 imageUrl = document.getString("imageUrl").toString(),
                                 linkUrl = document.getString("linkUrl").toString()

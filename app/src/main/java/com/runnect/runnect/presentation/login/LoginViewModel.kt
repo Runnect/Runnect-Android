@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostLogin
 import com.runnect.runnect.data.dto.LoginDTO
-import com.runnect.runnect.domain.LoginRepository
+import com.runnect.runnect.domain.repository.LoginRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

@@ -1,7 +1,7 @@
 package com.runnect.runnect.util.callback.listener
 
-import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
+import com.runnect.runnect.domain.entity.PromotionBanner
 
 interface OnBannerItemClick {
-    fun selectBanner(item: DiscoverPromotionBanner)
+    fun selectBanner(item: PromotionBanner)
 }

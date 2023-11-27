@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover
 
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,9 +13,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.domain.entity.DiscoverPromotionBanner
+import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
-import com.runnect.runnect.domain.entity.RecommendCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
@@ -37,7 +35,6 @@ import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
 
@@ -181,18 +178,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupBannerGetStateObserver() {
         viewModel.bannerGetState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
-                UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
                 UiState.Success -> {
-                    binding.indeterminateBarBanner.isVisible = false
                     setBannerData()
                 }
 
-                UiState.Failure -> {
-                    binding.indeterminateBarBanner.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                }
+                UiState.Failure -> {}
+
+                else -> {}
             }
         }
     }
@@ -348,7 +340,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         requireActivity().applyScreenEnterAnimation()
     }
 
-    override fun selectBanner(item: DiscoverPromotionBanner) {
+    override fun selectBanner(item: PromotionBanner) {
         if (item.linkUrl.isNotEmpty()) {
             requireContext().showWebBrowser(item.linkUrl)
         }

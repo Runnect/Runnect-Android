@@ -4,7 +4,7 @@ import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.response.ResponseGetSearchTmap
 import com.runnect.runnect.data.source.remote.RemoteDepartureSearchDataSource
-import com.runnect.runnect.domain.DepartureSearchRepository
+import com.runnect.runnect.domain.repository.DepartureSearchRepository
 import javax.inject.Inject
 
 class DepartureSearchRepositoryImpl @Inject constructor(private val departureSourceDataSource: RemoteDepartureSearchDataSource) :

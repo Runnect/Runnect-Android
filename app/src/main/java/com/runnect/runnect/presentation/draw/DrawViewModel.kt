@@ -9,8 +9,8 @@ import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.ReverseGeocodingRepository
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.repository.ReverseGeocodingRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel

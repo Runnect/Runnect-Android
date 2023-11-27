@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.dto.response
 
-import com.runnect.runnect.domain.entity.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverCourse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -35,8 +35,8 @@ data class ResponseGetDiscoverRecommend(
         )
     }
 
-    fun toRecommendCourses(): List<RecommendCourse> = publicCourses.map { course ->
-        RecommendCourse(
+    fun toDiscoverCourses(): List<DiscoverCourse> = publicCourses.map { course ->
+        DiscoverCourse(
             id = course.id,
             courseId = course.courseId,
             title = course.title,
