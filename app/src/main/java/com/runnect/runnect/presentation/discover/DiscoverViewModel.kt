@@ -45,13 +45,19 @@ class DiscoverViewModel @Inject constructor(
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
+    private var currentPageNumber = 1
+
     init {
         getPromotionBanners()
-        getRecommendCourses(pageNo = "1", ordering = "date")
+        getRecommendCourses(pageNo = 1)
     }
 
     fun saveClickedCourseId(id: Int) {
         _clickedCourseId = id
+    }
+
+    fun loadNextPage() {
+        getRecommendCourses(currentPageNumber++)
     }
 
     private fun getPromotionBanners() {
@@ -71,11 +77,11 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourses(pageNo: String, ordering: String) {
+    fun getRecommendCourses(pageNo: Int) {
         viewModelScope.launch {
             _courseGetState.value = UiStateV2.Loading
 
-            courseRepository.getRecommendCourse(pageNo = pageNo)
+            courseRepository.getRecommendCourse(pageNo = pageNo.toString())
                 .onSuccess { response ->
                     _courseGetState.value = UiStateV2.Success(response)
 //                    currentPageNo.value = it[0].pageNo

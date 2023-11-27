@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
@@ -83,19 +84,20 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         initRecommendCourseRecyclerView()
     }
 
-    fun getRecommendCourses(pageNo: String) {
-        viewModel.getRecommendCourses(pageNo = pageNo, ordering = "date")
+    fun getRecommendCourses(pageNo: Int) {
+        viewModel.getRecommendCourses(pageNo = pageNo)
     }
 
-    private fun initScrollChangedListener() {
-        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            val contentView = binding.nestedScrollView.getChildAt(0)
-            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
-                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
-                currentPageNo++
-                getRecommendCourses(pageNo = currentPageNo.toString())
+    private fun initRecyclerViewScrollListener() {
+        binding.rvDiscoverRecommend.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if(!binding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
+                    viewModel.loadNextPage()
+                }
             }
-        }
+        })
     }
 
     private fun initRecommendCourseRecyclerView() {
@@ -155,7 +157,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
-        //initScrollChangedListener()
+        initRecyclerViewScrollListener()
         initSearchButtonClickListener()
         initUploadButtonClickListener()
     }
@@ -190,7 +192,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.refreshLayout.setOnRefreshListener {
             // 기존에 조회했던 리스트에 아이템이 누적으로 더해지므로 clear()로 비워주었다.
             //viewModel.recommendCourses.clear()
-            getRecommendCourses(pageNo = "1")
+            viewModel.getRecommendCourses(pageNo = 1)
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -374,6 +376,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         private const val PAGE_NUM = 900
         private const val INTERVAL_TIME = 5000L
+        private const val SCROLL_DIRECTION = 1
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val KEY_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
