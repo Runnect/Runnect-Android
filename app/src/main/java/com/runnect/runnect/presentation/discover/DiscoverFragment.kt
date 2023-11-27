@@ -23,7 +23,7 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
+import com.runnect.runnect.presentation.discover.adapter.RecommendCourseAdapter
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
@@ -48,7 +48,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private val viewModel: DiscoverViewModel by viewModels()
 
     private val bannerAdapter: BannerAdapter by lazy { BannerAdapter(this) }
-    private lateinit var recommendAdapter: DiscoverRecommendAdapter
+    private lateinit var recommendAdapter: RecommendCourseAdapter
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -101,7 +101,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initRecommendCourseRecyclerView() {
-        recommendAdapter = DiscoverRecommendAdapter(
+        recommendAdapter = RecommendCourseAdapter(
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
             },

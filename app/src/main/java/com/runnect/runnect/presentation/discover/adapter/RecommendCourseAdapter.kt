@@ -15,23 +15,23 @@ import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.custom.toast.RunnectToast
 
-class DiscoverRecommendAdapter(
+class RecommendCourseAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onRecommendItemClick: (Int) -> Unit,
-) : ListAdapter<DiscoverCourse, DiscoverRecommendAdapter.DiscoverRecommendViewHolder>(diffUtil) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverRecommendViewHolder {
-        return DiscoverRecommendViewHolder(
+) : ListAdapter<DiscoverCourse, RecommendCourseAdapter.RecommendCourseViewHolder>(diffUtil) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendCourseViewHolder {
+        return RecommendCourseViewHolder(
             ItemDiscoverCourseBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
     }
 
-    override fun onBindViewHolder(holder: DiscoverRecommendViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecommendCourseViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
 
-    inner class DiscoverRecommendViewHolder(
+    inner class RecommendCourseViewHolder(
         private val binding: ItemDiscoverCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverCourse) {
