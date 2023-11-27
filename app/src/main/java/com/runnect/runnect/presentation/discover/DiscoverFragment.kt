@@ -119,8 +119,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun addListener() {
         initScrollChangedListener()
-        initCourseSearchButtonClickListener()
-        initCourseUploadButtonClickListener()
+        initSearchButtonClickListener()
+        initUploadButtonClickListener()
     }
 
     private fun initScrollChangedListener() {
@@ -134,14 +134,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun initCourseSearchButtonClickListener() {
+    private fun initSearchButtonClickListener() {
         binding.ivDiscoverSearch.setOnClickListener {
             startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
             requireActivity().applyScreenEnterAnimation()
         }
     }
 
-    private fun initCourseUploadButtonClickListener() {
+    private fun initUploadButtonClickListener() {
         binding.btnDiscoverUpload.setOnClickListener {
             if (isVisitorMode) {
                 showCourseUploadWarningToast()
