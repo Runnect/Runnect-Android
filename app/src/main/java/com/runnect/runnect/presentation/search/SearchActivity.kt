@@ -23,7 +23,7 @@ import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.callback.listener.OnSearchItemClick
 import com.runnect.runnect.util.extension.hideKeyboard
-import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
+import com.runnect.runnect.util.extension.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -41,7 +41,7 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
 
         initDivider()
         backButton()
-        binding.etSearch.setFocusAndShowKeyboard(this)
+        binding.etSearch.showKeyboard(this)
         imgBtnSearch()
         addListener()
         addObserver()

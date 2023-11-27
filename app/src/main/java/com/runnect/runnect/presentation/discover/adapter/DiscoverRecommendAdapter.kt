@@ -23,9 +23,7 @@ class DiscoverRecommendAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
         return CourseInfoViewHolder(
             ItemDiscoverCourseBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
@@ -34,22 +32,23 @@ class DiscoverRecommendAdapter(
         holder.onBind(currentList[position])
     }
 
-    inner class CourseInfoViewHolder(private val binding: ItemDiscoverCourseBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun onBind(discoverCourse: DiscoverCourse) {
+    inner class CourseInfoViewHolder(
+        private val binding: ItemDiscoverCourseBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun onBind(course: DiscoverCourse) {
             with(binding) {
-                this.course = discoverCourse
-                ivItemDiscoverCourseScrap.isSelected = discoverCourse.scrap
+                this.course = course
+                ivItemDiscoverCourseScrap.isSelected = course.scrap
 
-                initHeartButtonClickListener(ivItemDiscoverCourseScrap, discoverCourse)
-                initCourseItemClickListener(root, discoverCourse)
+                initHeartButtonClickListener(ivItemDiscoverCourseScrap, course)
+                initCourseItemClickListener(root, course)
             }
         }
     }
 
     private fun initHeartButtonClickListener(
         imageView: AppCompatImageView,
-        discoverCourse: DiscoverCourse
+        course: DiscoverCourse
     ) {
         imageView.setOnClickListener { view ->
             if (isVisitorMode) {
@@ -58,16 +57,16 @@ class DiscoverRecommendAdapter(
             }
 
             view.isSelected = !view.isSelected
-            onHeartButtonClick.scrapCourse(id = discoverCourse.id, scrapTF = view.isSelected)
+            onHeartButtonClick.scrapCourse(id = course.id, scrapTF = view.isSelected)
         }
     }
 
     private fun initCourseItemClickListener(
         itemView: View,
-        discoverCourse: DiscoverCourse
+        course: DiscoverCourse
     ) {
         itemView.setOnClickListener {
-            onRecommendItemClick.selectItem(publicCourseId = discoverCourse.id)
+            onRecommendItemClick.selectItem(publicCourseId = course.id)
         }
     }
 

@@ -35,10 +35,10 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         ).data?.toDiscoverCourses()
     }
 
-    override suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO> {
-        return remoteCourseDataSource.getCourseSearch(keyword = keyword).data.publicCourses.map { it.toData() }
-            .toMutableList()
-    }
+    override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?> =
+        runCatching {
+            remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverCourses()
+        }
 
     override suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO> {
         return remoteCourseDataSource.getMyCourseLoad().data.privateCourses.map { it.toData() }

@@ -27,7 +27,7 @@ interface CourseService {
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(
         @Query("keyword") keyword: String,
-    ): ResponseGetDiscoverSearch
+    ): BaseResponse<ResponseGetDiscoverSearch>
 
     @GET("/api/public-course/detail/{publicCourseId}")
     suspend fun getCourseDetail(

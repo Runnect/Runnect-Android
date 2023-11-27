@@ -22,9 +22,8 @@ fun PublicCourseUpload.toData(): UserUploadCourseDTO {
     )
 }
 
-//fun RecommendPublicCourse.toData(): RecommendCourseDTO {
-//    return RecommendCourseDTO(
-//        pageNo = pageNo,
+//fun SearchPublicCourse.toData(): CourseSearchDTO {
+//    return CourseSearchDTO(
 //        courseId = courseId,
 //        departure = departure.region + ' ' + departure.city,
 //        id = id,
@@ -33,17 +32,6 @@ fun PublicCourseUpload.toData(): UserUploadCourseDTO {
 //        image = image
 //    )
 //}
-
-fun SearchPublicCourse.toData(): CourseSearchDTO {
-    return CourseSearchDTO(
-        courseId = courseId,
-        departure = departure.region + ' ' + departure.city,
-        id = id,
-        title = title,
-        scrap = scrap,
-        image = image
-    )
-}
 
 fun PrivateCourse.toData(): CourseLoadInfoDTO {
     return CourseLoadInfoDTO(

@@ -22,7 +22,7 @@ import retrofit2.Response
 interface CourseRepository {
     suspend fun getRecommendCourses(pageNo: String, ordering: String): Result<List<DiscoverCourse>?>
 
-    suspend fun getCourseSearch(keyword: String): MutableList<CourseSearchDTO>
+    suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?>
 
     suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO>
 
@@ -37,8 +37,6 @@ interface CourseRepository {
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
     ): Response<ResponsePostMyDrawCourse>
-
-    // todo: ----------------------------------------------------- runCatching
 
     suspend fun getCourseDetail(publicCourseId: Int): Result<CourseDetail?>
 
