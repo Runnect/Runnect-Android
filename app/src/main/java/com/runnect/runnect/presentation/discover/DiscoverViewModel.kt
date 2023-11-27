@@ -75,7 +75,7 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             _courseGetState.value = UiStateV2.Loading
 
-            courseRepository.getRecommendCourses(pageNo = pageNo, ordering = ordering)
+            courseRepository.getRecommendCourse(pageNo = pageNo)
                 .onSuccess { response ->
                     _courseGetState.value = UiStateV2.Success(response)
 //                    currentPageNo.value = it[0].pageNo

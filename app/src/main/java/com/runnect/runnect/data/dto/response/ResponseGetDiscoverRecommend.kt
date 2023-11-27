@@ -6,8 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseGetDiscoverRecommend(
-    @SerialName("ordering")
-    val ordering: String,
     @SerialName("publicCourses")
     val publicCourses: List<PublicCourse>
 ) {

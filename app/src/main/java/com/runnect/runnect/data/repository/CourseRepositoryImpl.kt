@@ -2,7 +2,6 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
-import com.runnect.runnect.data.dto.CourseSearchDTO
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
@@ -25,13 +24,11 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
-    override suspend fun getRecommendCourses(
+    override suspend fun getRecommendCourse(
         pageNo: String,
-        ordering: String
     ): Result<List<DiscoverCourse>?> = runCatching {
         remoteCourseDataSource.getRecommendCourse(
-            pageNo = pageNo,
-            ordering = ordering
+            pageNo = pageNo
         ).data?.toDiscoverCourses()
     }
 

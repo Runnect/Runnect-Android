@@ -19,6 +19,7 @@ import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
@@ -57,7 +58,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private var currentPosition = PAGE_NUM / 2
 
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
-    private var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -87,6 +87,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.getRecommendCourses(pageNo = pageNo, ordering = "date")
     }
 
+    private fun initScrollChangedListener() {
+        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            val contentView = binding.nestedScrollView.getChildAt(0)
+            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
+                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
+                currentPageNo++
+                getRecommendCourses(pageNo = currentPageNo.toString())
+            }
+        }
+    }
+
     private fun initRecommendCourseRecyclerView() {
         recommendAdapter = DiscoverRecommendAdapter(
             onHeartButtonClick = { courseId, scrap ->
@@ -95,8 +106,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             onRecommendItemClick = { courseId ->
                 navigateToDetailScreen(courseId)
                 viewModel.saveClickedCourseId(courseId)
-            },
-            isVisitorMode = isVisitorMode
+            }
         )
 
         binding.rvDiscoverRecommend.apply {
@@ -145,20 +155,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
-        initScrollChangedListener()
+        //initScrollChangedListener()
         initSearchButtonClickListener()
         initUploadButtonClickListener()
-    }
-
-    private fun initScrollChangedListener() {
-        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            val contentView = binding.nestedScrollView.getChildAt(0)
-            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
-                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
-                currentPageNo++
-                getRecommendCourses(pageNo = currentPageNo.toString())
-            }
-        }
     }
 
     private fun initSearchButtonClickListener() {
