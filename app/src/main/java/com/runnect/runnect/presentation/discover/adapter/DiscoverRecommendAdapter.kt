@@ -18,20 +18,20 @@ class DiscoverRecommendAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onRecommendItemClick: (Int) -> Unit,
     private val isVisitorMode: Boolean
-) : ListAdapter<DiscoverCourse, DiscoverRecommendAdapter.CourseInfoViewHolder>(diffUtil) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseInfoViewHolder {
-        return CourseInfoViewHolder(
+) : ListAdapter<DiscoverCourse, DiscoverRecommendAdapter.DiscoverRecommendViewHolder>(diffUtil) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverRecommendViewHolder {
+        return DiscoverRecommendViewHolder(
             ItemDiscoverCourseBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
     }
 
-    override fun onBindViewHolder(holder: CourseInfoViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DiscoverRecommendViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
 
-    inner class CourseInfoViewHolder(
+    inner class DiscoverRecommendViewHolder(
         private val binding: ItemDiscoverCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(course: DiscoverCourse) {

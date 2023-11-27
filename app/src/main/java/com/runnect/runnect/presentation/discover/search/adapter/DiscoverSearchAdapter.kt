@@ -14,20 +14,20 @@ import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 class DiscoverSearchAdapter(
     private val onRecommendItemClick: (Int) -> Unit,
     private val onHeartButtonClick: (Int, Boolean) -> Unit
-) : ListAdapter<DiscoverCourse, DiscoverSearchAdapter.SearchViewHolder>(diffUtil) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        return SearchViewHolder(
+) : ListAdapter<DiscoverCourse, DiscoverSearchAdapter.DiscoverSearchViewHolder>(diffUtil) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverSearchViewHolder {
+        return DiscoverSearchViewHolder(
             ItemDiscoverCourseBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
     }
 
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DiscoverSearchViewHolder, position: Int) {
         holder.onBind(currentList[position])
     }
 
-    inner class SearchViewHolder(
+    inner class DiscoverSearchViewHolder(
         private val binding: ItemDiscoverCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(course: DiscoverCourse) {
