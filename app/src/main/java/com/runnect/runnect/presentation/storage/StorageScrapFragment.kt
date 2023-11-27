@@ -66,7 +66,7 @@ class StorageScrapFragment :
         MainActivity.storageScrapFragment = null
     }
 
-    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
+    override fun scrapCourse(id: Int, scrapTF: Boolean) {
         viewModel.postCourseScrap(id, scrapTF)
     }
 

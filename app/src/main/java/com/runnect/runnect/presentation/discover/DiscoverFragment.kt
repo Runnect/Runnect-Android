@@ -327,8 +327,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vpDiscoverPromotion.unregisterOnPageChangeCallback(pageRegisterCallback)
     }
 
-    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id!!, scrapTF)
+    override fun scrapCourse(id: Int, scrapTF: Boolean) {
+        viewModel.postCourseScrap(id, scrapTF)
     }
 
     override fun selectItem(publicCourseId: Int) {

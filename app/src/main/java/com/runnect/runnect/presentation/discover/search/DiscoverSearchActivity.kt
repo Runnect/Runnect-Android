@@ -179,8 +179,8 @@ class DiscoverSearchActivity :
         applyScreenEnterAnimation()
     }
 
-    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id!!, scrapTF)
+    override fun scrapCourse(id: Int, scrapTF: Boolean) {
+        viewModel.postCourseScrap(id, scrapTF)
     }
 
     companion object {
