@@ -19,17 +19,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_discover"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="56dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_discover_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="@font/pretendard_bold"
                     android:text="@string/discover_title"
                     android:textColor="@color/G1"
@@ -39,9 +41,9 @@
                     android:id="@+id/iv_discover_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="14dp"
                     android:layout_gravity="end"
                     android:layout_marginEnd="12dp"
+                    android:padding="14dp"
                     app:srcCompat="@drawable/discover_search" />
             </androidx.appcompat.widget.Toolbar>
 
@@ -79,7 +81,6 @@
                         app:ci_width="4dp"
                         app:layout_constraintBottom_toBottomOf="@id/vp_discover_promotion" />
 
-
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_discover_recommend_title"
                         android:layout_width="wrap_content"
@@ -104,46 +105,48 @@
                         app:layout_constraintStart_toStartOf="@id/tv_discover_recommend_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_title" />
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/shimmer_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
-                    app:shimmer_auto_start="true">
-
-                    <LinearLayout
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmer_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_marginHorizontal="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
+                        app:shimmer_auto_start="true">
 
-                        <include layout="@layout/item_discover_course_shimmer" />
-                        <include layout="@layout/item_discover_course_shimmer" />
-                        <include layout="@layout/item_discover_course_shimmer" />
-                    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
-                </com.facebook.shimmer.ShimmerFrameLayout>
+                            <include layout="@layout/item_discover_course_shimmer" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_discover_recommend"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="15dp"
-                    android:layout_marginTop="16dp"
-                    android:nestedScrollingEnabled="false"
-                    android:orientation="vertical"
-                    android:overScrollMode="never"
-                    android:paddingBottom="80dp"
-                    android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
-                    tools:listitem="@layout/item_discover_course" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
+                            <include layout="@layout/item_discover_course_shimmer" />
+
+                            <include layout="@layout/item_discover_course_shimmer" />
+                        </LinearLayout>
+
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_discover_recommend"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="16dp"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="vertical"
+                        android:overScrollMode="never"
+                        android:paddingBottom="80dp"
+                        android:scrollbars="none"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_subtitle"
+                        tools:listitem="@layout/item_discover_course" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_discover_upload"
