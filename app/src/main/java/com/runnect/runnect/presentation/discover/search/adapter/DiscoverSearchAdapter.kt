@@ -10,8 +10,6 @@ import com.runnect.runnect.databinding.ItemDiscoverCourseBinding
 import com.runnect.runnect.domain.entity.DiscoverCourse
 import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
-import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
-import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 
 class DiscoverSearchAdapter(
     private val onRecommendItemClick: (Int) -> Unit,

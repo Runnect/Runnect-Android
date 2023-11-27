@@ -24,8 +24,6 @@ import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.KEY_
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
-import com.runnect.runnect.util.callback.listener.OnRecommendItemClick
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
