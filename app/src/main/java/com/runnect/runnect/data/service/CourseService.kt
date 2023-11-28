@@ -13,6 +13,9 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface CourseService {
+    @GET("/api/public-course/marathon")
+    suspend fun getMarathonCourse(): BaseResponse<ResponseGetDiscoverMarathon>
+
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
         @Query("pageNo") pageNo: String,

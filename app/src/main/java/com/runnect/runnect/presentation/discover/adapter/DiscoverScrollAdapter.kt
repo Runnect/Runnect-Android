@@ -16,7 +16,7 @@ class DiscoverScrollAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverScrollViewHolder {
-        binding = ItemDiscoverScrollBinding.inflate(
+        val binding = ItemDiscoverScrollBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

@@ -20,6 +20,8 @@ import okhttp3.RequestBody
 import retrofit2.Response
 
 interface CourseRepository {
+    suspend fun getMarathonCourse(): Result<List<DiscoverCourse>?>
+
     suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<List<DiscoverCourse>?>
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?>

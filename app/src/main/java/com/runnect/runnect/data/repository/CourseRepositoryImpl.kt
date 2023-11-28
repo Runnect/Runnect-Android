@@ -24,6 +24,10 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
+    override suspend fun getMarathonCourse(): Result<List<DiscoverCourse>?> = runCatching {
+        remoteCourseDataSource.getMarathonCourse().data?.toDiscoverCourses()
+    }
+
     override suspend fun getRecommendCourse(
         pageNo: String,
         ordering: String

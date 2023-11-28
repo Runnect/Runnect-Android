@@ -7,6 +7,7 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.base.BaseResponse
@@ -17,6 +18,9 @@ import javax.inject.Inject
 class RemoteCourseDataSource @Inject constructor(
     private val courseService: CourseService
 ) {
+    suspend fun getMarathonCourse(): BaseResponse<ResponseGetDiscoverMarathon> =
+        courseService.getMarathonCourse()
+
     suspend fun getRecommendCourse(
         pageNo: String,
         ordering: String
