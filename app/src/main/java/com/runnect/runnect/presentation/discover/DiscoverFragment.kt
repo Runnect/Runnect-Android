@@ -25,6 +25,7 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseAdapter
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverScrollAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -47,9 +48,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnBannerItemClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
+    private val scrollAdapter: DiscoverScrollAdapter by lazy { DiscoverScrollAdapter() }
+    private val scrollBinding = scrollAdapter.binding
+
     private val bannerAdapter: BannerAdapter by lazy { BannerAdapter(this) }
-    private lateinit var recommendCourseAdapter: DiscoverCourseAdapter
     private lateinit var marathonCourseAdapter: DiscoverCourseAdapter
+    private lateinit var recommendCourseAdapter: DiscoverCourseAdapter
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -90,11 +94,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initRecyclerViewScrollListener() {
-        binding.rvDiscoverRecommend.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        scrollBinding.rvDiscoverRecommend.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if (!binding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
+                if (!scrollBinding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
                     viewModel.loadNextPage()
                 }
             }
@@ -102,36 +107,30 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initAdapter() {
-        initRecommendCourseAdapter()
-        initMarathonCourseAdapter()
+        marathonCourseAdapter = initDiscoverCourseAdapter()
+        recommendCourseAdapter = initDiscoverCourseAdapter()
     }
 
-    private fun initRecommendCourseAdapter() {
-        recommendCourseAdapter = DiscoverCourseAdapter(
-            onHeartButtonClick = { courseId, scrap ->
-                viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
-            }
-        )
-    }
+    private fun initDiscoverCourseAdapter() = DiscoverCourseAdapter(
+        onHeartButtonClick = { courseId, scrap ->
+            viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
+        },
+        onCourseItemClick = { courseId ->
+            navigateToDetailScreen(courseId)
+            viewModel.saveClickedCourseId(courseId)
+        }
+    )
 
-    private fun initMarathonCourseAdapter() {
-        marathonCourseAdapter = DiscoverCourseAdapter(
-            onHeartButtonClick = { courseId, scrap ->
-                viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
-            }
-        )
+    private fun initMarathonCourseRecyclerView() {
+        scrollBinding.rvDiscoverMarathon.apply {
+            setHasFixedSize(true)
+            adapter = marathonCourseAdapter
+            // todo: 아이템 간의 여백 조정
+        }
     }
 
     private fun initRecommendCourseRecyclerView() {
-        binding.rvDiscoverRecommend.apply {
+        scrollBinding.rvDiscoverRecommend.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = recommendCourseAdapter
@@ -173,12 +172,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initLayout() {
-        setPromotionBanner(binding.vpDiscoverPromotion)
+        setPromotionBanner(scrollBinding.vpDiscoverBanner)
+        initMarathonCourseRecyclerView()
         initRecommendCourseRecyclerView()
     }
 
     private fun addListener() {
-        initRecyclerViewScrollListener()
+        // todo: 스크롤 위치에 따라 다음 페이지 불러오기
+        // initRecyclerViewScrollListener()
+
         initSearchButtonClickListener()
         initUploadButtonClickListener()
     }
@@ -261,13 +263,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun showShimmerLayout() {
-        binding.shimmerLayout.startShimmer()
-        binding.shimmerLayout.isVisible = true
+        scrollBinding.slDiscoverRecommend.startShimmer()
+        scrollBinding.slDiscoverRecommend.isVisible = true
     }
 
     private fun dismissShimmerLayout() {
-        binding.shimmerLayout.stopShimmer()
-        binding.shimmerLayout.isVisible = false
+        scrollBinding.slDiscoverRecommend.stopShimmer()
+        scrollBinding.slDiscoverRecommend.isVisible = false
     }
 
     private fun setupCourseScrapStateObserver() {
@@ -284,16 +286,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setPromotionAdapter()
         bannerAdapter.setBannerCount(viewModel.bannerCount)
         bannerAdapter.submitList(viewModel.bannerData)
-        setPromotionIndicator(binding.vpDiscoverPromotion)
-        registerPromotionPageCallback(binding.vpDiscoverPromotion)
+        setPromotionIndicator(scrollBinding.vpDiscoverBanner)
+        registerPromotionPageCallback(scrollBinding.vpDiscoverBanner)
     }
 
     private fun setPromotionAdapter() {
-        binding.vpDiscoverPromotion.adapter = bannerAdapter
+        scrollBinding.vpDiscoverBanner.adapter = bannerAdapter
     }
 
     private fun setPromotionIndicator(vp: ViewPager2) {
-        val indicator = binding.ciDiscoverPromotion
+        val indicator = scrollBinding.ciDiscoverBanner
         indicator.setViewPager(vp)
         indicator.createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
     }
@@ -302,7 +304,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         pageRegisterCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
+                scrollBinding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
                 currentPosition = position
             }
 
@@ -313,7 +315,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 if (positionOffsetPixels == 0) {
-                    binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
+                    scrollBinding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
                 }
             }
         }
@@ -373,7 +375,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun onPause() {
         super.onPause()
         autoScrollStop()
-        binding.vpDiscoverPromotion.unregisterOnPageChangeCallback(pageRegisterCallback)
+        scrollBinding.vpDiscoverBanner.unregisterOnPageChangeCallback(pageRegisterCallback)
     }
 
     override fun onAttach(context: Context) {
