@@ -15,10 +15,10 @@ import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.custom.toast.RunnectToast
 
-class RecommendCourseAdapter(
+class DiscoverCourseAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
-    private val onRecommendItemClick: (Int) -> Unit,
-) : ListAdapter<DiscoverCourse, RecommendCourseAdapter.RecommendCourseViewHolder>(diffUtil) {
+    private val onCourseItemClick: (Int) -> Unit,
+) : ListAdapter<DiscoverCourse, DiscoverCourseAdapter.RecommendCourseViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendCourseViewHolder {
         return RecommendCourseViewHolder(
             ItemDiscoverCourseBinding.inflate(
@@ -49,7 +49,7 @@ class RecommendCourseAdapter(
             course: DiscoverCourse
         ) {
             itemView.setOnClickListener {
-                onRecommendItemClick(course.id)
+                onCourseItemClick(course.id)
             }
         }
 

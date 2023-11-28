@@ -23,7 +23,7 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.adapter.RecommendCourseAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseAdapter
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
@@ -48,7 +48,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private val viewModel: DiscoverViewModel by viewModels()
 
     private val bannerAdapter: BannerAdapter by lazy { BannerAdapter(this) }
-    private lateinit var recommendAdapter: RecommendCourseAdapter
+    private lateinit var recommendCourseAdapter: DiscoverCourseAdapter
+    private lateinit var marathonCourseAdapter: DiscoverCourseAdapter
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -67,7 +68,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     result.data?.getCompatibleParcelableExtra(KEY_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
 
-                recommendAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
+                recommendCourseAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
             }
         }
 
@@ -76,12 +77,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        initAdapter()
         initLayout()
         addListener()
         addObserver()
         registerBackPressedCallback()
         initRefreshLayoutListener()
-        initRecommendCourseRecyclerView()
     }
 
     fun getRecommendCourses(pageNo: Int) {
@@ -89,31 +90,59 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initRecyclerViewScrollListener() {
-        binding.rvDiscoverRecommend.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.rvDiscoverRecommend.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if(!binding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
+                if (!binding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
                     viewModel.loadNextPage()
                 }
             }
         })
     }
 
-    private fun initRecommendCourseRecyclerView() {
-        recommendAdapter = RecommendCourseAdapter(
+    private fun initAdapter() {
+        initRecommendCourseAdapter()
+        initMarathonCourseAdapter()
+    }
+
+    private fun initRecommendCourseAdapter() {
+        recommendCourseAdapter = DiscoverCourseAdapter(
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
             },
-            onRecommendItemClick = { courseId ->
+            onCourseItemClick = { courseId ->
                 navigateToDetailScreen(courseId)
                 viewModel.saveClickedCourseId(courseId)
             }
         )
+    }
 
+    private fun initMarathonCourseAdapter() {
+        marathonCourseAdapter = DiscoverCourseAdapter(
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
+            },
+            onCourseItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            }
+        )
+    }
+
+    private fun initRecommendCourseRecyclerView() {
         binding.rvDiscoverRecommend.apply {
             setHasFixedSize(true)
-            adapter = recommendAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            adapter = recommendCourseAdapter
+            addItemDecoration(
+                GridSpacingItemDecoration(
+                    context = requireContext(),
+                    spanCount = 2,
+                    horizontalSpacing = 6,
+                    topSpacing = 20
+                )
+            )
         }
     }
 
@@ -144,16 +173,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initLayout() {
-        binding.rvDiscoverRecommend.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvDiscoverRecommend.addItemDecoration(
-            GridSpacingItemDecoration(
-                context = requireContext(),
-                spanCount = 2,
-                horizontalSpacing = 6,
-                topSpacing = 20
-            )
-        )
         setPromotionBanner(binding.vpDiscoverPromotion)
+        initRecommendCourseRecyclerView()
     }
 
     private fun addListener() {
@@ -226,7 +247,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     dismissShimmerLayout()
 
                     if (state.data == null) return@observe
-                    recommendAdapter.submitList(state.data)
+                    recommendCourseAdapter.submitList(state.data)
                 }
 
                 is UiStateV2.Failure -> {
