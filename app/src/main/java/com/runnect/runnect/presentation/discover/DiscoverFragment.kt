@@ -90,7 +90,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourses(pageNo = pageNo)
+        viewModel.getRecommendCourses(pageNo = pageNo, "date")
     }
 
     private fun initRecyclerViewScrollListener() {
@@ -215,7 +215,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.refreshLayout.setOnRefreshListener {
             // 기존에 조회했던 리스트에 아이템이 누적으로 더해지므로 clear()로 비워주었다.
             //viewModel.recommendCourses.clear()
-            viewModel.getRecommendCourses(pageNo = 1)
+            viewModel.getRecommendCourses(pageNo = 1, "date")
             binding.refreshLayout.isRefreshing = false
         }
     }

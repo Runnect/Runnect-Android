@@ -16,6 +16,7 @@ interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
         @Query("pageNo") pageNo: String,
+        @Query("ordering") ordering: String
     ): BaseResponse<ResponseGetDiscoverRecommend>
 
     @POST("/api/scrap")

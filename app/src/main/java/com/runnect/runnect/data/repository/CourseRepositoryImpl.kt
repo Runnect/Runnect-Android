@@ -26,9 +26,11 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     CourseRepository {
     override suspend fun getRecommendCourse(
         pageNo: String,
+        ordering: String
     ): Result<List<DiscoverCourse>?> = runCatching {
         remoteCourseDataSource.getRecommendCourse(
-            pageNo = pageNo
+            pageNo = pageNo,
+            ordering = ordering
         ).data?.toDiscoverCourses()
     }
 
