@@ -20,14 +20,17 @@ class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
-    // todo: UiStateV2 코드로 리팩토링 하자!
-    private val _courseGetState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
-    val courseGetState: LiveData<UiStateV2<List<DiscoverCourse>?>>
-        get() = _courseGetState
-
     private val _bannerGetState = MutableLiveData<UiState>(UiState.Empty)
     val bannerGetState: LiveData<UiState>
         get() = _bannerGetState
+
+    private val _marathonCourseGetState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
+    val marathonCourseGetState: LiveData<UiStateV2<List<DiscoverCourse>?>>
+        get() = _marathonCourseGetState
+
+    private val _recommendCourseGetState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
+    val recommendCourseGetState: LiveData<UiStateV2<List<DiscoverCourse>?>>
+        get() = _recommendCourseGetState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
@@ -49,6 +52,7 @@ class DiscoverViewModel @Inject constructor(
 
     init {
         getPromotionBanner()
+        getMarathonCourse()
         getRecommendCourse(pageNo = 1, "date")
     }
 
@@ -79,26 +83,27 @@ class DiscoverViewModel @Inject constructor(
 
     private fun getMarathonCourse() {
         viewModelScope.launch {
+            _marathonCourseGetState.value = UiStateV2.Loading
+
             courseRepository.getMarathonCourse()
-                .onSuccess {
-
+                .onSuccess { response ->
+                    _marathonCourseGetState.value = UiStateV2.Success(response)
                 }
-                .onFailure {
-
+                .onFailure { exception ->
+                    _marathonCourseGetState.value = UiStateV2.Failure(exception.message.toString())
                 }
         }
     }
 
     fun getRecommendCourse(pageNo: Int, ordering: String) {
         viewModelScope.launch {
-            _courseGetState.value = UiStateV2.Loading
+            _recommendCourseGetState.value = UiStateV2.Loading
 
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { response ->
-                    _courseGetState.value = UiStateV2.Success(response)
-//                    currentPageNo.value = it[0].pageNo
+                    _recommendCourseGetState.value = UiStateV2.Success(response)
                 }.onFailure { exception ->
-                    _courseGetState.value = UiStateV2.Failure(exception.message.toString())
+                    _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
                 }
         }
     }

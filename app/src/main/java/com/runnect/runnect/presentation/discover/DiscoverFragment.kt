@@ -222,7 +222,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun addObserver() {
         setupBannerGetStateObserver()
-        setupCourseGetStateObserver()
+        setupMarathonCourseGetStateObserver()
+        setupRecommendCourseGetStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -240,16 +241,34 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun setupCourseGetStateObserver() {
-        viewModel.courseGetState.observe(viewLifecycleOwner) { state ->
+    private fun setupMarathonCourseGetStateObserver() {
+        viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Loading -> {}
+
+                is UiStateV2.Success -> {
+                    val courses = state.data ?: return@observe
+                    marathonCourseAdapter.submitList(courses)
+                }
+
+                is UiStateV2.Failure -> {
+                    requireContext().showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseGetStateObserver() {
+        viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> showShimmerLayout()
 
                 is UiStateV2.Success -> {
                     dismissShimmerLayout()
-
-                    if (state.data == null) return@observe
-                    recommendCourseAdapter.submitList(state.data)
+                    val courses = state.data ?: return@observe
+                    recommendCourseAdapter.submitList(courses)
                 }
 
                 is UiStateV2.Failure -> {

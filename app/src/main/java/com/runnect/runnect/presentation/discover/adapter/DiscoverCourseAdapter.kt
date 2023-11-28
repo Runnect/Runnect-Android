@@ -18,20 +18,20 @@ import com.runnect.runnect.util.custom.toast.RunnectToast
 class DiscoverCourseAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
-) : ListAdapter<DiscoverCourse, DiscoverCourseAdapter.RecommendCourseViewHolder>(diffUtil) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendCourseViewHolder {
-        return RecommendCourseViewHolder(
+) : ListAdapter<DiscoverCourse, DiscoverCourseAdapter.DiscoverCourseViewHolder>(diffUtil) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverCourseViewHolder {
+        return DiscoverCourseViewHolder(
             ItemDiscoverCourseBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
     }
 
-    override fun onBindViewHolder(holder: RecommendCourseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DiscoverCourseViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
 
-    inner class RecommendCourseViewHolder(
+    inner class DiscoverCourseViewHolder(
         private val binding: ItemDiscoverCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverCourse) {
