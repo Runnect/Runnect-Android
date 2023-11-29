@@ -48,12 +48,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     OnBannerItemClick {
     private val viewModel: DiscoverViewModel by viewModels()
 
-    private val scrollAdapter: DiscoverScrollAdapter by lazy { DiscoverScrollAdapter() }
-    private val scrollBinding = scrollAdapter.binding
-
     private val bannerAdapter: BannerAdapter by lazy { BannerAdapter(this) }
     private lateinit var marathonCourseAdapter: DiscoverCourseAdapter
     private lateinit var recommendCourseAdapter: DiscoverCourseAdapter
+    private lateinit var scrollAdapter: DiscoverScrollAdapter
 
     // 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
@@ -93,22 +91,23 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.getRecommendCourse(pageNo = pageNo, "date")
     }
 
-    private fun initRecyclerViewScrollListener() {
-        scrollBinding.rvDiscoverRecommend.addOnScrollListener(object :
-            RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                if (!scrollBinding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
-                    viewModel.loadNextPage()
-                }
-            }
-        })
-    }
+//    private fun initRecyclerViewScrollListener() {
+//        binding.rvDiscoverRecommend.addOnScrollListener(object :
+//            RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//
+//                if (!binding.rvDiscoverRecommend.canScrollVertically(SCROLL_DIRECTION)) {
+//                    viewModel.loadNextPage()
+//                }
+//            }
+//        })
+//    }
 
     private fun initAdapter() {
         marathonCourseAdapter = initDiscoverCourseAdapter()
         recommendCourseAdapter = initDiscoverCourseAdapter()
+        scrollAdapter = DiscoverScrollAdapter(bannerAdapter, marathonCourseAdapter, recommendCourseAdapter)
     }
 
     private fun initDiscoverCourseAdapter() = DiscoverCourseAdapter(
@@ -121,29 +120,29 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     )
 
-    private fun initMarathonCourseRecyclerView() {
-        scrollBinding.rvDiscoverMarathon.apply {
-            setHasFixedSize(true)
-            adapter = marathonCourseAdapter
-            // todo: 아이템 간의 여백 조정
-        }
-    }
+//    private fun initMarathonCourseRecyclerView() {
+//        binding.rvDiscoverMarathon.apply {
+//            setHasFixedSize(true)
+//            adapter = marathonCourseAdapter
+//            // todo: 아이템 간의 여백 조정
+//        }
+//    }
 
-    private fun initRecommendCourseRecyclerView() {
-        scrollBinding.rvDiscoverRecommend.apply {
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = recommendCourseAdapter
-            addItemDecoration(
-                GridSpacingItemDecoration(
-                    context = requireContext(),
-                    spanCount = 2,
-                    horizontalSpacing = 6,
-                    topSpacing = 20
-                )
-            )
-        }
-    }
+//    private fun initRecommendCourseRecyclerView() {
+//        scrollBinding.rvDiscoverRecommend.apply {
+//            setHasFixedSize(true)
+//            layoutManager = GridLayoutManager(requireContext(), 2)
+//            adapter = recommendCourseAdapter
+//            addItemDecoration(
+//                GridSpacingItemDecoration(
+//                    context = requireContext(),
+//                    spanCount = 2,
+//                    horizontalSpacing = 6,
+//                    topSpacing = 20
+//                )
+//            )
+//        }
+//    }
 
     private fun navigateToDetailScreen(publicCourseId: Int) {
         val intent = Intent(requireContext(), CourseDetailActivity::class.java).apply {
