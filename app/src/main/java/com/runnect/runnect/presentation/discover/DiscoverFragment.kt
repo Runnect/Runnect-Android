@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -243,8 +244,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupMarathonCourseGetStateObserver() {
         viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Loading -> {}
-
                 is UiStateV2.Success -> {
                     val courses = state.data ?: return@observe
                     marathonCourseAdapter.submitList(courses)
@@ -262,32 +261,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Loading -> showShimmerLayout()
-
                 is UiStateV2.Success -> {
-                    dismissShimmerLayout()
                     val courses = state.data ?: return@observe
                     recommendCourseAdapter.submitList(courses)
                 }
 
                 is UiStateV2.Failure -> {
-                    dismissShimmerLayout()
                     requireContext().showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
             }
         }
-    }
-
-    private fun showShimmerLayout() {
-        scrollBinding.slDiscoverRecommend.startShimmer()
-        scrollBinding.slDiscoverRecommend.isVisible = true
-    }
-
-    private fun dismissShimmerLayout() {
-        scrollBinding.slDiscoverRecommend.stopShimmer()
-        scrollBinding.slDiscoverRecommend.isVisible = false
     }
 
     private fun setupCourseScrapStateObserver() {

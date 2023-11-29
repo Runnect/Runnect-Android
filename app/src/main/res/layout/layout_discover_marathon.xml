@@ -56,28 +56,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_discover_marathon_header" />
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/sl_discover_marathon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:layout_marginHorizontal="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_discover_marathon_header"
-            app:shimmer_auto_start="false">
+<!--        <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--            android:id="@+id/sl_discover_marathon"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="invisible"-->
+<!--            android:layout_marginHorizontal="15dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/cl_discover_marathon_header"-->
+<!--            app:shimmer_auto_start="false">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="horizontal">-->
 
-                <include layout="@layout/item_discover_course_shimmer" />
+<!--                <include layout="@layout/item_discover_course_shimmer" />-->
 
-                <include layout="@layout/item_discover_course_shimmer" />
-            </LinearLayout>
+<!--                <include layout="@layout/item_discover_course_shimmer" />-->
+<!--            </LinearLayout>-->
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+<!--        </com.facebook.shimmer.ShimmerFrameLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
