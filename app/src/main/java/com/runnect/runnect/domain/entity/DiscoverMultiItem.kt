@@ -1,12 +1,6 @@
 package com.runnect.runnect.domain.entity
 
-sealed class DiscoverScrollItem {
-    data class Banner(
-        val index: Int,
-        val imageUrl: String,
-        val linkUrl: String
-    ) : DiscoverScrollItem()
-
+sealed class DiscoverMultiItem {
     data class MarathonCourse(
         val id: Int,
         val courseId: Int,
@@ -14,7 +8,7 @@ sealed class DiscoverScrollItem {
         val image: String,
         var scrap: Boolean,
         val departure: String,
-    ) : DiscoverScrollItem()
+    ) : DiscoverMultiItem()
 
     data class RecommendCourse(
         val id: Int,
@@ -23,5 +17,5 @@ sealed class DiscoverScrollItem {
         val image: String,
         var scrap: Boolean,
         val departure: String,
-    ) : DiscoverScrollItem()
+    ) : DiscoverMultiItem()
 }
