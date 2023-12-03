@@ -28,10 +28,7 @@ class DiscoverMultiViewAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        Timber.e("${multiViewItems.size}")
-        return multiViewItems.size
-    }
+    override fun getItemCount(): Int = multiViewItems.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return when (viewType) {

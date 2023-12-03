@@ -41,9 +41,7 @@ import java.util.TimerTask
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
     private val viewModel: DiscoverViewModel by viewModels()
     private val bannerAdapter by lazy { BannerAdapter { showPromotionWebsite(it) } }
-
     private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
-    private val multiViewItems: ArrayList<List<DiscoverMultiViewItem>> = arrayListOf()
 
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
 
@@ -113,9 +111,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun addListener() {
-        // todo: 스크롤 위치에 따라 다음 페이지 불러오기
-        // initRecyclerViewScrollListener()
-
         initSearchButtonClickListener()
         initUploadButtonClickListener()
     }
@@ -157,8 +152,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun addObserver() {
         setupBannerGetStateObserver()
-        setupMarathonCourseGetStateObserver()
-        setupRecommendCourseGetStateObserver()
+        setupCourseLoadStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -177,39 +171,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun setupMarathonCourseGetStateObserver() {
-        viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStateV2.Success -> {
-                    val courses = state.data ?: return@observe
-                    multiViewItems.add(courses)
-                }
-
-                is UiStateV2.Failure -> {
-                    requireContext().showSnackbar(binding.root, state.msg)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun setupRecommendCourseGetStateObserver() {
-        viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStateV2.Loading -> {
-                    showLoadingProgressBar()
-                }
+    private fun setupCourseLoadStateObserver() {
+        viewModel.courseLoadState.observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
-                    val courses = state.data ?: return@observe
-                    multiViewItems.add(courses)
-
-                    if (multiViewItems.size == MULTI_VIEW_TYPE_SIZE) {
-                        initMultiViewAdapter()
-                        initMultiRecyclerView()
-                    }
+                    initMultiViewAdapter()
+                    initMultiRecyclerView()
                 }
 
                 is UiStateV2.Failure -> {
@@ -234,7 +204,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initMultiViewAdapter() {
         multiViewAdapter = DiscoverMultiViewAdapter(
-            multiViewItems = multiViewItems,
+            multiViewItems = viewModel.multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             }
