@@ -1,28 +1,28 @@
 package com.runnect.runnect.domain.repository
 
-import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.CourseLoadInfoDTO
-import com.runnect.runnect.data.dto.CourseSearchDTO
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
-import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
+import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 
 interface CourseRepository {
-    suspend fun getMarathonCourse(): Result<List<DiscoverCourse>?>
+    suspend fun getMarathonCourse(): Result<List<MarathonCourse>?>
 
-    suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<List<DiscoverCourse>?>
+    suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<List<RecommendCourse>?>
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?>
 

@@ -15,6 +15,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody
@@ -24,18 +25,18 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
-    override suspend fun getMarathonCourse(): Result<List<DiscoverCourse>?> = runCatching {
-        remoteCourseDataSource.getMarathonCourse().data?.toDiscoverCourses()
+    override suspend fun getMarathonCourse(): Result<List<MarathonCourse>?> = runCatching {
+        remoteCourseDataSource.getMarathonCourse().data?.toMarathonCourses()
     }
 
     override suspend fun getRecommendCourse(
         pageNo: String,
         ordering: String
-    ): Result<List<DiscoverCourse>?> = runCatching {
+    ): Result<List<RecommendCourse>?> = runCatching {
         remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
             ordering = ordering
-        ).data?.toDiscoverCourses()
+        ).data?.toRecommendCourses()
     }
 
     override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?> =
