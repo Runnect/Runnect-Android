@@ -55,8 +55,8 @@ class DiscoverPickActivity :
                 GridSpacingItemDecoration(
                     context = this@DiscoverPickActivity,
                     spanCount = 2,
-                    horizontalSpacing = 6,
-                    topSpacing = 20
+                    horizontalSpaceSize = 6,
+                    topSpaceSize = 20
                 )
             )
         }

@@ -11,11 +11,11 @@ import com.runnect.runnect.util.extension.dpToPx
 class GridSpacingItemDecoration(
     context: Context,
     private val spanCount: Int,
-    horizontalSpacing: Int,
-    topSpacing: Int
+    horizontalSpaceSize: Int,
+    topSpaceSize: Int
 ) : ItemDecoration() {
-    private val horizontalSpacing = horizontalSpacing.dpToPx(context)
-    private val topSpacing = topSpacing.dpToPx(context)
+    private val horizontalSpacing = horizontalSpaceSize.dpToPx(context)
+    private val topSpacing = topSpaceSize.dpToPx(context)
 //    private val includeEdge = false
 
     override fun getItemOffsets(

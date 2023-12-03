@@ -95,8 +95,8 @@ class DiscoverSearchActivity :
                 GridSpacingItemDecoration(
                     context = this@DiscoverSearchActivity,
                     spanCount = 2,
-                    horizontalSpacing = 6,
-                    topSpacing = 20
+                    horizontalSpaceSize = 6,
+                    topSpaceSize = 20
                 )
             )
         }

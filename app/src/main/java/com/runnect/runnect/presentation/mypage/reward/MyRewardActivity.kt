@@ -71,8 +71,8 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
             GridSpacingItemDecoration(
                 context = this,
                 spanCount = 3,
-                horizontalSpacing = 28,
-                topSpacing = 28
+                horizontalSpaceSize = 28,
+                topSpaceSize = 28
             )
         )
     }

@@ -58,8 +58,8 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             GridSpacingItemDecoration(
                 context = this,
                 spanCount = 2,
-                horizontalSpacing = 6,
-                topSpacing = 20
+                horizontalSpaceSize = 6,
+                topSpaceSize = 20
             )
         )
     }
