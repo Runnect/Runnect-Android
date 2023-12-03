@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
 import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
@@ -20,25 +22,21 @@ class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
-    private val _bannerGetState = MutableLiveData<UiState>(UiState.Empty)
+    private val _bannerGetState = MutableLiveData<UiState>()
     val bannerGetState: LiveData<UiState>
         get() = _bannerGetState
 
-    private val _marathonCourseGetState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
-    val marathonCourseGetState: LiveData<UiStateV2<List<DiscoverCourse>?>>
+    private val _marathonCourseGetState = MutableLiveData<UiStateV2<List<MarathonCourse>?>>()
+    val marathonCourseGetState: LiveData<UiStateV2<List<MarathonCourse>?>>
         get() = _marathonCourseGetState
 
-    private val _recommendCourseGetState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
-    val recommendCourseGetState: LiveData<UiStateV2<List<DiscoverCourse>?>>
+    private val _recommendCourseGetState = MutableLiveData<UiStateV2<List<RecommendCourse>?>>()
+    val recommendCourseGetState: LiveData<UiStateV2<List<RecommendCourse>?>>
         get() = _recommendCourseGetState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
-
-    val currentPageNo = MutableLiveData<Int>()
-
-    val errorMessage = MutableLiveData<String>()
 
     var bannerData = mutableListOf<PromotionBanner>()
 
@@ -72,7 +70,6 @@ class DiscoverViewModel @Inject constructor(
                 bannerRepository.getPromotionBanners().collect { bannerList ->
                     bannerData = bannerList
                     _bannerCount = bannerData.size
-
                     _bannerGetState.value = UiState.Success
                 }
             }.onFailure {
