@@ -1,5 +1,5 @@
 package com.runnect.runnect.data.dto.response
-import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,8 +22,8 @@ data class ResponseGetDiscoverSearch(
         val region: String
     )
 
-    fun toDiscoverCourses(): List<DiscoverCourse> = publicCourses.map { course ->
-        DiscoverCourse(
+    fun toDiscoverSearchCourses(): List<DiscoverSearchCourse> = publicCourses.map { course ->
+        DiscoverSearchCourse(
             id = course.id,
             courseId = course.courseId,
             title = course.title,

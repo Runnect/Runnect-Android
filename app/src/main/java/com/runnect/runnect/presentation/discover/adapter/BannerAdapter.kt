@@ -7,39 +7,39 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverBannerBinding
 import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
-import com.runnect.runnect.util.callback.listener.OnBannerItemClick
 
 class BannerAdapter(
-    private val onBannerItemClick: OnBannerItemClick,
+    private val onBannerItemClick: (String) -> Unit,
 ) : ListAdapter<PromotionBanner,
-        BannerAdapter.DiscoverPromotionViewHolder>(diffUtil) {
-    private var bannerCount: Int = 0
+        BannerAdapter.BannerViewHolder>(diffUtil) {
+//    private var bannerCount: Int = 0
+//
+//    fun setBannerCount(bannerCount: Int) {
+//        this.bannerCount = bannerCount
+//    }
 
-    fun setBannerCount(bannerCount: Int) {
-        this.bannerCount = bannerCount
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverPromotionViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val binding = ItemDiscoverBannerBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false
         )
-        return DiscoverPromotionViewHolder(binding)
+        return BannerViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: DiscoverPromotionViewHolder, position: Int) {
-        holder.onBind(getItem(position % bannerCount))
+    override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
+//        holder.onBind(getItem(position % bannerCount))
+        holder.onBind(currentList[position])
     }
 
     override fun getItemCount(): Int = PAGE_NUM
 
-    inner class DiscoverPromotionViewHolder(
+    inner class BannerViewHolder(
         private val binding: ItemDiscoverBannerBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(banner: PromotionBanner) {
             binding.banner = banner
-            binding.ivItemDiscoverPromotionBanner.setOnClickListener {
-                onBannerItemClick.selectBanner(banner)
+            binding.ivDiscoverBanner.setOnClickListener {
+                onBannerItemClick(banner.linkUrl)
             }
         }
     }

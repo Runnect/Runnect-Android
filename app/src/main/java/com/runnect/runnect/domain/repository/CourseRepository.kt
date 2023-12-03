@@ -12,7 +12,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
-import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import okhttp3.MultipartBody
@@ -24,7 +24,7 @@ interface CourseRepository {
 
     suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<List<RecommendCourse>?>
 
-    suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?>
+    suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 
     suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO>
 

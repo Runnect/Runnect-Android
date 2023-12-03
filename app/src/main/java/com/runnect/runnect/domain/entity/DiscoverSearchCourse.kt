@@ -1,6 +1,6 @@
 package com.runnect.runnect.domain.entity
 
-data class DiscoverCourse(
+data class DiscoverSearchCourse(
     val id: Int,
     val courseId: Int,
     var title: String,

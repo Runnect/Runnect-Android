@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +16,8 @@ import javax.inject.Inject
 class DiscoverSearchViewModel @Inject constructor(
     private val courseRepository: CourseRepository
 ) : ViewModel() {
-    private var _courseSearchState = MutableLiveData<UiStateV2<List<DiscoverCourse>?>>()
-    val courseSearchState: LiveData<UiStateV2<List<DiscoverCourse>?>>
+    private var _courseSearchState = MutableLiveData<UiStateV2<List<DiscoverSearchCourse>?>>()
+    val courseSearchState: LiveData<UiStateV2<List<DiscoverSearchCourse>?>>
         get() = _courseSearchState
 
     private var _clickedCourseId = -1

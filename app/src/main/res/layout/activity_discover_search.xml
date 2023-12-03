@@ -83,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line_discover_search"
-            tools:listitem="@layout/item_discover_course" />
+            tools:listitem="@layout/item_discover_search" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_discover_search_no_result"

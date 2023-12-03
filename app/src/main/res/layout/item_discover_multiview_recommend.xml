@@ -100,7 +100,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_discover_recommend_header"
-            tools:listitem="@layout/item_discover_course" />
+            tools:listitem="@layout/item_discover_recommend" />
 
         <!--        <com.facebook.shimmer.ShimmerFrameLayout-->
         <!--            android:id="@+id/sl_discover_recommend"-->

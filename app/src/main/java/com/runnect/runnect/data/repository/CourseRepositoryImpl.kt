@@ -14,7 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.util.extension.toData
@@ -39,9 +39,9 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         ).data?.toRecommendCourses()
     }
 
-    override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverCourse>?> =
+    override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?> =
         runCatching {
-            remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverCourses()
+            remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverSearchCourses()
         }
 
     override suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO> {

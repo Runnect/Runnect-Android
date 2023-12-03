@@ -7,7 +7,7 @@
 
         <variable
             name="course"
-            type="com.runnect.runnect.domain.entity.DiscoverCourse" />
+            type="com.runnect.runnect.domain.entity.DiscoverSearchCourse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
