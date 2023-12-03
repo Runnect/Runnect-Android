@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/iv_item_discover_promotion_banner"
+            android:id="@+id/iv_discover_banner"
             setDiscoverItemImage="@{banner.imageUrl}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
