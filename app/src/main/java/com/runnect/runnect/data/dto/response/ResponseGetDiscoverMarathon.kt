@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.dto.response
 
-import com.runnect.runnect.domain.entity.DiscoverCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -33,8 +33,8 @@ data class ResponseGetDiscoverMarathon(
         )
     }
 
-    fun toDiscoverCourses(): List<DiscoverCourse> = marathonPublicCourses.map { course ->
-        DiscoverCourse(
+    fun toMarathonCourses(): List<DiscoverMultiItem.MarathonCourse> = marathonPublicCourses.map { course ->
+        DiscoverMultiItem.MarathonCourse(
             id = course.id,
             courseId = course.courseId,
             title = course.title,
