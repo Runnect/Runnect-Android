@@ -7,6 +7,7 @@ import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
@@ -22,7 +23,13 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 adapter = DiscoverMarathonAdapter(onHeartButtonClick, onCourseItemClick).apply {
                     submitList(marathonCourses)
                 }
-                // todo: 아이템 간의 여백 조정
+                addItemDecoration(
+                    DiscoverMarathonItemDecoration(
+                        context = context,
+                        spaceSize = 10,
+                        itemCount = marathonCourses.size
+                    )
+                )
             }
         }
     }
@@ -43,8 +50,8 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                     GridSpacingItemDecoration(
                         context = context,
                         spanCount = 2,
-                        horizontalSpacing = 6,
-                        topSpacing = 20
+                        horizontalSpaceSize = 6,
+                        topSpaceSize = 20
                     )
                 )
             }
