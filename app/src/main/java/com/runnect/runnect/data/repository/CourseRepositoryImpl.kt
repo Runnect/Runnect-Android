@@ -15,7 +15,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.entity.DiscoverCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody

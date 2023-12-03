@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :

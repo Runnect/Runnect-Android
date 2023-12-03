@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemDiscoverMarathonBinding
-import com.runnect.runnect.domain.entity.DiscoverCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.custom.toast.RunnectToast
@@ -18,7 +17,7 @@ import com.runnect.runnect.util.custom.toast.RunnectToast
 class DiscoverMarathonAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
-) : ListAdapter<DiscoverMultiItem.MarathonCourse,
+) : ListAdapter<DiscoverMultiViewItem.MarathonCourse,
         DiscoverMarathonAdapter.DiscoverMarathonViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMarathonViewHolder {
@@ -42,7 +41,7 @@ class DiscoverMarathonAdapter(
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(course: DiscoverMultiItem.MarathonCourse) {
+        fun bind(course: DiscoverMultiViewItem.MarathonCourse) {
             with(binding) {
                 this.course = course
                 ivItemDiscoverCourseScrap.isSelected = course.scrap
@@ -54,7 +53,7 @@ class DiscoverMarathonAdapter(
 
         private fun initHeartButtonClickListener(
             imageView: AppCompatImageView,
-            course: DiscoverMultiItem.MarathonCourse
+            course: DiscoverMultiViewItem.MarathonCourse
         ) {
             imageView.setOnClickListener { view ->
                 if (MainActivity.isVisitorMode) {
@@ -69,7 +68,7 @@ class DiscoverMarathonAdapter(
 
         private fun initCourseItemClickListener(
             itemView: View,
-            course: DiscoverMultiItem.MarathonCourse
+            course: DiscoverMultiViewItem.MarathonCourse
         ) {
             itemView.setOnClickListener {
                 onCourseItemClick(course.id)
@@ -85,7 +84,7 @@ class DiscoverMarathonAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<DiscoverMultiItem.MarathonCourse>(
+        private val diffUtil = ItemDiffCallback<DiscoverMultiViewItem.MarathonCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )

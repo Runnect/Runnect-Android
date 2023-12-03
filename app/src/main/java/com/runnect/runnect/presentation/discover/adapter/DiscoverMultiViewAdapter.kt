@@ -2,30 +2,35 @@ package com.runnect.runnect.presentation.discover.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiItem
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
-import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import timber.log.Timber
 
-class DiscoverMultiAdapter(
-    private val marathonCourses: List<MarathonCourse>,
-    private val recommendCourses: List<RecommendCourse>,
+class DiscoverMultiViewAdapter(
+    private val multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
-) : ListAdapter<DiscoverMultiItem, DiscoverMultiViewHolder>(diffUtil) {
+) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
+
     enum class MultiViewType {
         MARATHON,
         RECOMMEND
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (currentList[position]) {
+        return when (multiViewItems[position].first()) {
             is MarathonCourse -> MultiViewType.MARATHON.ordinal
             is RecommendCourse -> MultiViewType.RECOMMEND.ordinal
         }
+    }
+
+    override fun getItemCount(): Int {
+        Timber.e("${multiViewItems.size}")
+        return multiViewItems.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
@@ -61,19 +66,14 @@ class DiscoverMultiAdapter(
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
-                holder.bind(marathonCourses)
+                val marathonCourses = multiViewItems[0]
+                (marathonCourses as? List<MarathonCourse>)?.let { holder.bind(it) }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                holder.bind(recommendCourses)
+                val recommendCourses = multiViewItems[1]
+                (recommendCourses as? List<RecommendCourse>)?.let { holder.bind(it) }
             }
         }
-    }
-
-    companion object {
-        private val diffUtil = ItemDiffCallback<DiscoverMultiItem>(
-            onItemsTheSame = { old, new -> old === new },
-            onContentsTheSame = { old, new -> old == new }
-        )
     }
 }

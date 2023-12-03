@@ -13,7 +13,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

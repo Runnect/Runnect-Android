@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.dto.response
 
-import com.runnect.runnect.domain.entity.DiscoverMultiItem
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -35,8 +35,8 @@ data class ResponseGetDiscoverRecommend(
         )
     }
 
-    fun toRecommendCourses(): List<DiscoverMultiItem.RecommendCourse> = publicCourses.map { course ->
-        DiscoverMultiItem.RecommendCourse(
+    fun toRecommendCourses(): List<DiscoverMultiViewItem.RecommendCourse> = publicCourses.map { course ->
+        DiscoverMultiViewItem.RecommendCourse(
             id = course.id,
             courseId = course.courseId,
             title = course.title,

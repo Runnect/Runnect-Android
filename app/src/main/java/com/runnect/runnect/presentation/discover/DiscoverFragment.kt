@@ -8,21 +8,20 @@ import android.os.Handler
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
-import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseAdapter
-import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiViewAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -43,9 +42,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private val viewModel: DiscoverViewModel by viewModels()
     private val bannerAdapter by lazy { BannerAdapter { showPromotionWebsite(it) } }
 
-    private lateinit var multiViewAdapter: DiscoverMultiAdapter
-    private var marathonCourses = listOf<MarathonCourse>()
-    private var recommendCourses = listOf<RecommendCourse>()
+    private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
+    private val multiViewItems: ArrayList<List<DiscoverMultiViewItem>> = arrayListOf()
 
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
 
@@ -184,7 +182,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Success -> {
                     val courses = state.data ?: return@observe
-                    marathonCourses = courses.map { it.copy() }
+                    multiViewItems.add(courses)
                 }
 
                 is UiStateV2.Failure -> {
@@ -199,16 +197,23 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Success -> {
-                    val courses = state.data ?: return@observe
-                    recommendCourses = courses.map { it.copy() }
+                is UiStateV2.Loading -> {
+                    showLoadingProgressBar()
+                }
 
-                    viewModel.initRecommendGetState()
-                    initMultiViewAdapter()
-                    initMultiRecyclerView()
+                is UiStateV2.Success -> {
+                    dismissLoadingProgressBar()
+                    val courses = state.data ?: return@observe
+                    multiViewItems.add(courses)
+
+                    if (multiViewItems.size == MULTI_VIEW_TYPE_SIZE) {
+                        initMultiViewAdapter()
+                        initMultiRecyclerView()
+                    }
                 }
 
                 is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
                     requireContext().showSnackbar(binding.root, state.msg)
                 }
 
@@ -217,18 +222,26 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
+    private fun showLoadingProgressBar() {
+        binding.rvDiscoverMultiView.isVisible = false
+        binding.pbDiscoverLoading.isVisible = true
+    }
+
+    private fun dismissLoadingProgressBar() {
+        binding.rvDiscoverMultiView.isVisible = true
+        binding.pbDiscoverLoading.isVisible = false
+    }
+
     private fun initMultiViewAdapter() {
-        multiViewAdapter = DiscoverMultiAdapter(
-            marathonCourses = marathonCourses,
-            recommendCourses = recommendCourses,
+        multiViewAdapter = DiscoverMultiViewAdapter(
+            multiViewItems = multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
-                 viewModel.postCourseScrap(courseId, scrap)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
+                viewModel.postCourseScrap(courseId, scrap)
             }
-        )
+        ) { courseId ->
+            navigateToDetailScreen(courseId)
+            viewModel.saveClickedCourseId(courseId)
+        }
     }
 
     private fun initMultiRecyclerView() {
@@ -362,5 +375,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val KEY_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
         const val END_PAGE = "HTTP 400 Bad Request"
+
+        private const val MULTI_VIEW_TYPE_SIZE = 2
     }
 }

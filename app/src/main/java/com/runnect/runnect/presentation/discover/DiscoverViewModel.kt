@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
@@ -98,10 +98,6 @@ class DiscoverViewModel @Inject constructor(
                     _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
                 }
         }
-    }
-
-    fun initRecommendGetState() {
-        _recommendCourseGetState.value = UiStateV2.Empty
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {

@@ -7,7 +7,7 @@
 
         <variable
             name="course"
-            type="com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse" />
+            type="com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

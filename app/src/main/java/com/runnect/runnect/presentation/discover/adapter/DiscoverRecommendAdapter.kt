@@ -8,9 +8,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
-import com.runnect.runnect.databinding.ItemDiscoverMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverRecommendBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiItem
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.custom.toast.RunnectToast
@@ -18,7 +17,7 @@ import com.runnect.runnect.util.custom.toast.RunnectToast
 class DiscoverRecommendAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
-) : ListAdapter<DiscoverMultiItem.RecommendCourse,
+) : ListAdapter<DiscoverMultiViewItem.RecommendCourse,
         DiscoverRecommendAdapter.DiscoverRecommendViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverRecommendViewHolder {
@@ -42,7 +41,7 @@ class DiscoverRecommendAdapter(
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(course: DiscoverMultiItem.RecommendCourse) {
+        fun bind(course: DiscoverMultiViewItem.RecommendCourse) {
             with(binding) {
                 this.course = course
                 ivItemDiscoverCourseScrap.isSelected = course.scrap
@@ -54,7 +53,7 @@ class DiscoverRecommendAdapter(
 
         private fun initHeartButtonClickListener(
             imageView: AppCompatImageView,
-            course: DiscoverMultiItem.RecommendCourse
+            course: DiscoverMultiViewItem.RecommendCourse
         ) {
             imageView.setOnClickListener { view ->
                 if (MainActivity.isVisitorMode) {
@@ -69,7 +68,7 @@ class DiscoverRecommendAdapter(
 
         private fun initCourseItemClickListener(
             itemView: View,
-            course: DiscoverMultiItem.RecommendCourse
+            course: DiscoverMultiViewItem.RecommendCourse
         ) {
             itemView.setOnClickListener {
                 onCourseItemClick(course.id)
@@ -85,7 +84,7 @@ class DiscoverRecommendAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<DiscoverMultiItem.RecommendCourse>(
+        private val diffUtil = ItemDiffCallback<DiscoverMultiViewItem.RecommendCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )
