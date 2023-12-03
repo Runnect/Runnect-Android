@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.domain.entity.DiscoverCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiItem
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
 import com.runnect.runnect.domain.entity.PromotionBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
@@ -46,8 +45,6 @@ class DiscoverViewModel @Inject constructor(
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
-    private var currentPageNumber = 1
-
     init {
         getPromotionBanner()
         getMarathonCourse()
@@ -56,10 +53,6 @@ class DiscoverViewModel @Inject constructor(
 
     fun saveClickedCourseId(id: Int) {
         _clickedCourseId = id
-    }
-
-    fun loadNextPage() {
-        getRecommendCourse(currentPageNumber++, "date")
     }
 
     private fun getPromotionBanner() {
@@ -83,8 +76,9 @@ class DiscoverViewModel @Inject constructor(
             _marathonCourseGetState.value = UiStateV2.Loading
 
             courseRepository.getMarathonCourse()
-                .onSuccess { response ->
-                    _marathonCourseGetState.value = UiStateV2.Success(response)
+                .onSuccess { courses ->
+                    if (courses == null) return@launch
+                    _marathonCourseGetState.value = UiStateV2.Success(courses)
                 }
                 .onFailure { exception ->
                     _marathonCourseGetState.value = UiStateV2.Failure(exception.message.toString())
@@ -97,12 +91,17 @@ class DiscoverViewModel @Inject constructor(
             _recommendCourseGetState.value = UiStateV2.Loading
 
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
-                .onSuccess { response ->
-                    _recommendCourseGetState.value = UiStateV2.Success(response)
+                .onSuccess { courses ->
+                    if (courses == null) return@launch
+                    _recommendCourseGetState.value = UiStateV2.Success(courses)
                 }.onFailure { exception ->
                     _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
                 }
         }
+    }
+
+    fun initRecommendGetState() {
+        _recommendCourseGetState.value = UiStateV2.Empty
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {

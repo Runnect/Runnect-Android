@@ -48,7 +48,7 @@
             </androidx.appcompat.widget.Toolbar>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_discover_scroll"
+                android:id="@+id/rv_discover_multi_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:orientation="vertical"
