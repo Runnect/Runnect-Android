@@ -3,10 +3,11 @@ package com.runnect.runnect.presentation.discover.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.runnect.runnect.databinding.LayoutDiscoverMarathonBinding
-import com.runnect.runnect.databinding.LayoutDiscoverRecommendBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiItem
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class DiscoverMultiAdapter(
@@ -31,7 +32,7 @@ class DiscoverMultiAdapter(
         return when (viewType) {
             MultiViewType.MARATHON.ordinal -> {
                 DiscoverMultiViewHolder.MarathonCourseViewHolder(
-                    binding = LayoutDiscoverMarathonBinding.inflate(
+                    binding = ItemDiscoverMultiviewMarathonBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -43,7 +44,7 @@ class DiscoverMultiAdapter(
 
             MultiViewType.RECOMMEND.ordinal -> {
                 DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = LayoutDiscoverRecommendBinding.inflate(
+                    binding = ItemDiscoverMultiviewRecommendBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false

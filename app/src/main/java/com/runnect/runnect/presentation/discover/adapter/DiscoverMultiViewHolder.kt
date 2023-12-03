@@ -3,15 +3,16 @@ package com.runnect.runnect.presentation.discover.adapter
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.databinding.LayoutDiscoverMarathonBinding
-import com.runnect.runnect.databinding.LayoutDiscoverRecommendBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiItem.*
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiItem.RecommendCourse
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
     class MarathonCourseViewHolder(
-        private val binding: LayoutDiscoverMarathonBinding,
+        private val binding: ItemDiscoverMultiviewMarathonBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit
     ) : DiscoverMultiViewHolder(binding) {
@@ -27,7 +28,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     }
 
     class RecommendCourseViewHolder(
-        private val binding: LayoutDiscoverRecommendBinding,
+        private val binding: ItemDiscoverMultiviewRecommendBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit
     ) : DiscoverMultiViewHolder(binding) {
