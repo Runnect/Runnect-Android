@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.domain.entity.PromotionBanner
@@ -14,6 +15,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,17 +27,16 @@ class DiscoverViewModel @Inject constructor(
     val bannerGetState: LiveData<UiState>
         get() = _bannerGetState
 
-    private val _marathonCourseGetState = MutableLiveData<UiStateV2<List<MarathonCourse>?>>()
-    val marathonCourseGetState: LiveData<UiStateV2<List<MarathonCourse>?>>
-        get() = _marathonCourseGetState
-
-    private val _recommendCourseGetState = MutableLiveData<UiStateV2<List<RecommendCourse>?>>()
-    val recommendCourseGetState: LiveData<UiStateV2<List<RecommendCourse>?>>
-        get() = _recommendCourseGetState
+    private val _courseLoadState = MutableLiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>()
+    val courseLoadState: LiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>
+        get() = _courseLoadState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
+
+    private val _multiViewItems: ArrayList<List<DiscoverMultiViewItem>> = arrayListOf()
+    val multiViewItems: List<List<DiscoverMultiViewItem>> get() = _multiViewItems
 
     var bannerData = mutableListOf<PromotionBanner>()
 
@@ -73,29 +74,37 @@ class DiscoverViewModel @Inject constructor(
 
     private fun getMarathonCourse() {
         viewModelScope.launch {
-            _marathonCourseGetState.value = UiStateV2.Loading
-
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
-                    if (courses == null) return@launch
-                    _marathonCourseGetState.value = UiStateV2.Success(courses)
+                    if (courses == null) {
+                        _courseLoadState.value = UiStateV2.Failure("marathon course data is null")
+                        return@launch
+                    }
+
+                    _multiViewItems.add(courses)
+                    _courseLoadState.value = UiStateV2.Loading
                 }
                 .onFailure { exception ->
-                    _marathonCourseGetState.value = UiStateV2.Failure(exception.message.toString())
+                    _courseLoadState.value = UiStateV2.Failure(exception.message.toString())
                 }
         }
     }
 
     fun getRecommendCourse(pageNo: Int, ordering: String) {
         viewModelScope.launch {
-            _recommendCourseGetState.value = UiStateV2.Loading
-
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { courses ->
-                    if (courses == null) return@launch
-                    _recommendCourseGetState.value = UiStateV2.Success(courses)
+                    if (courses == null) {
+                        _courseLoadState.value = UiStateV2.Failure("recommend course data is null")
+                        return@launch
+                    }
+
+                    _multiViewItems.add(courses)
+                    if (multiViewItems.size == MULTI_VIEW_TYPE_SIZE) {
+                        _courseLoadState.value = UiStateV2.Success(multiViewItems)
+                    }
                 }.onFailure { exception ->
-                    _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
+                    _courseLoadState.value = UiStateV2.Failure(exception.message.toString())
                 }
         }
     }
@@ -114,5 +123,9 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
+    }
+
+    companion object {
+        private const val MULTI_VIEW_TYPE_SIZE = 2
     }
 }
