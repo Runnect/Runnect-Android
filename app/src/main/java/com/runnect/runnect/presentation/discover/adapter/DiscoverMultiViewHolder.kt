@@ -9,6 +9,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import timber.log.Timber
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -64,14 +65,10 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    // TODO: 다음 페이지가 있다면!! 요청 보내기
+                    // TODO: 스크롤이 최하단까지 내려간 경우, 다음 페이지 요청하기 (다음 페이지가 있는 경우에만)
                     //onNextPageLoad(currentPageNumber + 1)
                 }
             })
-        }
-
-        companion object {
-            private const val SCROLL_DIRECTION = 1
         }
     }
 }

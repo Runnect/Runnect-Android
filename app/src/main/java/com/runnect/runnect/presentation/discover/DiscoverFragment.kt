@@ -10,11 +10,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -71,7 +71,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         registerBackPressedCallback()
-        initRefreshLayoutListener()
+        registerRefreshLayoutScrollUpCallback()
+    }
+
+    private fun registerRefreshLayoutScrollUpCallback() {
+        // 첫번째 멀티 뷰 타입이 완전히 화면에 보일 때만 리프레시 가능하도록
+        val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
+        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
+            layoutManager.findFirstCompletelyVisibleItemPosition() > 0
+        }
     }
 
     fun getRecommendCourses(pageNo: Int) {
@@ -113,6 +121,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addListener() {
         initSearchButtonClickListener()
         initUploadButtonClickListener()
+        initRefreshLayoutListener()
+    }
+
+    private fun initRefreshLayoutListener() {
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.resetMultiViewItems()
+            viewModel.refreshCurrentCourses()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun initSearchButtonClickListener() {
@@ -139,14 +156,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             requireContext(),
             getString(R.string.visitor_mode_course_discover_upload_warning_msg)
         ).show()
-    }
-
-    private fun initRefreshLayoutListener() {
-        binding.refreshLayout.setOnRefreshListener {
-            viewModel.resetMultiViewItems()
-            viewModel.getRecommendCourse(pageNo = 1, "date")
-            binding.refreshLayout.isRefreshing = false
-        }
     }
 
     private fun addObserver() {

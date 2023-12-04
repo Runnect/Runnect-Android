@@ -68,6 +68,11 @@ class DiscoverViewModel @Inject constructor(
         _currentPageNumber = 1
     }
 
+    fun refreshCurrentCourses() {
+        getMarathonCourse()
+        getRecommendCourse(pageNo = currentPageNumber, "date")
+    }
+
     private fun getPromotionBanner() {
         viewModelScope.launch {
             runCatching {
