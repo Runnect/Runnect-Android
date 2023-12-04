@@ -94,7 +94,6 @@
             android:nestedScrollingEnabled="false"
             android:orientation="vertical"
             android:overScrollMode="never"
-            android:paddingBottom="96dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
