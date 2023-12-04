@@ -14,7 +14,10 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -116,10 +119,17 @@ class DiscoverViewModel @Inject constructor(
                         return@launch
                     }
 
-                    _multiViewItems.add(courses)
+                    // todo: 무한 로딩을 막기 위한 동기 처리 로직이 필요하다.
+                    withContext(Dispatchers.IO) {
+                        Timber.e("withContext block")
+                        _multiViewItems.add(courses)
+                    }
+
                     if (multiViewItems.size >= MULTI_VIEW_TYPE_SIZE) {
+                        Timber.e("onSuccess block")
                         _courseLoadState.value = UiStateV2.Success(multiViewItems)
                     }
+
                 }.onFailure { exception ->
                     _courseLoadState.value = UiStateV2.Failure(exception.message.toString())
                 }
