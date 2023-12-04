@@ -38,6 +38,9 @@ class DiscoverViewModel @Inject constructor(
     private val _multiViewItems: ArrayList<List<DiscoverMultiViewItem>> = arrayListOf()
     val multiViewItems: List<List<DiscoverMultiViewItem>> get() = _multiViewItems
 
+    private var _currentPageNumber = 1
+    val currentPageNumber get() = _currentPageNumber
+
     var bannerData = mutableListOf<PromotionBanner>()
 
     private var _bannerCount = 0
@@ -49,11 +52,20 @@ class DiscoverViewModel @Inject constructor(
     init {
         getPromotionBanner()
         getMarathonCourse()
-        getRecommendCourse(pageNo = 1, "date")
+        getRecommendCourse(pageNo = currentPageNumber, "date")
     }
 
     fun saveClickedCourseId(id: Int) {
         _clickedCourseId = id
+    }
+
+    fun updateCurrentPageNumber(number: Int) {
+        _currentPageNumber = number
+    }
+
+    fun resetMultiViewItems() {
+        _multiViewItems.clear()
+        _currentPageNumber = 1
     }
 
     private fun getPromotionBanner() {
@@ -100,7 +112,7 @@ class DiscoverViewModel @Inject constructor(
                     }
 
                     _multiViewItems.add(courses)
-                    if (multiViewItems.size == MULTI_VIEW_TYPE_SIZE) {
+                    if (multiViewItems.size >= MULTI_VIEW_TYPE_SIZE) {
                         _courseLoadState.value = UiStateV2.Success(multiViewItems)
                     }
                 }.onFailure { exception ->

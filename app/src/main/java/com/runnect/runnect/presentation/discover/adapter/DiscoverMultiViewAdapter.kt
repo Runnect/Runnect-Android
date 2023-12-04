@@ -14,6 +14,8 @@ class DiscoverMultiViewAdapter(
     private val multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
+    private val currentPageNumber: Int,
+    private val onNextPageLoad: (Int) -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
 
     enum class MultiViewType {
@@ -52,7 +54,8 @@ class DiscoverMultiViewAdapter(
                         false
                     ),
                     onHeartButtonClick = onHeartButtonClick,
-                    onCourseItemClick = onCourseItemClick
+                    onCourseItemClick = onCourseItemClick,
+                    onNextPageLoad = onNextPageLoad
                 )
             }
 
@@ -63,13 +66,15 @@ class DiscoverMultiViewAdapter(
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
-                val marathonCourses = multiViewItems[0]
-                (marathonCourses as? List<MarathonCourse>)?.let { holder.bind(it) }
+                (multiViewItems[position] as? List<MarathonCourse>)?.let {
+                    holder.bind(it)
+                }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                val recommendCourses = multiViewItems[1]
-                (recommendCourses as? List<RecommendCourse>)?.let { holder.bind(it) }
+                (multiViewItems[position] as? List<RecommendCourse>)?.let {
+                    holder.bind(currentPageNumber, it)
+                }
             }
         }
     }

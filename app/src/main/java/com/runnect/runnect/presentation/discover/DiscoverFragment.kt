@@ -143,8 +143,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            // 기존에 조회했던 리스트에 아이템이 누적으로 더해지므로 clear()로 비워주었다.
-            //viewModel.recommendCourses.clear()
+            viewModel.resetMultiViewItems()
             viewModel.getRecommendCourse(pageNo = 1, "date")
             binding.refreshLayout.isRefreshing = false
         }
@@ -207,11 +206,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             multiViewItems = viewModel.multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
+            },
+            onCourseItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            currentPageNumber = viewModel.currentPageNumber,
+            onNextPageLoad = { pageNo ->
+                // todo: 다음 페이지 요청하고, 뷰 갱신하기
+                viewModel.getRecommendCourse(pageNo, "date")
+                viewModel.updateCurrentPageNumber(pageNo)
             }
-        ) { courseId ->
-            navigateToDetailScreen(courseId)
-            viewModel.saveClickedCourseId(courseId)
-        }
+        )
     }
 
     private fun initMultiRecyclerView() {
