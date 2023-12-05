@@ -10,46 +10,98 @@
             type="com.runnect.runnect.presentation.discover.DiscoverViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_discover"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_discover_title"
+            <ProgressBar
+                android:id="@+id/pb_discover_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/discover_title"
-                android:textColor="@color/G1"
-                android:textSize="20sp" />
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/G2" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_discover_search"
-                android:layout_width="wrap_content"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_discover"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="12dp"
-                android:padding="14dp"
-                app:srcCompat="@drawable/discover_search" />
-        </androidx.appcompat.widget.Toolbar>
+                android:background="@color/W1"
+                android:orientation="vertical">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refresh_layout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/view_empty"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_discover">
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar_discover"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_collapseMode="pin"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_discover_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:fontFamily="@font/pretendard_bold"
+                            android:text="@string/discover_title"
+                            android:textColor="@color/G1"
+                            android:textSize="20sp" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_discover_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginEnd="12dp"
+                            android:padding="14dp"
+                            app:srcCompat="@drawable/discover_search" />
+                    </androidx.appcompat.widget.Toolbar>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_discover_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_collapseMode="parallax">
+
+                        <androidx.viewpager2.widget.ViewPager2
+                            android:id="@+id/vp_discover_banner"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:orientation="horizontal"
+                            app:layout_constraintDimensionRatio="362:173"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <me.relex.circleindicator.CircleIndicator3
+                            android:id="@+id/ci_discover_banner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="9dp"
+                            app:ci_animator="@anim/ci_animator"
+                            app:ci_drawable="@drawable/circle_indicator_selected"
+                            app:ci_drawable_unselected="@drawable/circle_indicator_unselected"
+                            app:ci_height="4dp"
+                            app:ci_width="4dp"
+                            app:layout_constraintBottom_toBottomOf="@id/vp_discover_banner"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_discover_multi_view"
@@ -58,61 +110,33 @@
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:paddingBottom="76dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/fab_discover_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="72dp"
+                android:backgroundTint="@color/M1"
+                android:contentDescription="@string/discover_upload"
+                android:fontFamily="@font/pretendard_semibold"
+                android:gravity="center"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="@string/discover_upload_btn"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:icon="@drawable/discover_upload_btn"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconSize="15dp"
+                app:iconTint="@color/white" />
 
-        <ProgressBar
-            android:id="@+id/pb_discover_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/G2"
-            app:layout_constraintBottom_toTopOf="@id/view_empty"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_discover" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/btn_discover_upload"
-            android:layout_width="92dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/M1"
-            android:contentDescription="@string/discover_upload"
-            android:padding="13dp"
-            android:text="@string/discover_upload_btn"
-            android:textColor="@color/M1"
-            app:borderWidth="0dp"
-            app:icon="@drawable/discover_upload_btn"
-            app:iconSize="15dp"
-            app:iconTint="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/view_empty"
-            app:layout_constraintDimensionRatio="92:41"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_discover_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
-            android:elevation="10dp"
-            android:fontFamily="@font/pretendard_semibold"
-            android:text="@string/discover_upload_btn"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_discover_upload"
-            app:layout_constraintEnd_toEndOf="@id/btn_discover_upload"
-            app:layout_constraintTop_toTopOf="@id/btn_discover_upload" />
-
-        <View
-            android:id="@+id/view_empty"
-            android:layout_width="0dp"
-            android:layout_height="57dp"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

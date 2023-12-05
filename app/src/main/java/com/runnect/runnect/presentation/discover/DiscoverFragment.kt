@@ -140,7 +140,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initUploadButtonClickListener() {
-        binding.btnDiscoverUpload.setOnClickListener {
+        binding.fabDiscoverUpload.setOnClickListener {
             if (isVisitorMode) {
                 showCourseUploadWarningToast()
                 return@setOnClickListener
