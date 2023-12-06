@@ -73,7 +73,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         registerBackPressedCallback()
-        //registerRefreshLayoutScrollUpCallback()
+        registerRefreshLayoutScrollUpCallback()
     }
 
     private fun initLayout() {
@@ -82,10 +82,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun registerRefreshLayoutScrollUpCallback() {
         // 첫번째 멀티 뷰 타입이 완전히 화면에 보일 때만 리프레시 가능하도록
-//        val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
-//        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
-//            layoutManager.findFirstCompletelyVisibleItemPosition() > 0
-//        }
+        val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
+        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
+            layoutManager.findFirstCompletelyVisibleItemPosition() > 0
+        }
     }
 
     fun getRecommendCourses(pageNo: Int) {
@@ -127,15 +127,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addListener() {
         initSearchButtonClickListener()
         initUploadButtonClickListener()
-        //initRefreshLayoutListener()
+        initRefreshLayoutListener()
     }
 
     private fun initRefreshLayoutListener() {
-//        binding.refreshLayout.setOnRefreshListener {
-//            viewModel.resetMultiViewItems()
-//            viewModel.refreshCurrentCourses()
-//            binding.refreshLayout.isRefreshing = false
-//        }
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.resetMultiViewItems()
+            viewModel.refreshCurrentCourses()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun initSearchButtonClickListener() {
