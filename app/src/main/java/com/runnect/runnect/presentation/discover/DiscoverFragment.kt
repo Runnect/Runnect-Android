@@ -176,21 +176,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initUploadButtonClickListener() {
         binding.fabDiscoverUpload.setOnClickListener {
-            if (isVisitorMode) {
-                showCourseUploadWarningToast()
-                return@setOnClickListener
-            }
-
-            startActivity(Intent(requireContext(), DiscoverPickActivity::class.java))
-            requireActivity().applyScreenEnterAnimation()
+            navigateToCourseUploadScreen()
         }
 
         binding.fabDiscoverUploadText.setOnClickListener {
-            if (isVisitorMode) {
-                showCourseUploadWarningToast()
-                return@setOnClickListener
-            }
+            navigateToCourseUploadScreen()
+        }
+    }
 
+    private fun navigateToCourseUploadScreen() {
+        if (isVisitorMode) {
+            showCourseUploadWarningToast()
+        } else {
             startActivity(Intent(requireContext(), DiscoverPickActivity::class.java))
             requireActivity().applyScreenEnterAnimation()
         }
