@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverSearchBinding
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
-import com.runnect.runnect.domain.entity.EditableDiscoverCourse
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class DiscoverSearchAdapter(

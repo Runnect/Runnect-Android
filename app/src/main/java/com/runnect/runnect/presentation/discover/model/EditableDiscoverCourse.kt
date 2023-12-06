@@ -1,4 +1,4 @@
-package com.runnect.runnect.domain.entity
+package com.runnect.runnect.presentation.discover.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
