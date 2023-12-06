@@ -12,11 +12,11 @@ class BannerAdapter(
     private val onBannerItemClick: (String) -> Unit,
 ) : ListAdapter<PromotionBanner,
         BannerAdapter.BannerViewHolder>(diffUtil) {
-//    private var bannerCount: Int = 0
-//
-//    fun setBannerCount(bannerCount: Int) {
-//        this.bannerCount = bannerCount
-//    }
+    private var bannerCount: Int = 0
+
+    fun setBannerCount(bannerCount: Int) {
+        this.bannerCount = bannerCount
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val binding = ItemDiscoverBannerBinding.inflate(
@@ -27,11 +27,9 @@ class BannerAdapter(
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-//        holder.onBind(getItem(position % bannerCount))
-        holder.onBind(currentList[position])
+        holder.onBind(getItem(position % bannerCount))
     }
 
-    override fun getItemCount(): Int = PAGE_NUM
 
     inner class BannerViewHolder(
         private val binding: ItemDiscoverBannerBinding
@@ -45,7 +43,6 @@ class BannerAdapter(
     }
 
     companion object {
-        private const val PAGE_NUM = 900
         private val diffUtil = ItemDiffCallback<PromotionBanner>(
             onItemsTheSame = { old, new -> old.index == new.index },
             onContentsTheSame = { old, new -> old == new }
