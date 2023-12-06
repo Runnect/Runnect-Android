@@ -12,7 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
@@ -130,6 +132,32 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         initSearchButtonClickListener()
         initUploadButtonClickListener()
         initRefreshLayoutListener()
+        initRecyclerViewScrollListener()
+        initAppBarOffsetChangedListener()
+    }
+
+    private fun initRecyclerViewScrollListener() {
+        binding.rvDiscoverMultiView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                // 스크롤을 내리면 원형 버튼이 보이도록
+                if (dy > 0) {
+                    binding.fabDiscoverUploadText.isVisible = false
+                    binding.fabDiscoverUpload.isVisible = true
+                }
+            }
+        })
+    }
+
+    private fun initAppBarOffsetChangedListener() {
+        // CollapsingToolbarLayout의 높이가 완전히 확장되면 텍스트가 포함된 버튼이 보이도록
+        binding.appBarDiscover.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == 0) {
+                binding.fabDiscoverUploadText.isVisible = true
+                binding.fabDiscoverUpload.isVisible = false
+            }
+        }
     }
 
     private fun initRefreshLayoutListener() {
@@ -149,6 +177,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initUploadButtonClickListener() {
         binding.fabDiscoverUpload.setOnClickListener {
+            if (isVisitorMode) {
+                showCourseUploadWarningToast()
+                return@setOnClickListener
+            }
+
+            startActivity(Intent(requireContext(), DiscoverPickActivity::class.java))
+            requireActivity().applyScreenEnterAnimation()
+        }
+
+        binding.fabDiscoverUploadText.setOnClickListener {
             if (isVisitorMode) {
                 showCourseUploadWarningToast()
                 return@setOnClickListener

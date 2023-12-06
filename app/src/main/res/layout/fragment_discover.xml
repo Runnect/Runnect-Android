@@ -21,6 +21,7 @@
             android:backgroundTint="@color/white">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_discover"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -108,15 +109,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="72dp"
                 android:orientation="vertical"
                 android:overScrollMode="never"
+                android:paddingBottom="72dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab_discover_upload"
+            android:id="@+id/fab_discover_upload_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
@@ -132,10 +133,22 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             app:icon="@drawable/discover_upload_btn"
-            app:iconGravity="textStart"
-            app:iconPadding="7dp"
             app:iconSize="15dp"
             app:iconTint="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_discover_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="72dp"
+            android:backgroundTint="@color/M1"
+            android:contentDescription="@string/discover_upload"
+            android:src="@drawable/discover_upload_btn"
+            android:visibility="invisible"
+            app:maxImageSize="15dp"
+            app:tint="@color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
