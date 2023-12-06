@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.source.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.runnect.runnect.domain.entity.PromotionBanner
+import com.runnect.runnect.domain.entity.DiscoverBanner
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,28 +11,28 @@ import javax.inject.Inject
 class RemoteBannerDataSource @Inject constructor(
     private val bannerService: FirebaseFirestore
 ) {
-    private val banners = mutableListOf<PromotionBanner>()
+    private val banners = mutableListOf<DiscoverBanner>()
 
-    fun getPromotionBanners(): Flow<MutableList<PromotionBanner>> = callbackFlow {
+    fun getDiscoverBanners(): Flow<MutableList<DiscoverBanner>> = callbackFlow {
         bannerService.collection("data")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Timber.tag("FirebaseData").d("fail : ${e.message}")
+            .addSnapshotListener { querySnapshot, exception ->
+                if (exception != null) {
+                    Timber.e("Firebase Firestore Exception: ${exception.message}")
                     return@addSnapshotListener
                 }
 
-                if (snapshot != null) {
+                if (querySnapshot != null) {
                     banners.clear()
-                    for (document in snapshot) {
+                    for (document in querySnapshot) {
                         banners.add(
-                            PromotionBanner(
+                            DiscoverBanner(
                                 index = document.getLong("index")!!.toInt(),
                                 imageUrl = document.getString("imageUrl").toString(),
                                 linkUrl = document.getString("linkUrl").toString()
                             )
                         )
                     }
-                    Timber.tag("실시간-파베-data").d("promotion banners : $banners")
+                    Timber.d("SUCCESS GET DISCOVER BANNERS : $banners")
                     trySend(banners)
                 }
             }

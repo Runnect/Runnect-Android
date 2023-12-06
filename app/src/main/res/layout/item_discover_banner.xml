@@ -6,7 +6,7 @@
 
         <variable
             name="banner"
-            type="com.runnect.runnect.domain.entity.PromotionBanner" />
+            type="com.runnect.runnect.domain.entity.DiscoverBanner" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

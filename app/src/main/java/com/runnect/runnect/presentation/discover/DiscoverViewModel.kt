@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
-import com.runnect.runnect.domain.entity.PromotionBanner
+import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -41,7 +41,7 @@ class DiscoverViewModel @Inject constructor(
     private var _currentPageNumber = 1
     val currentPageNumber get() = _currentPageNumber
 
-    var bannerData = mutableListOf<PromotionBanner>()
+    var bannerData = mutableListOf<DiscoverBanner>()
 
     private var _bannerCount = 0
     val bannerCount: Int get() = _bannerCount
@@ -50,7 +50,7 @@ class DiscoverViewModel @Inject constructor(
     val clickedCourseId get() = _clickedCourseId
 
     init {
-        getPromotionBanner()
+        getDiscoverBanners()
         getMarathonCourse()
         getRecommendCourse(pageNo = currentPageNumber, "date")
     }
@@ -73,12 +73,12 @@ class DiscoverViewModel @Inject constructor(
         getRecommendCourse(pageNo = currentPageNumber, "date")
     }
 
-    private fun getPromotionBanner() {
+    private fun getDiscoverBanners() {
         viewModelScope.launch {
             runCatching {
                 _bannerGetState.value = UiState.Loading
 
-                bannerRepository.getPromotionBanners().collect { bannerList ->
+                bannerRepository.getDiscoverBanners().collect { bannerList ->
                     bannerData = bannerList
                     _bannerCount = bannerData.size
                     _bannerGetState.value = UiState.Success
