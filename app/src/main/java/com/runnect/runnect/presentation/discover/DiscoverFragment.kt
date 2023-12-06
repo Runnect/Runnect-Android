@@ -25,7 +25,6 @@ import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiViewAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
@@ -51,7 +50,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
-    private lateinit var pageRegisterCallback: ViewPager2.OnPageChangeCallback
+    private lateinit var bannerPageChangeCallback: ViewPager2.OnPageChangeCallback
     private var currentPosition = PAGE_NUM / 2
 
     private val resultLauncher =
@@ -77,7 +76,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initLayout() {
-        setPromotionBanner(binding.vpDiscoverBanner)
+        binding.vpDiscoverBanner.apply {
+            initCurrentBannerPage(this)
+            initBannerTimer(this)
+        }
     }
 
     private fun registerRefreshLayoutScrollUpCallback() {
@@ -173,11 +175,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupBannerGetStateObserver() {
         viewModel.bannerGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                UiState.Success -> {
-                    setBannerData()
-
-                    val banners = viewModel.bannerData
+                is UiStateV2.Success -> {
+                    initBannerViewPager()
+                    val banners = state.data
                     bannerAdapter.submitList(banners)
+
+                }
+
+                is UiStateV2.Failure -> {
+                    requireContext().showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -187,7 +193,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun setupCourseLoadStateObserver() {
         viewModel.courseLoadState.observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
@@ -252,25 +258,28 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     /** 배너 데이터 목록 초기화 */
 
-    private fun setBannerData() {
-        setPromotionAdapter()
+    private fun initBannerViewPager() {
+        initBannerAdapter()
         bannerAdapter.setBannerCount(viewModel.bannerCount)
-        setPromotionIndicator(binding.vpDiscoverBanner)
-        registerPromotionPageCallback(binding.vpDiscoverBanner)
+        binding.vpDiscoverBanner.apply {
+            initViewPagerIndicator(this)
+            registerBannerPageChangeCallback(this)
+        }
     }
 
-    private fun setPromotionAdapter() {
+    private fun initBannerAdapter() {
         binding.vpDiscoverBanner.adapter = bannerAdapter
     }
 
-    private fun setPromotionIndicator(vp: ViewPager2) {
-        val indicator = binding.ciDiscoverBanner
-        indicator.setViewPager(vp)
-        indicator.createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
+    private fun initViewPagerIndicator(viewPager: ViewPager2) {
+        binding.ciDiscoverBanner.apply {
+            setViewPager(viewPager)
+            createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
+        }
     }
 
-    private fun registerPromotionPageCallback(vp: ViewPager2) {
-        pageRegisterCallback = object : ViewPager2.OnPageChangeCallback() {
+    private fun registerBannerPageChangeCallback(viewPager: ViewPager2) {
+        bannerPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 binding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
@@ -288,34 +297,33 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
             }
         }
-        vp.registerOnPageChangeCallback(pageRegisterCallback)
+        viewPager.registerOnPageChangeCallback(bannerPageChangeCallback)
     }
 
     /** 배너 레이아웃 초기화 */
 
-    private fun setPromotionBanner(vp: ViewPager2) {
-        setPromotionViewPager(vp)
-        setScrollHandler()
-        setScrollPageRunnable(vp)
-        setTimerTask()
+    private fun initCurrentBannerPage(viewPager: ViewPager2) {
+        viewPager.setCurrentItem(PAGE_NUM / 2, false)
     }
 
-    private fun setPromotionViewPager(vp: ViewPager2) {
-        vp.setCurrentItem(PAGE_NUM / 2, false)
+    private fun initBannerTimer(viewPager: ViewPager2) {
+        initScrollHandler()
+        initScrollPageRunnable(viewPager)
+        initTimerTask()
     }
 
-    private fun setScrollHandler() {
+    private fun initScrollHandler() {
         scrollHandler = Handler(Looper.getMainLooper())
         timer = Timer()
     }
 
-    private fun setScrollPageRunnable(vp: ViewPager2) {
+    private fun initScrollPageRunnable(viewPager: ViewPager2) {
         scrollPageRunnable = Runnable {
-            vp.setCurrentItem(++currentPosition, true)
+            viewPager.setCurrentItem(++currentPosition, true)
         }
     }
 
-    private fun setTimerTask() {
+    private fun initTimerTask() {
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)
@@ -343,7 +351,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun onPause() {
         super.onPause()
         autoScrollStop()
-        binding.vpDiscoverBanner.unregisterOnPageChangeCallback(pageRegisterCallback)
+        binding.vpDiscoverBanner.unregisterOnPageChangeCallback(bannerPageChangeCallback)
     }
 
     override fun onAttach(context: Context) {

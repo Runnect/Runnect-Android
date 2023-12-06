@@ -13,6 +13,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -23,8 +24,8 @@ class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
 ) : ViewModel() {
-    private val _bannerGetState = MutableLiveData<UiState>()
-    val bannerGetState: LiveData<UiState>
+    private val _bannerGetState = MutableLiveData<UiStateV2<List<DiscoverBanner>>>()
+    val bannerGetState: LiveData<UiStateV2<List<DiscoverBanner>>>
         get() = _bannerGetState
 
     private val _courseLoadState = MutableLiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>()
@@ -40,8 +41,6 @@ class DiscoverViewModel @Inject constructor(
 
     private var _currentPageNumber = 1
     val currentPageNumber get() = _currentPageNumber
-
-    var bannerData = mutableListOf<DiscoverBanner>()
 
     private var _bannerCount = 0
     val bannerCount: Int get() = _bannerCount
@@ -75,17 +74,16 @@ class DiscoverViewModel @Inject constructor(
 
     private fun getDiscoverBanners() {
         viewModelScope.launch {
-            runCatching {
-                _bannerGetState.value = UiState.Loading
+            _bannerGetState.value = UiStateV2.Loading
 
-                bannerRepository.getDiscoverBanners().collect { bannerList ->
-                    bannerData = bannerList
-                    _bannerCount = bannerData.size
-                    _bannerGetState.value = UiState.Success
+            bannerRepository.getDiscoverBanners()
+                .catch { exception ->
+                    _bannerGetState.value = UiStateV2.Failure(exception.message.toString())
                 }
-            }.onFailure {
-                _bannerGetState.value = UiState.Failure
-            }
+                .collect { banners ->
+                    _bannerCount = banners.size
+                    _bannerGetState.value = UiStateV2.Success(banners)
+                }
         }
     }
 
