@@ -1,10 +1,14 @@
 package com.runnect.runnect.presentation.mypage.setting
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingBinding
@@ -16,6 +20,7 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addListener()
+        setVisibleDeveloperMode()
         registerBackPressedCallback()
     }
 
@@ -41,6 +46,14 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         binding.viewSettingTermsFrame.setOnClickListener {
             requireContext().showWebBrowser(TERMS_URL)
         }
+
+        binding.clSettingDeveloperModeFrame.setOnClickListener {
+            moveToDevMode()
+        }
+    }
+
+    private fun setVisibleDeveloperMode() {
+        binding.clSettingDeveloperModeFrame.isVisible = BuildConfig.DEBUG
     }
 
     private fun navigateToMyPageFragment() {
@@ -57,6 +70,12 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
             this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace<MySettingAccountInfoFragment>(R.id.fl_main, args = bundle)
         }
+    }
+
+    private fun moveToDevMode() {
+        Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("runnect://devmode")
+        }.let(this::startActivity)
     }
 
     private fun getEmailFromMyPage(): String? {
