@@ -46,7 +46,7 @@ class DiscoverMultiViewAdapter(
                 )
             }
 
-            MultiViewType.RECOMMEND.ordinal -> {
+            else -> {
                 DiscoverMultiViewHolder.RecommendCourseViewHolder(
                     binding = ItemDiscoverMultiviewRecommendBinding.inflate(
                         LayoutInflater.from(parent.context),
@@ -58,8 +58,6 @@ class DiscoverMultiViewAdapter(
                     onNextPageLoad = onNextPageLoad
                 )
             }
-
-            else -> { throw IllegalArgumentException("Unknown Item View Type") }
         }
     }
 
