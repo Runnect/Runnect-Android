@@ -34,10 +34,6 @@ class DiscoverViewModel @Inject constructor(
     val recommendCourseState: LiveData<UiStateV2<List<RecommendCourse>?>>
         get() = _recommendCourseState
 
-    private val _courseLoadState = MutableLiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>()
-    val courseLoadState: LiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>
-        get() = _courseLoadState
-
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
