@@ -16,12 +16,17 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     class MarathonCourseViewHolder(
         private val binding: ItemDiscoverMultiviewMarathonBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
-        private val onCourseItemClick: (Int) -> Unit
+        private val onCourseItemClick: (Int) -> Unit,
+        private val handleVisitorMode: () -> Unit
     ) : DiscoverMultiViewHolder(binding) {
         fun bind(marathonCourses: List<MarathonCourse>) {
             binding.rvDiscoverMarathon.apply {
                 setHasFixedSize(true)
-                adapter = DiscoverMarathonAdapter(onHeartButtonClick, onCourseItemClick).apply {
+                adapter = DiscoverMarathonAdapter(
+                    onHeartButtonClick,
+                    onCourseItemClick,
+                    handleVisitorMode
+                ).apply {
                     submitList(marathonCourses)
                 }
                 addItemDecoration(
@@ -39,15 +44,23 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         private val binding: ItemDiscoverMultiviewRecommendBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
+        private val handleVisitorMode: () -> Unit,
         private val onNextPageLoad: (Int) -> Unit,
+
     ) : DiscoverMultiViewHolder(binding) {
         fun bind(currentPageNumber: Int, recommendCourses: List<RecommendCourse>) {
             binding.rvDiscoverRecommend.apply {
                 setHasFixedSize(true)
                 layoutManager = GridLayoutManager(context, 2)
-                adapter = DiscoverRecommendAdapter(onHeartButtonClick, onCourseItemClick).apply {
+
+                adapter = DiscoverRecommendAdapter(
+                    onHeartButtonClick,
+                    onCourseItemClick,
+                    handleVisitorMode
+                ).apply {
                     submitList(recommendCourses)
                 }
+
                 addItemDecoration(
                     GridSpacingItemDecoration(
                         context = context,
@@ -56,6 +69,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                         topSpaceSize = 20
                     )
                 )
+
                 initScrollListener(currentPageNumber, this)
             }
         }

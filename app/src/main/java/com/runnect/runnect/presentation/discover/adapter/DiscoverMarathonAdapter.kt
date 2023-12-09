@@ -1,22 +1,20 @@
 package com.runnect.runnect.presentation.discover.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemDiscoverMarathonBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
-import com.runnect.runnect.util.custom.toast.RunnectToast
 
 class DiscoverMarathonAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
+    private val handleVisitorMode: () -> Unit,
 ) : ListAdapter<DiscoverMultiViewItem.MarathonCourse,
         DiscoverMarathonAdapter.DiscoverMarathonViewHolder>(diffUtil) {
 
@@ -28,7 +26,8 @@ class DiscoverMarathonAdapter(
                 false
             ),
             onHeartButtonClick,
-            onCourseItemClick
+            onCourseItemClick,
+            handleVisitorMode
         )
     }
 
@@ -40,6 +39,7 @@ class DiscoverMarathonAdapter(
         private val binding: ItemDiscoverMarathonBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
+        private val handleVisitorMode: () -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverMultiViewItem.MarathonCourse) {
             with(binding) {
@@ -57,12 +57,12 @@ class DiscoverMarathonAdapter(
         ) {
             imageView.setOnClickListener { view ->
                 if (MainActivity.isVisitorMode) {
-                    showCourseScrapWarningToast(view.context)
+                    handleVisitorMode.invoke()
                     return@setOnClickListener
                 }
 
                 view.isSelected = !view.isSelected
-                onHeartButtonClick(course.id, view.isSelected)
+                onHeartButtonClick.invoke(course.id, view.isSelected)
             }
         }
 
@@ -71,15 +71,8 @@ class DiscoverMarathonAdapter(
             course: DiscoverMultiViewItem.MarathonCourse
         ) {
             itemView.setOnClickListener {
-                onCourseItemClick(course.id)
+                onCourseItemClick.invoke(course.id)
             }
-        }
-
-        private fun showCourseScrapWarningToast(context: Context) {
-            RunnectToast.createToast(
-                context = context,
-                message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
-            ).show()
         }
     }
 

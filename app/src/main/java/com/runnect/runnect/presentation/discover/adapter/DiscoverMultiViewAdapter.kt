@@ -14,6 +14,7 @@ class DiscoverMultiViewAdapter(
     private val multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
+    private val handleVisitorMode: () -> Unit,
     private val currentPageNumber: Int,
     private val onNextPageLoad: (Int) -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
@@ -42,7 +43,8 @@ class DiscoverMultiViewAdapter(
                         false
                     ),
                     onHeartButtonClick = onHeartButtonClick,
-                    onCourseItemClick = onCourseItemClick
+                    onCourseItemClick = onCourseItemClick,
+                    handleVisitorMode = handleVisitorMode
                 )
             }
 
@@ -55,6 +57,7 @@ class DiscoverMultiViewAdapter(
                     ),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
+                    handleVisitorMode = handleVisitorMode,
                     onNextPageLoad = onNextPageLoad
                 )
             }

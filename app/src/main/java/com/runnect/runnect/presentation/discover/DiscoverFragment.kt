@@ -283,6 +283,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 navigateToDetailScreen(courseId)
                 viewModel.saveClickedCourseId(courseId)
             },
+            handleVisitorMode = {
+                context?.let { showCourseScrapWarningToast(it) }
+            },
             currentPageNumber = viewModel.currentPageNumber,
             onNextPageLoad = { pageNo ->
                 // todo: 다음 페이지 요청하고, 뷰 갱신하기
@@ -290,6 +293,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 viewModel.updateCurrentPageNumber(pageNo)
             }
         )
+    }
+
+    private fun showCourseScrapWarningToast(context: Context) {
+        RunnectToast.createToast(
+            context = context,
+            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+        ).show()
     }
 
     private fun initMultiRecyclerView() {
