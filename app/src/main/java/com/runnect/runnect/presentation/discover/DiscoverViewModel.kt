@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +27,14 @@ class DiscoverViewModel @Inject constructor(
     private val _bannerGetState = MutableLiveData<UiStateV2<List<DiscoverBanner>>>()
     val bannerGetState: LiveData<UiStateV2<List<DiscoverBanner>>>
         get() = _bannerGetState
+
+    private val _marathonCourseState = MutableLiveData<UiStateV2<List<MarathonCourse>?>>()
+    val marathonCourseState: LiveData<UiStateV2<List<MarathonCourse>?>>
+        get() = _marathonCourseState
+
+    private val _recommendCourseState = MutableLiveData<UiStateV2<List<RecommendCourse>?>>()
+    val recommendCourseState: LiveData<UiStateV2<List<RecommendCourse>?>>
+        get() = _recommendCourseState
 
     private val _courseLoadState = MutableLiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>()
     val courseLoadState: LiveData<UiStateV2<List<List<DiscoverMultiViewItem>>>>
@@ -51,7 +59,7 @@ class DiscoverViewModel @Inject constructor(
     init {
         getDiscoverBanners()
         getMarathonCourse()
-        getRecommendCourse(pageNo = currentPageNumber, "date")
+        getRecommendCourse(pageNo = currentPageNumber, ordering = "date")
     }
 
     fun saveClickedCourseId(id: Int) {
@@ -69,7 +77,7 @@ class DiscoverViewModel @Inject constructor(
 
     fun refreshCurrentCourses() {
         getMarathonCourse()
-        getRecommendCourse(pageNo = currentPageNumber, "date")
+        getRecommendCourse(pageNo = currentPageNumber, ordering = "date")
     }
 
     private fun getDiscoverBanners() {

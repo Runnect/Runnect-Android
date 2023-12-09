@@ -92,7 +92,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourse(pageNo = pageNo, "date")
+        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
     }
 
     private fun showPromotionWebsite(url: String) {
@@ -269,7 +269,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             currentPageNumber = viewModel.currentPageNumber,
             onNextPageLoad = { pageNo ->
                 // todo: 다음 페이지 요청하고, 뷰 갱신하기
-                viewModel.getRecommendCourse(pageNo, "date")
+                viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
                 viewModel.updateCurrentPageNumber(pageNo)
             }
         )
