@@ -246,7 +246,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    if (viewModel.checkCourseLoadSuccessState()) {
+                    if (viewModel.checkCourseLoadState()) {
                         dismissLoadingProgressBar()
                         initMultiViewAdapter()
                         initMultiRecyclerView()
@@ -420,8 +420,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         private const val PAGE_NUM = 900
         private const val INTERVAL_TIME = 5000L
-        private const val MULTI_VIEW_TYPE_SIZE = 2
-
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"

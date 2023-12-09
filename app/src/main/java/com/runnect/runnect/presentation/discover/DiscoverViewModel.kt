@@ -98,7 +98,8 @@ class DiscoverViewModel @Inject constructor(
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
                     if (courses == null) {
-                        _marathonCourseState.value = UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
+                        _marathonCourseState.value =
+                            UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
                         Timber.e("MARATHON COURSE DATA IS NULL")
                         return@launch
                     }
@@ -119,7 +120,8 @@ class DiscoverViewModel @Inject constructor(
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { courses ->
                     if (courses == null) {
-                        _recommendCourseState.value = UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                        _recommendCourseState.value =
+                            UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
                         Timber.e("RECOMMEND COURSE DATA IS NULL")
                         return@launch
                     }
@@ -134,7 +136,11 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun checkCourseLoadSuccessState() = marathonCourseState.value is UiStateV2.Success && recommendCourseState.value is UiStateV2.Success
+    fun checkCourseLoadState(): Boolean {
+        return marathonCourseState.value is UiStateV2.Success &&
+                recommendCourseState.value is UiStateV2.Success &&
+                multiViewItems.size >= MULTI_VIEW_TYPE_SIZE
+    }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
@@ -150,5 +156,9 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
+    }
+
+    companion object {
+        private const val MULTI_VIEW_TYPE_SIZE = 2
     }
 }
