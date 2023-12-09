@@ -107,17 +107,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
         }
         resultLauncher.launch(intent)
-        requireActivity().applyScreenEnterAnimation()
+        activity?.applyScreenEnterAnimation()
     }
 
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 handleFromStorageScrap()
-                requireActivity().navigateToPreviousScreenWithAnimation()
+                activity?.navigateToPreviousScreenWithAnimation()
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun handleFromStorageScrap() {
@@ -170,7 +170,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initSearchButtonClickListener() {
         binding.ivDiscoverSearch.setOnClickListener {
             startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
-            requireActivity().applyScreenEnterAnimation()
+            activity?.applyScreenEnterAnimation()
         }
     }
 
@@ -189,7 +189,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             showCourseUploadWarningToast()
         } else {
             startActivity(Intent(requireContext(), DiscoverPickActivity::class.java))
-            requireActivity().applyScreenEnterAnimation()
+            activity?.applyScreenEnterAnimation()
         }
     }
 
