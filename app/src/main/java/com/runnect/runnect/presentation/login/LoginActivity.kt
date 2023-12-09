@@ -65,7 +65,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
                 PreferenceManager.setString(
                     context = applicationContext,
                     key = TOKEN_KEY_REFRESH,
-                    value = "null"
+                    value = "visitor"
                 )
                 moveToMain()
             }
