@@ -35,6 +35,7 @@ import com.runnect.runnect.data.dto.TimerData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
+import com.runnect.runnect.presentation.run.TimerService.Companion.TIMER_UPDATE_ACTION
 import com.runnect.runnect.util.extension.round
 
 class RunActivity :
@@ -124,7 +125,7 @@ class RunActivity :
     override fun onStart() {
         super.onStart()
         // Timer 결과값을 받기 위해 브로드캐스트 리시버 등록
-        registerReceiver(timerReceiver, IntentFilter(TimerService.TIMER_UPDATE_ACTION))
+        registerReceiver(timerReceiver, IntentFilter(TIMER_UPDATE_ACTION))
     }
 
     override fun onStop() {
