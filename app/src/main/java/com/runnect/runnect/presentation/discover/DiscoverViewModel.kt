@@ -12,10 +12,8 @@ import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -100,15 +98,18 @@ class DiscoverViewModel @Inject constructor(
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
                     if (courses == null) {
-                        _courseLoadState.value = UiStateV2.Failure("marathon course data is null")
+                        _marathonCourseState.value = UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
+                        Timber.e("MARATHON COURSE DATA IS NULL")
                         return@launch
                     }
 
                     _multiViewItems.add(courses)
-                    _courseLoadState.value = UiStateV2.Loading
+                    _marathonCourseState.value = UiStateV2.Success(courses)
+                    Timber.e("MARATHON COURSE GET SUCCESS")
                 }
                 .onFailure { exception ->
-                    _courseLoadState.value = UiStateV2.Failure(exception.message.toString())
+                    _marathonCourseState.value = UiStateV2.Failure(exception.message.toString())
+                    Timber.e("MARATHON COURSE GET FAIL")
                 }
         }
     }
@@ -118,26 +119,22 @@ class DiscoverViewModel @Inject constructor(
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { courses ->
                     if (courses == null) {
-                        _courseLoadState.value = UiStateV2.Failure("recommend course data is null")
+                        _recommendCourseState.value = UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                        Timber.e("RECOMMEND COURSE DATA IS NULL")
                         return@launch
                     }
 
-                    // todo: 무한 로딩을 막기 위한 동기 처리 로직이 필요하다.
-                    withContext(Dispatchers.IO) {
-                        Timber.e("withContext block")
-                        _multiViewItems.add(courses)
-                    }
-
-                    if (multiViewItems.size >= MULTI_VIEW_TYPE_SIZE) {
-                        Timber.e("onSuccess block")
-                        _courseLoadState.value = UiStateV2.Success(multiViewItems)
-                    }
-
+                    _multiViewItems.add(courses)
+                    _recommendCourseState.value = UiStateV2.Success(courses)
+                    Timber.e("RECOMMEND COURSE GET SUCCESS")
                 }.onFailure { exception ->
-                    _courseLoadState.value = UiStateV2.Failure(exception.message.toString())
+                    _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
+                    Timber.e("RECOMMEND COURSE GET FAIL")
                 }
         }
     }
+
+    fun checkCourseLoadSuccessState() = marathonCourseState.value is UiStateV2.Success && recommendCourseState.value is UiStateV2.Success
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
@@ -153,9 +150,5 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
-    }
-
-    companion object {
-        private const val MULTI_VIEW_TYPE_SIZE = 2
     }
 }

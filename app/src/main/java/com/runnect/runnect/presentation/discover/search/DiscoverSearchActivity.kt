@@ -20,7 +20,7 @@ import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.KEY_EDITABLE_DISCOVER_COURSE
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
@@ -41,7 +41,7 @@ class DiscoverSearchActivity :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val updatedCourse: EditableDiscoverCourse =
-                    result.data?.getCompatibleParcelableExtra(KEY_EDITABLE_DISCOVER_COURSE)
+                    result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
 
                 searchAdapter.updateSearchItem(viewModel.clickedCourseId, updatedCourse)

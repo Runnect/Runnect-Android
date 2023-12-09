@@ -33,7 +33,7 @@ import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
-import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.KEY_EDITABLE_DISCOVER_COURSE
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
@@ -161,7 +161,7 @@ class CourseDetailActivity :
         )
 
         Intent(this@CourseDetailActivity, E::class.java).apply {
-            putExtra(KEY_EDITABLE_DISCOVER_COURSE, updatedCourse)
+            putExtra(EXTRA_EDITABLE_DISCOVER_COURSE, updatedCourse)
             setResult(RESULT_OK, this)
         }
     }

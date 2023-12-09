@@ -58,7 +58,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val updatedCourse: EditableDiscoverCourse =
-                    result.data?.getCompatibleParcelableExtra(KEY_EDITABLE_DISCOVER_COURSE)
+                    result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
                 //recommendCourseAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
             }
@@ -202,7 +202,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun addObserver() {
         setupBannerGetStateObserver()
-        setupCourseLoadStateObserver()
+        setupMarathonCourseGetStateObserver()
+        setupRecommendCourseGetStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -213,7 +214,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     initBannerViewPager()
                     val banners = state.data
                     bannerAdapter.submitList(banners)
-
                 }
 
                 is UiStateV2.Failure -> {
@@ -225,15 +225,32 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun setupCourseLoadStateObserver() {
-        viewModel.courseLoadState.observe(viewLifecycleOwner) { state ->
+    private fun setupMarathonCourseGetStateObserver() {
+        viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
+                is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
+                    requireContext().showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseGetStateObserver() {
+        viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
-                    initMultiViewAdapter()
-                    initMultiRecyclerView()
+                    if (viewModel.checkCourseLoadSuccessState()) {
+                        dismissLoadingProgressBar()
+                        initMultiViewAdapter()
+                        initMultiRecyclerView()
+                    }
                 }
 
                 is UiStateV2.Failure -> {
@@ -403,9 +420,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         private const val PAGE_NUM = 900
         private const val INTERVAL_TIME = 5000L
+        private const val MULTI_VIEW_TYPE_SIZE = 2
+
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
-        const val KEY_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
+        const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
         const val END_PAGE = "HTTP 400 Bad Request"
     }
 }
