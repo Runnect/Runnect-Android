@@ -91,6 +91,8 @@ class DiscoverViewModel @Inject constructor(
 
     private fun getMarathonCourse() {
         viewModelScope.launch {
+            _marathonCourseState.value = UiStateV2.Loading
+
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
                     if (courses == null) {
@@ -113,6 +115,8 @@ class DiscoverViewModel @Inject constructor(
 
     fun getRecommendCourse(pageNo: Int, ordering: String) {
         viewModelScope.launch {
+            _recommendCourseState.value = UiStateV2.Loading
+
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { courses ->
                     if (courses == null) {
@@ -125,6 +129,7 @@ class DiscoverViewModel @Inject constructor(
                     _multiViewItems.add(courses)
                     _recommendCourseState.value = UiStateV2.Success(courses)
                     Timber.e("RECOMMEND COURSE GET SUCCESS")
+                    Timber.e("ITEM SIZE: ${multiViewItems.size}")
                 }.onFailure { exception ->
                     _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE GET FAIL")
