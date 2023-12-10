@@ -46,6 +46,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private lateinit var bannerAdapter: BannerAdapter
     private var currentBannerPosition = 0
     private lateinit var bannerScrollJob: Job
+    private var bannerItemCount = 0
 
     private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
@@ -88,8 +89,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initBannerViewPager(banners: List<DiscoverBanner>) {
         initBannerViewPagerAdapter(banners)
         initBannerViewPagerItemPosition()
-
-        //initBannerViewPagerIndicator(binding.vpDiscoverBanner)
+        initBannerViewPagerIndicator(banners)
     }
 
     private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
@@ -110,15 +110,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initBannerViewPagerItemPosition() {
-        currentBannerPosition =  Int.MAX_VALUE / 2
+        currentBannerPosition = Int.MAX_VALUE / 2
         binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
     }
 
-
-    private fun initBannerViewPagerIndicator(viewPager: ViewPager2) {
+    private fun initBannerViewPagerIndicator(banners: List<DiscoverBanner>) {
         binding.indicatorDiscoverBanner.apply {
-            setViewPager(viewPager)
-            bannerAdapter.registerAdapterDataObserver(adapterDataObserver)
+            bannerItemCount = banners.size
+            createIndicators(bannerItemCount, 0)
         }
     }
 
@@ -132,8 +131,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vpDiscoverBanner.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                Timber.d("viewpager adapter position: $position")
+
                 currentBannerPosition = position
-                Timber.d("current position: $currentBannerPosition")
+                if (bannerItemCount != 0) {
+                    val actualPosition = currentBannerPosition % bannerItemCount
+                    binding.indicatorDiscoverBanner.animatePageSelected(actualPosition)
+                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -252,8 +256,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 is UiStateV2.Success -> {
                     val banners = state.data
                     initBannerViewPager(banners)
-
-                    //scrollViewPagerPerSecond()
                 }
 
                 is UiStateV2.Failure -> {
@@ -261,17 +263,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 else -> {}
-            }
-        }
-    }
-
-    private fun scrollViewPagerPerSecond() {
-        viewLifeCycleScope.launch {
-            while (true) {
-                delay(BANNER_SCROLL_DELAY_TIME)
-                currentBannerPosition = (currentBannerPosition + 1) % bannerAdapter.itemCount
-                binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, true)
-                Timber.e("current position: ${currentBannerPosition}")
             }
         }
     }
