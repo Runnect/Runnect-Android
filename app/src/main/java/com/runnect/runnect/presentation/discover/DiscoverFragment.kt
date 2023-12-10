@@ -97,12 +97,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun showPromotionWebsite(url: String) {
         if (url.isNotBlank()) {
-            requireContext().showWebBrowser(url)
+            context?.showWebBrowser(url)
         }
     }
 
     private fun navigateToDetailScreen(publicCourseId: Int) {
-        val intent = Intent(requireContext(), CourseDetailActivity::class.java).apply {
+        val context = context ?: return
+        val intent = Intent(context, CourseDetailActivity::class.java).apply {
             putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
             putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
         }
@@ -168,8 +169,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initSearchButtonClickListener() {
+        val context = context ?: return
         binding.ivDiscoverSearch.setOnClickListener {
-            startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
+            startActivity(Intent(context, DiscoverSearchActivity::class.java))
             activity?.applyScreenEnterAnimation()
         }
     }
@@ -188,14 +190,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         if (isVisitorMode) {
             showCourseUploadWarningToast()
         } else {
-            startActivity(Intent(requireContext(), DiscoverPickActivity::class.java))
+            val context = context ?: return
+            startActivity(Intent(context, DiscoverPickActivity::class.java))
             activity?.applyScreenEnterAnimation()
         }
     }
 
     private fun showCourseUploadWarningToast() {
+        val context = context ?: return
         RunnectToast.createToast(
-            requireContext(),
+            context,
             getString(R.string.visitor_mode_course_discover_upload_warning_msg)
         ).show()
     }
@@ -217,7 +221,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 is UiStateV2.Failure -> {
-                    requireContext().showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -232,7 +236,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    requireContext().showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -255,7 +259,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    requireContext().showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {}
@@ -312,7 +316,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
             if (state is UiStateV2.Failure) {
-                requireContext().showSnackbar(binding.root, state.msg)
+                context?.showSnackbar(binding.root, state.msg)
             }
         }
     }
