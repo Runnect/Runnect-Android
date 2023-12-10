@@ -74,7 +74,7 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
 
     private fun moveToDevMode() {
         Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("runnect://devmode")
+            data = Uri.parse(DEV_MODE_SCHEME)
         }.let(this::startActivity)
     }
 
@@ -89,5 +89,6 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val TERMS_URL =
             "https://third-sight-046.notion.site/Runnect-5dfee19ccff04c388590e5ee335e77ed"
+        private const val DEV_MODE_SCHEME = "runnect://devmode"
     }
 }
