@@ -35,6 +35,7 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.extension.viewLifeCycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -44,6 +45,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var bannerAdapter: BannerAdapter
     private var currentBannerPosition = 0
+    private lateinit var bannerScrollJob: Job
 
     private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
@@ -65,6 +67,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        createBannerScrollJob()
         initLayout()
         addListener()
         addObserver()
@@ -73,6 +76,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initLayout() {
 
+    }
+
+    private fun createBannerScrollJob() {
+        bannerScrollJob = viewLifeCycleScope.launch {
+            delay(BANNER_SCROLL_DELAY_TIME)
+            binding.vpDiscoverBanner.setCurrentItem(++currentBannerPosition, true)
+        }
     }
 
     private fun initBannerViewPager(banners: List<DiscoverBanner>) {
@@ -123,7 +133,22 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 currentBannerPosition = position
-                Timber.e("current position: $currentBannerPosition")
+                Timber.d("current position: $currentBannerPosition")
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                when (state) {
+                    ViewPager2.SCROLL_STATE_IDLE -> {
+                        if (!bannerScrollJob.isActive) createBannerScrollJob()
+                    }
+
+                    ViewPager2.SCROLL_STATE_DRAGGING -> {
+                        if (bannerScrollJob.isActive) bannerScrollJob.cancel()
+                    }
+
+                    ViewPager2.SCROLL_STATE_SETTLING -> {}
+                }
             }
         })
     }
@@ -243,7 +268,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun scrollViewPagerPerSecond() {
         viewLifeCycleScope.launch {
             while (true) {
-                delay(BANNER_PAGE_SCROLL_DELAY_TIME)
+                delay(BANNER_SCROLL_DELAY_TIME)
                 currentBannerPosition = (currentBannerPosition + 1) % bannerAdapter.itemCount
                 binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, true)
                 Timber.e("current position: ${currentBannerPosition}")
@@ -379,7 +404,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     companion object {
-        private const val BANNER_PAGE_SCROLL_DELAY_TIME = 3000L
+        private const val BANNER_SCROLL_DELAY_TIME = 3000L
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
