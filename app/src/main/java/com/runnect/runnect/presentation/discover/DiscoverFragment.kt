@@ -289,12 +289,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             },
             handleVisitorMode = {
                 context?.let { showCourseScrapWarningToast(it) }
-            },
-            currentPageNumber = viewModel.currentPageNumber,
-            onNextPageLoad = { pageNo ->
-                // todo: 다음 페이지 요청하고, 뷰 갱신하기
-                viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
-                viewModel.updateCurrentPageNumber(pageNo)
             }
         )
     }

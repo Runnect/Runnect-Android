@@ -71,7 +71,7 @@ class DiscoverViewModel @Inject constructor(
 
     fun refreshCurrentCourses() {
         getMarathonCourse()
-        getRecommendCourse(pageNo = currentPageNumber, ordering = "date")
+        getRecommendCourse(pageNo = 1, ordering = "date")
     }
 
     private fun getDiscoverBanners() {
