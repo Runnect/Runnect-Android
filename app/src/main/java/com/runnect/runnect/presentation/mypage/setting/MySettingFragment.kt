@@ -47,13 +47,13 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
             requireContext().showWebBrowser(TERMS_URL)
         }
 
-        binding.clSettingDeveloperModeFrame.setOnClickListener {
+        binding.constSettingDeveloperModeFrame.setOnClickListener {
             moveToDevMode()
         }
     }
 
     private fun setVisibleDeveloperMode() {
-        binding.clSettingDeveloperModeFrame.isVisible = BuildConfig.DEBUG
+        binding.constSettingDeveloperModeFrame.isVisible = BuildConfig.DEBUG
     }
 
     private fun navigateToMyPageFragment() {

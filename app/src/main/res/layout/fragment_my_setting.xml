@@ -135,7 +135,7 @@
             app:layout_constraintTop_toTopOf="@id/view_setting_terms_frame" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_setting_developer_mode_frame"
+            android:id="@+id/const_setting_developer_mode_frame"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="360:60"
