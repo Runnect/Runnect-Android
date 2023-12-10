@@ -10,22 +10,27 @@ import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import timber.log.Timber
 
 class BannerAdapter(
+    private val banners: List<DiscoverBanner>,
     private val onBannerItemClick: (String) -> Unit,
-) : ListAdapter<DiscoverBanner, BannerAdapter.BannerViewHolder>(diffUtil) {
+) : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val binding = ItemDiscoverBannerBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false
         )
-        return BannerViewHolder(binding)
+        return BannerViewHolder(binding, onBannerItemClick)
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+        val actualPosition = position % banners.size
+        holder.onBind(banners[actualPosition])
     }
 
-    inner class BannerViewHolder(
-        private val binding: ItemDiscoverBannerBinding
+    override fun getItemCount(): Int = Int.MAX_VALUE
+
+    class BannerViewHolder(
+        private val binding: ItemDiscoverBannerBinding,
+        private val onBannerItemClick: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(banner: DiscoverBanner) {
             binding.banner = banner
@@ -33,12 +38,5 @@ class BannerAdapter(
                 onBannerItemClick(banner.linkUrl)
             }
         }
-    }
-
-    companion object {
-        private val diffUtil = ItemDiffCallback<DiscoverBanner>(
-            onItemsTheSame = { old, new -> old.index == new.index },
-            onContentsTheSame = { old, new -> old == new }
-        )
     }
 }
