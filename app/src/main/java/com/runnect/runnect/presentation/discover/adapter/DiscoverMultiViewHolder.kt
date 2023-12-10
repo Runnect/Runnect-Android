@@ -45,10 +45,8 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
         private val handleVisitorMode: () -> Unit,
-        private val onNextPageLoad: (Int) -> Unit,
-
     ) : DiscoverMultiViewHolder(binding) {
-        fun bind(currentPageNumber: Int, recommendCourses: List<RecommendCourse>) {
+        fun bind(recommendCourses: List<RecommendCourse>) {
             binding.rvDiscoverRecommend.apply {
                 setHasFixedSize(true)
                 layoutManager = GridLayoutManager(context, 2)
@@ -69,8 +67,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                         topSpaceSize = 20
                     )
                 )
-
-                initScrollListener(currentPageNumber, this)
             }
         }
 
@@ -78,9 +74,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-
                     // TODO: 스크롤이 최하단까지 내려간 경우, 다음 페이지 요청하기 (다음 페이지가 있는 경우에만)
-                    //onNextPageLoad(currentPageNumber + 1)
                 }
             })
         }
