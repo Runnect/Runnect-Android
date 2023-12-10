@@ -69,14 +69,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = viewLifecycleOwner
 
         createBannerScrollJob()
-        initLayout()
         addListener()
         addObserver()
         registerCallback()
-    }
-
-    private fun initLayout() {
-
     }
 
     private fun createBannerScrollJob() {
