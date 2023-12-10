@@ -34,4 +34,24 @@
             android:title="모델 명"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="화면 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_display_ratio"
+            android:title="화면 비율"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_display_density"
+            android:title="화면 밀도"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_display_resource_bucket"
+            android:title="리소스 버킷"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -25,6 +26,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
             initUserInfo()
             initDeviceInfo()
+            initDisplayInfo()
         }
 
         private fun initUserInfo(){
@@ -40,6 +42,29 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             setPreferenceSummary("dev_pref_android_version", Build.VERSION.RELEASE)
             setPreferenceSummary("dev_pref_model_name", "${Build.BRAND} ${Build.MODEL}")
             setPreferenceSummary("dev_pref_sdk_version", "${Build.VERSION.SDK_INT}")
+        }
+
+        private fun initDisplayInfo() {
+            val metrics = activity?.resources?.displayMetrics ?: return
+            with(metrics) {
+                setPreferenceSummary("dev_pref_display_ratio", "$widthPixels x $heightPixels")
+                setPreferenceSummary("dev_pref_display_density", "${densityDpi}dp")
+                setPreferenceSummary("dev_pref_display_resource_bucket", getDeviceResourseBucket(this))
+            }
+        }
+
+        private fun getDeviceResourseBucket(metrics: DisplayMetrics): String {
+            val densityDpi = metrics.densityDpi
+
+            return when {
+                densityDpi <= DisplayMetrics.DENSITY_LOW -> "ldpi"
+                densityDpi <= DisplayMetrics.DENSITY_MEDIUM -> "mdpi"
+                densityDpi <= DisplayMetrics.DENSITY_HIGH -> "hdpi"
+                densityDpi <= DisplayMetrics.DENSITY_XHIGH -> "xhdpi"
+                densityDpi <= DisplayMetrics.DENSITY_XXHIGH -> "xxhdpi"
+                densityDpi <= DisplayMetrics.DENSITY_XXXHIGH -> "xxxhdpi"
+                else -> "unknown"
+            }
         }
 
         private fun setPreferenceSummary(key: String, value: String) {
