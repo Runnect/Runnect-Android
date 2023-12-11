@@ -1,5 +1,6 @@
 package com.runnect.runnect.developer
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -17,6 +18,12 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
     class RunnectDeveloperFragment : PreferenceFragmentCompat() {
 
+        private val DEF_TYPE = "dimen"
+        private val DEF_PACKAGE = "android"
+        private val CLIPBOARD_LABEL = "keyword"
+        private val STATUS_BAR_HEIGHT = "status_bar_height"
+        private val NAVIGATION_BAR_HEIGHT = "navigation_bar_height"
+
         private val clipboardManager: ClipboardManager? by lazy {
             context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         }
@@ -29,8 +36,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             initDisplayInfo()
         }
 
-        private fun initUserInfo(){
-            val ctx:Context = context ?: return
+        private fun initUserInfo() {
+            val ctx: Context = context ?: return
             val accessToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_ACCESS) ?: ""
             val refreshToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_REFRESH) ?: ""
 
@@ -46,8 +53,11 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun initDisplayInfo() {
             val metrics = activity?.resources?.displayMetrics ?: return
+            val statusBarHeight = getStatusBarHeight()
+            val naviBarHeight = getNaviBarHeight()
+
             with(metrics) {
-                setPreferenceSummary("dev_pref_display_ratio", "$widthPixels x $heightPixels")
+                setPreferenceSummary("dev_pref_display_ratio", "$widthPixels x ${heightPixels + statusBarHeight + naviBarHeight}")
                 setPreferenceSummary("dev_pref_display_density", "${densityDpi}dp")
                 setPreferenceSummary("dev_pref_display_resource_bucket", getDeviceResourseBucket(this))
             }
@@ -67,6 +77,22 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             }
         }
 
+        @SuppressLint("InternalInsetResource", "DiscouragedApi")
+        fun getStatusBarHeight(): Int {
+            val resourceId = resources.getIdentifier(STATUS_BAR_HEIGHT, DEF_TYPE, DEF_PACKAGE)
+            return if (resourceId > 0) {
+                resources.getDimensionPixelSize(resourceId)
+            } else 0
+        }
+
+        @SuppressLint("InternalInsetResource", "DiscouragedApi")
+        fun getNaviBarHeight(): Int {
+            val resourceId = resources.getIdentifier(NAVIGATION_BAR_HEIGHT, DEF_TYPE, DEF_PACKAGE)
+            return if (resourceId > 0) {
+                resources.getDimensionPixelSize(resourceId)
+            } else 0
+        }
+
         private fun setPreferenceSummary(key: String, value: String) {
             findPreference<Preference>(key)?.let { pref ->
                 pref.summary = value
@@ -77,7 +103,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
         }
 
         private fun copyToText(text: String): Boolean {
-            val clipData = ClipData.newPlainText("keyword", text)
+            val clipData = ClipData.newPlainText(CLIPBOARD_LABEL, text)
             clipboardManager?.setPrimaryClip(clipData)
 
             return true
