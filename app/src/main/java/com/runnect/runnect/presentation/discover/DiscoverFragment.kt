@@ -72,8 +72,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         initLayout()
         addListener()
         addObserver()
-        registerBackPressedCallback()
-        registerRefreshLayoutScrollUpCallback()
+        registerCallback()
+
     }
 
     private fun initLayout() {
@@ -81,6 +81,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             initCurrentBannerPage(this)
             initBannerTimer(this)
         }
+    }
+
+    private fun registerCallback() {
+        registerBackPressedCallback()
+        registerRefreshLayoutScrollUpCallback()
     }
 
     private fun registerRefreshLayoutScrollUpCallback() {
@@ -140,7 +145,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverMultiView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
                 // 스크롤을 내리면 원형 버튼이 보이도록
                 if (dy > 0) {
                     binding.fabDiscoverUploadText.isVisible = false
@@ -431,6 +435,5 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
-        const val END_PAGE = "HTTP 400 Bad Request"
     }
 }
