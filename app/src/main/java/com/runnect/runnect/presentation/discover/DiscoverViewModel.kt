@@ -44,9 +44,6 @@ class DiscoverViewModel @Inject constructor(
     private var _currentPageNumber = 1
     val currentPageNumber get() = _currentPageNumber
 
-    private var _bannerCount = 0
-    val bannerCount: Int get() = _bannerCount
-
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
@@ -83,7 +80,6 @@ class DiscoverViewModel @Inject constructor(
                     _bannerGetState.value = UiStateV2.Failure(exception.message.toString())
                 }
                 .collect { banners ->
-                    _bannerCount = banners.size
                     _bannerGetState.value = UiStateV2.Success(banners)
                 }
         }
