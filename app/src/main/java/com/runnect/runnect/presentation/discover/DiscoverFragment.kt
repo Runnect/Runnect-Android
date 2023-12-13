@@ -174,24 +174,27 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverMultiView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
-                // 스크롤을 내리면 원형 버튼이 보이도록
-                if (dy > 0) {
-                    binding.fabDiscoverUploadText.isVisible = false
-                    binding.fabDiscoverUpload.isVisible = true
-                }
+                val isScrollDown = dy > 0
+                if (isScrollDown) showCircleUploadButton()
             }
         })
     }
 
+    private fun showCircleUploadButton() {
+        binding.fabDiscoverUploadText.isVisible = false
+        binding.fabDiscoverUpload.isVisible = true
+    }
+
     private fun initAppBarOffsetChangedListener() {
-        // CollapsingToolbarLayout의 높이가 완전히 확장되면 텍스트가 포함된 버튼이 보이도록
         binding.appBarDiscover.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                binding.fabDiscoverUploadText.isVisible = true
-                binding.fabDiscoverUpload.isVisible = false
-            }
+            val isAppbarExtended = verticalOffset == 0
+            if (isAppbarExtended) showExtendedUploadButton()
         }
+    }
+
+    private fun showExtendedUploadButton() {
+        binding.fabDiscoverUploadText.isVisible = true
+        binding.fabDiscoverUpload.isVisible = false
     }
 
     private fun initRefreshLayoutListener() {
