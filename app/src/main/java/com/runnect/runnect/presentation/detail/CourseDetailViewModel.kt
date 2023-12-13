@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestCourseScrap
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
-import com.runnect.runnect.data.dto.response.PublicCourse
-import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourseDto
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,13 +29,17 @@ class CourseDetailViewModel @Inject constructor(
     val courseGetState: LiveData<UiStateV2<CourseDetail?>>
         get() = _courseGetState
 
-    private var _coursePatchState = MutableLiveData<UiStateV2<PublicCourse?>>()
-    val coursePatchState: LiveData<UiStateV2<PublicCourse?>>
+    private var _coursePatchState = MutableLiveData<UiStateV2<EditableCourseDetail?>>()
+    val coursePatchState: LiveData<UiStateV2<EditableCourseDetail?>>
         get() = _coursePatchState
 
-    private var _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourseDto?>>()
-    val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourseDto?>>
+    private var _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourse?>>()
+    val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourse?>>
         get() = _courseDeleteState
+
+    private var _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
+    val courseScrapState: LiveData<UiStateV2<Unit?>>
+        get() = _courseScrapState
 
     // 플래그 변수
     var isDeepLinkLogin = MutableLiveData(true)
@@ -54,21 +58,21 @@ class CourseDetailViewModel @Inject constructor(
     private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
     val currentScreenMode get() = _currentScreenMode
 
-    private var savedContents = CourseDetailContents("", "")
+    private var savedCourseDetailContents = EditableCourseDetail("", "")
 
-    fun updateCourseDetailContents(contents: CourseDetailContents?) {
-        contents?.let {
-            _title.value = contents.title
-            _description.value = contents.description
+    fun updateCourseDetailContents(courseDetail: EditableCourseDetail?) {
+        courseDetail?.let {
+            _title.value = courseDetail.title
+            _description.value = courseDetail.description
         }
     }
 
     fun saveCurrentContents() {
-        savedContents = CourseDetailContents(title, description)
+        savedCourseDetailContents = EditableCourseDetail(title, description)
     }
 
     fun restoreOriginalContents() {
-        updateCourseDetailContents(savedContents)
+        updateCourseDetailContents(savedCourseDetailContents)
     }
 
     fun updateCurrentScreenMode(mode: ScreenMode) {
@@ -101,7 +105,7 @@ class CourseDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _coursePatchState.value = UiStateV2.Loading
 
-            val requestDto = RequestPatchPublicCourseDto(
+            val requestDto = RequestPatchPublicCourse(
                 title = title,
                 description = description
             )
@@ -120,7 +124,7 @@ class CourseDetailViewModel @Inject constructor(
             _courseDeleteState.value = UiStateV2.Loading
 
             userRepository.putDeleteUploadCourse(
-                RequestDeleteUploadCourseDto(publicCourseIdList = listOf(id))
+                RequestDeleteUploadCourse(publicCourseIdList = listOf(id))
             ).onSuccess { response ->
                 _courseDeleteState.value = UiStateV2.Success(response)
             }.onFailure { exception ->
@@ -131,11 +135,17 @@ class CourseDetailViewModel @Inject constructor(
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
+            _courseScrapState.value = UiStateV2.Loading
+
             courseRepository.postCourseScrap(
-                RequestCourseScrap(
+                RequestPostCourseScrap(
                     publicCourseId = id, scrapTF = scrapTF.toString()
                 )
-            )
+            ).onSuccess { response ->
+                _courseScrapState.value = UiStateV2.Success(response)
+            }.onFailure { exception ->
+                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
+            }
         }
     }
 

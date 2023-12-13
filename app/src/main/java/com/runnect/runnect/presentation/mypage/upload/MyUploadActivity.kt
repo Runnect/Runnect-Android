@@ -14,11 +14,12 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
+import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnUploadItemClick
+import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,7 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload),
-    OnUploadItemClick {
+    OnMyUploadItemClick {
     private val viewModel: MyUploadViewModel by viewModels()
     private lateinit var adapter: MyUploadAdapter
     private lateinit var dialog: AlertDialog
@@ -53,12 +54,19 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
     private fun initRecyclerView() {
         binding.rvMyPageUpload.layoutManager = GridLayoutManager(this, 2)
-        binding.rvMyPageUpload.addItemDecoration(GridSpacingItemDecoration(this, 2, 6, 18))
+        binding.rvMyPageUpload.addItemDecoration(
+            GridSpacingItemDecoration(
+                context = this,
+                spanCount = 2,
+                horizontalSpaceSize = 6,
+                topSpaceSize = 20
+            )
+        )
     }
 
     private fun addListener() {
         binding.ivMyPageUploadBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
         binding.btnMyPageUploadEditCourse.setOnClickListener {
             handleEditClicked()
@@ -67,21 +75,16 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             handleDeleteButtonClicked(it)
         }
         binding.cvUploadMyPageUploadCourse.setOnClickListener {
-            startActivity(Intent(this, DiscoverLoadActivity::class.java))
+            startActivity(Intent(this, DiscoverPickActivity::class.java))
             finish()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-    }
-
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
@@ -130,7 +133,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     private fun initAdapter() {
-        adapter = MyUploadAdapter(this, this).apply {
+        adapter = MyUploadAdapter(this).apply {
             submitList(
                 viewModel.myUploadCourses
             )

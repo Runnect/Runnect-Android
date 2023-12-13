@@ -18,7 +18,8 @@ import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailAct
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
-import com.runnect.runnect.util.callback.OnHistoryItemClick
+import com.runnect.runnect.util.callback.listener.OnMyHistoryItemClick
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,7 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history),
-    OnHistoryItemClick {
+    OnMyHistoryItemClick {
     private val viewModel: MyHistoryViewModel by viewModels()
     private lateinit var adapter: MyHistoryAdapter
     private lateinit var dialog: AlertDialog
@@ -80,7 +81,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun addListener() {
         binding.ivMyPageHistoryBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
             startDrawCourseSearchActivity()
@@ -113,7 +114,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initAdapter() { //data만 갱신하는 식으로 리팩토링 되어야 합니다.
-        adapter = MyHistoryAdapter(this, this).apply {
+        adapter = MyHistoryAdapter(this).apply {
             submitList(viewModel.historyItems)
         }
         binding.rvMyPageHistory.adapter = adapter
@@ -238,15 +239,10 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     companion object {

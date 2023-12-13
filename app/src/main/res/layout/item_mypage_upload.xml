@@ -42,7 +42,7 @@
             android:id="@+id/iv_my_page_upload_course_select_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/discover_load_select_course_selector"
+            android:background="@drawable/discover_pick_course_selector"
             android:elevation="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

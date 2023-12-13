@@ -14,6 +14,7 @@ import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.getStampResId
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -66,27 +67,29 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
     private fun initRecyclerView() {
         binding.rvMyPageRewardStamps.setHasFixedSize(true)
         binding.rvMyPageRewardStamps.layoutManager = GridLayoutManager(this, 3)
-        binding.rvMyPageRewardStamps.addItemDecoration(GridSpacingItemDecoration(this, 3, 28, 28))
+        binding.rvMyPageRewardStamps.addItemDecoration(
+            GridSpacingItemDecoration(
+                context = this,
+                spanCount = 3,
+                horizontalSpaceSize = 28,
+                topSpaceSize = 28
+            )
+        )
     }
 
     private fun initBackButtonClickListener() {
         binding.ivMyPageRewardBack.setOnClickListener {
-            navigateToPreviousScreen()
+            navigateToPreviousScreenWithAnimation()
         }
     }
 
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToPreviousScreen()
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun navigateToPreviousScreen() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setupGetStampListStateObserver() {
@@ -121,7 +124,7 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
                 stampImgList[index].img = stampResId
             }
         }
-        adapter = MyRewardAdapter(this).apply {
+        adapter = MyRewardAdapter().apply {
             submitList(
                 stampImgList
             )

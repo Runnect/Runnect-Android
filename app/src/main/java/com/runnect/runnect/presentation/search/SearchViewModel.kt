@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.SearchResultEntity
-import com.runnect.runnect.domain.DepartureSearchRepository
+import com.runnect.runnect.domain.repository.DepartureSearchRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

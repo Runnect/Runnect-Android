@@ -29,6 +29,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.data.dto.TimerData
@@ -37,10 +38,8 @@ import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
 import com.runnect.runnect.util.extension.round
 
-class RunActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivityRunBinding>(R.layout.activity_run),
+class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
-
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수

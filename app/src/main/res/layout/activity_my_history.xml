@@ -182,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/pretendard_semibold"
-                        android:text="@string/discover_load_draw_course"
+                        android:text="@string/discover_pick_draw_course"
                         android:textColor="@color/W1"
                         android:textSize="15sp" />
                 </androidx.cardview.widget.CardView>

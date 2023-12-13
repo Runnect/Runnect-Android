@@ -6,15 +6,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -169,7 +172,13 @@ fun Context.showToast(message: String) {
 }
 
 fun Context.showSnackbar(anchorView: View, message: String) {
-    Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
+    val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
+    snackbar.view.apply {
+        val params = layoutParams as? CoordinatorLayout.LayoutParams
+        params?.gravity = Gravity.TOP
+        layoutParams = params
+    }
+    snackbar.show()
 }
 
 fun Context.colorOf(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)

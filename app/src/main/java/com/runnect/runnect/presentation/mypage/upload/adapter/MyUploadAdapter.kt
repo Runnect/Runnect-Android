@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.mypage.upload.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +10,23 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemMypageUploadBinding
-import com.runnect.runnect.util.callback.OnUploadItemClick
-import com.runnect.runnect.util.callback.ItemDiffCallback
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
 
-class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
-    ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(diffUtil) {
-    private val inflater by lazy { LayoutInflater.from(context) }
+class MyUploadAdapter(
+    private val onMyUploadItemClick: OnMyUploadItemClick
+) : ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(diffUtil) {
     private var selectedItems: MutableList<View>? = mutableListOf()
     private var selectedBoxes: MutableList<View>? = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyUploadViewHolder {
-        return MyUploadViewHolder(ItemMypageUploadBinding.inflate(inflater, parent, false))
+        return MyUploadViewHolder(
+            ItemMypageUploadBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MyUploadViewHolder, position: Int) {
@@ -67,7 +72,7 @@ class MyUploadAdapter(context: Context, val listener: OnUploadItemClick) :
                 tvMyPageUploadCourseLocation.text = data.departure
 
                 ivMyPageUploadCourseSelectBackground.setOnClickListener {
-                    val isEditMode = listener.selectItem(data.id)
+                    val isEditMode = onMyUploadItemClick.selectItem(data.id)
                     if (isEditMode) {
                         if (it.isSelected) {
                             ivCheckbox.isSelected = false

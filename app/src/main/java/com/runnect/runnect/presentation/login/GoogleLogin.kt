@@ -11,7 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.runnect.runnect.BuildConfig
-import com.runnect.runnect.data.dto.request.RequestLogin
+import com.runnect.runnect.data.dto.request.RequestPostLogin
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -56,7 +56,7 @@ class GoogleLogin(activity: LoginActivity, viewModel: LoginViewModel) : SocialLo
             val account = completedTask.getResult(ApiException::class.java)
             val socialToken = account.idToken
             viewModelRef.get()?.postLogin(
-                RequestLogin(
+                RequestPostLogin(
                     token = socialToken,
                     provider = LoginActivity.GOOGLE_SIGN
                 )

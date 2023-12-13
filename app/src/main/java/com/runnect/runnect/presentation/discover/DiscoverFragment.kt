@@ -1,7 +1,6 @@
 package com.runnect.runnect.presentation.discover
 
-import android.app.Activity.RESULT_OK
-import android.content.ContentValues
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,54 +8,61 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
-import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
-import com.runnect.runnect.presentation.discover.adapter.CourseRecommendAdapter
-import com.runnect.runnect.presentation.discover.adapter.DiscoverPromotionAdapter
-import com.runnect.runnect.presentation.discover.load.DiscoverLoadActivity
+import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiViewAdapter
+import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
-import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnBannerClick
-import com.runnect.runnect.util.callback.OnHeartClick
-import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
+import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
 
 @AndroidEntryPoint
-class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover),
-    OnItemClick, OnHeartClick, OnBannerClick {
+class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
     private val viewModel: DiscoverViewModel by viewModels()
-    private lateinit var courseRecommendAdapter: CourseRecommendAdapter
-    private val promotionAdapter: DiscoverPromotionAdapter by lazy {
-        DiscoverPromotionAdapter(requireContext(), this)
-    }
-    private lateinit var startForResult: ActivityResultLauncher<Intent>
+    private val bannerAdapter by lazy { BannerAdapter { showPromotionWebsite(it) } }
+    private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
+
+    private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
+
+    // todo: 프로모션 배너 관련 변수들
     private lateinit var scrollHandler: Handler
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
     private lateinit var scrollPageRunnable: Runnable
-    private lateinit var pageRegisterCallback:ViewPager2.OnPageChangeCallback
+    private lateinit var bannerPageChangeCallback: ViewPager2.OnPageChangeCallback
     private var currentPosition = PAGE_NUM / 2
 
-    var isFromStorageScrap = StorageScrapFragment.isFromStorageNoScrap
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val updatedCourse: EditableDiscoverCourse =
+                    result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
+                        ?: return@registerForActivityResult
+                //recommendCourseAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,194 +70,286 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = viewLifecycleOwner
 
         initLayout()
-        getBannerData()
-        getRecommendCourses(pageNo = "1")
         addListener()
         addObserver()
-        setResultDetail()
+        registerCallback()
+
+    }
+
+    private fun initLayout() {
+        binding.vpDiscoverBanner.apply {
+            initCurrentBannerPage(this)
+            initBannerTimer(this)
+        }
+    }
+
+    private fun registerCallback() {
         registerBackPressedCallback()
-        initRefreshLayoutListener()
+        registerRefreshLayoutScrollUpCallback()
+    }
+
+    private fun registerRefreshLayoutScrollUpCallback() {
+        // 첫번째 멀티 뷰 타입이 완전히 화면에 보일 때만 리프레시 가능하도록
+        val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
+        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
+            layoutManager.findFirstCompletelyVisibleItemPosition() > 0
+        }
+    }
+
+    fun getRecommendCourses(pageNo: Int) {
+        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
+    }
+
+    private fun showPromotionWebsite(url: String) {
+        if (url.isNotBlank()) {
+            context?.showWebBrowser(url)
+        }
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val context = context ?: return
+        val intent = Intent(context, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+        }
+        resultLauncher.launch(intent)
+        activity?.applyScreenEnterAnimation()
     }
 
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isFromStorageScrap) {
-                    StorageScrapFragment.isFromStorageNoScrap = false
-                    MainActivity.updateStorageScrapScreen()
-                }
-                requireActivity().finish()
-                requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                handleFromStorageScrap()
+                activity?.navigateToPreviousScreenWithAnimation()
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
 
-    private fun initScrollListener() {
-        binding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            val contentView = binding.nestedScrollView.getChildAt(0)
-            if (contentView != null && binding.nestedScrollView.height + scrollY >= contentView.height) {
-                var currentPageNo: Int = viewModel.currentPageNo.value!!.toInt()
-                currentPageNo++
-                getRecommendCourses(pageNo = currentPageNo.toString())
-            }
+    private fun handleFromStorageScrap() {
+        if (isFromStorageScrap) {
+            StorageScrapFragment.isFromStorageScrap = false
+            MainActivity.updateStorageScrapScreen()
         }
+    }
+
+    private fun addListener() {
+        initSearchButtonClickListener()
+        initUploadButtonClickListener()
+        initRefreshLayoutListener()
+        initRecyclerViewScrollListener()
+        initAppBarOffsetChangedListener()
+    }
+
+    private fun initRecyclerViewScrollListener() {
+        binding.rvDiscoverMultiView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val isScrollDown = dy > 0
+                if (isScrollDown) showCircleUploadButton()
+            }
+        })
+    }
+
+    private fun showCircleUploadButton() {
+        binding.fabDiscoverUploadText.isVisible = false
+        binding.fabDiscoverUpload.isVisible = true
+    }
+
+    private fun initAppBarOffsetChangedListener() {
+        binding.appBarDiscover.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val isAppbarExtended = verticalOffset == 0
+            if (isAppbarExtended) showExtendedUploadButton()
+        }
+    }
+
+    private fun showExtendedUploadButton() {
+        binding.fabDiscoverUploadText.isVisible = true
+        binding.fabDiscoverUpload.isVisible = false
     }
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.recommendCourseList.clear() //새로고침 시 다시 pageNo가 1부터 시작되는데 기존에 끝까지 받아온 거에 addAll로 계속 누적돼서 clear()로 비워주는 것.
-            getRecommendCourses(pageNo = "1")
+            viewModel.resetMultiViewItems()
+            viewModel.refreshCurrentCourses()
             binding.refreshLayout.isRefreshing = false
         }
     }
 
-    private fun getBannerData() {
-        viewModel.getBannerData()
-
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is MainActivity) {
-            MainActivity.discoverFragment = this
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MainActivity.discoverFragment = null
-    }
-
-    fun getRecommendCourses(pageNo: String?) {
-        viewModel.getRecommendCourse(pageNo = pageNo)
-    }
-
-    private fun initLayout() {
-        binding.rvDiscoverRecommend.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvDiscoverRecommend.addItemDecoration(
-            GridSpacingItemDecoration(
-                requireContext(),
-                2,
-                6,
-                16
-            )
-        )
-        setPromotionBanner(binding.vpDiscoverPromotion)
-    }
-
-    private fun addListener() {
-        initScrollListener()
-
+    private fun initSearchButtonClickListener() {
+        val context = context ?: return
         binding.ivDiscoverSearch.setOnClickListener {
-            startActivity(Intent(requireContext(), DiscoverSearchActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
+            startActivity(Intent(context, DiscoverSearchActivity::class.java))
+            activity?.applyScreenEnterAnimation()
+        }
+    }
+
+    private fun initUploadButtonClickListener() {
+        binding.fabDiscoverUpload.setOnClickListener {
+            navigateToCourseUploadScreen()
         }
 
-        binding.btnDiscoverUpload.setOnClickListener {
-            if (isVisitorMode) {
-                RunnectToast.createToast(requireContext(), VISITOR_REQUIRE_LOGIN).show()
-            } else {
-                startActivity(Intent(requireContext(), DiscoverLoadActivity::class.java))
-                requireActivity().overridePendingTransition(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left
-                )
-            }
+        binding.fabDiscoverUploadText.setOnClickListener {
+            navigateToCourseUploadScreen()
         }
+    }
+
+    private fun navigateToCourseUploadScreen() {
+        if (isVisitorMode) {
+            showCourseUploadWarningToast()
+        } else {
+            val context = context ?: return
+            startActivity(Intent(context, DiscoverPickActivity::class.java))
+            activity?.applyScreenEnterAnimation()
+        }
+    }
+
+    private fun showCourseUploadWarningToast() {
+        val context = context ?: return
+        RunnectToast.createToast(
+            context,
+            getString(R.string.visitor_mode_course_discover_upload_warning_msg)
+        ).show()
     }
 
     private fun addObserver() {
-        viewModel.courseInfoState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Empty -> {}
-                UiState.Loading -> {
-                    binding.shimmerLayout.startShimmer()
-                    binding.shimmerLayout.isVisible = true
+        setupBannerGetStateObserver()
+        setupMarathonCourseGetStateObserver()
+        setupRecommendCourseGetStateObserver()
+        setupCourseScrapStateObserver()
+    }
+
+    private fun setupBannerGetStateObserver() {
+        viewModel.bannerGetState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    initBannerViewPager()
+                    val banners = state.data
+                    bannerAdapter.submitList(banners)
                 }
 
-                UiState.Success -> {
-                    binding.shimmerLayout.stopShimmer()
-                    binding.shimmerLayout.isVisible = false
-                    setRecommendCourseAdapter()
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(binding.root, state.msg)
                 }
 
-                UiState.Failure -> {
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                    if (viewModel.errorMessage.value == END_PAGE) {
-                        binding.shimmerLayout.stopShimmer()
-                        binding.shimmerLayout.isVisible = false
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupMarathonCourseGetStateObserver() {
+        viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
+                is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
+                    context?.showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseGetStateObserver() {
+        viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
+                is UiStateV2.Success -> {
+                    if (viewModel.checkCourseLoadState()) {
+                        dismissLoadingProgressBar()
+                        initMultiViewAdapter()
+                        initMultiRecyclerView()
                     }
                 }
-            }
-        }
 
-        viewModel.bannerState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Empty -> binding.indeterminateBarBanner.isVisible = false
-                UiState.Loading -> binding.indeterminateBarBanner.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBarBanner.isVisible = false
-                    setBannerData()
+                is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
+                    context?.showSnackbar(binding.root, state.msg)
                 }
 
-                UiState.Failure -> {
-                    binding.indeterminateBarBanner.isVisible = false
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                }
+                else -> {}
             }
         }
     }
 
-    private fun setRecommendCourseAdapter() {
-        courseRecommendAdapter =
-            CourseRecommendAdapter(requireContext(), this, this, isVisitorMode).apply {
-                submitList(viewModel.recommendCourseList)
+    private fun showLoadingProgressBar() {
+        binding.rvDiscoverMultiView.isVisible = false
+        binding.pbDiscoverLoading.isVisible = true
+    }
+
+    private fun dismissLoadingProgressBar() {
+        binding.rvDiscoverMultiView.isVisible = true
+        binding.pbDiscoverLoading.isVisible = false
+    }
+
+    private fun initMultiViewAdapter() {
+        multiViewAdapter = DiscoverMultiViewAdapter(
+            multiViewItems = viewModel.multiViewItems,
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(courseId, scrap)
+            },
+            onCourseItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            handleVisitorMode = {
+                context?.let { showCourseScrapWarningToast(it) }
             }
-        binding.rvDiscoverRecommend.setHasFixedSize(true)
-        binding.rvDiscoverRecommend.adapter = courseRecommendAdapter
+        )
     }
 
-    private fun setPromotionBanner(vp: ViewPager2) {
-        setPromotionViewPager(vp)
-        setScrollHandler()
-        setScrollPageRunnable(vp)
-        setTimerTask()
+    private fun showCourseScrapWarningToast(context: Context) {
+        RunnectToast.createToast(
+            context = context,
+            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+        ).show()
     }
 
-    private fun setPromotionAdapter() {
-        binding.vpDiscoverPromotion.adapter = promotionAdapter
+    private fun initMultiRecyclerView() {
+        binding.rvDiscoverMultiView.apply {
+            setHasFixedSize(true)
+            adapter = multiViewAdapter
+        }
     }
 
-    private fun setBannerData() {
-        setPromotionAdapter()
-        promotionAdapter.setBannerCount(viewModel.bannerCount)
-        promotionAdapter.submitList(viewModel.bannerData)
-        setPromotionIndicator(binding.vpDiscoverPromotion)
-        registerPromotionPageCallback(binding.vpDiscoverPromotion)
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
+            if (state is UiStateV2.Failure) {
+                context?.showSnackbar(binding.root, state.msg)
+            }
+        }
     }
 
-    private fun setPromotionIndicator(vp: ViewPager2) {
-        val indicator = binding.ciDiscoverPromotion
-        indicator.setViewPager(vp)
-        indicator.createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
+    /** 배너 데이터 목록 초기화 */
+
+    private fun initBannerViewPager() {
+        initBannerAdapter()
+        bannerAdapter.setBannerCount(viewModel.bannerCount)
+        binding.vpDiscoverBanner.apply {
+            initViewPagerIndicator(this)
+            registerBannerPageChangeCallback(this)
+        }
     }
 
-    private fun setPromotionViewPager(vp: ViewPager2) {
-        vp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        vp.setCurrentItem(PAGE_NUM / 2, false)
+    private fun initBannerAdapter() {
+        binding.vpDiscoverBanner.adapter = bannerAdapter
     }
 
-    private fun registerPromotionPageCallback(vp: ViewPager2) {
-        pageRegisterCallback = object : ViewPager2.OnPageChangeCallback() {
+    private fun initViewPagerIndicator(viewPager: ViewPager2) {
+        binding.ciDiscoverBanner.apply {
+            setViewPager(viewPager)
+            createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
+        }
+    }
+
+    private fun registerBannerPageChangeCallback(viewPager: ViewPager2) {
+        bannerPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
+                binding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
                 currentPosition = position
             }
 
@@ -262,25 +360,37 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 if (positionOffsetPixels == 0) {
-                    binding.ciDiscoverPromotion.animatePageSelected(position % viewModel.bannerCount)
+                    binding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
                 }
             }
         }
-        vp.registerOnPageChangeCallback(pageRegisterCallback)
+        viewPager.registerOnPageChangeCallback(bannerPageChangeCallback)
     }
 
-    private fun setScrollHandler() {
+    /** 배너 레이아웃 초기화 */
+
+    private fun initCurrentBannerPage(viewPager: ViewPager2) {
+        viewPager.setCurrentItem(PAGE_NUM / 2, false)
+    }
+
+    private fun initBannerTimer(viewPager: ViewPager2) {
+        initScrollHandler()
+        initScrollPageRunnable(viewPager)
+        initTimerTask()
+    }
+
+    private fun initScrollHandler() {
         scrollHandler = Handler(Looper.getMainLooper())
         timer = Timer()
     }
 
-    private fun setScrollPageRunnable(vp: ViewPager2) {
+    private fun initScrollPageRunnable(viewPager: ViewPager2) {
         scrollPageRunnable = Runnable {
-            vp.setCurrentItem(++currentPosition, true)
+            viewPager.setCurrentItem(++currentPosition, true)
         }
     }
 
-    private fun setTimerTask() {
+    private fun initTimerTask() {
         timerTask = object : TimerTask() {
             override fun run() {
                 scrollHandler.post(scrollPageRunnable)
@@ -308,46 +418,26 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     override fun onPause() {
         super.onPause()
         autoScrollStop()
-        binding.vpDiscoverPromotion.unregisterOnPageChangeCallback(pageRegisterCallback)
+        binding.vpDiscoverBanner.unregisterOnPageChangeCallback(bannerPageChangeCallback)
     }
 
-    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id!!, scrapTF)
-    }
-
-    private fun setResultDetail() {
-        startForResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                getRecommendCourses(pageNo = "1")
-            }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            MainActivity.discoverFragment = this
         }
     }
 
-    override fun selectItem(publicCourseId: Int) {
-        val intent = Intent(requireContext(), CourseDetailActivity::class.java)
-        intent.putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-        intent.putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-        startForResult.launch(intent)
-        requireActivity().overridePendingTransition(
-            R.anim.slide_in_right,
-            R.anim.slide_out_left
-        )
-    }
-
-    override fun selectBanner(item: DiscoverPromotionItemDTO) {
-        if (item.linkUrl.isNotEmpty()) {
-            requireContext().showWebBrowser(item.linkUrl)
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        MainActivity.discoverFragment = null
     }
 
     companion object {
-        const val PAGE_NUM = 900
-        const val INTERVAL_TIME = 5000L
-        const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
-        const val EXTRA_ROOT_SCREEN = "rootScreen"
-        const val END_PAGE = "HTTP 400 Bad Request"
-        const val VISITOR_REQUIRE_LOGIN = "러넥트에 가입하면 코스를 업로드할 수 있어요"
+        private const val PAGE_NUM = 900
+        private const val INTERVAL_TIME = 5000L
+        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
+        private const val EXTRA_ROOT_SCREEN = "rootScreen"
+        const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
     }
 }

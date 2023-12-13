@@ -1,17 +1,18 @@
 package com.runnect.runnect.domain.entity
 
 data class CourseDetail(
-    val stampId: String,
-    val level: String,
     val nickname: String,
+    val level: String,
+    val stampId: String,
     val isNowUser: Boolean,
     val id: Int,
     val courseId: Int,
-    val departure: String,
-    val description: String,
-    val distance: String,
+    val scrap: Boolean,
+    val scrapCount: String,
     val image: String,
-    val isScrap: Boolean,
     val title: String,
-    val path: List<List<Double>>
+    val description: String,
+    val path: List<List<Double>>,
+    val distance: String,
+    val departure: String,
 )
