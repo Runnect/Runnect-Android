@@ -122,11 +122,7 @@ class DiscoverMultiViewAdapter(
     ) {
         course.title = updatedCourse.title
         course.scrap = updatedCourse.scrap
-
-        val marathonCourses = multiViewItems[0]
-        val position = marathonCourses.indexOf(course)
-        notifyItemChanged(position)
-        Timber.e("UPDATE ITEM POSITION : ${position}")
+        notifyItemChanged(MultiViewType.MARATHON.ordinal)
     }
 
     private fun updateRecommendCourseItem(
@@ -135,6 +131,6 @@ class DiscoverMultiViewAdapter(
     ) {
         course.title = updatedCourse.title
         course.scrap = updatedCourse.scrap
-//        notifyDataSetChanged()
+        notifyItemChanged(MultiViewType.RECOMMEND.ordinal)
     }
 }
