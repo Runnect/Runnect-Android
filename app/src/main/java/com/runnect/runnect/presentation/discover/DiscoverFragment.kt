@@ -60,7 +60,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                         ?: return@registerForActivityResult
 
                 // todo: 상세페이지 갔다가 이전으로 돌아오면 제목, 스크랩 변경사항이 바로 표시되도록
-                // recommendCourseAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
+                multiViewAdapter.updateCourseItem(
+                    publicCourseId = viewModel.clickedCourseId,
+                    updatedCourse = updatedCourse
+                )
             }
         }
 
