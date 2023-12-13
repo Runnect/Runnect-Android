@@ -3,6 +3,7 @@ package com.runnect.runnect.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
+import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
@@ -62,7 +63,8 @@ object RetrofitModule {
     @Runnect
     fun provideRunnectRetrofit(json: Json, client: OkHttpClient): Retrofit {
         kotlinx.coroutines.internal.synchronized(this) {
-            val retrofit = Retrofit.Builder().baseUrl(BuildConfig.RUNNECT_BASE_URL).client(client)
+            val baseUrl = ApplicationClass.getBaseUrl()
+            val retrofit = Retrofit.Builder().baseUrl(baseUrl).client(client)
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
             return retrofit ?: throw RuntimeException("Retrofit creation failed.")

@@ -8,11 +8,21 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.runnect.runnect.R
+import com.runnect.runnect.application.ApiMode
+import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.service.TokenAuthenticator
+import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
+import com.runnect.runnect.util.custom.toast.RunnectToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_developer) {
 
@@ -32,6 +42,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             setPreferencesFromResource(R.xml.preferences_developer_menu, rootKey)
 
             initUserInfo()
+            initApiMode()
             initDeviceInfo()
             initDisplayInfo()
         }
@@ -43,6 +54,36 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
             setPreferenceSummary("dev_pref_key_refresh_token", refreshToken)
+        }
+
+        private fun initApiMode() {
+            val ctx:Context = context ?: ApplicationClass.appContext
+            val currentApi = ApiMode.getCurrentApiMode(ctx)
+
+            findPreference<ListPreference>("dev_pref_key_api_mode")?.apply {
+                val entries = ApiMode.values().map { it.name }.toTypedArray()
+                val selectIndex = ApiMode.values().indexOf(currentApi)
+
+                this.entries = entries
+                this.entryValues = entries
+
+                title = currentApi.name
+                setValueIndex(selectIndex)
+
+                setOnPreferenceChangeListener { preference, newValue ->
+                    val selectItem = newValue.toString()
+                    this.title = selectItem
+
+                    PreferenceManager.apply {
+                        setString(ctx, ApplicationClass.API_MODE, selectItem)
+                        setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_ACCESS, "none")
+                        setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_REFRESH, "none")
+                    }
+
+                    destroyApp(ctx)
+                    true
+                }
+            }
         }
 
         private fun initDeviceInfo() {
@@ -107,6 +148,16 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             clipboardManager?.setPrimaryClip(clipData)
 
             return true
+        }
+
+        private fun destroyApp(context: Context) {
+            lifecycleScope.launch(Dispatchers.Main) {
+                RunnectToast.createToast(context, getString(R.string.dev_mode_require_restart)).show()
+                delay(3000)
+
+                activity?.finishAffinity() //루트액티비티 종료
+                exitProcess(0)
+            }
         }
     }
 }

@@ -18,6 +18,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="서버 모드 설정"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:key="dev_pref_key_api_mode"
+            android:title="서버 모드 설정"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="디바이스 정보"
         app:iconSpaceReserved="false">
 

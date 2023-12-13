@@ -117,7 +117,7 @@
     <string name="draw_custom_departure_guide">지도를 움직여 출발지를 설정해주세요</string>
     <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
     <string name="draw_next">다음으로</string>
-
+    <string name="dev_mode_require_restart">3초 후 강제 종료됩니다. 앱을 재실행 해주세요.</string>
     <!-- visitor mode -->
     <string name="dialog_visitor_mode_require_login_desc">가입 후 로그인 시 코스를 저장하고 달릴 수 있어요!</string>
     <string name="dialog_visitor_mode_require_login_cancel">닫기</string>
