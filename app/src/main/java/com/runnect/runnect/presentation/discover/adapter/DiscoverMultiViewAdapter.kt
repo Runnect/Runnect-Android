@@ -23,6 +23,7 @@ class DiscoverMultiViewAdapter(
     }
 
     private lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
+    private lateinit var recommendViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
 
     override fun getItemViewType(position: Int): Int {
         return when (multiViewItems[position].first()) {
@@ -73,6 +74,7 @@ class DiscoverMultiViewAdapter(
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
+                recommendViewHolder = holder
                 (multiViewItems[position] as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
@@ -88,13 +90,14 @@ class DiscoverMultiViewAdapter(
             for (course in courses) {
                 when (course) {
                     is MarathonCourse -> {
-                        // todo: 마라톤 코스 뷰 홀더에서 어댑터 아이템 갱신하는 코드 실행
+                        // 마라톤 코스 뷰 홀더에서 어댑터 아이템 갱신하는 코드 실행
                         marathonViewHolder.updateMarathonCourseItem(publicCourseId, updatedCourse)
                     }
 
-                    is RecommendCourse -> {}
+                    is RecommendCourse -> {
+                        recommendViewHolder.updateRecommendCourseItem(publicCourseId, updatedCourse)
+                    }
                 }
-
                 return
             }
         }

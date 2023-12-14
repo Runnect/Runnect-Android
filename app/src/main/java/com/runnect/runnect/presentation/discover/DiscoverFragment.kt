@@ -55,11 +55,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val updatedCourse: EditableDiscoverCourse =
-                    result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
+                val updatedCourse: EditableDiscoverCourse = result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
 
-                // todo: 상세페이지 갔다가 이전으로 돌아오면 제목, 스크랩 변경사항이 바로 표시되도록
+                // 상세페이지 갔다가 이전으로 돌아오면 제목, 스크랩 변경사항이 바로 표시되도록
                 multiViewAdapter.updateCourseItem(
                     publicCourseId = viewModel.clickedCourseId,
                     updatedCourse = updatedCourse

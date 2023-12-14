@@ -30,12 +30,17 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
         fun bind(marathonCourses: List<MarathonCourse>) {
             this.marathonCourses = marathonCourses
+            initMarathonRecyclerView()
+        }
 
+        private fun initMarathonRecyclerView() {
             binding.rvDiscoverMarathon.apply {
                 setHasFixedSize(true)
+
                 adapter = marathonAdapter.apply {
                     submitList(marathonCourses)
                 }
+
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
@@ -55,6 +60,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                     course.title = updatedCourse.title
                     course.scrap = updatedCourse.scrap
                     marathonAdapter.notifyItemChanged(index)
+                    Timber.e("marathon: notifyItemChanged")
                     return@forEachIndexed
                 }
             }
@@ -63,23 +69,31 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
     class RecommendCourseViewHolder(
         private val binding: ItemDiscoverMultiviewRecommendBinding,
-        private val onHeartButtonClick: (Int, Boolean) -> Unit,
-        private val onCourseItemClick: (Int) -> Unit,
-        private val handleVisitorMode: () -> Unit,
+        onHeartButtonClick: (Int, Boolean) -> Unit,
+        onCourseItemClick: (Int) -> Unit,
+        handleVisitorMode: () -> Unit,
     ) : DiscoverMultiViewHolder(binding) {
+        private var recommendCourses = listOf<RecommendCourse>()
+        private val recommendAdapter by lazy {
+            DiscoverRecommendAdapter(
+                onHeartButtonClick,
+                onCourseItemClick,
+                handleVisitorMode
+            )
+        }
+
         fun bind(recommendCourses: List<RecommendCourse>) {
+            this.recommendCourses = recommendCourses
+            initRecommendRecyclerView()
+        }
+
+        private fun initRecommendRecyclerView() {
             binding.rvDiscoverRecommend.apply {
                 setHasFixedSize(true)
                 layoutManager = GridLayoutManager(context, 2)
-
-                adapter = DiscoverRecommendAdapter(
-                    onHeartButtonClick,
-                    onCourseItemClick,
-                    handleVisitorMode
-                ).apply {
+                adapter = recommendAdapter.apply {
                     submitList(recommendCourses)
                 }
-
                 addItemDecoration(
                     DiscoverRecommendItemDecoration(
                         context = context,
@@ -88,6 +102,21 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                         spanCount = 2
                     )
                 )
+            }
+        }
+
+        fun updateRecommendCourseItem(
+            publicCourseId: Int,
+            updatedCourse: EditableDiscoverCourse
+        ) {
+            recommendCourses.forEachIndexed { index, course ->
+                if (course.id == publicCourseId) {
+                    course.title = updatedCourse.title
+                    course.scrap = updatedCourse.scrap
+                    recommendAdapter.notifyItemChanged(index)
+                    Timber.e("recommend: notifyItemChanged")
+                    return@forEachIndexed
+                }
             }
         }
 
