@@ -39,13 +39,13 @@ class CourseMainFragment :
         super.onViewCreated(view, savedInstanceState)
         init()
         checkAndRequestLocationPermission()
-        initCurrentLocationButtonClickListener()
-        drawCourseButton()
     }
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
         initView()
+        initCurrentLocationButtonClickListener()
+        initDrawCourseButtonClickListener()
     }
 
     private fun initView() {
@@ -79,7 +79,7 @@ class CourseMainFragment :
         }
     }
 
-    private fun drawCourseButton() {
+    private fun initDrawCourseButtonClickListener() {
         binding.btnDraw.setOnClickListener {
             val intent = Intent(activity, SearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
