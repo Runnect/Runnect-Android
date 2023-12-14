@@ -69,10 +69,6 @@ android {
         dataBinding true
         viewBinding true
     }
-
-    packagingOptions {
-        exclude 'AndroidManifest.xml'
-    }
 }
 
 dependencies {
