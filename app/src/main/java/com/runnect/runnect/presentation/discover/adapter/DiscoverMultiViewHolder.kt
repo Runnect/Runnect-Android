@@ -8,8 +8,7 @@ import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import timber.log.Timber
+import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -22,6 +21,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         fun bind(marathonCourses: List<MarathonCourse>) {
             binding.rvDiscoverMarathon.apply {
                 setHasFixedSize(true)
+
                 adapter = DiscoverMarathonAdapter(
                     onHeartButtonClick,
                     onCourseItemClick,
@@ -29,6 +29,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 ).apply {
                     submitList(marathonCourses)
                 }
+
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
@@ -60,11 +61,11 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 }
 
                 addItemDecoration(
-                    GridSpacingItemDecoration(
+                    DiscoverRecommendItemDecoration(
                         context = context,
-                        spanCount = 2,
-                        horizontalSpaceSize = 6,
-                        topSpaceSize = 20
+                        rightSpacing = 6,
+                        bottomSpacing = 20,
+                        spanCount = 2
                     )
                 )
             }
