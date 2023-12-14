@@ -2,8 +2,11 @@ package com.runnect.runnect.presentation.coursemain
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gun0912.tedpermission.PermissionListener
@@ -35,18 +38,17 @@ class CourseMainFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
-        getCurrentLocation()
+        checkAndRequestLocationPermission()
+        initCurrentLocationButtonClickListener()
         drawCourseButton()
     }
 
     private fun init() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
-        requestPermission()
+        initView()
     }
 
     private fun initView() {
-
-        //MapFragment 추가
         val fm = childFragmentManager
         val mapFragment = fm.findFragmentById(R.id.mapView) as MapFragment?
             ?: MapFragment.newInstance().also {
@@ -57,9 +59,23 @@ class CourseMainFragment :
     }
 
 
-    private fun getCurrentLocation() {
+    private fun checkAndRequestLocationPermission() {
+        if (isLocationPermissionGranted()) {
+            if (!::naverMap.isInitialized) {
+                initView()
+            }
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun initCurrentLocationButtonClickListener() {
         binding.btnCurrentLocation.setOnClickListener {
-            cameraUpdate(currentLocation)
+            if (isLocationPermissionGranted()) {
+                cameraUpdate(currentLocation)
+            } else {
+                requestLocationPermission()
+            }
         }
     }
 
@@ -103,23 +119,32 @@ class CourseMainFragment :
         locationOverlay.icon = OverlayImage.fromResource(R.drawable.current_location)
     }
 
-    private fun requestPermission() {
+    private fun isLocationPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermission() {
         TedPermission.create()
             .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() { //요청 승인 시
-                    initView() //지도 뷰 표시
+                override fun onPermissionGranted() {
+                    cameraUpdate(currentLocation)
                 }
 
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) { //요청 거부 시
-                    naverMap.locationTrackingMode = LocationTrackingMode.None
-                    onDestroy() //앱 종료
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(
+                        requireContext(),
+                        "위치 권한이 거부되었습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
             .setRationaleTitle(PERMISSION_TITLE)
             .setRationaleMessage(PERMISSION_CONTENT)
             .setDeniedMessage(PERMISSION_GUIDE)
             .setPermissions(
-                Manifest.permission.POST_NOTIFICATIONS, // 러닝 시 notification icon 띄우기
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
