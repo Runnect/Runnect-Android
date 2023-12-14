@@ -1,12 +1,13 @@
 package com.runnect.runnect.developer
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
@@ -28,11 +29,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
     class RunnectDeveloperFragment : PreferenceFragmentCompat() {
 
-        private val DEF_TYPE = "dimen"
-        private val DEF_PACKAGE = "android"
         private val CLIPBOARD_LABEL = "keyword"
-        private val STATUS_BAR_HEIGHT = "status_bar_height"
-        private val NAVIGATION_BAR_HEIGHT = "navigation_bar_height"
 
         private val clipboardManager: ClipboardManager? by lazy {
             context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
@@ -94,8 +91,9 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun initDisplayInfo() {
             val metrics = activity?.resources?.displayMetrics ?: return
-            val statusBarHeight = getStatusBarHeight()
-            val naviBarHeight = getNaviBarHeight()
+            val windowManager = activity?.windowManager ?: return
+            val statusBarHeight = getStatusBarHeight(windowManager)
+            val naviBarHeight = getNaviBarHeight(windowManager)
 
             with(metrics) {
                 setPreferenceSummary("dev_pref_display_ratio", "$widthPixels x ${heightPixels + statusBarHeight + naviBarHeight}")
@@ -118,20 +116,24 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             }
         }
 
-        @SuppressLint("InternalInsetResource", "DiscouragedApi")
-        fun getStatusBarHeight(): Int {
-            val resourceId = resources.getIdentifier(STATUS_BAR_HEIGHT, DEF_TYPE, DEF_PACKAGE)
-            return if (resourceId > 0) {
-                resources.getDimensionPixelSize(resourceId)
-            } else 0
+        private fun getStatusBarHeight(windowManager: WindowManager): Int {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics = windowManager.currentWindowMetrics
+                val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.statusBars())
+                insets.top
+            } else {
+                0
+            }
         }
 
-        @SuppressLint("InternalInsetResource", "DiscouragedApi")
-        fun getNaviBarHeight(): Int {
-            val resourceId = resources.getIdentifier(NAVIGATION_BAR_HEIGHT, DEF_TYPE, DEF_PACKAGE)
-            return if (resourceId > 0) {
-                resources.getDimensionPixelSize(resourceId)
-            } else 0
+        private fun getNaviBarHeight(windowManager: WindowManager): Int {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics = windowManager.currentWindowMetrics
+                val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars())
+                insets.bottom
+            } else {
+                0
+            }
         }
 
         private fun setPreferenceSummary(key: String, value: String) {
