@@ -22,6 +22,8 @@ class DiscoverMultiViewAdapter(
         RECOMMEND
     }
 
+    private lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
+
     override fun getItemViewType(position: Int): Int {
         return when (multiViewItems[position].first()) {
             is MarathonCourse -> MultiViewType.MARATHON.ordinal
@@ -64,6 +66,7 @@ class DiscoverMultiViewAdapter(
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
+                marathonViewHolder = holder
                 (multiViewItems[position] as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
@@ -83,54 +86,17 @@ class DiscoverMultiViewAdapter(
     ) {
         for (courses in multiViewItems) {
             for (course in courses) {
-                // todo: 해당하는 코스 id 발견하여 아이템 갱신하고 나면, 바로 함수 종료시키기
-                if (findCourseItemByViewType(publicCourseId, course, updatedCourse)) {
-                    Timber.e("SUCCESS COURSE ITEM UPDATE: ${publicCourseId}")
-                    return
+                when (course) {
+                    is MarathonCourse -> {
+                        // todo: 마라톤 코스 뷰 홀더에서 어댑터 아이템 갱신하는 코드 실행
+                        marathonViewHolder.updateMarathonCourseItem(publicCourseId, updatedCourse)
+                    }
+
+                    is RecommendCourse -> {}
                 }
+
+                return
             }
         }
-    }
-
-    private fun findCourseItemByViewType(
-        publicCourseId: Int,
-        course: DiscoverMultiViewItem,
-        updatedCourse: EditableDiscoverCourse
-    ): Boolean {
-        when (course) {
-            is MarathonCourse -> {
-                if (course.id == publicCourseId) {
-                    updateMarathonCourseItem(course, updatedCourse)
-                    return true
-                }
-            }
-
-            is RecommendCourse -> {
-                if (course.id == publicCourseId) {
-                    updateRecommendCourseItem(course, updatedCourse)
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun updateMarathonCourseItem(
-        course: MarathonCourse,
-        updatedCourse: EditableDiscoverCourse
-    ) {
-        course.title = updatedCourse.title
-        course.scrap = updatedCourse.scrap
-        notifyItemChanged(MultiViewType.MARATHON.ordinal)
-    }
-
-    private fun updateRecommendCourseItem(
-        course: RecommendCourse,
-        updatedCourse: EditableDiscoverCourse
-    ) {
-        course.title = updatedCourse.title
-        course.scrap = updatedCourse.scrap
-        notifyItemChanged(MultiViewType.RECOMMEND.ordinal)
     }
 }

@@ -7,29 +7,35 @@ import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
+import timber.log.Timber
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
+
     class MarathonCourseViewHolder(
         private val binding: ItemDiscoverMultiviewMarathonBinding,
-        private val onHeartButtonClick: (Int, Boolean) -> Unit,
-        private val onCourseItemClick: (Int) -> Unit,
-        private val handleVisitorMode: () -> Unit
+        onHeartButtonClick: (Int, Boolean) -> Unit,
+        onCourseItemClick: (Int) -> Unit,
+        handleVisitorMode: () -> Unit
     ) : DiscoverMultiViewHolder(binding) {
+        private var marathonCourses = listOf<MarathonCourse>()
+        private val marathonAdapter by lazy {
+            DiscoverMarathonAdapter(
+                onHeartButtonClick, onCourseItemClick, handleVisitorMode
+            )
+        }
+
         fun bind(marathonCourses: List<MarathonCourse>) {
+            this.marathonCourses = marathonCourses
+
             binding.rvDiscoverMarathon.apply {
                 setHasFixedSize(true)
-
-                adapter = DiscoverMarathonAdapter(
-                    onHeartButtonClick,
-                    onCourseItemClick,
-                    handleVisitorMode
-                ).apply {
+                adapter = marathonAdapter.apply {
                     submitList(marathonCourses)
                 }
-
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
@@ -37,6 +43,20 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                         itemCount = marathonCourses.size
                     )
                 )
+            }
+        }
+
+        fun updateMarathonCourseItem(
+            publicCourseId: Int,
+            updatedCourse: EditableDiscoverCourse
+        ) {
+            marathonCourses.forEachIndexed { index, course ->
+                if (course.id == publicCourseId) {
+                    course.title = updatedCourse.title
+                    course.scrap = updatedCourse.scrap
+                    marathonAdapter.notifyItemChanged(index)
+                    return@forEachIndexed
+                }
             }
         }
     }
