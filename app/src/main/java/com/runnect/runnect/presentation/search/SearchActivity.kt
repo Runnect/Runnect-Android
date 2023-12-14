@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -22,13 +21,14 @@ import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.callback.listener.OnSearchItemClick
+import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
+class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
     OnSearchItemClick {
     val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
@@ -159,7 +159,7 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
                     val keyword = binding.etSearch.text
-                    if(!keyword.isNullOrBlank()){
+                    if (!keyword.isNullOrBlank()) {
                         searchKeyword(keyword.toString())
                         hideKeyboard(binding.etSearch)
                     }
@@ -170,7 +170,9 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
         })
 
         binding.cvStartCurrentLocation.setOnClickListener {
-            startCurrentLocation()
+            PermissionUtil.requestLocationPermission(this) {
+                startCurrentLocation()
+            }
         }
 
         binding.cvStartCustomLocation.setOnClickListener {
@@ -178,13 +180,19 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
         }
     }
 
+
     private fun startCurrentLocation() {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 putExtra(
                     EXTRA_SEARCH_RESULT,
-                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null, mode = "currentLocation")
+                    SearchResultEntity(
+                        fullAddress = "",
+                        name = "",
+                        locationLatLng = null,
+                        mode = "currentLocation"
+                    )
                 )
             }
         )
@@ -196,7 +204,12 @@ class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_s
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 putExtra(
                     EXTRA_SEARCH_RESULT,
-                    SearchResultEntity(fullAddress = "", name = "", locationLatLng = null, mode = "customLocation")
+                    SearchResultEntity(
+                        fullAddress = "",
+                        name = "",
+                        locationLatLng = null,
+                        mode = "customLocation"
+                    )
                 )
             }
         )
