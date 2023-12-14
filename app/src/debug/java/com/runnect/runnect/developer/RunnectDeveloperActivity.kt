@@ -29,8 +29,6 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
     class RunnectDeveloperFragment : PreferenceFragmentCompat() {
 
-        private val CLIPBOARD_LABEL = "keyword"
-
         private val clipboardManager: ClipboardManager? by lazy {
             context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         }
@@ -66,7 +64,6 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
                 title = currentApi.name
                 setValueIndex(selectIndex)
-
                 setOnPreferenceChangeListener { preference, newValue ->
                     val selectItem = newValue.toString()
                     this.title = selectItem
@@ -160,6 +157,10 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
                 activity?.finishAffinity() //루트액티비티 종료
                 exitProcess(0)
             }
+        }
+
+        companion object {
+            private const val CLIPBOARD_LABEL = "keyword"
         }
     }
 }
