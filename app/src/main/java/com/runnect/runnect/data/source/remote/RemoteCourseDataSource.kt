@@ -45,6 +45,6 @@ class RemoteCourseDataSource @Inject constructor(private val courseService: Cour
 
     suspend fun postRecord(request: RequestPostRecordDTO) = courseService.postRecord(request)
 
-    suspend fun uploadCourse(image: MultipartBody.Part, data: RequestBody) =
-        courseService.uploadCourse(image, data)
+    suspend fun uploadCourse(image: MultipartBody.Part, courseCreateRequestDto: RequestBody) =
+        courseService.uploadCourse(image, courseCreateRequestDto)
 }

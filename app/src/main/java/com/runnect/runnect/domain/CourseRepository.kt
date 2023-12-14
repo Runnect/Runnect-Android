@@ -46,6 +46,6 @@ interface CourseRepository {
     suspend fun postRecord(request: RequestPostRecordDTO): Response<ResponsePostRecordDTO>
 
     suspend fun uploadCourse(
-        image: MultipartBody.Part, data: RequestBody
+        image: MultipartBody.Part, courseCreateRequestDto: RequestBody
     ): Response<ResponsePostCourseDTO>
 }

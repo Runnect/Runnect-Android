@@ -17,12 +17,6 @@ data class ResponsePostCourseDTO(
 ) {
     @Serializable
     data class Data(
-        @SerialName("course")
-        val course: Course,
-    )
-
-    @Serializable
-    data class Course(
         @SerialName("createdAt")
         val createdAt: String,
         @SerialName("id")

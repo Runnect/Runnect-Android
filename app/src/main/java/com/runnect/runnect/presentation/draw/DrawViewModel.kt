@@ -97,7 +97,7 @@ class DrawViewModel @Inject constructor(
                 _drawState.value = UiState.Loading
                 courseRepository.uploadCourse(
                     image = _image.value!!.toFormData(),
-                    data = RequestBody(
+                    courseCreateRequestDto = RequestBody(
                         path = path.value!!,
                         title = courseTitle.value!!,
                         distance = distanceSum.value!!,

@@ -77,8 +77,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
-        data: RequestBody
+        courseCreateRequestDto: RequestBody
     ): Response<ResponsePostCourseDTO> {
-        return remoteCourseDataSource.uploadCourse(image = image, data = data)
+        return remoteCourseDataSource.uploadCourse(image = image, courseCreateRequestDto = courseCreateRequestDto)
     }
 }
