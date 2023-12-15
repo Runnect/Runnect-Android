@@ -146,6 +146,12 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             val clipData = ClipData.newPlainText(CLIPBOARD_LABEL, text)
             clipboardManager?.setPrimaryClip(clipData)
 
+            context?.let {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                    RunnectToast.createToast(it, getString(R.string.dev_mode_copy_to_text)).show()
+                }
+            }
+
             return true
         }
 
