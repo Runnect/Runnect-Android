@@ -109,7 +109,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initBannerViewPagerItemPosition() {
-        currentBannerPosition = Int.MAX_VALUE / 2
+        currentBannerPosition = CENTER_POS_OF_INFINITE_BANNERS
         binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
     }
 
@@ -412,6 +412,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     companion object {
         private const val BANNER_SCROLL_DELAY_TIME = 5000L
+        private const val CENTER_POS_OF_INFINITE_BANNERS = Int.MAX_VALUE / 2
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
