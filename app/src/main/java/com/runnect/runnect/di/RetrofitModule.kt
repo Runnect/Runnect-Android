@@ -8,6 +8,7 @@ import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
+import com.runnect.runnect.util.ApiLogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,7 +45,7 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideLogger(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+    fun provideLogger(): HttpLoggingInterceptor = HttpLoggingInterceptor(ApiLogger()).apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
