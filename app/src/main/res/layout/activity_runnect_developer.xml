@@ -7,7 +7,7 @@
     android:background="@color/white"
     tools:context=".developer.RunnectDeveloperActivity">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_dev"
         android:name="com.runnect.runnect.developer.RunnectDeveloperActivity$RunnectDeveloperFragment"
         android:layout_width="match_parent"
