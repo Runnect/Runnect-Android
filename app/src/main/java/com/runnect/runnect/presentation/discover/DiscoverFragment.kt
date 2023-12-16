@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
+import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -34,25 +33,24 @@ import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
+import com.runnect.runnect.util.extension.viewLifeCycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Timer
-import java.util.TimerTask
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
     private val viewModel: DiscoverViewModel by viewModels()
-    private val bannerAdapter by lazy { BannerAdapter { showPromotionWebsite(it) } }
+
+    private lateinit var bannerAdapter: BannerAdapter
+    private lateinit var bannerScrollJob: Job
+    private var currentBannerPosition = 0
+    private var bannerItemCount = 0
+
     private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
-
     private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
-
-    // todo: 프로모션 배너 관련 변수들
-    private lateinit var scrollHandler: Handler
-    private lateinit var timer: Timer
-    private lateinit var timerTask: TimerTask
-    private lateinit var scrollPageRunnable: Runnable
-    private lateinit var bannerPageChangeCallback: ViewPager2.OnPageChangeCallback
-    private var currentPosition = PAGE_NUM / 2
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -60,7 +58,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val updatedCourse: EditableDiscoverCourse =
                     result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
-                //recommendCourseAdapter.updateRecommendItem(viewModel.clickedCourseId, updatedCourse)
+
+                // todo: 상세페이지 갔다가 이전으로 돌아오면 제목, 스크랩 변경사항이 바로 표시되도록
+                multiViewAdapter.updateCourseItem(
+                    publicCourseId = viewModel.clickedCourseId,
+                    updatedCourse = updatedCourse
+                )
             }
         }
 
@@ -69,35 +72,34 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        initLayout()
+        createBannerScrollJob()
         addListener()
         addObserver()
         registerCallback()
-
     }
 
-    private fun initLayout() {
-        binding.vpDiscoverBanner.apply {
-            initCurrentBannerPage(this)
-            initBannerTimer(this)
+    private fun createBannerScrollJob() {
+        bannerScrollJob = viewLifeCycleScope.launch {
+            delay(BANNER_SCROLL_DELAY_TIME)
+            binding.vpDiscoverBanner.setCurrentItem(++currentBannerPosition, true)
         }
     }
 
-    private fun registerCallback() {
-        registerBackPressedCallback()
-        registerRefreshLayoutScrollUpCallback()
+    private fun initBannerViewPager(banners: List<DiscoverBanner>) {
+        initBannerViewPagerAdapter(banners)
+        initBannerViewPagerItemPosition()
+        initBannerViewPagerIndicator(banners)
     }
 
-    private fun registerRefreshLayoutScrollUpCallback() {
-        // 첫번째 멀티 뷰 타입이 완전히 화면에 보일 때만 리프레시 가능하도록
-        val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
-        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
-            layoutManager.findFirstCompletelyVisibleItemPosition() > 0
+    private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
+        bannerAdapter = BannerAdapter(
+            banners = banners,
+            onBannerItemClick = { url ->
+                showPromotionWebsite(url)
+            }
+        ).apply {
+            binding.vpDiscoverBanner.adapter = this
         }
-    }
-
-    fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
     }
 
     private fun showPromotionWebsite(url: String) {
@@ -106,30 +108,62 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun navigateToDetailScreen(publicCourseId: Int) {
-        val context = context ?: return
-        val intent = Intent(context, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-        }
-        resultLauncher.launch(intent)
-        activity?.applyScreenEnterAnimation()
+    private fun initBannerViewPagerItemPosition() {
+        currentBannerPosition = Int.MAX_VALUE / 2
+        binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
     }
 
-    private fun registerBackPressedCallback() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                handleFromStorageScrap()
-                activity?.navigateToPreviousScreenWithAnimation()
+    private fun initBannerViewPagerIndicator(banners: List<DiscoverBanner>) {
+        binding.indicatorDiscoverBanner.apply {
+            bannerItemCount = banners.size
+            createIndicators(bannerItemCount, 0)
+        }
+    }
+
+    private fun registerCallback() {
+        registerBannerPageChangeCallback()
+        registerBackPressedCallback()
+        registerRefreshLayoutScrollUpCallback()
+    }
+
+    private fun registerBannerPageChangeCallback() {
+        binding.vpDiscoverBanner.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Timber.d("viewpager position: $position")
+                updateBannerPosition(position)
+                updateBannerIndicatorPosition()
             }
-        }
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
+
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                controlBannerScrollJob(state)
+            }
+        })
     }
 
-    private fun handleFromStorageScrap() {
-        if (isFromStorageScrap) {
-            StorageScrapFragment.isFromStorageScrap = false
-            MainActivity.updateStorageScrapScreen()
+    private fun updateBannerPosition(position: Int) {
+        currentBannerPosition = position
+    }
+
+    private fun updateBannerIndicatorPosition() {
+        if (bannerItemCount != 0) {
+            val actualPosition = currentBannerPosition % bannerItemCount
+            binding.indicatorDiscoverBanner.animatePageSelected(actualPosition)
+        }
+    }
+
+    private fun controlBannerScrollJob(state: Int) {
+        when (state) {
+            ViewPager2.SCROLL_STATE_IDLE -> {
+                if (!bannerScrollJob.isActive) createBannerScrollJob()
+            }
+
+            ViewPager2.SCROLL_STATE_DRAGGING -> {
+                if (bannerScrollJob.isActive) bannerScrollJob.cancel()
+            }
+
+            ViewPager2.SCROLL_STATE_SETTLING -> {}
         }
     }
 
@@ -195,17 +229,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun navigateToCourseUploadScreen() {
+        val context = context ?: return
         if (isVisitorMode) {
-            showCourseUploadWarningToast()
-        } else {
-            val context = context ?: return
-            startActivity(Intent(context, DiscoverPickActivity::class.java))
-            activity?.applyScreenEnterAnimation()
+            showCourseUploadWarningToast(context)
+            return
         }
+        startActivity(Intent(context, DiscoverPickActivity::class.java))
+        activity?.applyScreenEnterAnimation()
     }
 
-    private fun showCourseUploadWarningToast() {
-        val context = context ?: return
+    private fun showCourseUploadWarningToast(context: Context) {
         RunnectToast.createToast(
             context,
             getString(R.string.visitor_mode_course_discover_upload_warning_msg)
@@ -223,9 +256,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.bannerGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    initBannerViewPager()
                     val banners = state.data
-                    bannerAdapter.submitList(banners)
+                    initBannerViewPager(banners)
                 }
 
                 is UiStateV2.Failure -> {
@@ -301,18 +333,28 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         )
     }
 
-    private fun showCourseScrapWarningToast(context: Context) {
-        RunnectToast.createToast(
-            context = context,
-            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
-        ).show()
-    }
-
     private fun initMultiRecyclerView() {
         binding.rvDiscoverMultiView.apply {
             setHasFixedSize(true)
             adapter = multiViewAdapter
         }
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val context = context ?: return
+        val intent = Intent(context, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+        }
+        resultLauncher.launch(intent)
+        activity?.applyScreenEnterAnimation()
+    }
+
+    private fun showCourseScrapWarningToast(context: Context) {
+        RunnectToast.createToast(
+            context = context,
+            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+        ).show()
     }
 
     private fun setupCourseScrapStateObserver() {
@@ -323,102 +365,37 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    /** 배너 데이터 목록 초기화 */
-
-    private fun initBannerViewPager() {
-        initBannerAdapter()
-        bannerAdapter.setBannerCount(viewModel.bannerCount)
-        binding.vpDiscoverBanner.apply {
-            initViewPagerIndicator(this)
-            registerBannerPageChangeCallback(this)
-        }
-    }
-
-    private fun initBannerAdapter() {
-        binding.vpDiscoverBanner.adapter = bannerAdapter
-    }
-
-    private fun initViewPagerIndicator(viewPager: ViewPager2) {
-        binding.ciDiscoverBanner.apply {
-            setViewPager(viewPager)
-            createIndicators(viewModel.bannerCount, PAGE_NUM / 2)
-        }
-    }
-
-    private fun registerBannerPageChangeCallback(viewPager: ViewPager2) {
-        bannerPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
-                currentPosition = position
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-                if (positionOffsetPixels == 0) {
-                    binding.ciDiscoverBanner.animatePageSelected(position % viewModel.bannerCount)
-                }
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                checkFromStorageScrap()
+                activity?.navigateToPreviousScreenWithAnimation()
             }
         }
-        viewPager.registerOnPageChangeCallback(bannerPageChangeCallback)
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
 
-    /** 배너 레이아웃 초기화 */
-
-    private fun initCurrentBannerPage(viewPager: ViewPager2) {
-        viewPager.setCurrentItem(PAGE_NUM / 2, false)
-    }
-
-    private fun initBannerTimer(viewPager: ViewPager2) {
-        initScrollHandler()
-        initScrollPageRunnable(viewPager)
-        initTimerTask()
-    }
-
-    private fun initScrollHandler() {
-        scrollHandler = Handler(Looper.getMainLooper())
-        timer = Timer()
-    }
-
-    private fun initScrollPageRunnable(viewPager: ViewPager2) {
-        scrollPageRunnable = Runnable {
-            viewPager.setCurrentItem(++currentPosition, true)
+    private fun checkFromStorageScrap() {
+        if (isFromStorageScrap) {
+            StorageScrapFragment.isFromStorageScrap = false
+            MainActivity.updateStorageScrapScreen()
         }
     }
 
-    private fun initTimerTask() {
-        timerTask = object : TimerTask() {
-            override fun run() {
-                scrollHandler.post(scrollPageRunnable)
-            }
+    private fun registerRefreshLayoutScrollUpCallback() {
+        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
+            checkRefreshPossibleCondition()
         }
     }
 
-    private fun autoScrollStart() {
-        if (::timer.isInitialized && timerTask.scheduledExecutionTime() <= 0) {
-            timer.schedule(timerTask, INTERVAL_TIME, INTERVAL_TIME)
-        }
+    // 첫번째 멀티 뷰 타입이 완전히 보일 때만 당겨서 리프레시 가능하도록
+    private fun checkRefreshPossibleCondition(): Boolean {
+        val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
+        return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
     }
 
-    private fun autoScrollStop() {
-        if (::timer.isInitialized && timerTask.scheduledExecutionTime() <= 0) {
-            timerTask.cancel()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        autoScrollStart()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        autoScrollStop()
-        binding.vpDiscoverBanner.unregisterOnPageChangeCallback(bannerPageChangeCallback)
+    fun getRecommendCourses(pageNo: Int) {
+        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
     }
 
     override fun onAttach(context: Context) {
@@ -434,8 +411,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     companion object {
-        private const val PAGE_NUM = 900
-        private const val INTERVAL_TIME = 5000L
+        private const val BANNER_SCROLL_DELAY_TIME = 3000L
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
