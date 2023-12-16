@@ -85,41 +85,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun initBannerViewPager(banners: List<DiscoverBanner>) {
-        initBannerViewPagerAdapter(banners)
-        initBannerViewPagerItemPosition()
-        initBannerViewPagerIndicator(banners)
-    }
-
-    private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
-        bannerAdapter = BannerAdapter(
-            banners = banners,
-            onBannerItemClick = { url ->
-                showPromotionWebsite(url)
-            }
-        ).apply {
-            binding.vpDiscoverBanner.adapter = this
-        }
-    }
-
-    private fun showPromotionWebsite(url: String) {
-        if (url.isNotBlank()) {
-            context?.showWebBrowser(url)
-        }
-    }
-
-    private fun initBannerViewPagerItemPosition() {
-        currentBannerPosition = CENTER_POS_OF_INFINITE_BANNERS
-        binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
-    }
-
-    private fun initBannerViewPagerIndicator(banners: List<DiscoverBanner>) {
-        binding.indicatorDiscoverBanner.apply {
-            bannerItemCount = banners.size
-            createIndicators(bannerItemCount, 0)
-        }
-    }
-
     private fun registerCallback() {
         registerBannerPageChangeCallback()
         registerBackPressedCallback()
@@ -266,6 +231,41 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 else -> {}
             }
+        }
+    }
+
+    private fun initBannerViewPager(banners: List<DiscoverBanner>) {
+        initBannerViewPagerAdapter(banners)
+        initBannerViewPagerItemPosition()
+        initBannerViewPagerIndicator(banners)
+    }
+
+    private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
+        bannerAdapter = BannerAdapter(
+            banners = banners,
+            onBannerItemClick = { url ->
+                showPromotionWebsite(url)
+            }
+        ).apply {
+            binding.vpDiscoverBanner.adapter = this
+        }
+    }
+
+    private fun showPromotionWebsite(url: String) {
+        if (url.isNotBlank()) {
+            context?.showWebBrowser(url)
+        }
+    }
+
+    private fun initBannerViewPagerItemPosition() {
+        currentBannerPosition = CENTER_POS_OF_INFINITE_BANNERS
+        binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
+    }
+
+    private fun initBannerViewPagerIndicator(banners: List<DiscoverBanner>) {
+        binding.indicatorDiscoverBanner.apply {
+            bannerItemCount = banners.size
+            createIndicators(bannerItemCount, 0)
         }
     }
 
