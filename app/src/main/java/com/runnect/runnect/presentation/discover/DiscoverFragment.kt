@@ -341,11 +341,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun navigateToDetailScreen(publicCourseId: Int) {
         val context = context ?: return
-        val intent = Intent(context, CourseDetailActivity::class.java).apply {
+        Intent(context, CourseDetailActivity::class.java).apply {
             putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
             putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+            resultLauncher.launch(this)
         }
-        resultLauncher.launch(intent)
         activity?.applyScreenEnterAnimation()
     }
 

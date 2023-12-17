@@ -19,17 +19,6 @@ class DiscoverMarathonAdapter(
 ) : ListAdapter<DiscoverMultiViewItem.MarathonCourse,
         DiscoverMarathonAdapter.DiscoverMarathonViewHolder>(diffUtil) {
 
-    fun updateCourseItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {
-        currentList.forEachIndexed { index, course ->
-            if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                course.scrap = updatedCourse.scrap
-                notifyItemChanged(index)
-                return@forEachIndexed
-            }
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMarathonViewHolder {
         return DiscoverMarathonViewHolder(
             ItemDiscoverMarathonBinding.inflate(
