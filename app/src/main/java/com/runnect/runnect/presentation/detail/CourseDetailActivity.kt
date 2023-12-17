@@ -334,7 +334,7 @@ class CourseDetailActivity :
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
-                viewModel.restoreOriginalContents()
+                viewModel.restoreOriginalCourseDetail()
                 enterReadMode()
             }
         )
@@ -396,7 +396,7 @@ class CourseDetailActivity :
     private fun enterEditMode() {
         viewModel.apply {
             updateCurrentScreenMode(EditMode)
-            saveCurrentContents()
+            saveCurrentCourseDetail()
         }
         updateLayoutForEditMode()
     }
@@ -448,7 +448,10 @@ class CourseDetailActivity :
                     courseDetail = state.data ?: return@observe
                     binding.courseDetail = courseDetail
 
-                    viewModel.updateCourseDetailContents(courseDetail.toCourseDetailContents())
+                    val editableCourseDetail =
+                        EditableCourseDetail(courseDetail.title, courseDetail.description)
+                    viewModel.updateCourseDetailEditText(editableCourseDetail)
+
                     updateUserProfileStamp()
                     updateUserLevel()
                     updateScrapState()
@@ -463,14 +466,6 @@ class CourseDetailActivity :
 
                 else -> {}
             }
-        }
-    }
-
-    private fun <T : Any> T.toCourseDetailContents(): EditableCourseDetail? {
-        return when (this) {
-            is CourseDetail -> EditableCourseDetail(title, description)
-            is EditableCourseDetail -> EditableCourseDetail(title, description)
-            else -> null
         }
     }
 
@@ -494,8 +489,8 @@ class CourseDetailActivity :
                     binding.indeterminateBar.isVisible = false
 
                     state.data?.let { response ->
-                        viewModel.updateCourseDetailContents(response.toCourseDetailContents())
-                        updateTextView(response)
+                        viewModel.updateCourseDetailEditText(response)
+                        updateCourseDetailTextView(response)
                     }
 
                     enterReadMode()
@@ -512,7 +507,7 @@ class CourseDetailActivity :
         }
     }
 
-    private fun updateTextView(courseDetail: EditableCourseDetail) {
+    private fun updateCourseDetailTextView(courseDetail: EditableCourseDetail) {
         binding.apply {
             tvCourseDetailTitle.text = courseDetail.title
             tvCourseDetailDesc.text = courseDetail.description
