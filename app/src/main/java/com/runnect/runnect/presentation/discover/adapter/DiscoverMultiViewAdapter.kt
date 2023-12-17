@@ -63,7 +63,6 @@ class DiscoverMultiViewAdapter(
             }
         }
     }
-
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
@@ -86,19 +85,21 @@ class DiscoverMultiViewAdapter(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        for (courses in multiViewItems) {
-            for (course in courses) {
-                when (course) {
-                    is MarathonCourse -> {
-                        // 마라톤 코스 뷰 홀더에서 어댑터 아이템 갱신하는 코드 실행
-                        marathonViewHolder.updateMarathonCourseItem(publicCourseId, updatedCourse)
-                    }
-
-                    is RecommendCourse -> {
-                        recommendViewHolder.updateRecommendCourseItem(publicCourseId, updatedCourse)
-                    }
+        for (items in multiViewItems) {
+            when (items.first()) {
+                is MarathonCourse -> {
+                    marathonViewHolder.updateMarathonCourseItem(
+                        publicCourseId = publicCourseId,
+                        updatedCourse = updatedCourse
+                    )
                 }
-                return
+
+                else -> {
+                    recommendViewHolder.updateRecommendCourseItem(
+                        publicCourseId = publicCourseId,
+                        updatedCourse = updatedCourse
+                    )
+                }
             }
         }
     }
