@@ -470,7 +470,10 @@ class CourseDetailActivity :
     }
 
     private fun initDepartureLatLng() {
-        departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
+        Timber.e("${courseDetail.path}")
+        if (courseDetail.path.isNotEmpty()) {
+            departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
+        }
     }
 
     private fun initConnectedSpots() {
