@@ -54,8 +54,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            // 상세페이지 갔다가 이전으로 돌아오면 아이템 변경사항이 바로 반영되도록 (제목, 스크랩)
             if (result.resultCode == Activity.RESULT_OK) {
+                // 상세페이지 갔다가 이전으로 돌아오면 아이템 변경사항이 바로 반영되도록 (제목, 스크랩)
                 val updatedCourse: EditableDiscoverCourse = result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
                 multiViewAdapter.updateCourseItem(
