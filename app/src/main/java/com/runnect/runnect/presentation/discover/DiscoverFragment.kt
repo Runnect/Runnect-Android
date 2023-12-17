@@ -84,41 +84,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun initBannerViewPager(banners: List<DiscoverBanner>) {
-        initBannerViewPagerAdapter(banners)
-        initBannerViewPagerItemPosition()
-        initBannerViewPagerIndicator(banners)
-    }
-
-    private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
-        bannerAdapter = BannerAdapter(
-            banners = banners,
-            onBannerItemClick = { url ->
-                showPromotionWebsite(url)
-            }
-        ).apply {
-            binding.vpDiscoverBanner.adapter = this
-        }
-    }
-
-    private fun showPromotionWebsite(url: String) {
-        if (url.isNotBlank()) {
-            context?.showWebBrowser(url)
-        }
-    }
-
-    private fun initBannerViewPagerItemPosition() {
-        currentBannerPosition = Int.MAX_VALUE / 2
-        binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
-    }
-
-    private fun initBannerViewPagerIndicator(banners: List<DiscoverBanner>) {
-        binding.indicatorDiscoverBanner.apply {
-            bannerItemCount = banners.size
-            createIndicators(bannerItemCount, 0)
-        }
-    }
-
     private fun registerCallback() {
         registerBannerPageChangeCallback()
         registerBackPressedCallback()
@@ -126,7 +91,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun registerBannerPageChangeCallback() {
-        binding.vpDiscoverBanner.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+        binding.vpDiscoverBanner.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Timber.d("viewpager position: $position")
@@ -265,6 +231,41 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 else -> {}
             }
+        }
+    }
+
+    private fun initBannerViewPager(banners: List<DiscoverBanner>) {
+        initBannerViewPagerAdapter(banners = banners)
+        initBannerViewPagerItemPosition()
+        initBannerViewPagerIndicator(banners = banners)
+    }
+
+    private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
+        bannerAdapter = BannerAdapter(
+            banners = banners,
+            onBannerItemClick = { url ->
+                showPromotionWebsite(url)
+            }
+        ).apply {
+            binding.vpDiscoverBanner.adapter = this
+        }
+    }
+
+    private fun showPromotionWebsite(url: String) {
+        if (url.isNotBlank()) {
+            context?.showWebBrowser(url)
+        }
+    }
+
+    private fun initBannerViewPagerItemPosition() {
+        currentBannerPosition = CENTER_POS_OF_INFINITE_BANNERS
+        binding.vpDiscoverBanner.setCurrentItem(currentBannerPosition, false)
+    }
+
+    private fun initBannerViewPagerIndicator(banners: List<DiscoverBanner>) {
+        binding.indicatorDiscoverBanner.apply {
+            bannerItemCount = banners.size
+            createIndicators(bannerItemCount, 0)
         }
     }
 
@@ -410,7 +411,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     companion object {
-        private const val BANNER_SCROLL_DELAY_TIME = 3000L
+        private const val BANNER_SCROLL_DELAY_TIME = 5000L
+        private const val CENTER_POS_OF_INFINITE_BANNERS = Int.MAX_VALUE / 2
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
