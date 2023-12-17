@@ -36,11 +36,9 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         private fun initMarathonRecyclerView() {
             binding.rvDiscoverMarathon.apply {
                 setHasFixedSize(true)
-
                 adapter = marathonAdapter.apply {
                     submitList(marathonCourses)
                 }
-
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
@@ -60,7 +58,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                     course.title = updatedCourse.title
                     course.scrap = updatedCourse.scrap
                     marathonAdapter.notifyItemChanged(index)
-                    Timber.e("marathon: notifyItemChanged")
                     return@forEachIndexed
                 }
             }
@@ -114,7 +111,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                     course.title = updatedCourse.title
                     course.scrap = updatedCourse.scrap
                     recommendAdapter.notifyItemChanged(index)
-                    Timber.e("recommend: notifyItemChanged")
                     return@forEachIndexed
                 }
             }
