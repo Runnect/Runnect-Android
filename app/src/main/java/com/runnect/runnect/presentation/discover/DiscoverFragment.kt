@@ -92,7 +92,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun registerBannerPageChangeCallback() {
-        binding.vpDiscoverBanner.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+        binding.vpDiscoverBanner.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Timber.d("viewpager position: $position")
@@ -235,9 +236,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun initBannerViewPager(banners: List<DiscoverBanner>) {
-        initBannerViewPagerAdapter(banners)
+        initBannerViewPagerAdapter(banners = banners)
         initBannerViewPagerItemPosition()
-        initBannerViewPagerIndicator(banners)
+        initBannerViewPagerIndicator(banners = banners)
     }
 
     private fun initBannerViewPagerAdapter(banners: List<DiscoverBanner>) {
