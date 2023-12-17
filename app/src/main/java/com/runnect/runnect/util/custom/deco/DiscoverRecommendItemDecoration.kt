@@ -30,7 +30,6 @@ class DiscoverRecommendItemDecoration(
         outRect.bottom = bottomSpacingPx
     }
 
-    // 마지막 열인지 검사하기
     private fun isLastColumn(view: View, parent: RecyclerView): Boolean {
         val currentItemPosition = parent.getChildAdapterPosition(view)
         return currentItemPosition % spanCount == spanCount - 1
