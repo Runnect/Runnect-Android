@@ -1,9 +1,9 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
 import com.runnect.runnect.data.dto.request.RequestPostRecordDTO
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawDTO
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourseDto
 import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
 import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.dto.response.base.BaseResponse
@@ -17,7 +17,7 @@ interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
         @Query("pageNo") pageNo: String?,
-        ): ResponseRecommendCourse
+    ): ResponseRecommendCourse
 
     @POST("/api/scrap")
     suspend fun postCourseScrap(
@@ -49,7 +49,6 @@ interface CourseService {
         @Body requestPatchPublicCourseDto: RequestPatchPublicCourseDto
     ): BaseResponse<ResponsePatchPublicCourseDto>
 
-    //스크랩 - 지훈이랑 나랑 타입 통일이 안 돼있음. 일단 DataSource 통일부터하고 나중에 여기 타입 맞춰줘서 스크랩 함수 둘 중 하나 삭제해야 함.
     @POST("/api/scrap")
     suspend fun postScrap(
         @Body requestCourseScrap: RequestCourseScrap,
@@ -90,5 +89,5 @@ interface CourseService {
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
         @Part("courseCreateRequestDto") courseCreateRequestDto: RequestBody,
-    ): Response<ResponsePostCourseDTO>
+    ): Response<ResponsePostMyDrawCourse>
 }

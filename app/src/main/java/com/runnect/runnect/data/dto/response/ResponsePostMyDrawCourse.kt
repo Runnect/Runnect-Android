@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponsePostCourseDTO(
+data class ResponsePostMyDrawCourse(
     @SerialName("data")
     val data: Data,
     @SerialName("message")
