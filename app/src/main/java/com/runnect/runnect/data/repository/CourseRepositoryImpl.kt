@@ -17,6 +17,7 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -32,11 +33,13 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun getRecommendCourse(
         pageNo: String,
         ordering: String
-    ): Result<List<RecommendCourse>?> = runCatching {
-        remoteCourseDataSource.getRecommendCourse(
+    ): Result<RecommendCoursePagingData> = runCatching {
+        val response = remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
             ordering = ordering
-        ).data?.toRecommendCourses()
+        ).data
+
+        RecommendCoursePagingData(response?.isEnd, response?.toRecommendCourses())
     }
 
     override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?> =

@@ -8,6 +8,7 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -30,8 +31,8 @@ class DiscoverViewModel @Inject constructor(
     val marathonCourseState: LiveData<UiStateV2<List<MarathonCourse>?>>
         get() = _marathonCourseState
 
-    private val _recommendCourseState = MutableLiveData<UiStateV2<List<RecommendCourse>?>>()
-    val recommendCourseState: LiveData<UiStateV2<List<RecommendCourse>?>>
+    private val _recommendCourseState = MutableLiveData<UiStateV2<RecommendCoursePagingData>>()
+    val recommendCourseState: LiveData<UiStateV2<RecommendCoursePagingData>>
         get() = _recommendCourseState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
@@ -41,11 +42,14 @@ class DiscoverViewModel @Inject constructor(
     private val _multiViewItems: ArrayList<List<DiscoverMultiViewItem>> = arrayListOf()
     val multiViewItems: List<List<DiscoverMultiViewItem>> get() = _multiViewItems
 
+    private var _clickedCourseId = -1
+    val clickedCourseId get() = _clickedCourseId
+
     private var _currentPageNumber = 1
     val currentPageNumber get() = _currentPageNumber
 
-    private var _clickedCourseId = -1
-    val clickedCourseId get() = _clickedCourseId
+    private var _isRecommendCoursePageEnd = false
+    val isRecommendCoursePageEnd get() = _isRecommendCoursePageEnd
 
     init {
         getDiscoverBanners()
@@ -91,16 +95,11 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
-                    if (courses == null) {
-                        _marathonCourseState.value =
-                            UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
-                        Timber.e("MARATHON COURSE DATA IS NULL")
-                        return@launch
+                    courses?.let {
+                        _multiViewItems.add(it)
+                        _marathonCourseState.value = UiStateV2.Success(it)
+                        Timber.e("MARATHON COURSE GET SUCCESS")
                     }
-
-                    _multiViewItems.add(courses)
-                    _marathonCourseState.value = UiStateV2.Success(courses)
-                    Timber.e("MARATHON COURSE GET SUCCESS")
                 }
                 .onFailure { exception ->
                     _marathonCourseState.value = UiStateV2.Failure(exception.message.toString())
@@ -114,18 +113,17 @@ class DiscoverViewModel @Inject constructor(
             _recommendCourseState.value = UiStateV2.Loading
 
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
-                .onSuccess { courses ->
-                    if (courses == null) {
-                        _recommendCourseState.value =
-                            UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
-                        Timber.e("RECOMMEND COURSE DATA IS NULL")
-                        return@launch
+                .onSuccess { pagingData ->
+                    pagingData.isEnd?.let {
+                        _isRecommendCoursePageEnd = it
                     }
 
-                    _multiViewItems.add(courses)
-                    _recommendCourseState.value = UiStateV2.Success(courses)
-                    Timber.e("RECOMMEND COURSE GET SUCCESS")
-                    Timber.e("ITEM SIZE: ${multiViewItems.size}")
+                    pagingData.recommendCourses?.let {
+                        _multiViewItems.add(it)
+                        _recommendCourseState.value = UiStateV2.Success(pagingData)
+                        Timber.e("RECOMMEND COURSE GET SUCCESS")
+                        Timber.e("ITEM SIZE: ${multiViewItems.size}")
+                    }
                 }.onFailure { exception ->
                     _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE GET FAIL")

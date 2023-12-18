@@ -19,6 +19,5 @@ sealed class DiscoverMultiViewItem(
         val image: String,
         var scrap: Boolean,
         val departure: String,
-        val isEnd: Boolean
     ) : DiscoverMultiViewItem(id)
 }
