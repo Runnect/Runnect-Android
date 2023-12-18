@@ -15,12 +15,6 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.put
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -97,13 +91,13 @@ class DrawViewModel @Inject constructor(
                 _drawState.value = UiState.Loading
                 courseRepository.uploadCourse(
                     image = _image.value!!.toFormData(),
-                    courseCreateRequestDto = RequestBody(
+                    courseCreateRequestDto = CourseCreateRequestDto(
                         path = path.value!!,
                         title = courseTitle,
                         distance = distanceSum.value!!,
                         departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
                         departureName = departureName.value!!
-                    )
+                    ).toRequestBody()
                 )
             }.onSuccess {
                 Timber.tag(ContentValues.TAG).d("통신success")
@@ -132,22 +126,6 @@ class DrawViewModel @Inject constructor(
             }
         }
     }
-
-    private fun RequestBody(
-        path: List<UploadLatLng>,
-        title: String,
-        distance: Float,
-        departureAddress: String,
-        departureName: String,
-    ) = buildJsonObject {
-        val jsonElement = Json.encodeToJsonElement(path)
-        put(key = "path", element = jsonElement)
-        put(key = "title", value = title)
-        put(key = "distance", value = distance)
-        put(key = "departureAddress", value = departureAddress)
-        put(key = "departureName", value = departureName)
-    }.toString().toRequestBody("application/json".toMediaType())
-
 }
 
 
