@@ -43,11 +43,11 @@ import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
-import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import com.runnect.runnect.util.DepartureSetMode
+import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
@@ -294,8 +294,11 @@ class DrawActivity :
 
         etCourseName.addTextChangedListener {
             val isCourseNameValid = !it.isNullOrEmpty()
-            btnCreateCourse.setBackgroundResource(if (isCourseNameValid) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
-            btnCreateCourse.isEnabled = isCourseNameValid
+
+            with(btnCreateCourse) {
+                setBackgroundResource(if (isCourseNameValid) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
+                isEnabled = isCourseNameValid
+            }
 
             viewModel.courseTitle = if (isCourseNameValid) it.toString() else ""
             Timber.tag("EditTextValue").d(viewModel.courseTitle)
