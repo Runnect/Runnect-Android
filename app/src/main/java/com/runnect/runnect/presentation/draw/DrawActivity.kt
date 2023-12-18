@@ -740,6 +740,5 @@ class DrawActivity :
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
         const val NOTIFY_LIMIT_MARKER_NUM = "마커는 20개까지 생성 가능합니다"
-        const val CREATE_COURSE = "완성하기"
     }
 }
