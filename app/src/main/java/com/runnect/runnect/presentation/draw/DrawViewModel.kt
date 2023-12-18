@@ -41,7 +41,7 @@ class DrawViewModel @Inject constructor(
     val path = MutableLiveData<List<UploadLatLng>>()
     var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
-    val courseTitle = MutableLiveData<String>()
+    var courseTitle = ""
     val departureName = MutableLiveData<String>()
     val isBtnAvailable = MutableLiveData(false)
 
@@ -99,7 +99,7 @@ class DrawViewModel @Inject constructor(
                     image = _image.value!!.toFormData(),
                     courseCreateRequestDto = RequestBody(
                         path = path.value!!,
-                        title = courseTitle.value!!,
+                        title = courseTitle,
                         distance = distanceSum.value!!,
                         departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
                         departureName = departureName.value!!

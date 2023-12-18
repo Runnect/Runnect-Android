@@ -296,8 +296,9 @@ class DrawActivity :
             val isCourseNameValid = !it.isNullOrEmpty()
             btnCreateCourse.setBackgroundResource(if (isCourseNameValid) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
             btnCreateCourse.isEnabled = isCourseNameValid
-            viewModel.courseTitle.value = if (isCourseNameValid) it.toString() else ""
-            Timber.tag("EditTextValue").d("${viewModel.courseTitle.value}")
+
+            viewModel.courseTitle = if (isCourseNameValid) it.toString() else ""
+            Timber.tag("EditTextValue").d(viewModel.courseTitle)
         }
 
         val bottomSheetDialog = BottomSheetDialog(this)
