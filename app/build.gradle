@@ -33,7 +33,7 @@ android {
         versionName "1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "RUNNECT_BASE_URL", properties["RUNNECT_BASE_URL"]
+        buildConfigField "String", "RUNNECT_BASE_URL", properties["RUNNECT_DEV_URL"]
         buildConfigField "String", "TMAP_BASE_URL", properties["TMAP_BASE_URL"]
         buildConfigField "String", "TMAP_API_KEY", properties["TMAP_API_KEY"]
         buildConfigField "String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"]

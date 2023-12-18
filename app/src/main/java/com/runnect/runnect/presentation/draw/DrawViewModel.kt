@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
-import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.domain.CourseRepository
 import com.runnect.runnect.domain.ReverseGeocodingRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -50,7 +50,7 @@ class DrawViewModel @Inject constructor(
         _image.value = requestBody
     }
 
-    val uploadResult = MutableLiveData<ResponsePostCourseDTO>()
+    val uploadResult = MutableLiveData<ResponsePostMyDrawCourse>()
     val errorMessage = MutableLiveData<String>()
 
 
@@ -92,7 +92,12 @@ class DrawViewModel @Inject constructor(
                 courseRepository.uploadCourse(
                     image = _image.value!!.toFormData(),
                     courseCreateRequestDto = CourseCreateRequestDto(
-                        path = path.value!!,
+                        path = path.value ?: listOf(
+                            UploadLatLng(
+                                37.52901832956373,
+                                126.9136196847032
+                            )
+                        ),
                         title = courseTitle,
                         distance = distanceSum.value!!,
                         departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
