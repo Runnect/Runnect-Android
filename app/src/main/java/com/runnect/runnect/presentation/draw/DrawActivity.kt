@@ -310,7 +310,7 @@ class DrawActivity :
         btnCreateCourse.setOnClickListener {
             hideKeyboard(etCourseName)
             bottomSheetDialog.dismiss()
-            createMbr()
+            createMBR()
         }
 
         return bottomSheetDialog
@@ -664,7 +664,10 @@ class DrawActivity :
         }
     }
 
-    private fun createMbr() {
+    /**
+     * MBR : 남서쪽과 북동쪽 꼭지점 두 개의 좌표로 만드는 직사각형 영역
+     */
+    private fun createMBR() {
         val bounds = LatLngBounds.Builder()
             .include(LatLng(departureLatLng.latitude, departureLatLng.longitude)).include(touchList)
             .build()
