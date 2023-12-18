@@ -12,6 +12,7 @@ import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
     private val multiViewItems: List<List<DiscoverMultiViewItem>>,
+    private val isRecommendCoursePageEnd: Boolean,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
@@ -57,7 +58,8 @@ class DiscoverMultiViewAdapter(
                     ),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
-                    handleVisitorMode = handleVisitorMode
+                    handleVisitorMode = handleVisitorMode,
+                    isPageEnd = isRecommendCoursePageEnd
                 )
             }
         }

@@ -319,6 +319,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initMultiViewAdapter() {
         multiViewAdapter = DiscoverMultiViewAdapter(
             multiViewItems = viewModel.multiViewItems,
+            isRecommendCoursePageEnd = viewModel.isRecommendCoursePageEnd,
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             },

@@ -66,6 +66,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
     class RecommendCourseViewHolder(
         private val binding: ItemDiscoverMultiviewRecommendBinding,
+        private val isPageEnd: Boolean,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
@@ -121,6 +122,9 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     // TODO: 스크롤이 최하단까지 내려간 경우, 다음 페이지 요청하기 (다음 페이지가 있는 경우에만)
+                    if (!isPageEnd) {
+
+                    }
                 }
             })
         }
