@@ -9,7 +9,6 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
-import timber.log.Timber
 
 class DiscoverMultiViewAdapter(
     private val multiViewItems: List<List<DiscoverMultiViewItem>>,
@@ -85,21 +84,23 @@ class DiscoverMultiViewAdapter(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        for (items in multiViewItems) {
-            when (items.first()) {
-                is MarathonCourse -> {
-                    marathonViewHolder.updateMarathonCourseItem(
-                        publicCourseId = publicCourseId,
-                        updatedCourse = updatedCourse
-                    )
-                }
+        val targetItem = multiViewItems.flatten().find { item ->
+            item.id == publicCourseId
+        } ?: return
 
-                else -> {
-                    recommendViewHolder.updateRecommendCourseItem(
-                        publicCourseId = publicCourseId,
-                        updatedCourse = updatedCourse
-                    )
-                }
+        when (targetItem) {
+            is MarathonCourse -> {
+                marathonViewHolder.updateMarathonCourseItem(
+                    publicCourseId = publicCourseId,
+                    updatedCourse = updatedCourse
+                )
+            }
+
+            else -> {
+                recommendViewHolder.updateRecommendCourseItem(
+                    publicCourseId = publicCourseId,
+                    updatedCourse = updatedCourse
+                )
             }
         }
     }
