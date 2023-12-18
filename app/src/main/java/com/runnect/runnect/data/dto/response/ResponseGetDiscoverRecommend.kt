@@ -46,7 +46,8 @@ data class ResponseGetDiscoverRecommend(
             title = course.title,
             image = course.image,
             scrap = course.scrap,
-            departure = "${course.departure.region} ${course.departure.city}"
+            departure = "${course.departure.region} ${course.departure.city}",
+            isEnd = isEnd
         )
     }
 }
