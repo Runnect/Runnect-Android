@@ -81,12 +81,10 @@ class DiscoverMultiViewAdapter(
         val itemPosition = DiscoverCourseType.RECOMMEND.ordinal
 
         (currentList[itemPosition] as? List<RecommendCourse>)?.let { originalCourses ->
-            // 내부 리사이클러뷰 갱신
             val newCourses = originalCourses.plus(nextPageCourses)
-            recommendViewHolder.updateRecommendCourses(newCourses)
-
-            // 외부 리사이클러뷰 갱신
             currentList[itemPosition] = newCourses
+
+            // todo: 리사이클러뷰 전체를 notify -> 아이템 데코가 누적된다!
             notifyItemChanged(itemPosition)
         }
     }

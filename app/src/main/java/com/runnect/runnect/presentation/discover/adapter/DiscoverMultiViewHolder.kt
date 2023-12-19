@@ -77,6 +77,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
 
         fun bind(courses: List<RecommendCourse>) {
+            Timber.e("추천 코스 리스트 바인딩!!!")
             initRecommendRecyclerView(courses)
         }
 
