@@ -21,29 +21,27 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit
     ) : DiscoverMultiViewHolder(binding) {
-        private var marathonCourses = listOf<MarathonCourse>()
         private val marathonAdapter by lazy {
             DiscoverMarathonAdapter(
                 onHeartButtonClick, onCourseItemClick, handleVisitorMode
             )
         }
 
-        fun bind(marathonCourses: List<MarathonCourse>) {
-            this.marathonCourses = marathonCourses
-            initMarathonRecyclerView()
+        fun bind(courses: List<MarathonCourse>) {
+            initMarathonRecyclerView(courses)
         }
 
-        private fun initMarathonRecyclerView() {
+        private fun initMarathonRecyclerView(courses: List<MarathonCourse>) {
             binding.rvDiscoverMarathon.apply {
                 setHasFixedSize(true)
                 adapter = marathonAdapter.apply {
-                    submitList(marathonCourses)
+                    submitList(courses)
                 }
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
                         spaceSize = 10,
-                        itemCount = marathonCourses.size
+                        itemCount = courses.size
                     )
                 )
             }
@@ -53,7 +51,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             publicCourseId: Int,
             updatedCourse: EditableDiscoverCourse
         ) {
-            marathonCourses.forEachIndexed { index, course ->
+            marathonAdapter.currentList.forEachIndexed { index, course ->
                 if (course.id == publicCourseId) {
                     course.title = updatedCourse.title
                     course.scrap = updatedCourse.scrap
