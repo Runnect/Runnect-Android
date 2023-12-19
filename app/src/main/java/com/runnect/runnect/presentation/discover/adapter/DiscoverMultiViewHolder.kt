@@ -108,11 +108,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             }
         }
 
-        fun updateRecommendCourses(courses: List<RecommendCourse>) {
-            Timber.e("추천 코스를 갱신했어요!")
-            recommendAdapter.submitList(courses)
-        }
-
         fun updateRecommendCourseItem(
             publicCourseId: Int,
             updatedCourse: EditableDiscoverCourse
