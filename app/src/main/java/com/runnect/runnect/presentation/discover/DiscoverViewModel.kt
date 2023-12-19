@@ -140,12 +140,14 @@ class DiscoverViewModel @Inject constructor(
                 ordering = "date"
             )
                 .onSuccess { pagingData ->
-                    val recommendCourses = multiViewItems[DiscoverCourseType.RECOMMEND.ordinal]
+                    pagingData.isEnd?.let {
+                        isRecommendCoursePageEnd = it
+                    }
 
+                    val recommendCourses = multiViewItems[DiscoverCourseType.RECOMMEND.ordinal]
                     (recommendCourses as? List<RecommendCourse>)?.let {
                         val nextPageCourses = pagingData.recommendCourses ?: return@onSuccess
                         val newCourses = it.plus(nextPageCourses)
-
                         _nextPageState.value = UiStateV2.Success(newCourses)
                         Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                     }
