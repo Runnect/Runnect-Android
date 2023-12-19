@@ -78,13 +78,10 @@ class DiscoverMultiViewAdapter(
 
     // todo: 추천 코스 목록 갱신하기 (다음 페이지 로딩)
     fun updateRecommendCourses(nextPageCourses: List<RecommendCourse>) {
-        val itemPosition = DiscoverCourseType.RECOMMEND.ordinal
-
-        (currentList[itemPosition] as? List<RecommendCourse>)?.let { originalCourses ->
-            val newCourses = originalCourses.plus(nextPageCourses)
-            currentList[itemPosition] = newCourses
-            notifyItemChanged(itemPosition)
-        }
+        val position = DiscoverCourseType.RECOMMEND.ordinal
+        val newCourses = currentList[position].plus(nextPageCourses)
+        currentList[position] = newCourses
+        notifyItemChanged(position)
     }
 
     // todo: 다음 페이지 요청에 따라 currentList 데이터도 달라져야 한다.
