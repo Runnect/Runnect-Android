@@ -31,9 +31,13 @@ class DiscoverViewModel @Inject constructor(
     val marathonCourseState: LiveData<UiStateV2<List<MarathonCourse>?>>
         get() = _marathonCourseState
 
-    private val _recommendCourseState = MutableLiveData<UiStateV2<RecommendCoursePagingData>>()
-    val recommendCourseState: LiveData<UiStateV2<RecommendCoursePagingData>>
+    private val _recommendCourseState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
+    val recommendCourseState: LiveData<UiStateV2<List<RecommendCourse>>>
         get() = _recommendCourseState
+
+    private val _nextPageState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
+    val nextPageState: LiveData<UiStateV2<List<RecommendCourse>>>
+        get() = _nextPageState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
@@ -45,29 +49,22 @@ class DiscoverViewModel @Inject constructor(
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
-    private var _currentPageNumber = 1
-    val currentPageNumber get() = _currentPageNumber
-
-    private var _isRecommendCoursePageEnd = false
-    val isRecommendCoursePageEnd get() = _isRecommendCoursePageEnd
+    private var isRecommendCoursePageEnd = false
+    private var currentPageNo = 1
 
     init {
         getDiscoverBanners()
         getMarathonCourse()
-        getRecommendCourse(pageNo = currentPageNumber, ordering = "date")
+        getRecommendCourse(pageNo = 1, ordering = "date")
     }
 
     fun saveClickedCourseId(id: Int) {
         _clickedCourseId = id
     }
 
-    fun updateCurrentPageNumber(number: Int) {
-        _currentPageNumber = number
-    }
-
     fun resetMultiViewItems() {
         _multiViewItems.clear()
-        _currentPageNumber = 1
+        currentPageNo = 1
     }
 
     fun refreshCurrentCourses() {
@@ -98,7 +95,7 @@ class DiscoverViewModel @Inject constructor(
                     courses?.let {
                         _multiViewItems.add(it)
                         _marathonCourseState.value = UiStateV2.Success(it)
-                        Timber.e("MARATHON COURSE GET SUCCESS")
+                        Timber.d("MARATHON COURSE GET SUCCESS")
                     }
                 }
                 .onFailure { exception ->
@@ -115,18 +112,42 @@ class DiscoverViewModel @Inject constructor(
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { pagingData ->
                     pagingData.isEnd?.let {
-                        _isRecommendCoursePageEnd = it
+                        isRecommendCoursePageEnd = it
                     }
 
                     pagingData.recommendCourses?.let {
                         _multiViewItems.add(it)
-                        _recommendCourseState.value = UiStateV2.Success(pagingData)
-                        Timber.e("RECOMMEND COURSE GET SUCCESS")
-                        Timber.e("ITEM SIZE: ${multiViewItems.size}")
+                        _recommendCourseState.value = UiStateV2.Success(it)
+                        Timber.d("RECOMMEND COURSE GET SUCCESS")
+                        Timber.d("ITEM SIZE: ${multiViewItems.size}")
                     }
                 }.onFailure { exception ->
                     _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE GET FAIL")
+                }
+        }
+    }
+
+    // todo: 내부 리사이클러뷰에서 submitList
+    fun getRecommendCourseNextPage() {
+        viewModelScope.launch {
+            if (isRecommendCoursePageEnd) return@launch
+
+            Timber.e("다음 페이지를 요청했어요!")
+            currentPageNo++
+            courseRepository.getRecommendCourse(
+                pageNo = currentPageNo.toString(),
+                ordering = "date"
+            )
+                .onSuccess { pagingData ->
+                    pagingData.recommendCourses?.let {
+                        _nextPageState.value = UiStateV2.Success(it)
+                        Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
+                    }
+                }
+                .onFailure { exception ->
+                    _nextPageState.value = UiStateV2.Failure(exception.message.toString())
+                    Timber.e("RECOMMEND COURSE NEXT PAGE GET FAIL")
                 }
         }
     }

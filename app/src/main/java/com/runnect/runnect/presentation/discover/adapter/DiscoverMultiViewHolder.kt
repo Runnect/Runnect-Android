@@ -66,7 +66,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
     class RecommendCourseViewHolder(
         private val binding: ItemDiscoverMultiviewRecommendBinding,
-        private val isPageEnd: Boolean,
+        private val onNextPageLoad: () -> Unit,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
@@ -83,6 +83,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         fun bind(recommendCourses: List<RecommendCourse>) {
             this.recommendCourses = recommendCourses
             initRecommendRecyclerView()
+            initScrollListener()
         }
 
         private fun initRecommendRecyclerView() {
@@ -103,6 +104,31 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             }
         }
 
+        private fun initScrollListener() {
+            binding.rvDiscoverRecommend.addOnScrollListener(object :
+                RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                    val lastItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+
+                    if (lastItemPosition + PRE_PATCH_DISTANCE >= layoutManager.itemCount) {
+                        Timber.e("마지막 아이템 위치: ${lastItemPosition}")
+                        Timber.e("현재 아이템 개수: ${layoutManager.itemCount}")
+                        Timber.e("스크롤이 끝에 도달했어요!")
+
+                        onNextPageLoad.invoke()
+                    }
+                }
+            })
+        }
+
+        fun updateRecommendCourses(courses: List<RecommendCourse>) {
+            Timber.e("추천 코스를 갱신했어요!")
+            recommendAdapter.submitList(courses)
+        }
+
         fun updateRecommendCourseItem(
             publicCourseId: Int,
             updatedCourse: EditableDiscoverCourse
@@ -116,17 +142,9 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 }
             }
         }
+    }
 
-        private fun initScrollListener(currentPageNumber: Int, recyclerView: RecyclerView) {
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    // TODO: 스크롤이 최하단까지 내려간 경우, 다음 페이지 요청하기 (다음 페이지가 있는 경우에만)
-                    if (!isPageEnd) {
-
-                    }
-                }
-            })
-        }
+    companion object {
+        private const val PRE_PATCH_DISTANCE = 2
     }
 }

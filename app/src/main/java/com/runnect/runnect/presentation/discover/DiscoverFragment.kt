@@ -213,6 +213,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
         setupRecommendCourseGetStateObserver()
+        setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -319,7 +320,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initMultiViewAdapter() {
         multiViewAdapter = DiscoverMultiViewAdapter(
             multiViewItems = viewModel.multiViewItems,
-            isRecommendCoursePageEnd = viewModel.isRecommendCoursePageEnd,
+            onNextPageLoad = {
+                viewModel.getRecommendCourseNextPage()
+            },
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             },
@@ -355,6 +358,23 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             context = context,
             message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
         ).show()
+    }
+
+    private fun setupRecommendCourseNextPageStateObserver() {
+        viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val recommendCourses = state.data
+                    multiViewAdapter.updateRecommendCourses(recommendCourses)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
     }
 
     private fun setupCourseScrapStateObserver() {
