@@ -369,7 +369,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Success -> {
                     val nextPageCourses = state.data
-                    multiViewAdapter.updateRecommendCourses(nextPageCourses)
+                    multiViewAdapter.loadRecommendCourseNextPage(nextPageCourses)
                 }
 
                 is UiStateV2.Failure -> {
