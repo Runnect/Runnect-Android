@@ -8,9 +8,9 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -128,7 +128,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    // todo: 내부 리사이클러뷰에서 submitList
+    // todo: 내부 리사이클러뷰에서만 submitList 해도 변경사항이 반영될까? 외부 리사이클러뷰는 notify 안해도 되는 걸까?
     fun getRecommendCourseNextPage() {
         viewModelScope.launch {
             if (isRecommendCoursePageEnd) return@launch
@@ -140,8 +140,13 @@ class DiscoverViewModel @Inject constructor(
                 ordering = "date"
             )
                 .onSuccess { pagingData ->
-                    pagingData.recommendCourses?.let {
-                        _nextPageState.value = UiStateV2.Success(it)
+                    val recommendCourses = multiViewItems[DiscoverCourseType.RECOMMEND.ordinal]
+
+                    (recommendCourses as? List<RecommendCourse>)?.let {
+                        val nextPageCourses = pagingData.recommendCourses ?: return@onSuccess
+                        val newCourses = it.plus(nextPageCourses)
+
+                        _nextPageState.value = UiStateV2.Success(newCourses)
                         Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                     }
                 }

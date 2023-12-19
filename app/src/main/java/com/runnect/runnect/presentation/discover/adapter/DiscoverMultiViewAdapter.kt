@@ -17,18 +17,13 @@ class DiscoverMultiViewAdapter(
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
-    enum class MultiViewType {
-        MARATHON,
-        RECOMMEND
-    }
-
     private lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
     private lateinit var recommendViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
 
     override fun getItemViewType(position: Int): Int {
         return when (multiViewItems[position].first()) {
-            is MarathonCourse -> MultiViewType.MARATHON.ordinal
-            is RecommendCourse -> MultiViewType.RECOMMEND.ordinal
+            is MarathonCourse -> DiscoverCourseType.MARATHON.ordinal
+            is RecommendCourse -> DiscoverCourseType.RECOMMEND.ordinal
         }
     }
 
@@ -36,7 +31,7 @@ class DiscoverMultiViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return when (viewType) {
-            MultiViewType.MARATHON.ordinal -> {
+            DiscoverCourseType.MARATHON.ordinal -> {
                 DiscoverMultiViewHolder.MarathonCourseViewHolder(
                     binding = ItemDiscoverMultiviewMarathonBinding.inflate(
                         LayoutInflater.from(parent.context),
