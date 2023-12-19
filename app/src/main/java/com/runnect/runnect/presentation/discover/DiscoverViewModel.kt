@@ -128,7 +128,6 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    // todo: 내부 리사이클러뷰에서만 submitList 해도 변경사항이 반영될까? 외부 리사이클러뷰는 notify 안해도 되는 걸까?
     fun getRecommendCourseNextPage() {
         viewModelScope.launch {
             if (isRecommendCoursePageEnd) return@launch
@@ -144,11 +143,8 @@ class DiscoverViewModel @Inject constructor(
                         isRecommendCoursePageEnd = it
                     }
 
-                    val recommendCourses = multiViewItems[DiscoverCourseType.RECOMMEND.ordinal]
-                    (recommendCourses as? List<RecommendCourse>)?.let {
-                        val nextPageCourses = pagingData.recommendCourses ?: return@onSuccess
-                        val newCourses = it.plus(nextPageCourses)
-                        _nextPageState.value = UiStateV2.Success(newCourses)
+                    pagingData.recommendCourses?.let {
+                        _nextPageState.value = UiStateV2.Success(it)
                         Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                     }
                 }

@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -23,7 +22,6 @@ import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
-import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseType
 import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiViewAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
@@ -370,8 +368,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val recommendCourses = state.data
-                    multiViewAdapter.updateRecommendCourses(recommendCourses)
+                    val nextPageCourses = state.data
+                    multiViewAdapter.updateRecommendCourses(nextPageCourses)
                 }
 
                 is UiStateV2.Failure -> {
