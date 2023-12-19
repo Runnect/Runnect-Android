@@ -13,22 +13,23 @@ import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import timber.log.Timber
 
 class DiscoverMultiViewAdapter(
-    private val multiViewItems: List<List<DiscoverMultiViewItem>>,
+    multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
+    private val currentList = multiViewItems.toMutableList()
     private lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
     private lateinit var recommendViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
 
     override fun getItemViewType(position: Int): Int {
-        return when (multiViewItems[position].first()) {
+        return when (currentList[position].first()) {
             is MarathonCourse -> DiscoverCourseType.MARATHON.ordinal
             is RecommendCourse -> DiscoverCourseType.RECOMMEND.ordinal
         }
     }
 
-    override fun getItemCount(): Int = multiViewItems.size
+    override fun getItemCount(): Int = currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return when (viewType) {
@@ -63,14 +64,14 @@ class DiscoverMultiViewAdapter(
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
                 marathonViewHolder = holder
-                (multiViewItems[position] as? List<MarathonCourse>)?.let {
+                (currentList[position] as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
                 recommendViewHolder = holder
-                (multiViewItems[position] as? List<RecommendCourse>)?.let {
+                (currentList[position] as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
             }
@@ -86,7 +87,7 @@ class DiscoverMultiViewAdapter(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        val targetItem = multiViewItems.flatten().find { item ->
+        val targetItem = currentList.flatten().find { item ->
             item.id == publicCourseId
         } ?: return
 
