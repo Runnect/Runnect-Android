@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -22,6 +23,7 @@ import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseType
 import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiViewAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
@@ -56,7 +58,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // 상세페이지 갔다가 이전으로 돌아오면 아이템 변경사항이 바로 반영되도록 (제목, 스크랩)
-                val updatedCourse: EditableDiscoverCourse = result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
+                val updatedCourse: EditableDiscoverCourse =
+                    result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
                 multiViewAdapter.updateCourseItem(
                     publicCourseId = viewModel.clickedCourseId,
@@ -143,8 +146,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverMultiView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    Timber.e("스크롤이 끝에 도달했어요!")
+                    viewModel.getRecommendCourseNextPage()
+                }
             }
         })
     }
@@ -320,9 +329,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initMultiViewAdapter() {
         multiViewAdapter = DiscoverMultiViewAdapter(
             multiViewItems = viewModel.multiViewItems,
-            onNextPageLoad = {
-                viewModel.getRecommendCourseNextPage()
-            },
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             },
@@ -433,6 +439,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         private const val BANNER_SCROLL_DELAY_TIME = 5000L
         private const val CENTER_POS_OF_INFINITE_BANNERS = Int.MAX_VALUE / 2
+        private const val PAGE_PRE_PATCH_DISTANCE = 1
+
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"

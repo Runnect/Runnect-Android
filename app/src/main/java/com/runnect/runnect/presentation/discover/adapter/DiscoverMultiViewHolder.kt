@@ -66,12 +66,10 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
     class RecommendCourseViewHolder(
         private val binding: ItemDiscoverMultiviewRecommendBinding,
-        private val onNextPageLoad: () -> Unit,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
     ) : DiscoverMultiViewHolder(binding) {
-        private var recommendCourses = listOf<RecommendCourse>()
         private val recommendAdapter by lazy {
             DiscoverRecommendAdapter(
                 onHeartButtonClick,
@@ -80,18 +78,16 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             )
         }
 
-        fun bind(recommendCourses: List<RecommendCourse>) {
-            this.recommendCourses = recommendCourses
-            initRecommendRecyclerView()
-            initScrollListener()
+        fun bind(courses: List<RecommendCourse>) {
+            initRecommendRecyclerView(courses)
         }
 
-        private fun initRecommendRecyclerView() {
+        private fun initRecommendRecyclerView(courses: List<RecommendCourse>) {
             binding.rvDiscoverRecommend.apply {
                 setHasFixedSize(true)
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = recommendAdapter.apply {
-                    submitList(recommendCourses)
+                    submitList(courses)
                 }
                 addItemDecoration(
                     DiscoverRecommendItemDecoration(
@@ -104,26 +100,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             }
         }
 
-        private fun initScrollListener() {
-            binding.rvDiscoverRecommend.addOnScrollListener(object :
-                RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-
-                    val layoutManager = recyclerView.layoutManager as GridLayoutManager
-                    val lastItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
-
-                    if (lastItemPosition + PRE_PATCH_DISTANCE >= layoutManager.itemCount) {
-                        Timber.e("마지막 아이템 위치: ${lastItemPosition}")
-                        Timber.e("현재 아이템 개수: ${layoutManager.itemCount}")
-                        Timber.e("스크롤이 끝에 도달했어요!")
-
-                        onNextPageLoad.invoke()
-                    }
-                }
-            })
-        }
-
         fun updateRecommendCourses(courses: List<RecommendCourse>) {
             Timber.e("추천 코스를 갱신했어요!")
             recommendAdapter.submitList(courses)
@@ -133,7 +109,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             publicCourseId: Int,
             updatedCourse: EditableDiscoverCourse
         ) {
-            recommendCourses.forEachIndexed { index, course ->
+            recommendAdapter.currentList.forEachIndexed { index, course ->
                 if (course.id == publicCourseId) {
                     course.title = updatedCourse.title
                     course.scrap = updatedCourse.scrap
@@ -142,9 +118,5 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 }
             }
         }
-    }
-
-    companion object {
-        private const val PRE_PATCH_DISTANCE = 2
     }
 }

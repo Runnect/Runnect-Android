@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.discover.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
@@ -9,10 +10,10 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
+import timber.log.Timber
 
 class DiscoverMultiViewAdapter(
     private val multiViewItems: List<List<DiscoverMultiViewItem>>,
-    private val onNextPageLoad: () -> Unit,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
@@ -51,7 +52,6 @@ class DiscoverMultiViewAdapter(
                         parent,
                         false
                     ),
-                    onNextPageLoad = onNextPageLoad,
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode,
@@ -77,6 +77,7 @@ class DiscoverMultiViewAdapter(
         }
     }
 
+    // todo: 추천 코스 목록 갱신하기 (다음 페이지 로딩)
     fun updateRecommendCourses(courses: List<RecommendCourse>) {
         recommendViewHolder.updateRecommendCourses(courses)
     }
