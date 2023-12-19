@@ -81,6 +81,8 @@ class DiscoverMultiViewAdapter(
         val position = DiscoverCourseType.RECOMMEND.ordinal
         val newCourses = currentList[position].plus(nextPageCourses)
         currentList[position] = newCourses
+
+        // todo: 이걸 호출하면 바로 이전 페이지의 첫번째 아이템 위치로 스크롤이 초기화 된다......
         notifyItemChanged(position)
     }
 
