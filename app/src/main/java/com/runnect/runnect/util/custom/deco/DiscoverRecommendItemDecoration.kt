@@ -16,10 +16,6 @@ class DiscoverRecommendItemDecoration(
     private val rightSpacingPx = rightSpacing.dpToPx(context)
     private val bottomSpacingPx = bottomSpacing.dpToPx(context)
 
-    init {
-        Timber.e("rightPx: $rightSpacingPx, bottomPx: $bottomSpacingPx")
-    }
-
     override fun getItemOffsets(
         outRect: Rect, // 아이템의 사각형 영역
         view: View, // 아이템 뷰

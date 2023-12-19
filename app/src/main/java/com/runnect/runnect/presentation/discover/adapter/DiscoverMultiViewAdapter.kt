@@ -83,8 +83,6 @@ class DiscoverMultiViewAdapter(
         (currentList[itemPosition] as? List<RecommendCourse>)?.let { originalCourses ->
             val newCourses = originalCourses.plus(nextPageCourses)
             currentList[itemPosition] = newCourses
-
-            // todo: 리사이클러뷰 전체를 notify -> 아이템 데코가 누적된다!
             notifyItemChanged(itemPosition)
         }
     }

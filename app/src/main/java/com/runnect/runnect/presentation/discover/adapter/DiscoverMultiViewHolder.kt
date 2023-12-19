@@ -88,6 +88,15 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 adapter = recommendAdapter.apply {
                     submitList(courses)
                 }
+                addItemDecorationOnlyOnce(this)
+            }
+        }
+
+        private fun addItemDecorationOnlyOnce(recyclerView: RecyclerView) {
+            with(recyclerView) {
+                if (itemDecorationCount > 0) {
+                    removeItemDecorationAt(0)
+                }
                 addItemDecoration(
                     DiscoverRecommendItemDecoration(
                         context = context,
