@@ -14,7 +14,8 @@ class DiscoverMultiViewAdapter(
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
-    private val currentList = multiViewItems.toMutableList()
+    private val currentList: List<MutableList<DiscoverMultiViewItem>> =
+        multiViewItems.map { it.toMutableList() }
     private lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
     private lateinit var recommendViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
 
@@ -39,25 +40,25 @@ class DiscoverMultiViewAdapter(
     }
 
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
-        val currentMultiViewItem = currentList[position]
-
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
                 marathonViewHolder = holder
-                (currentMultiViewItem as? List<MarathonCourse>)?.let {
+                (currentList[position] as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendHeaderViewHolder -> {
-                (currentMultiViewItem as? List<RecommendHeader>)?.let {
+                (currentList[position] as? List<RecommendHeader>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
                 recommendViewHolder = holder
-                (currentMultiViewItem as? List<RecommendCourse>)?.let {
+
+                // 외부 리사이클러뷰 notify -> 내부 리사이클러뷰 어댑터에 새 페이지가 추가된 데이터가 전달됨.
+                (currentList[position] as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
             }
@@ -65,9 +66,10 @@ class DiscoverMultiViewAdapter(
     }
 
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
-        // 외부 리사이클러뷰에 추천 코스 타입의 멀티뷰 아이템 추가
-        currentList.add(nextPageCourses)
-        notifyItemInserted(itemCount - 1)
+        // 외부 리사이클러뷰의 추천 코스 리스트 갱신
+        val recommendPosition = DiscoverMultiViewType.RECOMMEND_COURSE.ordinal
+        currentList[recommendPosition].addAll(nextPageCourses)
+        notifyItemChanged(recommendPosition)
     }
 
     fun updateCourseItem(

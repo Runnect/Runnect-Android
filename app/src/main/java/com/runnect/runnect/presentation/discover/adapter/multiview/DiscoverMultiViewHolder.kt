@@ -88,7 +88,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
 
         fun bind(courses: List<RecommendCourse>) {
-            Timber.e("추천 코스 타입의 멀티뷰 아이템이 바인딩 되었어요! ${courses.size}")
+            Timber.e("추천 코스 리스트 크기: ${courses.size}")
             initRecommendRecyclerView(courses)
         }
 

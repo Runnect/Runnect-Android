@@ -42,7 +42,7 @@ class DiscoverViewModel @Inject constructor(
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
 
-    private val _multiViewItems: ArrayList<List<DiscoverMultiViewItem>> = arrayListOf()
+    private val _multiViewItems: MutableList<List<DiscoverMultiViewItem>> = mutableListOf()
     val multiViewItems: List<List<DiscoverMultiViewItem>> get() = _multiViewItems
 
     private var _clickedCourseId = -1
