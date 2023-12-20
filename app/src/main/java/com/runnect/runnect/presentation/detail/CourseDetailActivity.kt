@@ -287,24 +287,33 @@ class CourseDetailActivity :
                 return@setOnClickListener
             }
 
-            Intent(
-                this@CourseDetailActivity,
-                CountDownActivity::class.java
-            ).apply {
-                putExtra(
-                    EXTRA_COURSE_DATA, CourseData(
-                        courseId = courseDetail.courseId,
-                        publicCourseId = courseDetail.id,
-                        touchList = connectedSpots,
-                        startLatLng = departureLatLng,
-                        departure = courseDetail.departure,
-                        distance = courseDetail.distance.toFloat(),
-                        image = courseDetail.image,
-                        dataFrom = "detail"
-                    )
-                )
-                startActivity(this)
+            if (!::departureLatLng.isInitialized || connectedSpots.isEmpty()) {
+                showSnackbar(binding.root, getString(R.string.course_detail_list_empty_error_msg))
+                return@setOnClickListener
             }
+
+            navigateToCountDownActivity()
+        }
+    }
+
+    private fun navigateToCountDownActivity() {
+        Intent(
+            this@CourseDetailActivity,
+            CountDownActivity::class.java
+        ).apply {
+            putExtra(
+                EXTRA_COURSE_DATA, CourseData(
+                    courseId = courseDetail.courseId,
+                    publicCourseId = courseDetail.id,
+                    touchList = connectedSpots,
+                    startLatLng = departureLatLng,
+                    departure = courseDetail.departure,
+                    distance = courseDetail.distance.toFloat(),
+                    image = courseDetail.image,
+                    dataFrom = "detail"
+                )
+            )
+            startActivity(this)
         }
     }
 
@@ -470,7 +479,6 @@ class CourseDetailActivity :
     }
 
     private fun initDepartureLatLng() {
-        Timber.e("${courseDetail.path}")
         if (courseDetail.path.isNotEmpty()) {
             departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
         }
