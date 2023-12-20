@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
@@ -63,10 +63,13 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
     }
 
+    // todo: 정렬 버튼 클릭 리스너 구현
     class RecommendHeaderViewHolder(
-        binding: ItemDiscoverMultiviewRecommendHeaderBinding
+       private val binding: ItemDiscoverMultiviewRecommendHeaderBinding
     ) : DiscoverMultiViewHolder(binding) {
-        // todo: 정렬 버튼 클릭 리스너 구현 (일단은 뷰 바인딩만 확인하자)
+        fun bind(headers: List<RecommendHeader>) {
+            binding.header = headers.first()
+        }
     }
 
     class RecommendCourseViewHolder(

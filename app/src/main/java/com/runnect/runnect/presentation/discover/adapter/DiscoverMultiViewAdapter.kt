@@ -80,7 +80,9 @@ class DiscoverMultiViewAdapter(
             }
 
             is DiscoverMultiViewHolder.RecommendHeaderViewHolder -> {
-
+                (currentList[position] as? List<RecommendHeader>)?.let {
+                    holder.bind(it)
+                }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
