@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration

@@ -31,71 +31,42 @@ class DiscoverMultiViewAdapter(
     override fun getItemCount(): Int = currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
-        return when (viewType) {
-            DiscoverMultiViewType.MARATHON.ordinal -> {
-                DiscoverMultiViewHolder.MarathonCourseViewHolder(
-                    binding = ItemDiscoverMultiviewMarathonBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    ),
-                    onHeartButtonClick = onHeartButtonClick,
-                    onCourseItemClick = onCourseItemClick,
-                    handleVisitorMode = handleVisitorMode
-                )
-            }
-
-            DiscoverMultiViewType.RECOMMEND_HEADER.ordinal -> {
-                DiscoverMultiViewHolder.RecommendHeaderViewHolder(
-                    binding = ItemDiscoverMultiviewRecommendHeaderBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
-                )
-            }
-
-            else -> {
-                DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = ItemDiscoverMultiviewRecommendCourseBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    ),
-                    onHeartButtonClick = onHeartButtonClick,
-                    onCourseItemClick = onCourseItemClick,
-                    handleVisitorMode = handleVisitorMode,
-                )
-            }
-        }
+        return DiscoverMultiViewHolderFactory().createMultiViewHolder(
+            parent = parent,
+            viewType = DiscoverMultiViewType.values()[viewType],
+            onHeartButtonClick = onHeartButtonClick,
+            onCourseItemClick = onCourseItemClick,
+            handleVisitorMode = handleVisitorMode
+        )
     }
 
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
+        val currentMultiViewItem = currentList[position]
+
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
                 marathonViewHolder = holder
-                (currentList[position] as? List<MarathonCourse>)?.let {
+                (currentMultiViewItem as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendHeaderViewHolder -> {
-                (currentList[position] as? List<RecommendHeader>)?.let {
+                (currentMultiViewItem as? List<RecommendHeader>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
                 recommendViewHolder = holder
-                (currentList[position] as? List<RecommendCourse>)?.let {
+                (currentMultiViewItem as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
             }
         }
     }
 
-    // todo: 추천 코스 헤더 텍스트를 별도의 멀티 뷰 타입으로 분리하자! 팩토리 패턴 적용!
-    fun loadRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
+    fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
         currentList.add(nextPageCourses)
         notifyItemInserted(itemCount - 1)
     }
