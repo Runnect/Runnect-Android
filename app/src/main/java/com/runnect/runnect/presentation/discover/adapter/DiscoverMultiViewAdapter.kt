@@ -1,13 +1,11 @@
 package com.runnect.runnect.presentation.discover.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendHeader
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
