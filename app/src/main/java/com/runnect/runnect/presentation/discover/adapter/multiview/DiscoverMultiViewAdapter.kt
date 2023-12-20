@@ -53,7 +53,6 @@ class DiscoverMultiViewAdapter(
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                // 외부 리사이클러뷰 notify -> 내부 리사이클러뷰 어댑터에 새 페이지가 추가된 데이터가 전달됨.
                 (currentList[position] as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
@@ -62,7 +61,7 @@ class DiscoverMultiViewAdapter(
     }
 
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
-        // 외부 리사이클러뷰의 추천 코스 리스트 갱신
+        // 외부 리사이클러뷰의 추천 코스 리스트 갱신 -> 내부 리사이클러뷰 재바인딩 -> 새로운 데이터 submitList
         val recommendPosition = DiscoverMultiViewType.RECOMMEND_COURSE.ordinal
         currentList[recommendPosition].addAll(nextPageCourses)
         notifyItemChanged(recommendPosition)

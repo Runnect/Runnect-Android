@@ -136,7 +136,9 @@ class DiscoverViewModel @Inject constructor(
             if (isRecommendCoursePageEnd) return@launch
 
             Timber.e("다음 페이지를 요청했어요!")
+            _nextPageState.value = UiStateV2.Loading
             currentPageNo++
+
             courseRepository.getRecommendCourse(
                 pageNo = currentPageNo.toString(),
                 ordering = "date"
@@ -158,6 +160,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
+    // todo: 동기 처리 로직 수정 필요 (간헐적으로 무한 로딩 상태에 빠짐)
     fun checkCourseLoadState(): Boolean {
         return marathonCourseState.value is UiStateV2.Success &&
                 recommendCourseState.value is UiStateV2.Success &&
@@ -181,6 +184,6 @@ class DiscoverViewModel @Inject constructor(
     }
 
     companion object {
-        private const val MULTI_VIEW_TYPE_SIZE = 2
+        private const val MULTI_VIEW_TYPE_SIZE = 3
     }
 }
