@@ -11,8 +11,8 @@ data class CourseData(
     val publicCourseId: Int?,
     val touchList: ArrayList<LatLng>,
     val startLatLng: LatLng,
-    val departure: String,
-    val distance: Float,
+    val departure: String?,
+    val distance: Float?,
     val image: String,
     val dataFrom: String
 ) : Parcelable
