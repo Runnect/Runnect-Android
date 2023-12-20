@@ -1,86 +1,137 @@
 package com.runnect.runnect.presentation.discover.search
 
-import android.content.ContentValues
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
-import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.OnHeartClick
-import com.runnect.runnect.util.callback.OnItemClick
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
-import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
+import com.runnect.runnect.util.extension.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverSearchActivity :
-    BindingActivity<ActivityDiscoverSearchBinding>(R.layout.activity_discover_search),
-    OnItemClick, OnHeartClick {
+    BindingActivity<ActivityDiscoverSearchBinding>(R.layout.activity_discover_search) {
     private val viewModel: DiscoverSearchViewModel by viewModels()
-    private lateinit var adapter: DiscoverSearchAdapter
+    private lateinit var searchAdapter: DiscoverSearchAdapter
+
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val updatedCourse: EditableDiscoverCourse =
+                    result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
+                        ?: return@registerForActivityResult
+
+                searchAdapter.updateSearchItem(viewModel.clickedCourseId, updatedCourse)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
-        binding.lifecycleOwner = this
-        initLayout()
+        binding.lifecycleOwner = this@DiscoverSearchActivity
+
+        showSearchKeyboard()
+        initSearchAdapter()
+        initSearchRecyclerView()
+        registerBackPressedCallback()
         addObserver()
         addListener()
-        registerBackPressedCallback()
     }
 
-    private fun initLayout() {
-        binding.svDiscoverSearch.isVisible = true
-        binding.constDiscoverSearchNoResult.isVisible = false
+    private fun showSearchKeyboard() {
+        binding.etDiscoverSearchTitle.showKeyboard(this)
+    }
 
-        //키보드 자동 올리기 - manifest 설정과 확장함수를 동시에 해줘야 동작함.
-        binding.etDiscoverSearchTitle.setFocusAndShowKeyboard(this)
+    private fun initSearchAdapter() {
+        searchAdapter = DiscoverSearchAdapter(
+            onRecommendItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(id = courseId, scrapTF = scrap)
+            }
+        )
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val intent = Intent(this@DiscoverSearchActivity, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER_SEARCH)
+        }
+        resultLauncher.launch(intent)
+        applyScreenEnterAnimation()
+    }
+
+    private fun initSearchRecyclerView() {
         binding.rvDiscoverSearch.apply {
+            setHasFixedSize(true)
+            adapter = searchAdapter
             layoutManager = GridLayoutManager(this@DiscoverSearchActivity, 2)
-            addItemDecoration(GridSpacingItemDecoration(this@DiscoverSearchActivity, 2, 6, 16))
+            addItemDecoration(
+                GridSpacingItemDecoration(
+                    context = this@DiscoverSearchActivity,
+                    spanCount = 2,
+                    horizontalSpaceSize = 6,
+                    topSpaceSize = 20
+                )
+            )
         }
     }
 
     private fun registerBackPressedCallback() {
-        val callback = object: OnBackPressedCallback(true) {
+        val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun addListener() {
-        binding.ivDiscoverSearchBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        }
+        initBackButtonClickListener()
+        initSearchButtonClickListener()
+    }
 
-        //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
+    private fun initBackButtonClickListener() {
+        binding.ivDiscoverSearchBack.setOnClickListener {
+            navigateToPreviousScreenWithAnimation()
+        }
+    }
+
+    private fun initSearchButtonClickListener() {
         binding.etDiscoverSearchTitle.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
-                    viewModel.getCourseSearch(
-                        keyword = binding.etDiscoverSearchTitle.text.toString()
-                    )
-                    hideKeyboard(binding.etDiscoverSearchTitle)
+                    val keyword = binding.etDiscoverSearchTitle.text
+                    if (!keyword.isNullOrBlank()) {
+                        viewModel.getCourseSearch(keyword = keyword.toString())
+                        hideKeyboard(binding.etDiscoverSearchTitle)
+                    }
                     return true
                 }
                 return false
@@ -89,72 +140,65 @@ class DiscoverSearchActivity :
     }
 
     private fun addObserver() {
-        viewModel.courseSearchState.observe(this) {
-            Timber.d("${viewModel.courseSearchList.isEmpty()}")
-            when (it) {
-                UiState.Empty -> {
-                    handleUnsuccessfulCourseSearch()
+        setupCourseSearchStateObserver()
+    }
+
+    private fun setupCourseSearchStateObserver() {
+        viewModel.courseSearchState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Loading -> showProgressBar()
+
+                is UiStateV2.Success -> {
+                    dismissProgressBar()
+                    showRecyclerView()
+                    searchAdapter.submitList(state.data)
                 }
 
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    binding.svDiscoverSearch.isVisible = true
-                    binding.constDiscoverSearchNoResult.isVisible = false
-                    initAdapter()
+                else -> {
+                    dismissProgressBar()
+                    showEmptySearchResult()
                 }
-
-                UiState.Failure -> {
-                    handleUnsuccessfulCourseSearch()
-                    Timber.tag(ContentValues.TAG)
-                        .d("Failure : ${viewModel.errorMessage.value}")
-                }
-
             }
         }
     }
 
-    private fun handleUnsuccessfulCourseSearch() {
+    private fun showRecyclerView() {
+        binding.rvDiscoverSearch.isVisible = true
+        binding.clDiscoverSearchNoResult.isVisible = false
+    }
+
+    private fun showEmptySearchResult() {
         with(binding) {
-            indeterminateBar.isVisible = false
-            svDiscoverSearch.isVisible = false
-            constDiscoverSearchNoResult.isVisible = true
+            rvDiscoverSearch.isVisible = false
+            clDiscoverSearchNoResult.isVisible = true
         }
     }
 
-    private fun initAdapter() {
-        adapter = DiscoverSearchAdapter(this, this, this).apply {
-            submitList(viewModel.courseSearchList)
-        }
-        binding.rvDiscoverSearch.adapter = this@DiscoverSearchActivity.adapter
+    private fun showProgressBar() {
+        binding.pbDiscoverSearch.isVisible = true
     }
 
-    //키보드 밖 터치 시, 키보드 내림
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val focusView = currentFocus
-        if (focusView != null) {
-            val rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-            val x = ev!!.x.toInt()
-            val y = ev.y.toInt()
-            if (!rect.contains(x, y)) {
-                hideKeyboard(focusView)
+    private fun dismissProgressBar() {
+        binding.pbDiscoverSearch.isVisible = false
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            currentFocus?.let { view ->
+                if (view is EditText) {
+                    val focusView = Rect()
+                    view.getGlobalVisibleRect(focusView)
+
+                    val touchedX = event.x.toInt()
+                    val touchedY = event.y.toInt()
+
+                    if (!focusView.contains(touchedX, touchedY)) {
+                        hideKeyboard(binding.etDiscoverSearchTitle)
+                    }
+                }
             }
         }
-        return super.dispatchTouchEvent(ev)
-    }
-
-    override fun selectItem(publicCourseId: Int) {
-        Intent(this@DiscoverSearchActivity, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER_SEARCH)
-            startActivity(this)
-        }
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-    }
-
-    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id!!, scrapTF)
+        return super.dispatchTouchEvent(event)
     }
 
     companion object {

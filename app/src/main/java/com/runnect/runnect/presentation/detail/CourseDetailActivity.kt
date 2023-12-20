@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.detail
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Rect
@@ -25,12 +26,14 @@ import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
-import com.runnect.runnect.data.dto.response.PublicCourse
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
@@ -41,6 +44,7 @@ import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.getStampResId
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -122,7 +126,7 @@ class CourseDetailActivity :
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(this)
         }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        applyScreenExitAnimation()
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
@@ -141,8 +145,8 @@ class CourseDetailActivity :
 
         when (rootScreen) {
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
-            COURSE_DISCOVER -> MainActivity.updateCourseDiscoverScreen()
-            COURSE_DISCOVER_SEARCH -> navigateToDiscoverSearchScreen()
+            COURSE_DISCOVER -> setActivityResult<MainActivity>()
+            COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
         }
 
@@ -150,18 +154,20 @@ class CourseDetailActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    // todo: 코스 검색 화면으로 돌아갔을 때, 방금 전 검색 결과가 보존되면서도
-    //  상세 페이지에서 수정한 내용이 반영되려면 목록에서 해당 아이템만 일부 수정하는 로직이 필요하다.
-    private fun navigateToDiscoverSearchScreen() {
-        Intent(this, DiscoverSearchActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(this)
+    private inline fun <reified E : Activity> setActivityResult() {
+        val updatedCourse = EditableDiscoverCourse(
+            title = viewModel.title,
+            scrap = binding.ivCourseDetailScrap.isSelected
+        )
+
+        Intent(this@CourseDetailActivity, E::class.java).apply {
+            putExtra(EXTRA_EDITABLE_DISCOVER_COURSE, updatedCourse)
+            setResult(RESULT_OK, this)
         }
     }
 
     private fun navigateToMyUploadCourseScreen() {
         Intent(this, MyUploadActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }
     }
@@ -209,7 +215,7 @@ class CourseDetailActivity :
         }
     }
 
-    // todo: 함수를 더 작게 분리해주는 게 좋을 거 같아요! @우남
+    // todo: 함수를 더 작게 분리하는 게 좋을 거 같아요! @우남
     private fun sendKakaoLink(title: String, desc: String, image: String) {
         // 메시지 템플릿 만들기 (피드형)
         val defaultFeed = FeedTemplate(
@@ -307,7 +313,7 @@ class CourseDetailActivity :
             if (isVisitorMode) {
                 RunnectToast.createToast(
                     this,
-                    getString(R.string.course_detail_visitor_mode_scrap_warning_msg)
+                    getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
                 ).show()
                 return@setOnClickListener
             }
@@ -421,6 +427,7 @@ class CourseDetailActivity :
         setupCourseGetStateObserver()
         setupCoursePatchStateObserver()
         setupCourseDeleteStateObserver()
+        setupCourseScrapStateObserver()
     }
 
     private fun setupFromDeepLinkObserver() {
@@ -439,7 +446,7 @@ class CourseDetailActivity :
             when (state) {
                 is UiStateV2.Success -> {
                     courseDetail = state.data ?: return@observe
-                    binding.courseDetailDto = courseDetail
+                    binding.courseDetail = courseDetail
 
                     viewModel.updateCourseDetailContents(courseDetail.toCourseDetailContents())
                     updateUserProfileStamp()
@@ -459,10 +466,10 @@ class CourseDetailActivity :
         }
     }
 
-    private fun <T : Any> T.toCourseDetailContents(): CourseDetailContents? {
+    private fun <T : Any> T.toCourseDetailContents(): EditableCourseDetail? {
         return when (this) {
-            is CourseDetail -> CourseDetailContents(title, description)
-            is PublicCourse -> CourseDetailContents(title, description)
+            is CourseDetail -> EditableCourseDetail(title, description)
+            is EditableCourseDetail -> EditableCourseDetail(title, description)
             else -> null
         }
     }
@@ -505,10 +512,10 @@ class CourseDetailActivity :
         }
     }
 
-    private fun updateTextView(publicCourse: PublicCourse) {
+    private fun updateTextView(courseDetail: EditableCourseDetail) {
         binding.apply {
-            tvCourseDetailTitle.text = publicCourse.title
-            tvCourseDetailDesc.text = publicCourse.description
+            tvCourseDetailTitle.text = courseDetail.title
+            tvCourseDetailDesc.text = courseDetail.description
         }
     }
 
@@ -528,6 +535,14 @@ class CourseDetailActivity :
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(this) { state ->
+            if (state is UiStateV2.Failure) {
+                showSnackbar(binding.root, state.msg)
             }
         }
     }
@@ -552,7 +567,7 @@ class CourseDetailActivity :
     }
 
     private fun updateScrapState() {
-        binding.ivCourseDetailScrap.isSelected = courseDetail.isScrap
+        binding.ivCourseDetailScrap.isSelected = courseDetail.scrap
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

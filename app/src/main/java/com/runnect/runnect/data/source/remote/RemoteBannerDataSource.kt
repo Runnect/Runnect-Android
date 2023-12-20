@@ -1,42 +1,41 @@
 package com.runnect.runnect.data.source.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.runnect.runnect.data.dto.DiscoverPromotionItemDTO
+import com.runnect.runnect.domain.entity.DiscoverBanner
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 
-class RemoteBannerDataSource @Inject constructor(val bannerService: FirebaseFirestore) {
-    private val promotionImages = mutableListOf<DiscoverPromotionItemDTO>()
-    fun getBannerFlow(): Flow<MutableList<DiscoverPromotionItemDTO>> = callbackFlow {
+class RemoteBannerDataSource @Inject constructor(
+    private val bannerService: FirebaseFirestore
+) {
+    private val banners = mutableListOf<DiscoverBanner>()
+
+    fun getDiscoverBanners(): Flow<MutableList<DiscoverBanner>> = callbackFlow {
         bannerService.collection("data")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Timber.tag("FirebaseData").d("fail : ${e.message}")
+            .addSnapshotListener { querySnapshot, exception ->
+                if (exception != null) {
+                    Timber.e("Firebase Firestore Exception: ${exception.message}")
                     return@addSnapshotListener
                 }
-                if (snapshot != null) {
-                    promotionImages.clear()
-                    for (document in snapshot) {
-                        promotionImages.add(
-                            DiscoverPromotionItemDTO(
+
+                if (querySnapshot != null) {
+                    banners.clear()
+                    for (document in querySnapshot) {
+                        banners.add(
+                            DiscoverBanner(
                                 index = document.getLong("index")!!.toInt(),
                                 imageUrl = document.getString("imageUrl").toString(),
                                 linkUrl = document.getString("linkUrl").toString()
                             )
                         )
                     }
-                    Timber.tag("실시간-파베-data").d("promotionImages : $promotionImages")
-                    trySend(promotionImages)
+                    Timber.d("SUCCESS GET DISCOVER BANNERS : $banners")
+                    trySend(banners)
                 }
             }
         awaitClose()
     }
 }
-
-
-
-
-

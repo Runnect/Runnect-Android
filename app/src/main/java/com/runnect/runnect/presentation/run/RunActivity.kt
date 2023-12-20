@@ -29,18 +29,18 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.data.dto.TimerData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
+import com.runnect.runnect.presentation.run.TimerService.Companion.TIMER_UPDATE_ACTION
 import com.runnect.runnect.util.extension.round
 
-class RunActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivityRunBinding>(R.layout.activity_run),
+class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     OnMapReadyCallback {
-
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
     private lateinit var fusedLocation: FusedLocationProviderClient//현재 위치 반환 객체 변수
@@ -124,7 +124,7 @@ class RunActivity :
     override fun onStart() {
         super.onStart()
         // Timer 결과값을 받기 위해 브로드캐스트 리시버 등록
-        registerReceiver(timerReceiver, IntentFilter(TimerService.TIMER_UPDATE_ACTION))
+        registerReceiver(timerReceiver, IntentFilter(TIMER_UPDATE_ACTION))
     }
 
     override fun onStop() {
@@ -241,12 +241,12 @@ class RunActivity :
 
         courseId = courseData.courseId
         publicCourseId = courseData.publicCourseId
-        departure = courseData.departure
+        departure = courseData.departure ?: ""
         startLatLng = courseData.startLatLng
         touchList = courseData.touchList
         captureUri = courseData.image
         dataFrom = courseData.dataFrom
-        distanceSum = courseData.distance.toDouble().round(1)
+        distanceSum = courseData.distance?.toDouble()?.round(1) ?: 0.0
 
         viewModel.distanceSum.value = distanceSum
     }

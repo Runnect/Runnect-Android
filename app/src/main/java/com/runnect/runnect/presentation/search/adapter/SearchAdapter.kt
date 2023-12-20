@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.dto.SearchResultEntity
+import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemSearchBinding
-import com.runnect.runnect.util.callback.OnSearchClick
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnSearchItemClick
 
-class SearchAdapter(private val searchClickListener: OnSearchClick) :
-    ListAdapter<SearchResultEntity, SearchAdapter.SearchResultItemViewHolder>(Differ()) {
-
+class SearchAdapter(
+    private val onSearchItemClick: OnSearchItemClick
+) : ListAdapter<SearchResultEntity, SearchAdapter.SearchResultItemViewHolder>(diffUtil) {
     inner class SearchResultItemViewHolder(
         private val binding: ItemSearchBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -22,10 +24,9 @@ class SearchAdapter(private val searchClickListener: OnSearchClick) :
 
         fun bindViews(data: SearchResultEntity) {
             binding.root.setOnClickListener {
-                searchClickListener.selectItem(data) //data는 넣었고 구체적인 동작은 오버라이드할 때
+                onSearchItemClick.selectItem(data) //data는 넣었고 구체적인 동작은 오버라이드할 때
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultItemViewHolder {
@@ -38,22 +39,10 @@ class SearchAdapter(private val searchClickListener: OnSearchClick) :
         holder.bindViews(currentList[position])
     }
 
-    class Differ : DiffUtil.ItemCallback<SearchResultEntity>() {
-        override fun areItemsTheSame(
-            oldItem: SearchResultEntity,
-            newItem: SearchResultEntity,
-        ): Boolean {
-            return oldItem.name == newItem.name
-        }
-
-        override fun areContentsTheSame(
-            oldItem: SearchResultEntity,
-            newItem: SearchResultEntity,
-        ): Boolean {
-            return oldItem == newItem
-        }
-
+    companion object {
+        private val diffUtil = ItemDiffCallback<SearchResultEntity>(
+            onItemsTheSame = { old, new -> old.name == new.name },
+            onContentsTheSame = { old, new -> old == new }
+        )
     }
-
-
 }

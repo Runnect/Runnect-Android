@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 
-// 키보드 자동 올리기
-fun EditText.setFocusAndShowKeyboard(context: Context) {
+/** 키보드 자동 올리기 */
+fun EditText.showKeyboard(context: Context) {
     requestFocus()
     setSelection(text.length)
     isCursorVisible = true

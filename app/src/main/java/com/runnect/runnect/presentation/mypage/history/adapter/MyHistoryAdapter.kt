@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.mypage.history.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +10,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ItemMypageHistoryBinding
-import com.runnect.runnect.util.callback.OnHistoryItemClick
-import com.runnect.runnect.util.callback.ItemDiffCallback
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnMyHistoryItemClick
 
-class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
-    ListAdapter<HistoryInfoDTO, MyHistoryAdapter.MyHistoryViewHolder>(diffUtil) {
-    private val inflater by lazy { LayoutInflater.from(context) }
+class MyHistoryAdapter(
+   private val onMyHistoryItemClick: OnMyHistoryItemClick
+) : ListAdapter<HistoryInfoDTO, MyHistoryAdapter.MyHistoryViewHolder>(diffUtil) {
     private var selectedItems: MutableList<View>? = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHistoryViewHolder {
-        return MyHistoryViewHolder(ItemMypageHistoryBinding.inflate(inflater, parent, false))
+        return MyHistoryViewHolder(
+            ItemMypageHistoryBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MyHistoryViewHolder, position: Int) {
@@ -58,7 +63,7 @@ class MyHistoryAdapter(context: Context, val listener: OnHistoryItemClick) :
                 tvMyPageHistoryPaceData.text = data.pace
 
                 ivMyPageHistoryFrame.setOnClickListener {
-                    val isEditMode = listener.selectItem(data)
+                    val isEditMode = onMyHistoryItemClick.selectItem(data)
                     if (isEditMode) {
                         if (it.isSelected) {
                             it.isSelected = false
