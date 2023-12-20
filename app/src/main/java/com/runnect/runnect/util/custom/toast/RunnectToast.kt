@@ -12,11 +12,8 @@ import com.runnect.runnect.databinding.CustomToastBinding
 object RunnectToast {
     fun createToast(context: Context, message: String): Toast {
         val inflater = LayoutInflater.from(context)
-        val binding: CustomToastBinding =
-            DataBindingUtil.inflate(inflater, R.layout.custom_toast, null, false)
-
+        val binding: CustomToastBinding = DataBindingUtil.inflate(inflater, R.layout.custom_toast, null, false)
         binding.tvRequireLogin.text = message
-
         return Toast(context).apply {
             setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 130.toPx())
             duration = Toast.LENGTH_SHORT

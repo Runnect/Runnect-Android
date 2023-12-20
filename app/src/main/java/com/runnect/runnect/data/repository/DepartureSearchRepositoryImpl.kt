@@ -2,9 +2,9 @@ package com.runnect.runnect.data.repository
 
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.dto.SearchResultEntity
-import com.runnect.runnect.data.dto.response.ResponseSearchTmapDTO
+import com.runnect.runnect.data.dto.response.ResponseGetSearchTmap
 import com.runnect.runnect.data.source.remote.RemoteDepartureSearchDataSource
-import com.runnect.runnect.domain.DepartureSearchRepository
+import com.runnect.runnect.domain.repository.DepartureSearchRepository
 import javax.inject.Inject
 
 class DepartureSearchRepositoryImpl @Inject constructor(private val departureSourceDataSource: RemoteDepartureSearchDataSource) :
@@ -16,7 +16,7 @@ class DepartureSearchRepositoryImpl @Inject constructor(private val departureSou
         )
     }
 
-    private fun changeData(pois: ResponseSearchTmapDTO.SearchPoiInfo.Pois): List<SearchResultEntity> {
+    private fun changeData(pois: ResponseGetSearchTmap.SearchPoiInfo.Pois): List<SearchResultEntity> {
         val changedData = pois.poi.map {
             SearchResultEntity(
                 fullAddress = makeMainAddress(it),
@@ -29,7 +29,7 @@ class DepartureSearchRepositoryImpl @Inject constructor(private val departureSou
     }
 
 
-    private fun makeMainAddress(poi: ResponseSearchTmapDTO.SearchPoiInfo.Pois.Poi): String =
+    private fun makeMainAddress(poi: ResponseGetSearchTmap.SearchPoiInfo.Pois.Poi): String =
         if (poi.secondNo?.trim().isNullOrEmpty()) {
             (poi.upperAddrName?.trim() ?: "") + " " +
                     (poi.middleAddrName?.trim() ?: "") + " " +

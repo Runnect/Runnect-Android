@@ -4,28 +4,33 @@ import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.BindingAdapter
 import coil.load
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 
-object BindingAdapter {
-    @BindingAdapter("setLocalImageByResourceId")
-    @JvmStatic
-    fun setLocalImageByResourceId(imageView: ImageView, resId: Int) {
-        imageView.load(resId)
-    }
+@BindingAdapter("setLocalImageByResourceId")
+fun ImageView.setLocalImageByResourceId(resId: Int) {
+    load(resId)
+}
 
-    @BindingAdapter("setImageUrl")
-    @JvmStatic
-    fun setImageUrl(imageView: ImageView, url: String?) {
-        if(url == null) return
-        imageView.load(url)
-    }
+@BindingAdapter("setImageUrl")
+fun ImageView.setImageUrl(url: String?) {
+    if (url == null) return
+    load(url)
+}
 
-    @BindingAdapter("isValidTitle", "isValidDescription")
-    @JvmStatic
-    fun updateEditFinishButtonBackground(
-        button: AppCompatButton,
-        isValidTitle: Boolean,
-        isValidDescription: Boolean
-    ) {
-        button.isEnabled = isValidTitle && isValidDescription
-    }
+@BindingAdapter("isValidTitle", "isValidDescription")
+fun AppCompatButton.updateEditFinishButtonBackground(
+    isValidTitle: Boolean,
+    isValidDescription: Boolean
+) {
+    isEnabled = isValidTitle && isValidDescription
+}
+
+@BindingAdapter("setDiscoverItemImage")
+fun ImageView.setDiscoverItemImage(imageUrl: String?) {
+    Glide.with(context)
+        .load(imageUrl)
+        .thumbnail(0.3f)
+        .format(DecodeFormat.PREFER_RGB_565)
+        .into(this)
 }

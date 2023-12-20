@@ -1,9 +1,9 @@
 package com.runnect.runnect.data.service
 
-import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourseDto
-import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import retrofit2.http.*
@@ -11,40 +11,40 @@ import retrofit2.http.*
 interface UserService {
     @GET("api/user")
     suspend fun getUserInfo(
-    ): ResponseUser
+    ): ResponseGetUser
 
     @PATCH("api/user")
     suspend fun updateNickName(
-        @Body requestUpdateNickName: RequestUpdateNickName,
-    ): ResponseUpdateNickName
+        @Body requestPatchNickName: RequestPatchNickName,
+    ): ResponsePatchUserNickName
 
     @GET("api/stamp/user")
     suspend fun getMyStamp(
-    ): ResponseMyStamp
+    ): ResponseGetMyStamp
 
     @GET("api/record/user")
     suspend fun getRecord(
-    ): ResponseRecordInfo
+    ): ResponseGetMyHistory
 
     @GET("api/public-course/user")
     suspend fun getUserUploadCourse(
-    ): ResponseUserUploadCourse
+    ): ResponseGetUserUploadCourse
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
-        @Body requestDeleteUploadCourseDto: RequestDeleteUploadCourseDto
-    ): BaseResponse<ResponseDeleteUploadCourseDto>
+        @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
+    ): BaseResponse<ResponseDeleteUploadCourse>
 
     @PUT("api/record")
     suspend fun putDeleteHistory(
-        @Body requestDeleteHistoryDto: RequestDeleteHistoryDto
-    ): BaseResponse<ResponseDeleteHistoryDto>
+        @Body requestDeleteHistory: RequestDeleteHistory
+    ): BaseResponse<ResponseDeleteHistory>
 
     @PATCH("api/record/{recordId}")
     suspend fun patchHistoryTitle(
         @Path("recordId") historyId: Int,
-        @Body requestPatchHistoryTitleDto: RequestPatchHistoryTitleDto
-    ): BaseResponse<ResponsePatchHistoryTitleDto>
+        @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
+    ): BaseResponse<ResponsePatchHistoryTitle>
 
     @DELETE("api/user")
     suspend fun deleteUser(): ResponseDeleteUser

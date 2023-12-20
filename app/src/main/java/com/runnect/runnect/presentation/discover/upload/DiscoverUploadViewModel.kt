@@ -5,8 +5,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestUploadMyCourse
-import com.runnect.runnect.domain.CourseRepository
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
+import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.addSourceList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,7 +45,7 @@ class DiscoverUploadViewModel @Inject constructor(private val courseRepository: 
             runCatching {
                 _courseUpLoadState.value = UiState.Loading
                 courseRepository.postUploadMyCourse(
-                    RequestUploadMyCourse(
+                    RequestPostPublicCourse(
                         courseId = id,
                         description = desc.value.toString(),
                         title = title.value.toString()

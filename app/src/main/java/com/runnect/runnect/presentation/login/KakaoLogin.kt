@@ -6,7 +6,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient.Companion.instance
-import com.runnect.runnect.data.dto.request.RequestLogin
+import com.runnect.runnect.data.dto.request.RequestPostLogin
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -20,7 +20,7 @@ class KakaoLogin(context: Context, viewModel: LoginViewModel) : SocialLogin {
         } else if (token != null) {
             Timber.d("카카오 로그인 성공")
             viewModelRef.get()?.postLogin(
-                RequestLogin(
+                RequestPostLogin(
                     token.accessToken, LoginActivity.KAKAO_SIGN
                 )
             )

@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitleDto
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistoryDto
-import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitleDto
-import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
+import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +20,12 @@ import javax.inject.Inject
 class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
     private val _historyDeleteState =
-        MutableLiveData<UiStateV2<ResponseDeleteHistoryDto?>>()
-    val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistoryDto?>>
+        MutableLiveData<UiStateV2<ResponseDeleteHistory?>>()
+    val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistory?>>
         get() = _historyDeleteState
 
-    private val _titlePatchState = MutableLiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>()
-    val titlePatchState: LiveData<UiStateV2<ResponsePatchHistoryTitleDto?>>
+    private val _titlePatchState = MutableLiveData<UiStateV2<ResponsePatchHistoryTitle?>>()
+    val titlePatchState: LiveData<UiStateV2<ResponsePatchHistoryTitle?>>
         get() = _titlePatchState
 
     val _title = MutableLiveData("")
@@ -64,7 +64,7 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
             _historyDeleteState.value = UiStateV2.Loading
 
             val deleteItems = listOf(historyId)
-            userRepository.putDeleteHistory(RequestDeleteHistoryDto(deleteItems))
+            userRepository.putDeleteHistory(RequestDeleteHistory(deleteItems))
                 .onSuccess { response ->
                     _historyDeleteState.value = UiStateV2.Success(response)
                 }.onFailure { t ->
@@ -79,7 +79,7 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
 
             userRepository.patchHistoryTitle(
                 historyId = historyId,
-                requestPatchHistoryTitleDto = RequestPatchHistoryTitleDto(title)
+                requestPatchHistoryTitle = RequestPatchHistoryTitle(title)
             ).onSuccess { response ->
                 _titlePatchState.value = UiStateV2.Success(response)
             }.onFailure { t ->

@@ -28,7 +28,6 @@ class DiscoverUploadActivity :
         binding.vm = viewModel
         binding.lifecycleOwner = this
 
-
         initLayout()
         addListener()
         addObserver()

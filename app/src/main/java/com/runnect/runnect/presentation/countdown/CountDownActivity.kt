@@ -8,13 +8,12 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import androidx.appcompat.content.res.AppCompatResources
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCountDownBinding
 import com.runnect.runnect.presentation.run.RunActivity
 
-class CountDownActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivityCountDownBinding>(R.layout.activity_count_down) {
-
+class CountDownActivity: BindingActivity<ActivityCountDownBinding>(R.layout.activity_count_down) {
     lateinit var courseData: CourseData
 
     override fun onCreate(savedInstanceState: Bundle?) {
