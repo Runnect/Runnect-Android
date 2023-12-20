@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.discover.adapter
+package com.runnect.runnect.presentation.discover.adapter.multiview
 
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
@@ -7,6 +7,8 @@ import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
+import com.runnect.runnect.presentation.discover.adapter.DiscoverMarathonAdapter
+import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration

@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.discover.adapter
+package com.runnect.runnect.presentation.discover.adapter.multiview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

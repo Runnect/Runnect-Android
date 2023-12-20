@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.discover.adapter
+package com.runnect.runnect.presentation.discover.adapter.multiview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,13 +27,19 @@ class DiscoverMultiViewHolderFactory {
 
             DiscoverMultiViewType.RECOMMEND_HEADER -> {
                 DiscoverMultiViewHolder.RecommendHeaderViewHolder(
-                    binding = getViewBinding(parent, R.layout.item_discover_multiview_recommend_header)
+                    binding = getViewBinding(
+                        parent,
+                        R.layout.item_discover_multiview_recommend_header
+                    )
                 )
             }
 
             DiscoverMultiViewType.RECOMMEND_COURSE -> {
                 DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = getViewBinding(parent, R.layout.item_discover_multiview_recommend_course),
+                    binding = getViewBinding(
+                        parent,
+                        R.layout.item_discover_multiview_recommend_course
+                    ),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode
