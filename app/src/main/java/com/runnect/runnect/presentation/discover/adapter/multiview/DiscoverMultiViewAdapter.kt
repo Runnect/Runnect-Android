@@ -65,6 +65,7 @@ class DiscoverMultiViewAdapter(
     }
 
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
+        // 외부 리사이클러뷰에 추천 코스 타입의 멀티뷰 아이템 추가
         currentList.add(nextPageCourses)
         notifyItemInserted(itemCount - 1)
     }
@@ -85,12 +86,14 @@ class DiscoverMultiViewAdapter(
                 )
             }
 
-            else -> {
+            is RecommendCourse -> {
                 recommendViewHolder.updateRecommendCourseItem(
                     publicCourseId = publicCourseId,
                     updatedCourse = updatedCourse
                 )
             }
+
+            else -> {}
         }
     }
 }
