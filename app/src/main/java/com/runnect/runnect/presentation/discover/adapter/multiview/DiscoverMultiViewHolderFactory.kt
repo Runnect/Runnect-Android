@@ -8,6 +8,9 @@ import androidx.databinding.ViewDataBinding
 import com.runnect.runnect.R
 
 class DiscoverMultiViewHolderFactory {
+    lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
+    lateinit var recommendCourseViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
+
     fun createMultiViewHolder(
         parent: ViewGroup,
         viewType: DiscoverMultiViewType,
@@ -15,18 +18,19 @@ class DiscoverMultiViewHolderFactory {
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
     ): DiscoverMultiViewHolder {
-        return when (viewType) {
+        when (viewType) {
             DiscoverMultiViewType.MARATHON -> {
-                DiscoverMultiViewHolder.MarathonCourseViewHolder(
+                marathonViewHolder = DiscoverMultiViewHolder.MarathonCourseViewHolder(
                     binding = getViewBinding(parent, R.layout.item_discover_multiview_marathon),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode
                 )
+                return marathonViewHolder
             }
 
             DiscoverMultiViewType.RECOMMEND_HEADER -> {
-                DiscoverMultiViewHolder.RecommendHeaderViewHolder(
+                return DiscoverMultiViewHolder.RecommendHeaderViewHolder(
                     binding = getViewBinding(
                         parent,
                         R.layout.item_discover_multiview_recommend_header
@@ -35,7 +39,7 @@ class DiscoverMultiViewHolderFactory {
             }
 
             DiscoverMultiViewType.RECOMMEND_COURSE -> {
-                DiscoverMultiViewHolder.RecommendCourseViewHolder(
+                recommendCourseViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
                     binding = getViewBinding(
                         parent,
                         R.layout.item_discover_multiview_recommend_course
@@ -44,6 +48,7 @@ class DiscoverMultiViewHolderFactory {
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode
                 )
+                return recommendCourseViewHolder
             }
         }
     }
