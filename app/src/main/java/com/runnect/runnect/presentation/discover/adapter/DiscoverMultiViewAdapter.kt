@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
@@ -22,8 +22,9 @@ class DiscoverMultiViewAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (currentList[position].first()) {
-            is MarathonCourse -> DiscoverCourseType.MARATHON.ordinal
-            is RecommendCourse -> DiscoverCourseType.RECOMMEND.ordinal
+            is MarathonCourse -> DiscoverMultiViewType.MARATHON.ordinal
+            is RecommendHeader -> DiscoverMultiViewType.RECOMMEND_HEADER.ordinal
+            is RecommendCourse -> DiscoverMultiViewType.RECOMMEND_COURSE.ordinal
         }
     }
 
@@ -31,7 +32,7 @@ class DiscoverMultiViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return when (viewType) {
-            DiscoverCourseType.MARATHON.ordinal -> {
+            DiscoverMultiViewType.MARATHON.ordinal -> {
                 DiscoverMultiViewHolder.MarathonCourseViewHolder(
                     binding = ItemDiscoverMultiviewMarathonBinding.inflate(
                         LayoutInflater.from(parent.context),
@@ -44,9 +45,19 @@ class DiscoverMultiViewAdapter(
                 )
             }
 
+            DiscoverMultiViewType.RECOMMEND_HEADER.ordinal -> {
+                DiscoverMultiViewHolder.RecommendHeaderViewHolder(
+                    binding = ItemDiscoverMultiviewRecommendHeaderBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+
             else -> {
                 DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = ItemDiscoverMultiviewRecommendBinding.inflate(
+                    binding = ItemDiscoverMultiviewRecommendCourseBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -58,6 +69,7 @@ class DiscoverMultiViewAdapter(
             }
         }
     }
+
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
@@ -65,6 +77,10 @@ class DiscoverMultiViewAdapter(
                 (currentList[position] as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
+            }
+
+            is DiscoverMultiViewHolder.RecommendHeaderViewHolder -> {
+
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
@@ -76,13 +92,10 @@ class DiscoverMultiViewAdapter(
         }
     }
 
+    // todo: 추천 코스 헤더 텍스트를 별도의 멀티 뷰 타입으로 분리하자! 팩토리 패턴 적용!
     fun loadRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
-        val position = DiscoverCourseType.RECOMMEND.ordinal
-        val newCourses = currentList[position].plus(nextPageCourses)
-        currentList[position] = newCourses
-
-        // todo: 이걸 호출하면 바로 이전 페이지의 첫번째 아이템 위치로 스크롤이 초기화 된다......
-        notifyItemChanged(position)
+        currentList.add(nextPageCourses)
+        notifyItemInserted(itemCount - 1)
     }
 
     fun updateCourseItem(

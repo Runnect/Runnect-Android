@@ -16,6 +16,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -281,6 +282,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
+                is UiStateV2.Success -> {
+                    addRecommendHeaderView()
+                }
+
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
                     context?.showSnackbar(binding.root, state.msg)
@@ -289,6 +294,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 else -> {}
             }
         }
+    }
+
+    private fun addRecommendHeaderView() {
+        val header = DiscoverMultiViewItem.RecommendHeader(
+            title = getString(R.string.discover_recommend_header_title),
+            subtitle = getString(R.string.discover_marathon_header_subtitle)
+        )
+        viewModel.addRecommendHeaderView(listOf(header))
     }
 
     private fun setupRecommendCourseGetStateObserver() {

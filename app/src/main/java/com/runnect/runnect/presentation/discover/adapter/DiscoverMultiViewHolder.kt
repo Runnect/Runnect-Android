@@ -4,7 +4,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
@@ -62,8 +63,14 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
     }
 
+    class RecommendHeaderViewHolder(
+        binding: ItemDiscoverMultiviewRecommendHeaderBinding
+    ) : DiscoverMultiViewHolder(binding) {
+        // todo: 정렬 버튼 클릭 리스너 구현 (일단은 뷰 바인딩만 확인하자)
+    }
+
     class RecommendCourseViewHolder(
-        private val binding: ItemDiscoverMultiviewRecommendBinding,
+        private val binding: ItemDiscoverMultiviewRecommendCourseBinding,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,

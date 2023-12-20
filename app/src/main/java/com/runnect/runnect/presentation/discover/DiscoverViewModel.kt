@@ -10,7 +10,6 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.presentation.discover.adapter.DiscoverCourseType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -103,6 +102,10 @@ class DiscoverViewModel @Inject constructor(
                     Timber.e("MARATHON COURSE GET FAIL")
                 }
         }
+    }
+
+    fun addRecommendHeaderView(headers: List<RecommendHeader>) {
+        _multiViewItems.add(headers)
     }
 
     fun getRecommendCourse(pageNo: Int, ordering: String) {
