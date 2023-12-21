@@ -21,7 +21,7 @@ import retrofit2.Retrofit
 import timber.log.Timber
 
 class TokenAuthenticator(val context: Context) : Authenticator {
-    private val BASE_URL = BuildConfig.RUNNECT_BASE_URL
+    private val BASE_URL = ApplicationClass.getBaseUrl()
     private var retrofit: Retrofit? = null
 
     @OptIn(DelicateCoroutinesApi::class)

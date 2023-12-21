@@ -45,11 +45,11 @@ import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
-import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import com.runnect.runnect.util.DepartureSetMode
+import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
@@ -93,7 +93,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     var isFirstInit: Boolean = true
 
-    private lateinit var bottomSheetBinding: BottomsheetRequireCourseNameBinding  // Bottom Sheet 바인딩
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -151,7 +150,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
         with(binding) {
             tvGuide.isVisible = false
-            btnDraw.text = CREATE_COURSE
         }
 
         viewModel.searchResult.value = searchResult
@@ -284,29 +282,26 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 showRequireLoginDialog()
                 return@setOnClickListener
             }
-            when {
-                isSearchLocationMode -> createMbr()
-                isCurrentLocationMode || isCustomLocationMode -> requireCourseNameDialog().show()
-            }
+            requireCourseNameDialog().show()
         }
     }
 
     private fun requireCourseNameDialog(): BottomSheetDialog {
-        bottomSheetBinding = BottomsheetRequireCourseNameBinding.inflate(layoutInflater)
+        val bottomSheetBinding = BottomsheetRequireCourseNameBinding.inflate(layoutInflater)
         val bottomSheetView = bottomSheetBinding.root
         val etCourseName = bottomSheetBinding.etCourseName
         val btnCreateCourse = bottomSheetBinding.btnCreateCourse
 
         etCourseName.addTextChangedListener {
-            if (!etCourseName.text.isNullOrEmpty()) {
-                btnCreateCourse.setBackgroundResource(R.drawable.radius_10_m1_button)
-                btnCreateCourse.isEnabled = true
-                viewModel.departureName.value = etCourseName.text.toString()
-            } else {
-                btnCreateCourse.setBackgroundResource(R.drawable.radius_10_g3_button)
-                btnCreateCourse.isEnabled = false
+            val isCourseNameValid = !it.isNullOrEmpty()
+
+            with(btnCreateCourse) {
+                setBackgroundResource(if (isCourseNameValid) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
+                isEnabled = isCourseNameValid
             }
-            Timber.tag("EditTextValue").d("${viewModel.departureName.value}")
+
+            viewModel.courseTitle = if (isCourseNameValid) it.toString() else ""
+            Timber.tag("EditTextValue").d(viewModel.courseTitle)
         }
 
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -315,7 +310,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         btnCreateCourse.setOnClickListener {
             hideKeyboard(etCourseName)
             bottomSheetDialog.dismiss()
-            createMbr()
+            createMBR()
         }
 
         return bottomSheetDialog
@@ -454,21 +449,28 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
         with(dialogLayout) {
             this.btn_run.setOnClickListener {
-                val intent = Intent(this@DrawActivity, CountDownActivity::class.java).apply {
-                    putExtra(
-                        EXTRA_COURSE_DATA, CourseData(
-                            courseId = viewModel.uploadResult.value!!.data.course.id,
-                            publicCourseId = null,
-                            touchList = touchList,
-                            startLatLng = departureLatLng,
-                            departure = viewModel.departureName.value!!,
-                            distance = viewModel.distanceSum.value!!,
-                            image = captureUri.toString(),
-                            dataFrom = "fromDrawCourse"
-                        )
-                    )
+                val courseData = CourseData(
+                    courseId = viewModel.uploadResult.value?.data?.id,
+                    publicCourseId = null,
+                    touchList = touchList,
+                    startLatLng = departureLatLng,
+                    departure = viewModel.departureName.value,
+                    distance = viewModel.distanceSum.value,
+                    image = captureUri.toString(),
+                    dataFrom = "fromDrawCourse"
+                )
+                if (courseData.courseId == null || courseData.departure == null || courseData.distance == null) {
+                    Toast.makeText(
+                        this@DrawActivity,
+                        ERROR_COURSE_NULL,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    val intent = Intent(this@DrawActivity, CountDownActivity::class.java).apply {
+                        putExtra(EXTRA_COURSE_DATA, courseData)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
                 dialog.dismiss()
             }
 
@@ -669,7 +671,10 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         }
     }
 
-    private fun createMbr() {
+    /**
+     * MBR : 남서쪽과 북동쪽 꼭지점 두 개의 좌표로 만드는 직사각형 영역
+     */
+    private fun createMBR() {
         val bounds = LatLngBounds.Builder()
             .include(LatLng(departureLatLng.latitude, departureLatLng.longitude)).include(touchList)
             .build()
@@ -748,6 +753,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
         const val NOTIFY_LIMIT_MARKER_NUM = "마커는 20개까지 생성 가능합니다"
-        const val CREATE_COURSE = "완성하기"
+
+        const val ERROR_COURSE_NULL = "Error: Course data is incomplete"
     }
 }

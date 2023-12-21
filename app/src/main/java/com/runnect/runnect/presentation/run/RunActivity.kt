@@ -241,12 +241,12 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
         courseId = courseData.courseId
         publicCourseId = courseData.publicCourseId
-        departure = courseData.departure
+        departure = courseData.departure ?: ""
         startLatLng = courseData.startLatLng
         touchList = courseData.touchList
         captureUri = courseData.image
         dataFrom = courseData.dataFrom
-        distanceSum = courseData.distance.toDouble().round(1)
+        distanceSum = courseData.distance?.toDouble()?.round(1) ?: 0.0
 
         viewModel.distanceSum.value = distanceSum
     }

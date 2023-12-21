@@ -1,10 +1,14 @@
 package com.runnect.runnect.presentation.mypage.setting
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingBinding
@@ -16,6 +20,7 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addListener()
+        setVisibleDeveloperMode()
         registerBackPressedCallback()
     }
 
@@ -41,6 +46,14 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         binding.viewSettingTermsFrame.setOnClickListener {
             requireContext().showWebBrowser(TERMS_URL)
         }
+
+        binding.constSettingDeveloperModeFrame.setOnClickListener {
+            moveToDevMode()
+        }
+    }
+
+    private fun setVisibleDeveloperMode() {
+        binding.constSettingDeveloperModeFrame.isVisible = BuildConfig.DEBUG
     }
 
     private fun navigateToMyPageFragment() {
@@ -59,6 +72,12 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         }
     }
 
+    private fun moveToDevMode() {
+        Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(DEV_MODE_SCHEME)
+        }.let(this::startActivity)
+    }
+
     private fun getEmailFromMyPage(): String? {
         val bundleFromMyPage = arguments
         return bundleFromMyPage?.getString(ACCOUNT_INFO_TAG)
@@ -70,5 +89,6 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         const val TERMS_URL =
             "https://third-sight-046.notion.site/Runnect-5dfee19ccff04c388590e5ee335e77ed"
+        private const val DEV_MODE_SCHEME = "runnect://devmode"
     }
 }

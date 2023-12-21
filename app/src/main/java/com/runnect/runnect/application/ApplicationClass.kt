@@ -21,9 +21,31 @@ class ApplicationClass : Application() {
         }
         appContext = applicationContext
         KakaoSdk.init(this,getString(R.string.kakao_native_app_key))
+        initApiMode()
+    }
+
+    private fun initApiMode() {
+        val currentApi = ApiMode.getCurrentApiMode(appContext)
+        PreferenceManager.setString(appContext, API_MODE, currentApi.name)
     }
 
     companion object {
         lateinit var appContext: Context
+        const val API_MODE = "API_MODE"
+
+        fun getBaseUrl(): String {
+            return when {
+                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_NODE_URL // 추후 Prod 서버로 변경
+                !::appContext.isInitialized -> BuildConfig.RUNNECT_NODE_URL
+                else -> {
+                    val mode = ApiMode.getCurrentApiMode(appContext)
+                    when(mode) {
+                        ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
+                        ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL
+                        else -> BuildConfig.RUNNECT_NODE_URL
+                    }
+                }
+            }
+        }
     }
 }
