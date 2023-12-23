@@ -186,18 +186,18 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     private fun initCustomLocationMode() {
         isCustomLocationMode = true
-
         with(binding) {
             customDepartureMarker.isVisible = true
             customDepartureInfoWindow.isVisible = true
             tvCustomDepartureGuideFrame.isVisible = true
 
             btnPreStart.setOnClickListener {
+                departureLatLng = getCenterPosition()
                 isMarkerAvailable = true
                 showDrawGuide()
                 hideDeparture()
                 showDrawCourse()
-                drawCourse(departureLatLng = getCenterPosition())
+                drawCourse(departureLatLng = departureLatLng)
                 hideFloatedDeparture()
             }
         }
