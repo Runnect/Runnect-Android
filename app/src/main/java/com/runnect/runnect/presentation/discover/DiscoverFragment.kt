@@ -17,7 +17,6 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -150,12 +149,22 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
 
-                if (!recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
-                    Timber.e("스크롤이 끝에 도달했어요!")
-                    viewModel.getRecommendCourseNextPage()
-                }
+                checkNextPageLoadingCondition(recyclerView)
             }
         })
+    }
+
+    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
+        if (!recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
+            Timber.e("스크롤이 끝에 도달했어요!")
+
+            if (viewModel.isNextPageLoading()) {
+                Timber.e("다음 페이지 로딩 중입니다.")
+                return
+            }
+
+            viewModel.getRecommendCourseNextPage()
+        }
     }
 
     private fun showCircleUploadButton() {

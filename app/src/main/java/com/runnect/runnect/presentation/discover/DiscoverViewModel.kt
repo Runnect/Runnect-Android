@@ -10,7 +10,6 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewHolder
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,6 +127,8 @@ class DiscoverViewModel @Inject constructor(
                 }
         }
     }
+
+    fun isNextPageLoading() = nextPageState.value is UiStateV2.Loading
 
     fun getRecommendCourseNextPage() {
         viewModelScope.launch {
