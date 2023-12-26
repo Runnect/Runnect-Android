@@ -77,15 +77,19 @@ class DiscoverMultiViewAdapter(
 
         when (targetItem) {
             is MarathonCourse -> {
+                val position = DiscoverMultiViewType.MARATHON.ordinal
+                val targetIndex = currentList[position].indexOf(targetItem)
                 multiViewHolderFactory.marathonViewHolder.updateMarathonCourseItem(
-                    publicCourseId = publicCourseId,
+                    targetIndex = targetIndex,
                     updatedCourse = updatedCourse
                 )
             }
 
             is RecommendCourse -> {
+                val position = DiscoverMultiViewType.RECOMMEND_COURSE.ordinal
+                val targetIndex = currentList[position].indexOf(targetItem)
                 multiViewHolderFactory.recommendCourseViewHolder.updateRecommendCourseItem(
-                    publicCourseId = publicCourseId,
+                    targetIndex = targetIndex,
                     updatedCourse = updatedCourse
                 )
             }

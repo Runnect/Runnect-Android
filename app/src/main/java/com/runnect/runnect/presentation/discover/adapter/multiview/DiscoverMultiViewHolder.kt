@@ -51,17 +51,14 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
 
         fun updateMarathonCourseItem(
-            publicCourseId: Int,
+            targetIndex: Int,
             updatedCourse: EditableDiscoverCourse
         ) {
-            marathonAdapter.currentList.forEachIndexed { index, course ->
-                if (course.id == publicCourseId) {
-                    course.title = updatedCourse.title
-                    course.scrap = updatedCourse.scrap
-                    marathonAdapter.notifyItemChanged(index)
-                    return@forEachIndexed
-                }
+            marathonAdapter.currentList[targetIndex].apply {
+                title = updatedCourse.title
+                scrap = updatedCourse.scrap
             }
+            marathonAdapter.notifyItemChanged(targetIndex)
         }
     }
 
@@ -121,17 +118,14 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
 
         fun updateRecommendCourseItem(
-            publicCourseId: Int,
+            targetIndex: Int,
             updatedCourse: EditableDiscoverCourse
         ) {
-            recommendAdapter.currentList.forEachIndexed { index, course ->
-                if (course.id == publicCourseId) {
-                    course.title = updatedCourse.title
-                    course.scrap = updatedCourse.scrap
-                    recommendAdapter.notifyItemChanged(index)
-                    return@forEachIndexed
-                }
+            recommendAdapter.currentList[targetIndex].apply {
+                title = updatedCourse.title
+                scrap = updatedCourse.scrap
             }
+            recommendAdapter.notifyItemChanged(targetIndex)
         }
     }
 }
