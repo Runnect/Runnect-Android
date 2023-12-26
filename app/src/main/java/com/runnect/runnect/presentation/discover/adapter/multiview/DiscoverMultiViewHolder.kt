@@ -11,6 +11,7 @@ import com.runnect.runnect.presentation.discover.adapter.DiscoverMarathonAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
+import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import timber.log.Timber
 
@@ -97,11 +98,10 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                     removeItemDecorationAt(0)
                 }
                 addItemDecoration(
-                    GridSpacingItemDecoration(
+                    DiscoverRecommendItemDecoration(
                         context = context,
-                        spanCount = 2,
-                        horizontalSpaceSize = 6,
-                        topSpaceSize = 20
+                        rightSpacing = 6,
+                        bottomSpacing = 20
                     )
                 )
             }
