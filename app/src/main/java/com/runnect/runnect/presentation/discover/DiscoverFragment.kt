@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,7 +33,6 @@ import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
-import com.runnect.runnect.util.extension.showDiscoverSnackbar
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.extension.viewLifeCycleScope
@@ -235,7 +235,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 is UiStateV2.Failure -> {
-                    context?.showDiscoverSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
                 }
 
                 else -> {}
@@ -285,7 +285,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showDiscoverSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
                 }
 
                 else -> {}
@@ -308,7 +308,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showDiscoverSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
                 }
 
                 else -> {}
@@ -375,7 +375,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 is UiStateV2.Failure -> {
-                    context?.showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
                 }
 
                 else -> {}
@@ -386,7 +386,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
             if (state is UiStateV2.Failure) {
-                context?.showDiscoverSnackbar(binding.root, state.msg)
+                context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
             }
         }
     }

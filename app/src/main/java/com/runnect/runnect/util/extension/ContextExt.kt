@@ -10,11 +10,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -30,7 +28,6 @@ import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
-import kotlinx.android.synthetic.main.fragment_require_login_dialog.view.tv_require_login_dialog_desc
 
 fun Context.setActivityDialog(
     layoutInflater: LayoutInflater,
@@ -171,16 +168,17 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showSnackbar(anchorView: View, message: String) {
-    Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
-}
-
-fun Context.showDiscoverSnackbar(anchorView: View, message: String) {
+fun Context.showSnackbar(anchorView: View, message: String, gravity: Int = 0) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
-    val params = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-    params.anchorGravity = Gravity.TOP
-    params.gravity = Gravity.TOP
-    snackbar.view.layoutParams = params
+
+    if (gravity != 0) {
+        val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.apply {
+            this.gravity = gravity
+            snackbar.view.layoutParams = this
+        }
+    }
+
     snackbar.show()
 }
 
