@@ -13,10 +13,10 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
-import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -67,9 +67,12 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
-        data: RequestBody
+        courseCreateRequestDto: RequestBody
     ): Response<ResponsePostMyDrawCourse> {
-        return remoteCourseDataSource.uploadCourse(image = image, data = data)
+        return remoteCourseDataSource.uploadCourse(
+            image = image,
+            courseCreateRequestDto = courseCreateRequestDto
+        )
     }
 
     // todo: ----------------------------------------------------- runCatching

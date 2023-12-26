@@ -47,10 +47,20 @@ jobs:
                   NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
               run: echo "NAVER_CLIENT_ID = \"$NAVER_CLIENT_ID\"" >> local.properties
         
-            - name: Access RUNNECT_BASE_URL
+            - name: Access RUNNECT_NODE_URL
               env:
-                  RUNNECT_BASE_URL: ${{ secrets.RUNNECT_BASE_URL }}
-              run: echo "RUNNECT_BASE_URL=\"$RUNNECT_BASE_URL\"" >> local.properties
+                  RUNNECT_NODE_URL: ${{ secrets.RUNNECT_NODE_URL }}
+              run: echo "RUNNECT_NODE_URL=\"$RUNNECT_NODE_URL\"" >> local.properties
+
+            - name: Access RUNNECT_DEV_URL
+              env:
+                RUNNECT_DEV_URL: ${{ secrets.RUNNECT_DEV_URL }}
+              run: echo "RUNNECT_DEV_URL=\"$RUNNECT_DEV_URL\"" >> local.properties
+
+            - name: Access RUNNECT_PROD_URL
+              env:
+                RUNNECT_PROD_URL: ${{ secrets.RUNNECT_PROD_URL }}
+              run: echo "RUNNECT_PROD_URL=\"$RUNNECT_PROD_URL\"" >> local.properties
 
             - name: Access TMAP_BASE_URL
               env:
