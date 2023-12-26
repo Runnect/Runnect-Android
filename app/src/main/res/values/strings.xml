@@ -119,6 +119,8 @@
     <string name="draw_custom_departure_guide">지도를 움직여 출발지를 설정해주세요</string>
     <string name="draw_custom_departure_guide_frame">지도에서 선택</string>
     <string name="draw_next">다음으로</string>
+    <string name="dev_mode_require_restart">3초 후 강제 종료됩니다. 앱을 재실행 해주세요.</string>
+    <string name="dev_mode_copy_to_text">"클립보드에 복사되었습니다."</string>
 
     <!-- popup menu -->
     <string name="popup_menu_item_edit">수정하기</string>
