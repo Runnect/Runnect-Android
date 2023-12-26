@@ -10,6 +10,8 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewHolder
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -160,7 +162,7 @@ class DiscoverViewModel @Inject constructor(
     fun checkCourseLoadState(): Boolean {
         return marathonCourseState.value is UiStateV2.Success &&
                 recommendCourseState.value is UiStateV2.Success &&
-                multiViewItems.size >= MULTI_VIEW_TYPE_SIZE
+                multiViewItems.size >= DiscoverMultiViewType.values().size
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
@@ -177,9 +179,5 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
-    }
-
-    companion object {
-        private const val MULTI_VIEW_TYPE_SIZE = 2
     }
 }
