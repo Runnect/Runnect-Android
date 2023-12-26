@@ -12,11 +12,6 @@ sealed class DiscoverMultiViewItem(
         val departure: String,
     ) : DiscoverMultiViewItem(id)
 
-    data class RecommendHeader(
-        val title: String,
-        val subtitle: String
-    ) : DiscoverMultiViewItem(HEADER_ID)
-
     data class RecommendCourse(
         override val id: Int,
         val courseId: Int,
@@ -25,8 +20,4 @@ sealed class DiscoverMultiViewItem(
         var scrap: Boolean,
         val departure: String,
     ) : DiscoverMultiViewItem(id)
-
-    companion object {
-        private const val HEADER_ID = -1
-    }
 }

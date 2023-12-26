@@ -9,7 +9,7 @@ import com.runnect.runnect.R
 
 class DiscoverMultiViewHolderFactory {
     lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
-    lateinit var recommendCourseViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
+    lateinit var recommendViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
 
     fun createMultiViewHolder(
         parent: ViewGroup,
@@ -29,26 +29,17 @@ class DiscoverMultiViewHolderFactory {
                 return marathonViewHolder
             }
 
-            DiscoverMultiViewType.RECOMMEND_HEADER -> {
-                return DiscoverMultiViewHolder.RecommendHeaderViewHolder(
+            DiscoverMultiViewType.RECOMMEND -> {
+                recommendViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
                     binding = getViewBinding(
                         parent,
-                        R.layout.item_discover_multiview_recommend_header
-                    )
-                )
-            }
-
-            DiscoverMultiViewType.RECOMMEND_COURSE -> {
-                recommendCourseViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = getViewBinding(
-                        parent,
-                        R.layout.item_discover_multiview_recommend_course
+                        R.layout.item_discover_multiview_recommend
                     ),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode
                 )
-                return recommendCourseViewHolder
+                return recommendViewHolder
             }
         }
     }

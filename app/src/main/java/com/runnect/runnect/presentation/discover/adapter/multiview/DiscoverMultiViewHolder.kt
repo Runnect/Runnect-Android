@@ -4,14 +4,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.adapter.DiscoverMarathonAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
-import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import timber.log.Timber
 
@@ -62,17 +61,8 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
     }
 
-    // todo: 정렬 버튼 클릭 리스너 구현
-    class RecommendHeaderViewHolder(
-       private val binding: ItemDiscoverMultiviewRecommendHeaderBinding
-    ) : DiscoverMultiViewHolder(binding) {
-        fun bind(headers: List<RecommendHeader>) {
-            binding.header = headers.first()
-        }
-    }
-
     class RecommendCourseViewHolder(
-        private val binding: ItemDiscoverMultiviewRecommendCourseBinding,
+        private val binding: ItemDiscoverMultiviewRecommendBinding,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,

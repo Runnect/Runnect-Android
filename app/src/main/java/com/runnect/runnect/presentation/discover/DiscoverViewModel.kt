@@ -104,10 +104,6 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun addRecommendHeaderView(headers: List<RecommendHeader>) {
-        _multiViewItems.add(headers)
-    }
-
     fun getRecommendCourse(pageNo: Int, ordering: String) {
         viewModelScope.launch {
             _recommendCourseState.value = UiStateV2.Loading
@@ -184,6 +180,6 @@ class DiscoverViewModel @Inject constructor(
     }
 
     companion object {
-        private const val MULTI_VIEW_TYPE_SIZE = 3
+        private const val MULTI_VIEW_TYPE_SIZE = 2
     }
 }

@@ -283,10 +283,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
-                is UiStateV2.Success -> {
-                    addRecommendHeaderView()
-                }
-
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
                     context?.showDiscoverSnackbar(binding.root, state.msg)
@@ -295,14 +291,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 else -> {}
             }
         }
-    }
-
-    private fun addRecommendHeaderView() {
-        val header = DiscoverMultiViewItem.RecommendHeader(
-            title = getString(R.string.discover_recommend_header_title),
-            subtitle = getString(R.string.discover_marathon_header_subtitle)
-        )
-        viewModel.addRecommendHeaderView(listOf(header))
     }
 
     private fun setupRecommendCourseGetStateObserver() {

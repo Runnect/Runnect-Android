@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="header"
-            type="com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendHeader" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -40,12 +33,11 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="34dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="@{header.title}"
+                android:text="@string/discover_recommend_header_title"
                 android:textColor="@color/G1"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/discover_recommend_header_title" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_discover_recommend_subtitle"
@@ -54,13 +46,12 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="20dp"
                 android:fontFamily="@font/pretendard_regular"
-                android:text="@{header.subtitle}"
+                android:text="@string/discover_recommend_header_subtitle"
                 android:textColor="@color/G2"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_discover_recommend_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_title"
-                tools:text="@string/discover_recommend_header_subtitle" />
+                app:layout_constraintTop_toBottomOf="@id/tv_discover_recommend_title" />
 
             <TextView
                 android:id="@+id/tv_discover_recommend_sort_by_date"
@@ -92,6 +83,22 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_discover_recommend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="15dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_discover_recommend_header"
+            tools:listitem="@layout/item_discover_recommend" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
