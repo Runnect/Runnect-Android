@@ -5,12 +5,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.normal.TedPermission
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
@@ -24,6 +21,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentCourseMainBinding
 import com.runnect.runnect.presentation.search.SearchActivity
+import com.runnect.runnect.util.extension.PermissionUtil
 
 
 class CourseMainFragment :
@@ -65,7 +63,9 @@ class CourseMainFragment :
                 initView()
             }
         } else {
-            requestLocationPermission()
+            PermissionUtil.requestLocationPermission(requireContext()) {
+                cameraUpdate(currentLocation)
+            }
         }
     }
 
@@ -74,7 +74,9 @@ class CourseMainFragment :
             if (isLocationPermissionGranted()) {
                 cameraUpdate(currentLocation)
             } else {
-                requestLocationPermission()
+                PermissionUtil.requestLocationPermission(requireContext()) {
+                    cameraUpdate(currentLocation)
+                }
             }
         }
     }
@@ -124,31 +126,6 @@ class CourseMainFragment :
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestLocationPermission() {
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() {
-                    cameraUpdate(currentLocation)
-                }
-
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(
-                        requireContext(),
-                        "위치 권한이 거부되었습니다.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-            .setRationaleTitle(PERMISSION_TITLE)
-            .setRationaleMessage(PERMISSION_CONTENT)
-            .setDeniedMessage(PERMISSION_GUIDE)
-            .setPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            .check()
     }
 
     private fun cameraUpdate(location: LatLng) {
