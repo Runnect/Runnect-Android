@@ -20,7 +20,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
@@ -47,6 +46,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
@@ -308,9 +308,11 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         bottomSheetDialog.setContentView(bottomSheetView)
 
         btnCreateCourse.setOnClickListener {
-            hideKeyboard(etCourseName)
-            bottomSheetDialog.dismiss()
-            createMBR()
+            PermissionUtil.requestLocationPermission(this) {
+                hideKeyboard(etCourseName)
+                bottomSheetDialog.dismiss()
+                createMBR()
+            }
         }
 
         return bottomSheetDialog
