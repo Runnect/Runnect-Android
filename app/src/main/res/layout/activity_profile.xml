@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentation.profile.ProfileActivity">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.runnect.runnect.presentation.profile.ProfileViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_profile_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/M4"
+                app:layout_constraintTop_toTopOf="@id/cl_profile_toolbar">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:src="@drawable/backbutton" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_my_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:text="@string/profile_title"
+                    android:textColor="@color/G1"
+                    android:textSize="20dp" />
+            </androidx.appcompat.widget.Toolbar>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedsv_profile"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="7dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_profile_toolbar">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_profile_nested"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="11dp"
+                app:layout_constraintTop_toTopOf="@id/nestedsv_profile">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_profile_stamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="23dp"
+                    android:layout_marginTop="11dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:src="@drawable/mypage_img_stamp_r1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_profile_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/pretendard_bold"
+                    android:textColor="@color/M1"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_profile_stamp"
+                    app:layout_constraintStart_toEndOf="@id/iv_profile_stamp"
+                    app:layout_constraintTop_toTopOf="@id/iv_profile_stamp"
+                    tools:text="말랑콩떡" />
+
+                <ProgressBar
+                    android:id="@+id/pb_profile_intermediate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="2dp"
+                    android:indeterminateTint="@color/G3"
+                    android:outlineProvider="none"
+                    android:visibility="invisible"
+                    app:layout_constraintBaseline_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/cl_profile_lv_progress_bar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_profile_lv_progress_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="17dp"
+                    android:background="@color/M3_A60"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_profile_stamp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_profile_user_lv_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="22dp"
+                        android:layout_marginTop="21dp"
+                        android:fontFamily="@font/pretendard_bold"
+                        android:text="@string/my_page_lv_indicator"
+                        android:textColor="@color/G1"
+                        android:textSize="15dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_profile_user_lv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:fontFamily="@font/pretendard_bold"
+                        android:textColor="@color/G1"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toEndOf="@id/tv_profile_user_lv_indicator"
+                        app:layout_constraintTop_toTopOf="@id/tv_profile_user_lv_indicator"
+                        tools:text="3" />
+
+                    <ProgressBar
+                        android:id="@+id/pb_profile_progress"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="11dp"
+                        android:layout_marginHorizontal="22dp"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progressbar_custom"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_profile_user_lv"
+                        tools:progress="50" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_profile_progress_current"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:textColor="@color/G1"
+                        android:textSize="13dp"
+                        app:layout_constraintEnd_toStartOf="@id/tv_my_page_progress_max"
+                        app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max"
+                        tools:text="50" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_my_page_progress_max"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="19dp"
+                        android:fontFamily="@font/pretendard_semibold"
+                        android:text="@string/my_page_progress_max"
+                        android:textColor="@color/G2"
+                        android:textSize="13dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@id/cl_profile_lv_progress_bar"
+                        app:layout_constraintTop_toBottomOf="@id/pb_profile_progress" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_profile_upload_course"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="22dp"
+                    android:src="@drawable/all_star"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_profile_lv_progress_bar" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_profile_upload_course"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="@string/my_page_upload_title"
+                    android:textColor="@color/G1"
+                    android:textSize="15dp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_profile_upload_course"
+                    app:layout_constraintStart_toEndOf="@id/iv_profile_upload_course"
+                    app:layout_constraintTop_toTopOf="@id/iv_profile_upload_course" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_profile_upload_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="21dp"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:nestedScrollingEnabled="false"
+                    app:spanCount="2"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_upload_course"
+                    tools:listitem="@layout/item_storage_my_draw" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
