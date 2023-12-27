@@ -14,6 +14,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
+        binding.lifecycleOwner = this
         initAdapter()
     }
 
