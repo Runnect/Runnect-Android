@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.dto.ProfileCourseData
+import com.runnect.runnect.data.dto.UserCourseData
 import com.runnect.runnect.databinding.ItemProfileCourseBinding
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class ProfileCourseAdapter(
-) : ListAdapter<ProfileCourseData, ProfileCourseAdapter.UploadedCourseViewHolder>(diffUtil) {
+) : ListAdapter<UserCourseData, ProfileCourseAdapter.UploadedCourseViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UploadedCourseViewHolder {
         return UploadedCourseViewHolder(
@@ -28,15 +28,15 @@ class ProfileCourseAdapter(
     class UploadedCourseViewHolder(
         private val binding: ItemProfileCourseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(profileCourseData: ProfileCourseData) {
+        fun bind(userCourseData: UserCourseData) {
             with(binding) {
-                data = profileCourseData
+                data = userCourseData
             }
         }
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<ProfileCourseData>(
+        private val diffUtil = ItemDiffCallback<UserCourseData>(
             onItemsTheSame = { old, new -> old.courseId == new.courseId },
             onContentsTheSame = { old, new -> old == new }
         )
