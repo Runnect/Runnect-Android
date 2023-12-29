@@ -43,7 +43,7 @@ class ProfileCourseAdapter(
                 }
 
                 clItemProfileCourse.setOnSingleClickListener {
-                    onCourseItemClick(userCourseData.courseId)
+                    onCourseItemClick(userCourseData.publicCourseId)
                 }
             }
         }

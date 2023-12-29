@@ -1,12 +1,15 @@
 package com.runnect.runnect.presentation.profile
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
+import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,13 +40,20 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
                 adapter.updateCourseItem(courseId = courseId, scrapTF = scrapTF)
             },
             onCourseItemClick = { courseId ->
-                // 코스 디테일로 이동
+                navigateToCourseDetail(courseId)
             }
         ).also { adapter ->
             binding.rvProfileUploadCourse.adapter = adapter
         }
     }
 
+    private fun navigateToCourseDetail(courseId: Int) {
+        Intent(this@ProfileActivity, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, courseId)
+            startActivity(this)
+        }
+        applyScreenExitAnimation()
+    }
 
     private fun initBackButtonClickListener() {
         binding.ivProfileBack.setOnClickListener {
