@@ -29,19 +29,23 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER_SEARCH
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE
 import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
+import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
-import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
@@ -51,7 +55,8 @@ import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
-import com.runnect.runnect.util.mode.ScreenMode.*
+import com.runnect.runnect.util.mode.ScreenMode.EditMode
+import com.runnect.runnect.util.mode.ScreenMode.ReadOnlyMode
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -129,6 +134,15 @@ class CourseDetailActivity :
         applyScreenExitAnimation()
     }
 
+    private fun navigateToUserProfileWithBundle() {
+        Intent(this@CourseDetailActivity, ProfileActivity::class.java).apply {
+            putExtra(EXTRA_COURSE_USER_ID, courseDetail.userId)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(this)
+        }
+        applyScreenExitAnimation()
+    }
+
     private fun handleBackButtonByCurrentScreenMode() {
         when (viewModel.currentScreenMode) {
             is ReadOnlyMode -> navigateToPreviousScreen()
@@ -178,6 +192,7 @@ class CourseDetailActivity :
         initScrapButtonClickListener()
         initStartRunButtonClickListener()
         initEditFinishButtonClickListener()
+        initUserInfoClickListener()
 
         initShareButtonClickListener()
         initShowMoreButtonClickListener()
@@ -212,6 +227,12 @@ class CourseDetailActivity :
                 desc = courseDetail.description,
                 image = courseDetail.image
             )
+        }
+    }
+
+    private fun initUserInfoClickListener() {
+        binding.constCourseDetailUserInfo.setOnClickListener {
+            navigateToUserProfileWithBundle()
         }
     }
 
@@ -600,6 +621,7 @@ class CourseDetailActivity :
         private const val EXTRA_COURSE_DATA = "CourseData"
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
+        private const val EXTRA_COURSE_USER_ID = "userId"
 
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
