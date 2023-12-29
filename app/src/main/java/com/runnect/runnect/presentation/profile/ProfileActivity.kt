@@ -34,6 +34,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         adapter = ProfileCourseAdapter(
             onLikeButtonClick = { courseId, scrapTF ->
                 viewModel.postCourseScrap(courseId = courseId, scrapTF = scrapTF)
+                adapter.updateCourseItem(courseId = courseId, scrapTF = scrapTF)
             },
             onCourseItemClick = { courseId ->
                 // 코스 디테일로 이동

@@ -14,7 +14,7 @@ data class UserCourseData(
     val title: String,
     val image: String,
     val departure: DepartureData,
-    val scrapTF: Boolean,
+    var scrapTF: Boolean,
 )
 
 data class DepartureData(

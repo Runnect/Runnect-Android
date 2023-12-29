@@ -49,6 +49,15 @@ class ProfileCourseAdapter(
         }
     }
 
+    fun updateCourseItem(courseId: Int, scrapTF: Boolean) {
+        currentList.forEachIndexed { index, userCourseData ->
+            if (userCourseData.publicCourseId == courseId) {
+                userCourseData.scrapTF = scrapTF
+                notifyItemChanged(index)
+            }
+        }
+    }
+
     companion object {
         private val diffUtil = ItemDiffCallback<UserCourseData>(
             onItemsTheSame = { old, new -> old.courseId == new.courseId },

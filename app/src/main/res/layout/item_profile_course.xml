@@ -11,6 +11,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_item_profile_course"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -19,15 +20,15 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="3dp"
             android:layout_marginBottom="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:scale_base_height="154"
             app:scale_base_width="162">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cv_item_storage_scrap"
+                android:id="@+id/cv_item_profile_course"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/G4"
@@ -36,7 +37,7 @@
                 app:scale_width="162">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_item_storage_scrap_map"
+                    android:id="@+id/iv_item_profile_course_map"
                     setImageUrl="@{data.image}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -45,17 +46,18 @@
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_item_storage_scrap_heart"
+                android:id="@+id/iv_item_profile_course_heart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:selected="@{data.scrapTF}"
                 app:scale_height="18"
                 app:scale_top="121"
                 app:scale_width="21"
                 app:srcCompat="@drawable/discover_course_scrap_selector" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_item_storage_scrap_title"
+                android:id="@+id/tv_item_profile_course_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -71,7 +73,7 @@
                 tools:text="제목" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_item_storage_scrap_location"
+                android:id="@+id/tv_item_profile_course_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/pretendard_regular"
