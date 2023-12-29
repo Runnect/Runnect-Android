@@ -5,7 +5,9 @@
     tools:context=".presentation.profile.ProfileActivity">
 
     <data>
-
+        <variable
+            name="data"
+            type="com.runnect.runnect.data.dto.UserProfileData" />
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.profile.ProfileViewModel" />
@@ -69,13 +71,13 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_profile_stamp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="63dp"
+                    android:layout_height="63dp"
                     android:layout_marginStart="23dp"
                     android:layout_marginTop="11dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:src="@drawable/mypage_img_stamp_r1" />
+                    setStampImageByResourceId="@{data.latestStamp}" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_profile_user_name"
@@ -88,7 +90,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/iv_profile_stamp"
                     app:layout_constraintStart_toEndOf="@id/iv_profile_stamp"
                     app:layout_constraintTop_toTopOf="@id/iv_profile_stamp"
-                    tools:text="말랑콩떡" />
+                    android:text="@{data.nickname}" />
 
                 <ProgressBar
                     android:id="@+id/pb_profile_intermediate"
@@ -134,10 +136,10 @@
                         android:layout_marginStart="3dp"
                         android:fontFamily="@font/pretendard_bold"
                         android:textColor="@color/G1"
-                        android:textSize="15sp"
+                        android:textSize="15dp"
                         app:layout_constraintStart_toEndOf="@id/tv_profile_user_lv_indicator"
                         app:layout_constraintTop_toTopOf="@id/tv_profile_user_lv_indicator"
-                        tools:text="3" />
+                        android:text="@{Integer.toString(data.level)}"/>
 
                     <ProgressBar
                         android:id="@+id/pb_profile_progress"
@@ -151,7 +153,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_profile_user_lv"
-                        tools:progress="50" />
+                        android:progress="@{data.levelPercent}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_profile_progress_current"
@@ -162,7 +164,7 @@
                         android:textSize="13dp"
                         app:layout_constraintEnd_toStartOf="@id/tv_my_page_progress_max"
                         app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max"
-                        tools:text="50" />
+                        android:text="@{Integer.toString(data.levelPercent)}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_my_page_progress_max"
