@@ -21,7 +21,9 @@ data class ResponseGetCourseDetail(
         @SerialName("image")
         val image: String,
         @SerialName("isNowUser")
-        val isNowUser: Boolean
+        val isNowUser: Boolean,
+        @SerialName("id")
+        val id: Int
     )
 
     @Serializable
@@ -65,6 +67,7 @@ data class ResponseGetCourseDetail(
         level = user.level.toString(),
         nickname = user.nickname,
         isNowUser = user.isNowUser,
+        userId = user.id,
         id = publicCourse.id,
         courseId = publicCourse.courseId,
         departure = publicCourse.departure.region + ' ' +
