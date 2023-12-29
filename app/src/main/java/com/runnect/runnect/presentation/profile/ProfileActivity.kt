@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.profile
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
@@ -42,10 +43,11 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         viewModel.userProfileState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Loading -> {
-                    // 프로그레스바
+                    activateLoadingProgressBar()
                 }
 
                 is UiStateV2.Success -> {
+                    deactivateLoadingProgressBar()
                     binding.data = state.data
                     adapter.submitList(state.data.courseData)
                 }
@@ -60,6 +62,16 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
             }
 
         }
+    }
+
+    private fun activateLoadingProgressBar() {
+        binding.clProfile.isVisible = false
+        binding.pbProfileIntermediate.isVisible = true
+    }
+
+    private fun deactivateLoadingProgressBar() {
+        binding.clProfile.isVisible = true
+        binding.pbProfileIntermediate.isVisible = false
     }
 
     companion object {

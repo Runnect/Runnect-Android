@@ -15,6 +15,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -50,6 +51,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ProgressBar
+            android:id="@+id/pb_profile_intermediate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedsv_profile"
@@ -92,19 +104,6 @@
                     app:layout_constraintTop_toTopOf="@id/iv_profile_stamp"
                     android:text="@{data.nickname}" />
 
-                <ProgressBar
-                    android:id="@+id/pb_profile_intermediate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:indeterminateTint="@color/G3"
-                    android:outlineProvider="none"
-                    android:visibility="invisible"
-                    app:layout_constraintBaseline_toBottomOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@id/cl_profile_lv_progress_bar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_profile_lv_progress_bar"
