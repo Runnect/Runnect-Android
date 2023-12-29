@@ -7,6 +7,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,7 +54,8 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
                 }
 
                 is UiStateV2.Failure -> {
-
+                    deactivateLoadingProgressBar()
+                    this.showSnackbar(binding.root, state.msg)
                 }
 
                 else -> {
