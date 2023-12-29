@@ -31,10 +31,18 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     }
 
     private fun initAdapter() {
-        adapter = ProfileCourseAdapter().also { adapter ->
+        adapter = ProfileCourseAdapter(
+            onLikeButtonClick = { courseId, scrapTF ->
+                viewModel.postCourseScrap(courseId = courseId, scrapTF = scrapTF)
+            },
+            onCourseItemClick = { courseId ->
+                // 코스 디테일로 이동
+            }
+        ).also { adapter ->
             binding.rvProfileUploadCourse.adapter = adapter
         }
     }
+
 
     private fun initBackButtonClickListener() {
         binding.ivProfileBack.setOnClickListener {
@@ -84,5 +92,6 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
 
     companion object {
         private const val EXTRA_COURSE_USER_ID = "userId"
+        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
     }
 }
