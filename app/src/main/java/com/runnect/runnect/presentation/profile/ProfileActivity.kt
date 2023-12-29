@@ -20,6 +20,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         binding.vm = viewModel
         binding.lifecycleOwner = this
         initAdapter()
+        initBackButtonClickListener()
         getIntentExtra()
         getUserProfile()
         setupUserProfileGetStateObserver()
@@ -35,6 +36,11 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         }
     }
 
+    private fun initBackButtonClickListener() {
+        binding.ivProfileBack.setOnClickListener {
+            finish()
+        }
+    }
 
     private fun getUserProfile() {
         viewModel.getUserProfile(userId = userId)

@@ -137,7 +137,6 @@ class CourseDetailActivity :
     private fun navigateToUserProfileWithBundle() {
         Intent(this@CourseDetailActivity, ProfileActivity::class.java).apply {
             putExtra(EXTRA_COURSE_USER_ID, courseDetail.userId)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(this)
         }
         applyScreenExitAnimation()
