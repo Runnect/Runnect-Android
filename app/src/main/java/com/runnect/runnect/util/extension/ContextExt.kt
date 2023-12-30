@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.SlideDistanceProvider.GravityFlag
 import com.runnect.runnect.R
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
@@ -168,10 +169,10 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showSnackbar(anchorView: View, message: String, gravity: Int = 0) {
+fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int? = null) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
 
-    if (gravity != 0) {
+    if (gravity != null) {
         val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.apply {
             this.gravity = gravity
