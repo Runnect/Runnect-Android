@@ -244,7 +244,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 is UiStateV2.Failure -> {
-                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -294,7 +298,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -317,7 +325,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -384,7 +396,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 is UiStateV2.Failure -> {
-                    context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -395,7 +411,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
             if (state is UiStateV2.Failure) {
-                context?.showSnackbar(binding.root, state.msg, Gravity.TOP)
+                context?.showSnackbar(
+                    anchorView = binding.root,
+                    message = state.msg,
+                    gravity = Gravity.TOP
+                )
             }
         }
     }
