@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.search
 
-
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Rect
@@ -16,21 +15,21 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.runnect.runnect.R
+import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.callback.OnSearchClick
+import com.runnect.runnect.util.callback.listener.OnSearchItemClick
 import com.runnect.runnect.util.extension.hideKeyboard
-import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
+import com.runnect.runnect.util.extension.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SearchActivity :
-    com.runnect.runnect.binding.BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
-    OnSearchClick {
+class SearchActivity: BindingActivity<ActivitySearchBinding>(R.layout.activity_search),
+    OnSearchItemClick {
     val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
 
@@ -42,7 +41,7 @@ class SearchActivity :
 
         initDivider()
         backButton()
-        binding.etSearch.setFocusAndShowKeyboard(this)
+        binding.etSearch.showKeyboard(this)
         imgBtnSearch()
         addListener()
         addObserver()
@@ -144,31 +143,26 @@ class SearchActivity :
         }
     }
 
-
-    private fun searchKeyword(keywordString: String) {
-        viewModel.getSearchList(keywordString)
+    private fun searchKeyword(keyword: String) {
+        viewModel.getSearchList(keyword)
     }
 
     private fun imgBtnSearch() {
         binding.imgBtnSearch.setOnClickListener {
             viewModel.getSearchList(binding.etSearch.text.toString())
         }
-
     }
 
-
     private fun addListener() {
-        //키보드 검색 버튼 클릭 시 이벤트 실행 후 키보드 내리기
         binding.etSearch.setOnEditorActionListener(object :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
-                    searchKeyword(binding.etSearch.text.toString())
-
-                    // 키패드 내리기
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
-
+                    val keyword = binding.etSearch.text
+                    if(!keyword.isNullOrBlank()){
+                        searchKeyword(keyword.toString())
+                        hideKeyboard(binding.etSearch)
+                    }
                     return true
                 }
                 return false
@@ -184,7 +178,7 @@ class SearchActivity :
         }
     }
 
-    fun startCurrentLocation() {
+    private fun startCurrentLocation() {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -196,7 +190,7 @@ class SearchActivity :
         )
     }
 
-    fun startCustomLocation() {
+    private fun startCustomLocation() {
         startActivity(
             Intent(this, DrawActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)

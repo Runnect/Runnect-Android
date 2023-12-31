@@ -2,7 +2,7 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.source.remote.RemoteReverseGeocodingDataSource
-import com.runnect.runnect.domain.ReverseGeocodingRepository
+import com.runnect.runnect.domain.repository.ReverseGeocodingRepository
 import javax.inject.Inject
 
 class ReverseGeocodingRepositoryImpl @Inject constructor(private val reverseGeocodingDataSource: RemoteReverseGeocodingDataSource) :

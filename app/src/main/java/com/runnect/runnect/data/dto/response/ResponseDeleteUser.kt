@@ -4,12 +4,6 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserDeleteData(
-    @SerializedName("deletedUserId")
-    val deletedUserId: Int
-)
-
-@Serializable
 data class ResponseDeleteUser(
     @SerializedName("data")
     val `data`: UserDeleteData,
@@ -19,4 +13,10 @@ data class ResponseDeleteUser(
     val status: Int,
     @SerializedName("success")
     val success: Boolean
+)
+
+@Serializable
+data class UserDeleteData(
+    @SerializedName("deletedUserId")
+    val deletedUserId: Int
 )

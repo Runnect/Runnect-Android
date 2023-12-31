@@ -20,15 +20,16 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnHeartClick
-import com.runnect.runnect.util.callback.OnScrapCourseClick
+import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
+import com.runnect.runnect.util.callback.listener.OnScrapItemClick
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class StorageScrapFragment :
-    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap), OnHeartClick,
-    OnScrapCourseClick,
+    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap),
+    OnHeartButtonClick,
+    OnScrapItemClick,
     ItemCount {
 
     val viewModel: StorageViewModel by viewModels()
@@ -65,7 +66,7 @@ class StorageScrapFragment :
         MainActivity.storageScrapFragment = null
     }
 
-    override fun scrapCourse(id: Int?, scrapTF: Boolean) {
+    override fun scrapCourse(id: Int, scrapTF: Boolean) {
         viewModel.postCourseScrap(id, scrapTF)
     }
 
@@ -74,10 +75,10 @@ class StorageScrapFragment :
             .layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerViewStorageScrap.addItemDecoration(
             GridSpacingItemDecoration(
-                requireContext(),
-                2,
-                6,
-                16
+                context = requireContext(),
+                spanCount = 2,
+                horizontalSpaceSize = 6,
+                topSpaceSize = 20
             )
         )
     }
@@ -143,7 +144,7 @@ class StorageScrapFragment :
 
     private fun toScrapCourseBtn() {
         binding.btnStorageNoScrap.setOnClickListener {
-            isFromStorageNoScrap = true
+            isFromStorageScrap = true
 
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromMyScrap")
@@ -184,7 +185,7 @@ class StorageScrapFragment :
     }
 
     companion object {
-        var isFromStorageNoScrap = false
+        var isFromStorageScrap = false
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"

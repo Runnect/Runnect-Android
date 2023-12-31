@@ -22,29 +22,6 @@ fun PublicCourseUpload.toData(): UserUploadCourseDTO {
     )
 }
 
-fun RecommendPublicCourse.toData(): RecommendCourseDTO {
-    return RecommendCourseDTO(
-        pageNo = pageNo,
-        courseId = courseId,
-        departure = departure.region + ' ' + departure.city,
-        id = id,
-        title = title,
-        scrap = scrap,
-        image = image
-    )
-}
-
-fun SearchPublicCourse.toData(): CourseSearchDTO {
-    return CourseSearchDTO(
-        courseId = courseId,
-        departure = departure.region + ' ' + departure.city,
-        id = id,
-        title = title,
-        scrap = scrap,
-        image = image
-    )
-}
-
 fun PrivateCourse.toData(): CourseLoadInfoDTO {
     return CourseLoadInfoDTO(
         id = id,
@@ -54,7 +31,7 @@ fun PrivateCourse.toData(): CourseLoadInfoDTO {
     )
 }
 
-fun ResponseLogin.toData(): LoginDTO {
+fun ResponsePostLogin.toData(): LoginDTO {
     with(this.data) {
         return LoginDTO(
             status = status,
@@ -68,8 +45,7 @@ fun ResponseLogin.toData(): LoginDTO {
 }
 
 private fun timeConvert(time: String): String {
-    var hms = mutableListOf<String>()
-    hms = time.split(":").toMutableList()
+    val hms = time.split(":").toMutableList()
     if (hms[0] == "00") {
         hms[0] = "0"
     }
@@ -77,8 +53,7 @@ private fun timeConvert(time: String): String {
 }
 
 private fun paceConvert(p: String): String {
-    var pace = mutableListOf<String>()
-    pace = p.split(":").toMutableList()
+    val pace = p.split(":").toMutableList()
     return if (pace[0] == "00") {
         pace.removeAt(0)
         if (pace[0][0] == '0') {

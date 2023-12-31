@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.R
-import com.runnect.runnect.data.dto.request.RequestUpdateNickName
-import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.data.dto.request.RequestPatchNickName
+import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -40,7 +40,7 @@ class MyPageEditNameViewModel @Inject constructor(private val userRepository: Us
             runCatching {
                 _uiState.value = UiState.Loading
                 userRepository.updateNickName(
-                    RequestUpdateNickName(
+                    RequestPatchNickName(
                         nickname = nickName.value.toString()
                     )
                 )

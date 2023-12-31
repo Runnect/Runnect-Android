@@ -8,19 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
-import com.runnect.runnect.data.dto.response.ResponsePostCourseDTO
-import com.runnect.runnect.domain.CourseRepository
-import com.runnect.runnect.domain.ReverseGeocodingRepository
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.repository.ReverseGeocodingRepository
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.put
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,6 +35,7 @@ class DrawViewModel @Inject constructor(
     val path = MutableLiveData<List<UploadLatLng>>()
     var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
+    var courseTitle = ""
     val departureName = MutableLiveData<String>()
     val isBtnAvailable = MutableLiveData(false)
 
@@ -55,7 +50,7 @@ class DrawViewModel @Inject constructor(
         _image.value = requestBody
     }
 
-    val uploadResult = MutableLiveData<ResponsePostCourseDTO>()
+    val uploadResult = MutableLiveData<ResponsePostMyDrawCourse>()
     val errorMessage = MutableLiveData<String>()
 
 
@@ -96,12 +91,18 @@ class DrawViewModel @Inject constructor(
                 _drawState.value = UiState.Loading
                 courseRepository.uploadCourse(
                     image = _image.value!!.toFormData(),
-                    data = RequestBody(
-                        path = path.value!!,
+                    courseCreateRequestDto = CourseCreateRequestDto(
+                        path = path.value ?: listOf(
+                            UploadLatLng(
+                                37.52901832956373,
+                                126.9136196847032
+                            )
+                        ),
+                        title = courseTitle,
                         distance = distanceSum.value!!,
                         departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
                         departureName = departureName.value!!
-                    )
+                    ).toRequestBody()
                 )
             }.onSuccess {
                 Timber.tag(ContentValues.TAG).d("통신success")
@@ -130,20 +131,6 @@ class DrawViewModel @Inject constructor(
             }
         }
     }
-
-    private fun RequestBody(
-        path: List<UploadLatLng>,
-        distance: Float,
-        departureAddress: String,
-        departureName: String,
-    ) = buildJsonObject {
-        val jsonElement = Json.encodeToJsonElement(path)
-        put("path", jsonElement)
-        put("distance", distance)
-        put("departureAddress", departureAddress)
-        put("departureName", departureName)
-    }.toString().toRequestBody("application/json".toMediaType())
-
 }
 
 

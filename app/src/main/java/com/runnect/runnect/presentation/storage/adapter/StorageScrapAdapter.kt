@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnHeartClick
-import com.runnect.runnect.util.callback.OnScrapCourseClick
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
+import com.runnect.runnect.util.callback.listener.OnScrapItemClick
 
 class StorageScrapAdapter(
-    val scrapClickListener: OnScrapCourseClick,
-    val heartListener: OnHeartClick, val itemCount: ItemCount
-) :
-    ListAdapter<MyScrapCourse, StorageScrapAdapter.ItemViewHolder>(Differ()) {
-
-
+    private val onScrapItemClick: OnScrapItemClick,
+    private val onHeartButtonClick: OnHeartButtonClick,
+    private val itemCount: ItemCount
+) : ListAdapter<MyScrapCourse, StorageScrapAdapter.ItemViewHolder>(diffUtil) {
     inner class ItemViewHolder(val binding: ItemStorageScrapBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: MyScrapCourse) {
@@ -26,11 +26,11 @@ class StorageScrapAdapter(
                 ivItemStorageScrapHeart.setOnClickListener {
                     ivItemStorageScrapHeart.isSelected = false
                     deleteItem(absoluteAdapterPosition)
-                    heartListener.scrapCourse(data.publicCourseId, it.isSelected)
+                    onHeartButtonClick.scrapCourse(data.publicCourseId, it.isSelected)
                 }
 
                 root.setOnClickListener {
-                    scrapClickListener.selectItem(data)
+                    onScrapItemClick.selectItem(data)
                 }
             }
         }
@@ -59,21 +59,10 @@ class StorageScrapAdapter(
         holder.onBind(currentList[position])
     }
 
-
-    class Differ : DiffUtil.ItemCallback<MyScrapCourse>() {
-        override fun areItemsTheSame(
-            oldItem: MyScrapCourse,
-            newItem: MyScrapCourse,
-        ): Boolean {
-            return oldItem.publicCourseId == newItem.publicCourseId
-        }
-
-        override fun areContentsTheSame(
-            oldItem: MyScrapCourse,
-            newItem: MyScrapCourse,
-        ): Boolean {
-            return oldItem == newItem
-        }
-
+    companion object {
+        private val diffUtil = ItemDiffCallback<MyScrapCourse>(
+            onItemsTheSame = { old, new -> old.publicCourseId == new.publicCourseId },
+            onContentsTheSame = { old, new -> old == new }
+        )
     }
 }

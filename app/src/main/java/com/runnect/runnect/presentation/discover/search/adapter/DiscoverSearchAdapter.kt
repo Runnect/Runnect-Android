@@ -1,60 +1,78 @@
 package com.runnect.runnect.presentation.discover.search.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import com.runnect.runnect.data.dto.CourseSearchDTO
-import com.runnect.runnect.databinding.ItemDiscoverCourseInfoBinding
-import com.runnect.runnect.util.callback.OnHeartClick
-import com.runnect.runnect.util.callback.OnItemClick
-import com.runnect.runnect.util.callback.ItemDiffCallback
+import com.runnect.runnect.databinding.ItemDiscoverSearchBinding
+import com.runnect.runnect.domain.entity.DiscoverSearchCourse
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class DiscoverSearchAdapter(
-    context: Context,
-    private val itemClick: OnItemClick,
-    private val heartClick: OnHeartClick
-) : ListAdapter<CourseSearchDTO, DiscoverSearchAdapter.SearchViewHolder>(diffUtil) {
-    private val inflater by lazy { LayoutInflater.from(context) }
+    private val onRecommendItemClick: (Int) -> Unit,
+    private val onHeartButtonClick: (Int, Boolean) -> Unit
+) : ListAdapter<DiscoverSearchCourse, DiscoverSearchAdapter.DiscoverSearchViewHolder>(diffUtil) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverSearchViewHolder {
+        return DiscoverSearchViewHolder(
+            ItemDiscoverSearchBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+        )
+    }
 
-    class SearchViewHolder(
-        private val binding: ItemDiscoverCourseInfoBinding,
-        private val itemClick: OnItemClick,
-        private val heartClick: OnHeartClick
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data: CourseSearchDTO) {
-            binding.ivItemDiscoverCourseInfoMap.load(data.image)
-            binding.tvItemDiscoverCourseInfoTitle.text = data.title
-            binding.tvItemDiscoverCourseInfoLocation.text = data.departure
-            binding.ivItemDiscoverCourseInfoScrap.isSelected = data.scrap
+    override fun onBindViewHolder(holder: DiscoverSearchViewHolder, position: Int) {
+        holder.bind(currentList[position])
+    }
 
-            binding.ivItemDiscoverCourseInfoScrap.setOnClickListener {
-                it.isSelected = !it.isSelected
-                heartClick.scrapCourse(data.id, it.isSelected)
+    inner class DiscoverSearchViewHolder(
+        private val binding: com.runnect.runnect.databinding.ItemDiscoverSearchBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(course: DiscoverSearchCourse) {
+            with(binding) {
+                this.course = course
+                ivItemDiscoverCourseScrap.isSelected = course.scrap
+
+                initHeartButtonClickListener(ivItemDiscoverCourseScrap, course)
+                initCourseItemClickListener(root, course)
             }
+        }
 
-            binding.ivItemDiscoverCourseInfoMap.setOnClickListener {
-                itemClick.selectItem(data.id)
+        private fun initHeartButtonClickListener(
+            imageView: AppCompatImageView,
+            course: DiscoverSearchCourse
+        ) {
+            imageView.setOnClickListener { view ->
+                view.isSelected = !view.isSelected
+                onHeartButtonClick(course.id, view.isSelected)
+            }
+        }
+
+        private fun initCourseItemClickListener(
+            itemView: View,
+            course: DiscoverSearchCourse
+        ) {
+            itemView.setOnClickListener {
+                onRecommendItemClick(course.id)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        return SearchViewHolder(
-            ItemDiscoverCourseInfoBinding.inflate(inflater, parent, false),
-            itemClick, heartClick
-        )
-    }
-
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+    fun updateSearchItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return@forEachIndexed
+            }
+        }
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<CourseSearchDTO>(
+        private val diffUtil = ItemDiffCallback<DiscoverSearchCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )

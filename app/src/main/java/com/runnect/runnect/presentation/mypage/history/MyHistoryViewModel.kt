@@ -1,17 +1,15 @@
 package com.runnect.runnect.presentation.mypage.history
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.HistoryInfoDTO
-import com.runnect.runnect.data.dto.request.RequestDeleteHistoryDto
-import com.runnect.runnect.domain.UserRepository
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
+import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -92,7 +90,7 @@ class MyHistoryViewModel @Inject constructor(private val userRepository: UserRep
                 _historyDeleteState.value = UiState.Loading
 
                 userRepository.putDeleteHistory(
-                    RequestDeleteHistoryDto(
+                    RequestDeleteHistory(
                         recordIdList = _itemsToDelete
                     )
                 )

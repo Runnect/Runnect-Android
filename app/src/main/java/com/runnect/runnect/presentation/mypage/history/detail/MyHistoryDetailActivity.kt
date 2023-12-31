@@ -24,7 +24,7 @@ import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
-import com.runnect.runnect.util.extension.setFocusAndShowKeyboard
+import com.runnect.runnect.util.extension.showKeyboard
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.mode.ScreenMode
@@ -116,7 +116,7 @@ class MyHistoryDetailActivity :
             override fun onEditorAction(view: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     viewModel.patchHistoryTitle()
-                    hideKeyboard(currentFocus ?: View(this@MyHistoryDetailActivity))
+                    hideKeyboard(binding.etCourseTitle)
                     return true
                 }
                 return false
@@ -277,7 +277,7 @@ class MyHistoryDetailActivity :
             is ScreenMode.EditMode -> {
                 binding.etCourseTitle.apply {
                     inputType = InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE
-                    setFocusAndShowKeyboard(this@MyHistoryDetailActivity)
+                    showKeyboard(this@MyHistoryDetailActivity)
                 }
             }
         }

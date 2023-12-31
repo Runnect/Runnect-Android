@@ -39,6 +39,16 @@ class TimerService : Service() {
         return START_STICKY
     }
 
+    fun notifyStartRun() {
+        if (player == null) {
+            player = MediaPlayer.create(this@TimerService, R.raw.start_run)
+            player?.setOnCompletionListener { mediaPlayer ->
+                mediaPlayer.release() // 재생이 끝나면 MediaPlayer 객체를 해제합니다.
+            }
+        }
+        player?.start()
+    }
+
     fun startTimer() {
         timer = Timer()
         timer?.scheduleAtFixedRate(object : TimerTask() {
@@ -86,6 +96,7 @@ class TimerService : Service() {
             .setColor(ContextCompat.getColor(this@TimerService, R.color.M1))
             .setContentTitle("러닝")
             .setContentText("00:00:00")
+            .setOnlyAlertOnce(true)
             .setOngoing(true) // true 일 경우 알림 리스트에서 클릭하거나 좌우로 드래그해도 사라지지 않음
 
         val notificationIntent = Intent(this@TimerService, RunActivity::class.java)
@@ -117,16 +128,6 @@ class TimerService : Service() {
         ) // id : 정의해야하는 각 알림의 고유한 int값
         val notification = notificationBuilder.build()
         startForeground(NOTI_ID, notification)
-    }
-
-    fun notifyStartRun() {
-        if (player == null) {
-            player = MediaPlayer.create(this@TimerService, R.raw.start_run)
-            player?.setOnCompletionListener { mediaPlayer ->
-                mediaPlayer.release() // 재생이 끝나면 MediaPlayer 객체를 해제합니다.
-            }
-        }
-        player?.start()
     }
 
     companion object {

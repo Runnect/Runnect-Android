@@ -10,15 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.databinding.ItemStorageMyDrawBinding
 import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.OnMyDrawClick
+import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
 import timber.log.Timber
 
-
 class StorageMyDrawAdapter(
-    val myDrawClickListener: OnMyDrawClick, val itemCount: ItemCount
-) :
-    ListAdapter<MyDrawCourse, StorageMyDrawAdapter.ItemViewHolder>(Differ()) {
-
+    private val onMyDrawItemClick: OnMyDrawItemClick,
+    private val itemCount: ItemCount
+) : ListAdapter<MyDrawCourse, StorageMyDrawAdapter.ItemViewHolder>(diffUtil) {
     lateinit var binding: ItemStorageMyDrawBinding
     private var selectedItems: MutableList<View>? = mutableListOf()
     private var selectedBoxes: MutableList<View>? = mutableListOf()
@@ -68,7 +67,7 @@ class StorageMyDrawAdapter(
                 storageItem = courseList
 
                 ivMyPageUploadCourseSelectBackground.setOnClickListener {
-                    val isEditMode = myDrawClickListener.selectItem(courseList.courseId!!)
+                    val isEditMode = onMyDrawItemClick.selectItem(courseList.courseId!!)
                     Timber.d("isEditMode값 : $isEditMode")
                     if (isEditMode) {
                         if (it.isSelected) {
@@ -89,21 +88,10 @@ class StorageMyDrawAdapter(
         }
     }
 
-    class Differ : DiffUtil.ItemCallback<MyDrawCourse>() {
-        override fun areItemsTheSame(
-            oldItem: MyDrawCourse,
-            newItem: MyDrawCourse,
-        ): Boolean {
-            return oldItem.courseId == newItem.courseId
-        }
-
-        override fun areContentsTheSame(
-            oldItem: MyDrawCourse,
-            newItem: MyDrawCourse,
-        ): Boolean {
-            return oldItem == newItem
-        }
-
+    companion object {
+        private val diffUtil = ItemDiffCallback<MyDrawCourse>(
+            onItemsTheSame = { old, new -> old.courseId == new.courseId },
+            onContentsTheSame = { old, new -> old == new }
+        )
     }
-
 }

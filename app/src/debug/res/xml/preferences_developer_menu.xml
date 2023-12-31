@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="사용자 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_key_access_token"
+            android:title="엑세스 토큰"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_key_refresh_token"
+            android:title="리프레시 토큰"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="서버 모드 설정"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:key="dev_pref_key_api_mode"
+            android:title="서버 모드 설정"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="디바이스 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_android_version"
+            android:title="안드로이드 버전"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="dev_pref_sdk_version"
+            android:title="SDK 버전"
+            app:iconSpaceReserved="false"/>
+        <Preference
+            android:key="dev_pref_model_name"
+            android:title="모델 명"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="화면 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_display_ratio"
+            android:title="화면 비율"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_display_density"
+            android:title="화면 밀도"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_display_resource_bucket"
+            android:title="리소스 버킷"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
