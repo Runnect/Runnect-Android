@@ -1,7 +1,6 @@
-package com.runnect.runnect.util
+package com.runnect.runnect.util.custom.toolbar
 
 import android.content.Context
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -78,13 +77,13 @@ interface CommonToolbarLayout {
 
         // title 영역 text
         if(textResId != null) {
-            setAppBarTitleText(textResId)
+            setToolBarTitleText(textResId)
         } else if (titleText != null) {
-            setAppBarTitleText(titleText)
+            setToolBarTitleText(titleText)
         }
 
-        setAppBarTitleTextColor(textColorResId)
-        setAppBarTitleTextSize(textSizeDip)
+        setToolBarTitleTextColor(textColorResId)
+        setToolbarTitleTextSize(textSizeDip)
 
         // 왼쪽 메뉴 추가
         addMenuTo(
@@ -112,7 +111,7 @@ interface CommonToolbarLayout {
      * AppBar의 Title Text 설정
      * @param textResId title 텍스트 리소스 id
      */
-    fun setAppBarTitleText(@StringRes textResId: Int) {
+    fun setToolBarTitleText(@StringRes textResId: Int) {
         toolbarBinding.tvTitle.run {
             text = context?.getText(textResId)
         }
@@ -122,7 +121,7 @@ interface CommonToolbarLayout {
      * AppBar의 Title Text 설정
      * @param title title 텍스트
      */
-    fun setAppBarTitleText(title: String) {
+    fun setToolBarTitleText(title: String) {
         toolbarBinding.tvTitle.text = title
     }
 
@@ -130,7 +129,7 @@ interface CommonToolbarLayout {
      * Toolbar의 Title Text Color 설정
      * @param textColorResId 색상 리소스 id
      */
-    fun setAppBarTitleTextColor(@ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR) {
+    fun setToolBarTitleTextColor(@ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR) {
         toolbarBinding.tvTitle.run {
             context?.let {
                 setTextColor(getColor(it, textColorResId))
@@ -142,7 +141,7 @@ interface CommonToolbarLayout {
      * Toolbar의 Title Text Size 설정
      * @param textSize 텍스트 사이즈(sp)
      */
-    fun setAppBarTitleTextSize(textSize: Int = TOOLBAR_TITLE_TEXT_SIZE) {
+    fun setToolbarTitleTextSize(textSize: Int = TOOLBAR_TITLE_TEXT_SIZE) {
         toolbarBinding.tvTitle.run {
             context?.let {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
