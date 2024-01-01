@@ -1,6 +1,7 @@
 package com.runnect.runnect.util.extension
 
 import android.view.View
+import androidx.annotation.Px
 
 inline fun View.setOnSingleClickListener(
     delay: Long = 500L,
@@ -14,4 +15,8 @@ inline fun View.setOnSingleClickListener(
             previousClickedTime = clickedTime
         }
     }
+}
+
+fun View.setPadding(@Px size: Int) {
+    setPadding(size, size, size, size)
 }
