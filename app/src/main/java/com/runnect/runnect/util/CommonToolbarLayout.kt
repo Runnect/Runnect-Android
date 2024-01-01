@@ -103,7 +103,7 @@ interface CommonToolbarLayout {
     fun setToolbarBackgroundColor(@ColorRes colorResId: Int = TOOLBAR_BACKGROUND_COLOR) {
         toolbarBinding.toolbar.run {
             context?.let {
-                setBackgroundColor(ContextCompat.getColor(it, colorResId))
+                setBackgroundColor(getColor(it, colorResId))
             }
         }
     }
@@ -133,7 +133,7 @@ interface CommonToolbarLayout {
     fun setAppBarTitleTextColor(@ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR) {
         toolbarBinding.tvTitle.run {
             context?.let {
-                setTextColor(ContextCompat.getColor(it, textColorResId))
+                setTextColor(getColor(it, textColorResId))
             }
         }
     }
@@ -214,7 +214,7 @@ interface CommonToolbarLayout {
                     // 이미지뷰 패딩 설정 (기본 15dp)
                     setPadding(padding.dpToPx(context))
                     setBackgroundColor(
-                        ContextCompat.getColor(context, R.color.transparent_00)
+                        getColor(context, R.color.transparent_00)
                     )
                     // 이미지 아이콘 설정
                     setImageResource(resourceId)
@@ -261,7 +261,12 @@ interface CommonToolbarLayout {
 
     private fun canAddMenu(parent: LinearLayout): Boolean = parent.childCount < MENU_LIMIT_COUNT
 
+    /* 유틸 메소드 */
     private fun View.setPadding(@Px size: Int) {
         setPadding(size, size, size, size)
+    }
+
+    private fun getColor(context: Context, @ColorRes colorResId: Int): Int {
+        return ContextCompat.getColor(context, colorResId)
     }
 }
