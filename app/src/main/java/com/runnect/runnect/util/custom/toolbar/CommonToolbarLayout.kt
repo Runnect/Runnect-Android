@@ -25,26 +25,32 @@ interface CommonToolbarLayout {
     annotation class Direction
 
     companion object {
+        // 메뉴 추가 위치
         const val LEFT = 0
         const val RIGHT = 1
-        const val MENU_ITEM_SIZE = 48 // 메뉴 아이템 뷰 기본 크기
-        const val MENU_ITEM_PADDING = 15 // 메뉴 아이템 뷰 기본 패딩(dp)
-        const val MENU_ITEM_TEXT_SIZE = 18 // 텍스트 기본 크기
-        const val MENU_ITEM_RESOURCE_NONE = -1 // 메뉴 아이템 리소스(아이콘,텍스트) 없음
 
-        private const val TOOLBAR_HEIGHT = 56 // Toolbar 기본 높이
-        private const val TOOLBAR_TITLE_TEXT_SIZE = 18 // Title 텍스트 기본 크기(sp)
-        private const val MENU_LIMIT_COUNT = 2 // 메뉴 최대 노출 갯수
+        // 메뉴 아이템 관련
+        const val MENU_ITEM_SIZE = 48           // 메뉴 아이템 뷰 기본 크기
+        const val MENU_ITEM_PADDING = 15        // 메뉴 아이템 뷰 기본 패딩(dp)
+        const val MENU_ITEM_TEXT_SIZE = 18      // 텍스트 기본 크기
+        const val MENU_ITEM_RESOURCE_NONE = -1  // 메뉴 아이템 리소스(아이콘,텍스트) 없음
+
+        // Toolbar 관련
+        private const val TOOLBAR_HEIGHT = 56           // Toolbar 기본 높이
+        private const val TOOLBAR_TITLE_TEXT_SIZE = 18  // Title 텍스트 기본 크기(sp)
+        private const val TOOLBAR_MENU_LIMIT_COUNT = 2  // 메뉴 최대 노출 갯수
+
+        // 뷰 관련
         private const val VIEW_SIZE_NONE = -1 // 뷰 사이즈 없음
-
-        /** 리소스 관련 상수 */
-        // 메뉴 뒤로가기 기본 아이콘
-        private const val MENU_ICON_BACK = R.drawable.all_back_arrow
-        // Title 텍스트 기본 색상
-        private const val TOOLBAR_TITLE_TEXT_COLOR = R.color.G1
-        // Toolbar 기본 배경 색상
-        private const val TOOLBAR_BACKGROUND_COLOR = R.color.white
     }
+
+    /** 기본 리소스 */
+    private val menuIconBack: Int // 메뉴 뒤로가기 기본 아이콘
+        get() = R.drawable.all_back_arrow
+    private val toolbarTitleTextColor: Int // Title 텍스트 기본 색상
+        get() = R.color.G1
+    private val toolbarBackgroundColor: Int // Toolbar 기본 배경 색상
+        get() = R.color.white
 
     val toolbarBinding: LayoutCommonToolbarBinding
 
@@ -64,12 +70,12 @@ interface CommonToolbarLayout {
      * @param backButtonEvent back 버튼의 클릭 이벤트 핸들러
      */
     fun setToolbar (
-        @ColorRes bgColorResId: Int = TOOLBAR_BACKGROUND_COLOR,
+        @ColorRes bgColorResId: Int = toolbarBackgroundColor,
         @StringRes textResId: Int? = null,
+        @ColorRes textColorResId: Int = toolbarTitleTextColor,
+        @DrawableRes backButtonResId: Int = menuIconBack,
         titleText: String? = null,
         textSizeDip: Int = TOOLBAR_TITLE_TEXT_SIZE,
-        @ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR,
-        @DrawableRes backButtonResId: Int = MENU_ICON_BACK,
         backButtonEvent: ((View) -> Unit)? = null
     ) {
         // 백그라운드 영역
@@ -99,7 +105,7 @@ interface CommonToolbarLayout {
      * Toolbar의 배경 색상 지정 메소드
      * @param colorResId 배경 색상 Color Resource Id
      */
-    fun setToolbarBackgroundColor(@ColorRes colorResId: Int = TOOLBAR_BACKGROUND_COLOR) {
+    fun setToolbarBackgroundColor(@ColorRes colorResId: Int = toolbarBackgroundColor) {
         toolbarBinding.toolbar.run {
             context?.let {
                 setBackgroundColor(getColor(it, colorResId))
@@ -129,7 +135,7 @@ interface CommonToolbarLayout {
      * Toolbar의 Title Text Color 설정
      * @param textColorResId 색상 리소스 id
      */
-    fun setToolBarTitleTextColor(@ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR) {
+    fun setToolBarTitleTextColor(@ColorRes textColorResId: Int = toolbarTitleTextColor) {
         toolbarBinding.tvTitle.run {
             context?.let {
                 setTextColor(getColor(it, textColorResId))
@@ -153,11 +159,24 @@ interface CommonToolbarLayout {
      * Toolbar 높이 설정 메소드
      * @param height 높이 값(dp)
      */
-    fun setAppBarHeight(height: Int = TOOLBAR_HEIGHT) {
+    fun setToolbarHeight(height: Int = TOOLBAR_HEIGHT) {
         toolbarBinding.toolbar.run {
             context?.let {
                 setViewSize(toolbarBinding.toolbar, height = height.dpToPx(it))
             }
+        }
+    }
+
+    /**
+     * 뷰 size 설정
+     * @param view
+     * @param width
+     * @param height
+     */
+    private fun setViewSize(view: View, width: Int = VIEW_SIZE_NONE, height: Int = VIEW_SIZE_NONE) {
+        view.layoutParams = view.layoutParams.apply {
+            this.width = if (width > VIEW_SIZE_NONE) width else this.width
+            this.height = if (height > VIEW_SIZE_NONE) height else this.height
         }
     }
 
@@ -178,19 +197,6 @@ interface CommonToolbarLayout {
             if (canAddMenu(menuLayout)) {
                 addMenuView(context, menuLayout, item)
             }
-        }
-    }
-
-    /**
-     * 뷰 size 설정
-     * @param view
-     * @param width
-     * @param height
-     */
-    private fun setViewSize(view: View, width: Int = VIEW_SIZE_NONE, height: Int = VIEW_SIZE_NONE) {
-        view.layoutParams = view.layoutParams.apply {
-            this.width = if (width > VIEW_SIZE_NONE) width else this.width
-            this.height = if (height > VIEW_SIZE_NONE) height else this.height
         }
     }
 
@@ -243,7 +249,7 @@ interface CommonToolbarLayout {
 
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.toFloat())
                     setTextColor(
-                        getColor(context, TOOLBAR_TITLE_TEXT_COLOR)
+                        getColor(context, toolbarTitleTextColor)
                     )
 
                     setLayoutParams(layoutParams)
@@ -258,7 +264,7 @@ interface CommonToolbarLayout {
         parent.addView(menuView)
     }
 
-    private fun canAddMenu(parent: LinearLayout): Boolean = parent.childCount < MENU_LIMIT_COUNT
+    private fun canAddMenu(parent: LinearLayout): Boolean = parent.childCount < TOOLBAR_MENU_LIMIT_COUNT
 
     /* 유틸 메소드 */
     private fun View.setPadding(@Px size: Int) {
