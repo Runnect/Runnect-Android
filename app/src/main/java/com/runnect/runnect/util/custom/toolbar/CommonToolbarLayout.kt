@@ -2,18 +2,14 @@ package com.runnect.runnect.util.custom.toolbar
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.LinearLayout.LayoutParams
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
-import androidx.annotation.Px
 import androidx.annotation.StringRes
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.util.extension.dpToPx
@@ -208,69 +204,20 @@ interface CommonToolbarLayout {
      */
     private fun addMenuView(context: Context?, parent: LinearLayout, toolbarMenu: ToolbarMenu) {
         context ?: return
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
+        val layoutParams = LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.MATCH_PARENT
         )
 
-        val menuView: View = when (toolbarMenu) {
-            is ToolbarMenu.Icon -> AppCompatImageButton(context).apply {
-                with(toolbarMenu) {
-                    // 이미지뷰 패딩 설정 (기본 15dp)
-                    setPadding(padding.dpToPx(context))
-                    setBackgroundColor(
-                        getColor(context, R.color.transparent_00)
-                    )
-                    // 이미지 아이콘 설정
-                    setImageResource(resourceId)
-                    // 클릭 이벤트 설정
-                    setOnClickListener {
-                        clickEvent?.invoke(this@apply)
-                    }
-                    // 이미지뷰 사이즈 (기본 48dp * 48dp)
-                    setLayoutParams(
-                        layoutParams.apply {
-                            width = toolbarMenu.width.dpToPx(context)
-                            height = toolbarMenu.height.dpToPx(context)
-                        }
-                    )
-                }
-            }
-
-            is ToolbarMenu.TextStyle -> TextView(context).apply {
-                with(toolbarMenu) {
-                    // 텍스트뷰 패딩 설정 기본(0dp)
-                    val padding = padding.dpToPx(context)
-                    setPadding(padding, 0, padding, 0)
-
-                    text = context.getString(resourceId)
-                    gravity = Gravity.CENTER
-                    typeface = ResourcesCompat.getFont(context, R.font.pretendard_bold)
-
-                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.toFloat())
-                    setTextColor(
-                        getColor(context, toolbarTitleTextColor)
-                    )
-
-                    setLayoutParams(layoutParams)
-                }
-            }
-
-            is ToolbarMenu.Popup -> AppCompatImageButton(context).apply {
-
-            }
+        val menuView: View? = toolbarMenu.createMenu(context, layoutParams, toolbarMenu)
+        menuView?.let{
+            parent.addView(it)
         }
-
-        parent.addView(menuView)
     }
 
     private fun canAddMenu(parent: LinearLayout): Boolean = parent.childCount < TOOLBAR_MENU_LIMIT_COUNT
 
     /* 유틸 메소드 */
-    private fun View.setPadding(@Px size: Int) {
-        setPadding(size, size, size, size)
-    }
-
     private fun getColor(context: Context, @ColorRes colorResId: Int): Int {
         return ContextCompat.getColor(context, colorResId)
     }
