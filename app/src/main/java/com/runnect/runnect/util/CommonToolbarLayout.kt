@@ -1,9 +1,12 @@
 package com.runnect.runnect.util
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
@@ -11,6 +14,7 @@ import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.util.extension.dpToPx
@@ -24,12 +28,13 @@ interface CommonToolbarLayout {
     companion object {
         const val LEFT = 0
         const val RIGHT = 1
+        const val MENU_ITEM_SIZE = 48 // 메뉴 아이템 뷰 기본 크기
+        const val MENU_ITEM_PADDING = 15 // 메뉴 아이템 뷰 기본 패딩(dp)
+        const val MENU_ITEM_TEXT_SIZE = 18 // 텍스트 기본 크기
+        const val MENU_ITEM_RESOURCE_NONE = -1 // 메뉴 아이템 리소스(아이콘,텍스트) 없음
 
         private const val TOOLBAR_HEIGHT = 56 // Toolbar 기본 높이
         private const val TOOLBAR_TITLE_TEXT_SIZE = 18 // Title 텍스트 기본 크기(sp)
-        const val MENU_ITEM_SIZE = 48 // 메뉴 아이템 뷰 기본 크기
-        const val MENU_ITEM_PADDING = 15 // 메뉴 아이템 뷰 기본 패딩(dp)
-        const val MENU_ITEM_RESOURCE_NONE = -1 // 메뉴 아이템 리소스(아이콘,텍스트) 없음
         private const val MENU_LIMIT_COUNT = 2 // 메뉴 최대 노출 갯수
         private const val VIEW_SIZE_NONE = -1 // 뷰 사이즈 없음
 
@@ -201,14 +206,12 @@ interface CommonToolbarLayout {
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.MATCH_PARENT
-        ).apply {
-
-        }
+        )
 
         val menuView: View = when (toolbarMenu) {
             is ToolbarMenu.Icon -> AppCompatImageButton(context).apply {
                 with(toolbarMenu) {
-                    // 이미지뷰 패딩 설정 (기본 0dp)
+                    // 이미지뷰 패딩 설정 (기본 15dp)
                     setPadding(padding.dpToPx(context))
                     setBackgroundColor(
                         ContextCompat.getColor(context, R.color.transparent_00)
@@ -228,6 +231,26 @@ interface CommonToolbarLayout {
                     )
                 }
             }
+
+            is ToolbarMenu.TextStyle -> TextView(context).apply {
+                with(toolbarMenu) {
+                    // 텍스트뷰 패딩 설정 기본(0dp)
+                    val padding = padding.dpToPx(context)
+                    setPadding(padding, 0, padding, 0)
+
+                    text = context.getString(resourceId)
+                    gravity = Gravity.CENTER
+                    typeface = ResourcesCompat.getFont(context, R.font.pretendard_bold)
+
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.toFloat())
+                    setTextColor(
+                        getColor(context, TOOLBAR_TITLE_TEXT_COLOR)
+                    )
+
+                    setLayoutParams(layoutParams)
+                }
+            }
+
             is ToolbarMenu.Popup -> AppCompatImageButton(context).apply {
 
             }
