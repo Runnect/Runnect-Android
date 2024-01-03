@@ -122,8 +122,8 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
             key = TOKEN_KEY_REFRESH,
             value = viewModel.loginResult.value?.refreshToken
         )
-        Timber.e("ACCESS TOKEN: ${viewModel.loginResult.value?.accessToken}")
-        Timber.e("REFRESH TOKEN: ${viewModel.loginResult.value?.refreshToken}")
+        Timber.d("ACCESS TOKEN: ${viewModel.loginResult.value?.accessToken}")
+        Timber.d("REFRESH TOKEN: ${viewModel.loginResult.value?.refreshToken}")
     }
 
     private fun moveToMain() {

@@ -135,7 +135,7 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             if (isRecommendCoursePageEnd) return@launch
 
-            Timber.e("다음 페이지를 요청했어요!")
+            Timber.d("다음 페이지를 요청했어요!")
             _nextPageState.value = UiStateV2.Loading
             currentPageNo++
 

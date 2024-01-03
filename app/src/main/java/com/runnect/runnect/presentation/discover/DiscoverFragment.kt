@@ -156,10 +156,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
         if (!recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
-            Timber.e("스크롤이 끝에 도달했어요!")
+            Timber.d("스크롤이 끝에 도달했어요!")
 
             if (viewModel.isNextPageLoading()) {
-                Timber.e("다음 페이지 로딩 중입니다.")
+                Timber.d("다음 페이지 로딩 중입니다.")
                 return
             }
 
