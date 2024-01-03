@@ -457,8 +457,10 @@ class CourseDetailActivity :
                     courseDetail = state.data ?: return@observe
                     binding.courseDetail = courseDetail
 
-                    val editableCourseDetail =
-                        EditableCourseDetail(courseDetail.title, courseDetail.description)
+                    val editableCourseDetail = EditableCourseDetail(
+                        title = courseDetail.title,
+                        description = courseDetail.description
+                    )
                     viewModel.updateCourseDetailEditText(editableCourseDetail)
 
                     updateUserProfileStamp()
