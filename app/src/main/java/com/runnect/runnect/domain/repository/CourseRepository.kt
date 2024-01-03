@@ -23,7 +23,7 @@ import retrofit2.Response
 interface CourseRepository {
     suspend fun getMarathonCourse(): Result<List<MarathonCourse>?>
 
-    suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<RecommendCoursePagingData>
+    suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<RecommendCoursePagingData?>
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 

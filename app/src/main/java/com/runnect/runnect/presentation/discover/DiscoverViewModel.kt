@@ -111,16 +111,17 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
                 .onSuccess { pagingData ->
-                    pagingData.isEnd?.let {
-                        isRecommendCoursePageEnd = it
+                    if (pagingData == null) {
+                        _recommendCourseState.value =
+                            UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                        return@onSuccess
                     }
 
-                    pagingData.recommendCourses?.let {
-                        _multiViewItems.add(it)
-                        _recommendCourseState.value = UiStateV2.Success(it)
-                        Timber.d("RECOMMEND COURSE GET SUCCESS")
-                        Timber.d("ITEM SIZE: ${multiViewItems.size}")
-                    }
+                    isRecommendCoursePageEnd = pagingData.isEnd
+                    _multiViewItems.add(pagingData.recommendCourses)
+                    _recommendCourseState.value = UiStateV2.Success(pagingData.recommendCourses)
+                    Timber.d("RECOMMEND COURSE GET SUCCESS")
+                    Timber.d("ITEM SIZE: ${multiViewItems.size}")
                 }.onFailure { exception ->
                     _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE GET FAIL")
@@ -143,14 +144,15 @@ class DiscoverViewModel @Inject constructor(
                 ordering = "date"
             )
                 .onSuccess { pagingData ->
-                    pagingData.isEnd?.let {
-                        isRecommendCoursePageEnd = it
+                    if (pagingData == null) {
+                        _nextPageState.value =
+                            UiStateV2.Failure("RECOMMEND COURSE NEXT PAGE DATA IS NULL")
+                        return@onSuccess
                     }
 
-                    pagingData.recommendCourses?.let {
-                        _nextPageState.value = UiStateV2.Success(it)
-                        Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
-                    }
+                    isRecommendCoursePageEnd = pagingData.isEnd
+                    _nextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
+                    Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 }
                 .onFailure { exception ->
                     _nextPageState.value = UiStateV2.Failure(exception.message.toString())
