@@ -169,17 +169,13 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int? = null) {
+fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int = Gravity.BOTTOM) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
-
-    if (gravity != null) {
-        val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.apply {
-            this.gravity = gravity
-            snackbar.view.layoutParams = this
-        }
+    val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+    layoutParams.apply {
+        this.gravity = gravity
+        snackbar.view.layoutParams = this
     }
-
     snackbar.show()
 }
 
