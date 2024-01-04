@@ -91,7 +91,7 @@ class DrawViewModel @Inject constructor(
                 _drawState.value = UiState.Loading
                 courseRepository.uploadCourse(
                     image = _image.value!!.toFormData(),
-                    courseCreateRequestDto = CourseCreateRequestDto(
+                    data = CourseCreateRequestDto(
                         path = path.value ?: listOf(
                             UploadLatLng(
                                 37.52901832956373,
@@ -105,6 +105,10 @@ class DrawViewModel @Inject constructor(
                     ).toRequestBody()
                 )
             }.onSuccess {
+                if (it.body() == null) {
+                    _drawState.value = UiState.Failure
+                    return@onSuccess //추가 조치 필요
+                }
                 Timber.tag(ContentValues.TAG).d("통신success")
                 uploadResult.value = it.body()
                 _drawState.value = UiState.Success
