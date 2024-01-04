@@ -620,7 +620,7 @@ class CourseDetailActivity :
         private const val EXTRA_COURSE_DATA = "CourseData"
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
-        private const val EXTRA_COURSE_USER_ID = "userId"
+        private const val EXTRA_COURSE_USER_ID = "courseUserId"
 
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10

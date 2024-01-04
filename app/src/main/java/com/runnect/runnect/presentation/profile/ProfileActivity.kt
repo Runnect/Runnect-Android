@@ -102,7 +102,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     }
 
     companion object {
-        private const val EXTRA_COURSE_USER_ID = "userId"
+        private const val EXTRA_COURSE_USER_ID = "courseUserId"
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
     }
 }
