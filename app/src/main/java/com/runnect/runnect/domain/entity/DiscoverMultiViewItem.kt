@@ -1,21 +1,23 @@
 package com.runnect.runnect.domain.entity
 
-sealed class DiscoverMultiViewItem {
+sealed class DiscoverMultiViewItem(
+    open val id: Int
+) {
     data class MarathonCourse(
-        val id: Int,
+        override val id: Int,
         val courseId: Int,
         var title: String,
         val image: String,
         var scrap: Boolean,
         val departure: String,
-    ) : DiscoverMultiViewItem()
+    ) : DiscoverMultiViewItem(id)
 
     data class RecommendCourse(
-        val id: Int,
+        override val id: Int,
         val courseId: Int,
         var title: String,
         val image: String,
         var scrap: Boolean,
         val departure: String,
-    ) : DiscoverMultiViewItem()
+    ) : DiscoverMultiViewItem(id)
 }
