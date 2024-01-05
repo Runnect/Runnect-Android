@@ -1,11 +1,8 @@
 package com.runnect.runnect.presentation.discover.adapter.multiview
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import com.runnect.runnect.R
+import com.runnect.runnect.util.extension.getViewDataBinding
 
 class DiscoverMultiViewHolderFactory {
     lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
@@ -21,7 +18,7 @@ class DiscoverMultiViewHolderFactory {
         when (viewType) {
             DiscoverMultiViewType.MARATHON -> {
                 marathonViewHolder = DiscoverMultiViewHolder.MarathonCourseViewHolder(
-                    binding = getViewBinding(parent, R.layout.item_discover_multiview_marathon),
+                    binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_marathon),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode
@@ -31,10 +28,7 @@ class DiscoverMultiViewHolderFactory {
 
             DiscoverMultiViewType.RECOMMEND -> {
                 recommendViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = getViewBinding(
-                        parent,
-                        R.layout.item_discover_multiview_recommend
-                    ),
+                    binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_recommend),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode
@@ -43,14 +37,4 @@ class DiscoverMultiViewHolderFactory {
             }
         }
     }
-
-    private fun <T : ViewDataBinding> getViewBinding(
-        parent: ViewGroup,
-        @LayoutRes layoutRes: Int
-    ): T = DataBindingUtil.inflate(
-        LayoutInflater.from(parent.context),
-        layoutRes,
-        parent,
-        false
-    )
 }
