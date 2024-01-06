@@ -95,8 +95,10 @@ class CourseMainFragment :
         naverMap.minZoom = 10.0
 
         map.locationSource = locationSource
-        map.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
 
+        if(isLocationPermissionGranted()){
+            map.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
+        }
 
         //네이버 맵 sdk에 위치 정보 제공
         locationSource = FusedLocationSource(
