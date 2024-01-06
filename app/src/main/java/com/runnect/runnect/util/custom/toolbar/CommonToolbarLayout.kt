@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
@@ -204,15 +203,9 @@ interface CommonToolbarLayout {
      */
     private fun addMenuView(context: Context?, parent: LinearLayout, toolbarMenu: ToolbarMenu) {
         context ?: return
-        val layoutParams = LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.MATCH_PARENT
-        )
 
-        val menuView: View? = toolbarMenu.createMenu(context, layoutParams, toolbarMenu)
-        menuView?.let{
-            parent.addView(it)
-        }
+        val menuView: View = toolbarMenu.createMenu(context)
+        parent.addView(menuView)
     }
 
     private fun canAddMenu(parent: LinearLayout): Boolean = parent.childCount < TOOLBAR_MENU_LIMIT_COUNT
