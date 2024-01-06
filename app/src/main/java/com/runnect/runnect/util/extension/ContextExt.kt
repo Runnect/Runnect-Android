@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.view.Gravity
@@ -13,10 +14,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -124,7 +128,7 @@ fun BottomSheetDialog.setEditBottomSheetClickListener(listener: (which: LinearLa
     }
 }
 
-fun BottomSheetDialog.handleEditTextValue(){
+fun BottomSheetDialog.handleEditTextValue() {
     this.setOnShowListener {
         val editText = this.layout_edit_frame
     }
@@ -138,7 +142,7 @@ fun Context.getStampResId(
 ): Int {
     with(this) {
         var resName = ""
-        if(stampId == "CSPR0"){
+        if (stampId == "CSPR0") {
             resName = "${resNameParam}basic"
             return resources.getIdentifier(
                 resName,
@@ -169,7 +173,11 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int = Gravity.BOTTOM) {
+fun Context.showSnackbar(
+    anchorView: View,
+    message: String,
+    @GravityFlag gravity: Int = Gravity.BOTTOM
+) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
     val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
     layoutParams.apply {
@@ -182,3 +190,6 @@ fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity
 fun Context.colorOf(@ColorRes resId: Int) = ContextCompat.getColor(this, resId)
 
 fun Context.drawableOf(@DrawableRes resId: Int) = ContextCompat.getDrawable(this, resId)
+
+fun Context.fontOf(@FontRes resId: Int, @StyleRes style: Int): Typeface =
+    Typeface.create(ResourcesCompat.getFont(this, resId), style)
