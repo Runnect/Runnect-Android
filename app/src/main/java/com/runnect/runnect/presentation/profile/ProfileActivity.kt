@@ -9,7 +9,7 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.util.extension.applyScreenExitAnimation
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,9 +50,10 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     private fun navigateToCourseDetail(courseId: Int) {
         Intent(this@ProfileActivity, CourseDetailActivity::class.java).apply {
             putExtra(EXTRA_PUBLIC_COURSE_ID, courseId)
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(this)
         }
-        applyScreenExitAnimation()
+        applyScreenEnterAnimation()
     }
 
     private fun initBackButtonClickListener() {
