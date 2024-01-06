@@ -192,12 +192,13 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             tvCustomDepartureGuideFrame.isVisible = true
 
             btnPreStart.setOnClickListener {
-                departureLatLng = getCenterPosition()
                 isMarkerAvailable = true
                 showDrawGuide()
                 hideDeparture()
                 showDrawCourse()
-                drawCourse(departureLatLng = departureLatLng)
+                getCenterPosition().apply {
+                    departureLatLng = this
+                }.let(::drawCourse)
                 hideFloatedDeparture()
             }
         }
