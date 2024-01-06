@@ -349,6 +349,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 context?.let { showCourseScrapWarningToast(it) }
             },
             onSortButtonClick = { criteria ->
+                Timber.d("정렬 기준: $criteria")
                 viewModel.sortRecommendCourses(criteria = criteria)
             }
         )
