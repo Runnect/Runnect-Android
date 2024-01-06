@@ -34,15 +34,12 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     }
 
     private fun initAdapter() {
-        adapter = ProfileCourseAdapter(
-            onScrapButtonClick = { courseId, scrapTF ->
-                viewModel.postCourseScrap(courseId = courseId, scrapTF = scrapTF)
-                adapter.updateCourseItem(courseId = courseId, scrapTF = scrapTF)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToCourseDetail(courseId)
-            }
-        ).also { adapter ->
+        adapter = ProfileCourseAdapter(onScrapButtonClick = { courseId, scrapTF ->
+            viewModel.postCourseScrap(courseId = courseId, scrapTF = scrapTF)
+            viewModel.saveScrapCourseData(courseId = courseId, scrapTF = scrapTF)
+        }, onCourseItemClick = { courseId ->
+            navigateToCourseDetail(courseId)
+        }).also { adapter ->
             binding.rvProfileUploadCourse.adapter = adapter
         }
     }
@@ -53,6 +50,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
 
     private fun addObserver() {
         setupUserProfileGetStateObserver()
+        setupCourseScrapPostStateObserver()
     }
 
     private fun navigateToCourseDetail(courseId: Int) {
@@ -89,6 +87,33 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
 
                 is UiStateV2.Failure -> {
                     deactivateLoadingProgressBar()
+                    this.showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {
+
+                }
+            }
+
+        }
+    }
+
+    private fun setupCourseScrapPostStateObserver() {
+        viewModel.courseScrapState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Loading -> {
+
+                }
+
+                is UiStateV2.Success -> {
+                    viewModel.scrapCourseData.value?.let { scrapCourseData ->
+                        scrapCourseData.let { data ->
+                            adapter.updateCourseItem(courseId = data.first, scrapTF = data.second)
+                        }
+                    }
+                }
+
+                is UiStateV2.Failure -> {
                     this.showSnackbar(binding.root, state.msg)
                 }
 
