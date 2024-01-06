@@ -137,6 +137,7 @@ class CourseDetailActivity :
     private fun navigateToUserProfileWithBundle() {
         Intent(this@CourseDetailActivity, ProfileActivity::class.java).apply {
             putExtra(EXTRA_COURSE_USER_ID, courseDetail.userId)
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(this)
         }
         applyScreenExitAnimation()
@@ -146,6 +147,16 @@ class CourseDetailActivity :
         when (viewModel.currentScreenMode) {
             is ReadOnlyMode -> navigateToPreviousScreen()
             is EditMode -> showStopEditingDialog()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let { newIntent ->
+            newIntent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)
+                ?.let { rootScreen = it }
+            publicCourseId = newIntent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
+            getCourseDetail()
         }
     }
 
