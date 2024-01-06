@@ -14,6 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
+import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -22,7 +23,7 @@ import retrofit2.Response
 interface CourseRepository {
     suspend fun getMarathonCourse(): Result<List<MarathonCourse>?>
 
-    suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<List<RecommendCourse>?>
+    suspend fun getRecommendCourse(pageNo: String, ordering: String): Result<RecommendCoursePagingData?>
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 

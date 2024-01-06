@@ -10,11 +10,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -22,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.SlideDistanceProvider.GravityFlag
 import com.runnect.runnect.R
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
@@ -30,7 +29,6 @@ import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
-import kotlinx.android.synthetic.main.fragment_require_login_dialog.view.tv_require_login_dialog_desc
 
 fun Context.setActivityDialog(
     layoutInflater: LayoutInflater,
@@ -171,12 +169,12 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showSnackbar(anchorView: View, message: String) {
+fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int = Gravity.BOTTOM) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
-    snackbar.view.apply {
-        val params = layoutParams as? CoordinatorLayout.LayoutParams
-        params?.gravity = Gravity.TOP
-        layoutParams = params
+    val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+    layoutParams.apply {
+        this.gravity = gravity
+        snackbar.view.layoutParams = this
     }
     snackbar.show()
 }

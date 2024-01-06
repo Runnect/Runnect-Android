@@ -58,21 +58,19 @@ class CourseDetailViewModel @Inject constructor(
     private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
     val currentScreenMode get() = _currentScreenMode
 
-    private var savedCourseDetailContents = EditableCourseDetail("", "")
+    private var savedCourseDetail = EditableCourseDetail("", "")
 
-    fun updateCourseDetailContents(courseDetail: EditableCourseDetail?) {
-        courseDetail?.let {
-            _title.value = courseDetail.title
-            _description.value = courseDetail.description
-        }
+    fun updateCourseDetailEditText(course: EditableCourseDetail) {
+        _title.value = course.title
+        _description.value = course.description
     }
 
-    fun saveCurrentContents() {
-        savedCourseDetailContents = EditableCourseDetail(title, description)
+    fun saveCurrentCourseDetail() {
+        savedCourseDetail = EditableCourseDetail(title, description)
     }
 
-    fun restoreOriginalContents() {
-        updateCourseDetailContents(savedCourseDetailContents)
+    fun restoreOriginalCourseDetail() {
+        updateCourseDetailEditText(savedCourseDetail)
     }
 
     fun updateCurrentScreenMode(mode: ScreenMode) {

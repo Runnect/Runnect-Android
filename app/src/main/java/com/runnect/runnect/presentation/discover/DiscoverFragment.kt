@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,7 +23,7 @@ import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
-import com.runnect.runnect.presentation.discover.adapter.DiscoverMultiViewAdapter
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewAdapter
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -55,11 +56,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+                // 상세페이지 갔다가 이전으로 돌아오면 아이템 변경사항이 바로 반영되도록 (제목, 스크랩)
                 val updatedCourse: EditableDiscoverCourse =
                     result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
-
-                // todo: 상세페이지 갔다가 이전으로 돌아오면 제목, 스크랩 변경사항이 바로 표시되도록
                 multiViewAdapter.updateCourseItem(
                     publicCourseId = viewModel.clickedCourseId,
                     updatedCourse = updatedCourse
@@ -145,10 +145,26 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.rvDiscoverMultiView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
+
+                checkNextPageLoadingCondition(recyclerView)
             }
         })
+    }
+
+    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
+        if (!recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
+            Timber.d("스크롤이 끝에 도달했어요!")
+
+            if (viewModel.isNextPageLoading()) {
+                Timber.d("다음 페이지 로딩 중입니다.")
+                return
+            }
+
+            viewModel.getRecommendCourseNextPage()
+        }
     }
 
     private fun showCircleUploadButton() {
@@ -215,6 +231,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
         setupRecommendCourseGetStateObserver()
+        setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -227,7 +244,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 }
 
                 is UiStateV2.Failure -> {
-                    context?.showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -277,7 +298,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -300,7 +325,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showSnackbar(binding.root, state.msg)
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
                 }
 
                 else -> {}
@@ -343,11 +372,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun navigateToDetailScreen(publicCourseId: Int) {
         val context = context ?: return
-        val intent = Intent(context, CourseDetailActivity::class.java).apply {
+        Intent(context, CourseDetailActivity::class.java).apply {
             putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
             putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+            resultLauncher.launch(this)
         }
-        resultLauncher.launch(intent)
         activity?.applyScreenEnterAnimation()
     }
 
@@ -358,10 +387,35 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         ).show()
     }
 
+    private fun setupRecommendCourseNextPageStateObserver() {
+        viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val nextPageCourses = state.data
+                    multiViewAdapter.addRecommendCourseNextPage(nextPageCourses)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
             if (state is UiStateV2.Failure) {
-                context?.showSnackbar(binding.root, state.msg)
+                context?.showSnackbar(
+                    anchorView = binding.root,
+                    message = state.msg,
+                    gravity = Gravity.TOP
+                )
             }
         }
     }
@@ -414,6 +468,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     companion object {
         private const val BANNER_SCROLL_DELAY_TIME = 5000L
         private const val CENTER_POS_OF_INFINITE_BANNERS = Int.MAX_VALUE / 2
+        private const val SCROLL_DIRECTION = 1
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"

@@ -13,20 +13,20 @@ class DiscoverMarathonItemDecoration(
 ) : RecyclerView.ItemDecoration() {
     private val spaceSizePx = spaceSize.dpToPx(context)
 
-    // 리사이클러뷰 아이템 주위의 여백을 설정하는 함수
     override fun getItemOffsets(
         outRect: Rect, // 아이템의 사각형 영역
         view: View, // 아이템 뷰
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        // 마지막 아이템에 대해서만 오른쪽 여백 제거
-        if (!checkLastItem(view, parent)) {
+        // 마지막 아이템 제외하고는 오른쪽 마진 추가
+        if (!isLastItem(view, parent)) {
             outRect.right = spaceSizePx
         }
     }
 
-    private fun checkLastItem(view: View, parent: RecyclerView): Boolean {
-        return parent.getChildAdapterPosition(view) == itemCount - 1
+    private fun isLastItem(view: View, parent: RecyclerView): Boolean {
+        val currentItemPosition = parent.getChildAdapterPosition(view)
+        return currentItemPosition == itemCount - 1
     }
 }

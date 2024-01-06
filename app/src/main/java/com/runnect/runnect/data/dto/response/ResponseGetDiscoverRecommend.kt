@@ -8,6 +8,10 @@ import kotlinx.serialization.Serializable
 data class ResponseGetDiscoverRecommend(
     @SerialName("ordering")
     val ordering: String,
+    @SerialName("totalPageSize")
+    val totalPageSize: Int,
+    @SerialName("isEnd")
+    val isEnd: Boolean,
     @SerialName("publicCourses")
     val publicCourses: List<PublicCourse>
 ) {
