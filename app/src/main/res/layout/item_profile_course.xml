@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.runnect.runnect.data.dto.UserCourseData" />
+            type="com.runnect.runnect.domain.entity.UserCourse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,9 +1,8 @@
 package com.runnect.runnect.data.dto.response
 
-import com.runnect.runnect.data.dto.CourseData
-import com.runnect.runnect.data.dto.DepartureData
-import com.runnect.runnect.data.dto.UserCourseData
-import com.runnect.runnect.data.dto.UserProfileData
+import com.runnect.runnect.domain.entity.Departure
+import com.runnect.runnect.domain.entity.UserCourse
+import com.runnect.runnect.domain.entity.UserProfile
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -58,14 +57,14 @@ data class ResponseGetUserProfile(
         )
     }
 
-    fun toUserProfile(): UserProfileData {
-        val userCourseDataList: List<UserCourseData> = courses.map { course ->
-            UserCourseData(
+    fun toUserProfile(): UserProfile {
+        val userCourseLists: List<UserCourse> = courses.map { course ->
+            UserCourse(
                 publicCourseId = course.publicCourseId,
                 courseId = course.courseId,
                 title = course.title,
                 image = course.image,
-                departure = DepartureData(
+                departure = Departure(
                     region = course.departure.region,
                     city = course.departure.city,
                     town = course.departure.town,
@@ -76,12 +75,12 @@ data class ResponseGetUserProfile(
             )
         }
 
-        return UserProfileData(
+        return UserProfile(
             nickname = user.nickname,
             level = user.level,
             levelPercent = user.levelPercent,
             latestStamp = user.latestStamp,
-            courseData = userCourseDataList
+            courseData = userCourseLists
         )
     }
 

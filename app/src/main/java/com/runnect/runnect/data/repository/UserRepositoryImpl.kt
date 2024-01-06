@@ -1,7 +1,7 @@
 package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
-import com.runnect.runnect.data.dto.UserProfileData
+import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
@@ -37,7 +37,7 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
             .toMutableList()
     }
 
-    override suspend fun getUserProfile(userId: Int): Result<UserProfileData?> =
+    override suspend fun getUserProfile(userId: Int): Result<UserProfile?> =
         runCatching {
             remoteUserDataSource.getUserProfile(userId).data?.toUserProfile()
         }

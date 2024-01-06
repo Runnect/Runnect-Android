@@ -7,7 +7,7 @@
     <data>
         <variable
             name="data"
-            type="com.runnect.runnect.data.dto.UserProfileData" />
+            type="com.runnect.runnect.domain.entity.UserProfile" />
         <variable
             name="vm"
             type="com.runnect.runnect.presentation.profile.ProfileViewModel" />

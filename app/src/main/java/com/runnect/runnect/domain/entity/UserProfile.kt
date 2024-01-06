@@ -1,23 +1,23 @@
-package com.runnect.runnect.data.dto
+package com.runnect.runnect.domain.entity
 
-data class UserProfileData(
+data class UserProfile(
     val nickname: String,
     val level: Int,
     val levelPercent: Int,
     val latestStamp: String,
-    val courseData: List<UserCourseData>
+    val courseData: List<UserCourse>
 )
 
-data class UserCourseData(
+data class UserCourse(
     val publicCourseId: Int,
     val courseId: Int,
     val title: String,
     val image: String,
-    val departure: DepartureData,
+    val departure: Departure,
     var scrapTF: Boolean,
 )
 
-data class DepartureData(
+data class Departure(
     val region: String,
     val city: String,
     val town: String,

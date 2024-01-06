@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.dto.UserCourseData
+import com.runnect.runnect.domain.entity.UserCourse
 import com.runnect.runnect.databinding.ItemProfileCourseBinding
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.extension.setOnSingleClickListener
@@ -12,7 +12,7 @@ import com.runnect.runnect.util.extension.setOnSingleClickListener
 class ProfileCourseAdapter(
     private val onScrapButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit
-) : ListAdapter<UserCourseData, ProfileCourseAdapter.UploadedCourseViewHolder>(diffUtil) {
+) : ListAdapter<UserCourse, ProfileCourseAdapter.UploadedCourseViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UploadedCourseViewHolder {
         return UploadedCourseViewHolder(
@@ -35,15 +35,15 @@ class ProfileCourseAdapter(
         private val onScrapButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(userCourseData: UserCourseData) {
+        fun bind(userCourse: UserCourse) {
             with(binding) {
-                data = userCourseData
+                data = userCourse
                 ivItemProfileCourseHeart.setOnSingleClickListener {
-                    onScrapButtonClick(userCourseData.publicCourseId, !userCourseData.scrapTF)
+                    onScrapButtonClick(userCourse.publicCourseId, !userCourse.scrapTF)
                 }
 
                 clItemProfileCourse.setOnSingleClickListener {
-                    onCourseItemClick(userCourseData.publicCourseId)
+                    onCourseItemClick(userCourse.publicCourseId)
                 }
             }
         }
@@ -59,7 +59,7 @@ class ProfileCourseAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<UserCourseData>(
+        private val diffUtil = ItemDiffCallback<UserCourse>(
             onItemsTheSame = { old, new -> old.courseId == new.courseId },
             onContentsTheSame = { old, new -> old == new }
         )

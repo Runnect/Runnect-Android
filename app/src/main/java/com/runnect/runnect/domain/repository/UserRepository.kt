@@ -1,7 +1,7 @@
 package com.runnect.runnect.domain.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
-import com.runnect.runnect.data.dto.UserProfileData
+import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
@@ -25,7 +25,7 @@ interface UserRepository {
 
     suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO>
 
-    suspend fun getUserProfile(userId: Int): Result<UserProfileData?>
+    suspend fun getUserProfile(userId: Int): Result<UserProfile?>
 
     suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
