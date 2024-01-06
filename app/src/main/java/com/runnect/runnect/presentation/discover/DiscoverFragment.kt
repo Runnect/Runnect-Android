@@ -25,6 +25,7 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewAdapter
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -156,17 +157,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (!recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
+        if (isCompletedLoadingCourse() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
             Timber.d("스크롤이 끝에 도달했어요!")
-
-            if (viewModel.isNextPageLoading()) {
-                Timber.d("다음 페이지 로딩 중입니다.")
-                return
-            }
-
+            if (viewModel.isNextPageLoading()) return
             viewModel.getRecommendCourseNextPage()
         }
     }
+
+    private fun isCompletedLoadingCourse() = multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
 
     private fun showCircleUploadButton() {
         binding.fabDiscoverUploadText.isVisible = false
