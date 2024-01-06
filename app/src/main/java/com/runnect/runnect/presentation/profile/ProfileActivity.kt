@@ -23,10 +23,10 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         binding.vm = viewModel
         binding.lifecycleOwner = this
         initAdapter()
-        initBackButtonClickListener()
+        addListener()
+        addObserver()
         getIntentExtra()
         getUserProfile()
-        setupUserProfileGetStateObserver()
     }
 
     private fun getIntentExtra() {
@@ -45,6 +45,14 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         ).also { adapter ->
             binding.rvProfileUploadCourse.adapter = adapter
         }
+    }
+
+    private fun addListener() {
+        initBackButtonClickListener()
+    }
+
+    private fun addObserver() {
+        setupUserProfileGetStateObserver()
     }
 
     private fun navigateToCourseDetail(courseId: Int) {
