@@ -8,23 +8,21 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
-    multiViewItems: List<List<DiscoverMultiViewItem>>,
+    private val multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
-    private val currentList: List<MutableList<DiscoverMultiViewItem>> =
-        multiViewItems.map { it.toMutableList() }
 
     override fun getItemViewType(position: Int): Int {
-        return when (currentList[position].first()) {
+        return when (multiViewItems[position].first()) {
             is MarathonCourse -> DiscoverMultiViewType.MARATHON.ordinal
             is RecommendCourse -> DiscoverMultiViewType.RECOMMEND.ordinal
         }
     }
 
-    override fun getItemCount(): Int = currentList.size
+    override fun getItemCount(): Int = multiViewItems.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return multiViewHolderFactory.createMultiViewHolder(
@@ -39,23 +37,28 @@ class DiscoverMultiViewAdapter(
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
-                (currentList[position] as? List<MarathonCourse>)?.let {
+                (multiViewItems[position] as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                (currentList[position] as? List<RecommendCourse>)?.let {
+                (multiViewItems[position] as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
             }
         }
     }
 
+    fun addMultiViewItem(courses: List<DiscoverMultiViewItem>) {
+        multiViewItems.add(courses.toMutableList())
+        notifyItemInserted(itemCount - 1)
+    }
+
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
         // 외부 리사이클러뷰의 추천 코스 리스트 갱신 -> 내부 리사이클러뷰 재바인딩 -> 새로운 데이터 submitList
         val position = DiscoverMultiViewType.RECOMMEND.ordinal
-        currentList[position].addAll(nextPageCourses)
+        multiViewItems[position].addAll(nextPageCourses)
         notifyItemChanged(position)
     }
 
@@ -63,14 +66,14 @@ class DiscoverMultiViewAdapter(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        val targetItem = currentList.flatten().find { item ->
+        val targetItem = multiViewItems.flatten().find { item ->
             item.id == publicCourseId
         } ?: return
 
         when (targetItem) {
             is MarathonCourse -> {
                 val position = DiscoverMultiViewType.MARATHON.ordinal
-                val targetIndex = currentList[position].indexOf(targetItem)
+                val targetIndex = multiViewItems[position].indexOf(targetItem)
                 multiViewHolderFactory.marathonViewHolder.updateMarathonCourseItem(
                     targetIndex = targetIndex,
                     updatedCourse = updatedCourse
@@ -79,7 +82,7 @@ class DiscoverMultiViewAdapter(
 
             is RecommendCourse -> {
                 val position = DiscoverMultiViewType.RECOMMEND.ordinal
-                val targetIndex = currentList[position].indexOf(targetItem)
+                val targetIndex = multiViewItems[position].indexOf(targetItem)
                 multiViewHolderFactory.recommendViewHolder.updateRecommendCourseItem(
                     targetIndex = targetIndex,
                     updatedCourse = updatedCourse

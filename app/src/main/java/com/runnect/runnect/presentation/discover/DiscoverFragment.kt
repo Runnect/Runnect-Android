@@ -17,6 +17,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -186,7 +187,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.resetMultiViewItems()
             viewModel.refreshCurrentCourses()
             binding.refreshLayout.isRefreshing = false
         }
@@ -296,6 +296,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
+                is UiStateV2.Success -> {
+                    dismissLoadingProgressBar()
+
+                    val multiViewItems = mutableListOf<MutableList<DiscoverMultiViewItem>>()
+                    multiViewItems.add(state.data.toMutableList())
+
+                    // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
+                    initMultiViewAdapter(multiViewItems)
+                    initMultiRecyclerView()
+                }
+
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
                     context?.showSnackbar(
@@ -313,18 +324,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Loading -> showLoadingProgressBar()
-
                 is UiStateV2.Success -> {
-                    if (viewModel.checkCourseLoadState()) {
-                        dismissLoadingProgressBar()
-                        initMultiViewAdapter()
-                        initMultiRecyclerView()
-                    }
+                    // 추천 코스 조회에 성공하면, 멀티뷰 어댑터에 아이템 추가
+                    multiViewAdapter.addMultiViewItem(state.data)
                 }
 
                 is UiStateV2.Failure -> {
-                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
@@ -347,9 +352,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.pbDiscoverLoading.isVisible = false
     }
 
-    private fun initMultiViewAdapter() {
+    private fun initMultiViewAdapter(multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>>) {
         multiViewAdapter = DiscoverMultiViewAdapter(
-            multiViewItems = viewModel.multiViewItems,
+            multiViewItems = multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             },
