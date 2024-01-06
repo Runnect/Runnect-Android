@@ -5,13 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.FIRST_PAGE_NUM
-import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -28,8 +26,8 @@ class DiscoverViewModel @Inject constructor(
     val bannerGetState: LiveData<UiStateV2<List<DiscoverBanner>>>
         get() = _bannerGetState
 
-    private val _marathonCourseState = MutableLiveData<UiStateV2<List<MarathonCourse>?>>()
-    val marathonCourseState: LiveData<UiStateV2<List<MarathonCourse>?>>
+    private val _marathonCourseState = MutableLiveData<UiStateV2<List<MarathonCourse>>>()
+    val marathonCourseState: LiveData<UiStateV2<List<MarathonCourse>>>
         get() = _marathonCourseState
 
     private val _recommendCourseState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
@@ -43,9 +41,6 @@ class DiscoverViewModel @Inject constructor(
     private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
     val courseScrapState: LiveData<UiStateV2<Unit?>>
         get() = _courseScrapState
-
-    private val _multiViewItems: MutableList<List<DiscoverMultiViewItem>> = mutableListOf()
-    val multiViewItems: List<List<DiscoverMultiViewItem>> get() = _multiViewItems
 
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
@@ -64,14 +59,10 @@ class DiscoverViewModel @Inject constructor(
         _clickedCourseId = id
     }
 
-    fun resetMultiViewItems() {
-        _multiViewItems.clear()
-        currentPageNo = 1
-    }
-
     fun refreshCurrentCourses() {
+        currentPageNo = FIRST_PAGE_NUM
         getMarathonCourses()
-        getRecommendCourses(pageNo = FIRST_PAGE_NUM)
+        getRecommendCourses(pageNo = currentPageNo, ordering = "date")
     }
 
     private fun getDiscoverBanners() {
@@ -94,11 +85,13 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
-                    courses?.let {
-                        _multiViewItems.add(it)
-                        _marathonCourseState.value = UiStateV2.Success(it)
-                        Timber.d("MARATHON COURSE GET SUCCESS")
+                    if (courses == null) {
+                        _marathonCourseState.value = UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
+                        return@launch
                     }
+
+                    _marathonCourseState.value = UiStateV2.Success(courses)
+                    Timber.d("MARATHON COURSE GET SUCCESS")
                 }
                 .onFailure { exception ->
                     _marathonCourseState.value = UiStateV2.Failure(exception.message.toString())
@@ -125,10 +118,8 @@ class DiscoverViewModel @Inject constructor(
                     }
 
                     isRecommendCoursePageEnd = pagingData.isEnd
-                    _multiViewItems.add(pagingData.recommendCourses)
                     _recommendCourseState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE GET SUCCESS")
-                    Timber.d("ITEM SIZE: ${multiViewItems.size}")
                 }.onFailure { exception ->
                     _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE GET FAIL")
@@ -170,13 +161,6 @@ class DiscoverViewModel @Inject constructor(
                     Timber.e("RECOMMEND COURSE NEXT PAGE GET FAIL")
                 }
         }
-    }
-
-    // todo: 동기 처리 로직 수정 필요 (간헐적으로 무한 로딩 상태에 빠짐)
-    fun checkCourseLoadState(): Boolean {
-        return marathonCourseState.value is UiStateV2.Success &&
-                recommendCourseState.value is UiStateV2.Success &&
-                multiViewItems.size >= DiscoverMultiViewType.values().size
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
