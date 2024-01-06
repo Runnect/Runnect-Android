@@ -56,6 +56,12 @@ class DiscoverMultiViewAdapter(
         notifyItemInserted(itemCount - 1)
     }
 
+    fun updateRecommendCourseBySorting(courses: List<RecommendCourse>) {
+        val position = DiscoverMultiViewType.RECOMMEND.ordinal
+        multiViewItems[position] = courses.toMutableList()
+        notifyItemChanged(position)
+    }
+
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
         // 외부 리사이클러뷰의 추천 코스 리스트 갱신 -> 내부 리사이클러뷰 재바인딩 -> 새로운 데이터 submitList
         val position = DiscoverMultiViewType.RECOMMEND.ordinal

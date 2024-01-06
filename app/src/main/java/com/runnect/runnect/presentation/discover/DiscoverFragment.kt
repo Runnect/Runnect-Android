@@ -231,6 +231,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
         setupRecommendCourseGetStateObserver()
+        setupRecommendCourseSortStateObserver()
         setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
@@ -292,7 +293,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupMarathonCourseGetStateObserver() {
-        viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
@@ -309,27 +310,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Failure -> {
                     dismissLoadingProgressBar()
-                    context?.showSnackbar(
-                        anchorView = binding.root,
-                        message = state.msg,
-                        gravity = Gravity.TOP
-                    )
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun setupRecommendCourseGetStateObserver() {
-        viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStateV2.Success -> {
-                    // 추천 코스 조회에 성공하면, 멀티뷰 어댑터에 아이템 추가
-                    multiViewAdapter.addMultiViewItem(state.data)
-                }
-
-                is UiStateV2.Failure -> {
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
@@ -362,17 +342,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 )
             },
             onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
+                navigateToDetailScreen(publicCourseId = courseId)
                 viewModel.saveClickedCourseId(id = courseId)
             },
             handleVisitorMode = {
                 context?.let { showCourseScrapWarningToast(it) }
             },
             onSortButtonClick = { criteria ->
-                viewModel.getRecommendCourses(
-                    pageNo = FIRST_PAGE_NUM,
-                    ordering = criteria
-                )
+                viewModel.sortRecommendCourses(criteria = criteria)
             }
         )
     }
@@ -401,8 +378,50 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         ).show()
     }
 
+    private fun setupRecommendCourseGetStateObserver() {
+        viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    // 추천 코스 조회에 성공하면, 멀티뷰 어댑터에 아이템 추가
+                    multiViewAdapter.addMultiViewItem(state.data)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseSortStateObserver() {
+        viewModel.recommendCourseSortState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    // 추천 코스 목록 전체 갱신
+                    multiViewAdapter.updateRecommendCourseBySorting(state.data)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     private fun setupRecommendCourseNextPageStateObserver() {
-        viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseNextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     val nextPageCourses = state.data
@@ -463,8 +482,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
     }
 
-    fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourses(pageNo = pageNo)
+    fun getRecommendCourses() {
+        viewModel.getRecommendCourses()
     }
 
     override fun onAttach(context: Context) {
@@ -485,8 +504,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         private const val SCROLL_DIRECTION = 1
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
-
-        const val FIRST_PAGE_NUM = 1
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
     }
 }
