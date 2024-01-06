@@ -10,7 +10,7 @@ import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.extension.setOnSingleClickListener
 
 class ProfileCourseAdapter(
-    private val onLikeButtonClick: (Int, Boolean) -> Unit,
+    private val onScrapButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit
 ) : ListAdapter<UserCourseData, ProfileCourseAdapter.UploadedCourseViewHolder>(diffUtil) {
 
@@ -21,7 +21,7 @@ class ProfileCourseAdapter(
                 parent,
                 false
             ),
-            onLikeButtonClick = onLikeButtonClick,
+            onScrapButtonClick = onScrapButtonClick,
             onCourseItemClick = onCourseItemClick
         )
     }
@@ -32,14 +32,14 @@ class ProfileCourseAdapter(
 
     class UploadedCourseViewHolder(
         private val binding: ItemProfileCourseBinding,
-        private val onLikeButtonClick: (Int, Boolean) -> Unit,
+        private val onScrapButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(userCourseData: UserCourseData) {
             with(binding) {
                 data = userCourseData
                 ivItemProfileCourseHeart.setOnSingleClickListener {
-                    onLikeButtonClick(userCourseData.publicCourseId, !userCourseData.scrapTF)
+                    onScrapButtonClick(userCourseData.publicCourseId, !userCourseData.scrapTF)
                 }
 
                 clItemProfileCourse.setOnSingleClickListener {

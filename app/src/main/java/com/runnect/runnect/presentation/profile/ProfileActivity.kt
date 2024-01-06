@@ -35,7 +35,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
 
     private fun initAdapter() {
         adapter = ProfileCourseAdapter(
-            onLikeButtonClick = { courseId, scrapTF ->
+            onScrapButtonClick = { courseId, scrapTF ->
                 viewModel.postCourseScrap(courseId = courseId, scrapTF = scrapTF)
                 adapter.updateCourseItem(courseId = courseId, scrapTF = scrapTF)
             },
