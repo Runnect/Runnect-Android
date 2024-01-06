@@ -351,14 +351,23 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         multiViewAdapter = DiscoverMultiViewAdapter(
             multiViewItems = viewModel.multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
-                viewModel.postCourseScrap(courseId, scrap)
+                viewModel.postCourseScrap(
+                    id = courseId,
+                    scrapTF = scrap
+                )
             },
             onCourseItemClick = { courseId ->
                 navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
+                viewModel.saveClickedCourseId(id = courseId)
             },
             handleVisitorMode = {
                 context?.let { showCourseScrapWarningToast(it) }
+            },
+            onSortButtonClick = { criteria ->
+                viewModel.getRecommendCourses(
+                    pageNo = FIRST_PAGE_NUM,
+                    ordering = criteria
+                )
             }
         )
     }
@@ -450,7 +459,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
+        viewModel.getRecommendCourses(pageNo = pageNo)
     }
 
     override fun onAttach(context: Context) {
@@ -471,6 +480,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         private const val SCROLL_DIRECTION = 1
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
+
+        const val FIRST_PAGE_NUM = 1
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
     }
 }

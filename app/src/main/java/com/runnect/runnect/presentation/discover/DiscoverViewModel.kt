@@ -10,6 +10,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.FIRST_PAGE_NUM
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,12 +51,13 @@ class DiscoverViewModel @Inject constructor(
     val clickedCourseId get() = _clickedCourseId
 
     private var isRecommendCoursePageEnd = false
-    private var currentPageNo = 1
+    private var currentPageNo = FIRST_PAGE_NUM
+    private var currentSortCriteria: String = DEFAULT_COURSE_SORT_CRITERIA
 
     init {
         getDiscoverBanners()
-        getMarathonCourse()
-        getRecommendCourse(pageNo = 1, ordering = "date")
+        getMarathonCourses()
+        getRecommendCourses(pageNo = FIRST_PAGE_NUM)
     }
 
     fun saveClickedCourseId(id: Int) {
@@ -68,8 +70,8 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun refreshCurrentCourses() {
-        getMarathonCourse()
-        getRecommendCourse(pageNo = 1, ordering = "date")
+        getMarathonCourses()
+        getRecommendCourses(pageNo = FIRST_PAGE_NUM)
     }
 
     private fun getDiscoverBanners() {
@@ -86,7 +88,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun getMarathonCourse() {
+    private fun getMarathonCourses() {
         viewModelScope.launch {
             _marathonCourseState.value = UiStateV2.Loading
 
@@ -105,7 +107,12 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourse(pageNo: Int, ordering: String) {
+    fun getRecommendCourses(
+        pageNo: Int,
+        ordering: String = DEFAULT_COURSE_SORT_CRITERIA
+    ) {
+        saveCurrentSortCriteria(criteria = ordering)
+
         viewModelScope.launch {
             _recommendCourseState.value = UiStateV2.Loading
 
@@ -127,6 +134,10 @@ class DiscoverViewModel @Inject constructor(
                     Timber.e("RECOMMEND COURSE GET FAIL")
                 }
         }
+    }
+
+    private fun saveCurrentSortCriteria(criteria: String) {
+        currentSortCriteria = criteria
     }
 
     fun isNextPageLoading() = nextPageState.value is UiStateV2.Loading
@@ -182,5 +193,9 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
+    }
+
+    companion object {
+        private const val DEFAULT_COURSE_SORT_CRITERIA = "date"
     }
 }
