@@ -37,11 +37,11 @@ class ProfileViewModel @Inject constructor(
                 .onSuccess { profileData ->
                     if (profileData == null) {
                         _userProfileState.value = UiStateV2.Failure("PROFILE DATA IS NULL")
-                        Timber.e("PROFILE DATA IS NULL")
+                        Timber.d("PROFILE DATA IS NULL")
                         return@launch
                     }
                     _userProfileState.value = UiStateV2.Success(profileData)
-                    Timber.e("GET PROFILE DATA SUCCESS")
+                    Timber.d("GET PROFILE DATA SUCCESS")
                 }
                 .onFailure { error ->
                     _userProfileState.value = UiStateV2.Failure(error.message.toString())
@@ -59,7 +59,7 @@ class ProfileViewModel @Inject constructor(
                     publicCourseId = courseId, scrapTF = scrapTF.toString()
                 )
             ).onSuccess { response ->
-                Timber.e("POST COURSE SCRAP SUCCESS")
+                Timber.d("POST COURSE SCRAP SUCCESS")
                 _courseScrapState.value = UiStateV2.Success(response)
             }.onFailure { exception ->
                 Timber.e("POST COURSE SCRAP FAILURE")
