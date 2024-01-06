@@ -104,13 +104,28 @@ sealed class ToolbarMenu(
         override val clickEvent: ((View) -> Unit)? = null,
         val width: Int = CommonToolbarLayout.MENU_ITEM_SIZE,
         val height: Int = CommonToolbarLayout.MENU_ITEM_SIZE,
-    ) : ToolbarMenu(resourceId, padding, clickEvent) {
+        private val popupItems: List<PopupItem>,
+        private val menuItemClickListener: (View, PopupItem, Int) -> Unit,
+    ) : ToolbarMenu(resourceId, padding) {
+
+        private var popupMenu: RunnectPopupMenu? = null
+
         override fun createMenu(
-            context: Context,
-            layoutParams: LinearLayout.LayoutParams,
-            menu: ToolbarMenu
-        ): View? {
-            TODO("Not yet implemented")
+            context: Context
+        ): View {
+            return createBaseImageButton(context, resourceId, padding.dpToPx(context), width, height) {
+                attachPopupItem(it)
+            }
+        }
+
+        private fun attachPopupItem(anchorView: View){
+            if(popupMenu == null) {
+                popupMenu = RunnectPopupMenu(anchorView.context, popupItems) { view, popupItem, pos ->
+                    menuItemClickListener.invoke(view, popupItem, pos)
+                }
+            }
+
+            popupMenu?.showCustomPosition(anchorView)
         }
     }
 }
