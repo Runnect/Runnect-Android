@@ -31,7 +31,8 @@ class DiscoverMultiViewAdapter(
             viewType = DiscoverMultiViewType.values()[viewType],
             onHeartButtonClick = onHeartButtonClick,
             onCourseItemClick = onCourseItemClick,
-            handleVisitorMode = handleVisitorMode
+            handleVisitorMode = handleVisitorMode,
+            onSortButtonClick = onSortButtonClick
         )
     }
 

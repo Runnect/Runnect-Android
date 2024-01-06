@@ -67,6 +67,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
+        private val onSortButtonClick: (String) -> Unit
     ) : DiscoverMultiViewHolder(binding) {
         private val recommendAdapter by lazy {
             DiscoverRecommendAdapter(
@@ -79,6 +80,17 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         fun bind(courses: List<RecommendCourse>) {
             Timber.d("추천 코스 리스트 크기: ${courses.size}")
             initRecommendRecyclerView(courses)
+            initSortButtonClickListener()
+        }
+
+        private fun initSortButtonClickListener() {
+            binding.tvDiscoverRecommendSortByDate.setOnClickListener {
+                onSortButtonClick.invoke(SORT_BY_DATE)
+            }
+
+            binding.tvDiscoverRecommendSortByScrap.setOnClickListener {
+                onSortButtonClick.invoke(SORT_BY_SCRAP)
+            }
         }
 
         private fun initRecommendRecyclerView(courses: List<RecommendCourse>) {
@@ -116,6 +128,11 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 scrap = updatedCourse.scrap
             }
             recommendAdapter.notifyItemChanged(targetIndex)
+        }
+
+        companion object {
+            private const val SORT_BY_DATE = "date"
+            private const val SORT_BY_SCRAP = "scrap"
         }
     }
 }
