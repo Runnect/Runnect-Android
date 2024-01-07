@@ -1,6 +1,6 @@
 package com.runnect.runnect.domain.repository
 
-import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse

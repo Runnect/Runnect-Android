@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.dto.response
 
+import com.runnect.runnect.domain.entity.MyDrawCourse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
