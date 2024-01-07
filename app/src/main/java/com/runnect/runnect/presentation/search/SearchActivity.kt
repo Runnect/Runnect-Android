@@ -8,7 +8,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -25,6 +24,7 @@ import com.runnect.runnect.util.callback.listener.OnSearchItemClick
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showKeyboard
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -185,11 +185,7 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
     }
 
     private fun showPermissionDeniedToast() {
-        Toast.makeText(
-            this,
-            R.string.location_permission_denied,
-            Toast.LENGTH_SHORT
-        ).show()
+        showToast(getString(R.string.location_permission_denied))
     }
 
     private fun startCurrentLocation() {

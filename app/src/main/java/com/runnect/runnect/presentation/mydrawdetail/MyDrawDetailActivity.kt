@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.mydrawdetail
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.net.toUri
@@ -19,6 +18,7 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
@@ -104,11 +104,7 @@ class MyDrawDetailActivity :
     }
 
     private fun showPermissionDeniedToast() {
-        Toast.makeText(
-            this,
-            R.string.location_permission_denied,
-            Toast.LENGTH_SHORT
-        ).show()
+        showToast(getString(R.string.location_permission_denied))
     }
 
     private fun navigateToCountDown() {

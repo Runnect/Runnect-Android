@@ -49,6 +49,7 @@ import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
@@ -325,11 +326,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     }
 
     private fun showPermissionDeniedToast() {
-        Toast.makeText(
-            this,
-            R.string.location_permission_denied,
-            Toast.LENGTH_SHORT
-        ).show()
+        showToast(getString(R.string.location_permission_denied))
     }
 
     private fun activateDrawCourse() {
