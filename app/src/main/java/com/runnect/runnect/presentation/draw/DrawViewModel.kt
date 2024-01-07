@@ -99,9 +99,9 @@ class DrawViewModel @Inject constructor(
                             )
                         ),
                         title = courseTitle,
-                        distance = distanceSum.value!!,
-                        departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
-                        departureName = departureName.value!!
+                        distance = distanceSum.value ?: 0.0f,
+                        departureAddress = departureAddress.value ?: "", //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
+                        departureName = departureName.value ?: ""
                     ).toRequestBody()
                 )
             }.onSuccess {
