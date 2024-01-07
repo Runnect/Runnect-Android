@@ -6,12 +6,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
-import com.runnect.runnect.util.extension.dpToPx
 
 interface CommonToolbarLayout {
 
@@ -24,28 +25,24 @@ interface CommonToolbarLayout {
         const val LEFT = 0
         const val RIGHT = 1
 
+        // Toolbar 관련
+        private const val TOOLBAR_TITLE_TEXT_SIZE = 18  // Title 텍스트 기본 크기(sp)
+        private const val TOOLBAR_MENU_LIMIT_COUNT = 2  // 메뉴 최대 노출 갯수
+
+
         // 메뉴 아이템 관련
         const val MENU_ITEM_SIZE = 48           // 메뉴 아이템 뷰 기본 크기
         const val MENU_ITEM_PADDING = 15        // 메뉴 아이템 뷰 기본 패딩(dp)
         const val MENU_ITEM_TEXT_SIZE = 18      // 텍스트 기본 크기
         const val MENU_ITEM_RESOURCE_NONE = -1  // 메뉴 아이템 리소스(아이콘,텍스트) 없음
 
-        // Toolbar 관련
-        private const val TOOLBAR_HEIGHT = 56           // Toolbar 기본 높이
-        private const val TOOLBAR_TITLE_TEXT_SIZE = 18  // Title 텍스트 기본 크기(sp)
-        private const val TOOLBAR_MENU_LIMIT_COUNT = 2  // 메뉴 최대 노출 갯수
-
-        // 뷰 관련
-        private const val VIEW_SIZE_NONE = -1 // 뷰 사이즈 없음
+        // 기본 리소스
+        @DrawableRes val MENU_ICON_BACK_BUTTON: Int = R.drawable.all_back_arrow
+        @FontRes val TOOLBAR_TITLE_FONT_RES: Int = R.font.pretendard_bold
+        @ColorRes private val TOOLBAR_TITLE_TEXT_COLOR = R.color.G1
+        @ColorRes private val TOOLBAR_BACKGROUND_COLOR = R.color.white
     }
 
-    /** 기본 리소스 */
-    private val menuIconBack: Int // 메뉴 뒤로가기 기본 아이콘
-        get() = R.drawable.all_back_arrow
-    private val toolbarTitleTextColor: Int // Title 텍스트 기본 색상
-        get() = R.color.G1
-    private val toolbarBackgroundColor: Int // Toolbar 기본 배경 색상
-        get() = R.color.white
 
     val toolbarBinding: LayoutCommonToolbarBinding
 
@@ -60,23 +57,22 @@ interface CommonToolbarLayout {
      *
      * @param bgColorResId 툴바의 배경색 리소스 id
      * @param textResId title 텍스트 리소스 id
-     * @param textSizeDip title 텍스트의 크기(sp)
+     * @param textSize title 텍스트의 크기(sp)
      * @param textColorResId title 텍스트 색상의 리소스 id
+     * @param fontResId title 폰트 리소스 id
      * @param backButtonResId back 버튼의 아이콘 리소스 id
      * @param backButtonEvent back 버튼의 클릭 이벤트 핸들러
      */
     fun setToolbar (
-        @ColorRes bgColorResId: Int = toolbarBackgroundColor,
+        @ColorRes bgColorResId: Int = TOOLBAR_BACKGROUND_COLOR,
         @StringRes textResId: Int? = null,
-        @ColorRes textColorResId: Int = toolbarTitleTextColor,
-        @DrawableRes backButtonResId: Int = menuIconBack,
+        @ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR,
+        @FontRes fontResId: Int = TOOLBAR_TITLE_FONT_RES,
+        @DrawableRes backButtonResId: Int = MENU_ICON_BACK_BUTTON,
         titleText: String? = null,
-        textSizeDip: Int = TOOLBAR_TITLE_TEXT_SIZE,
+        textSize: Int = TOOLBAR_TITLE_TEXT_SIZE,
         backButtonEvent: ((View) -> Unit)? = null
     ) {
-        // 백그라운드 영역
-        setToolbarBackgroundColor(bgColorResId)
-
         // title 영역 text
         if(textResId != null) {
             setToolBarTitleText(textResId)
@@ -84,8 +80,10 @@ interface CommonToolbarLayout {
             setToolBarTitleText(titleText)
         }
 
+        setToolbarBackgroundColor(bgColorResId)
         setToolBarTitleTextColor(textColorResId)
-        setToolbarTitleTextSize(textSizeDip)
+        setToolbarTitleTextSize(textSize)
+        setToolBarTitleFont(fontResId)
 
         // 왼쪽 메뉴 추가
         addMenuTo(
@@ -95,18 +93,6 @@ interface CommonToolbarLayout {
                 clickEvent = backButtonEvent,
             )
         )
-    }
-
-    /**
-     * Toolbar의 배경 색상 지정 메소드
-     * @param colorResId 배경 색상 Color Resource Id
-     */
-    fun setToolbarBackgroundColor(@ColorRes colorResId: Int = toolbarBackgroundColor) {
-        toolbarBinding.toolbar.run {
-            context?.let {
-                setBackgroundColor(getColor(it, colorResId))
-            }
-        }
     }
 
     /**
@@ -130,10 +116,22 @@ interface CommonToolbarLayout {
     }
 
     /**
+     * Toolbar의 배경 색상 지정 메소드
+     * @param colorResId 배경 색상 Color Resource Id
+     */
+    fun setToolbarBackgroundColor(@ColorRes colorResId: Int = TOOLBAR_BACKGROUND_COLOR) {
+        toolbarBinding.toolbar.run {
+            context?.let {
+                setBackgroundColor(getColor(it, colorResId))
+            }
+        }
+    }
+
+    /**
      * Toolbar의 Title Text Color 설정
      * @param textColorResId 색상 리소스 id
      */
-    fun setToolBarTitleTextColor(@ColorRes textColorResId: Int = toolbarTitleTextColor) {
+    fun setToolBarTitleTextColor(@ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR) {
         toolbarBinding.tvTitle.run {
             context?.let {
                 setTextColor(getColor(it, textColorResId))
@@ -153,6 +151,17 @@ interface CommonToolbarLayout {
         }
     }
 
+    /**
+     * Toolbar Title Font 설정
+     *
+     * @param fontResId - title 폰트 리소스 id
+     */
+    fun setToolBarTitleFont(@FontRes fontResId: Int) {
+        with(toolbarBinding){
+            val context = toolbar.context ?: return
+            tvTitle.typeface = ResourcesCompat.getFont(context, fontResId)
+        }
+    }
 
     /**
      * Toolbar의 왼쪽 영역에 메뉴 아이템들을 추가합니다.

@@ -5,6 +5,9 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.DrawableRes
+import androidx.annotation.FontRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -16,7 +19,7 @@ import com.runnect.runnect.util.extension.setPadding
 open class BaseToolbarMenu {
     protected fun createBaseImageButton(
         context: Context,
-        resourceId: Int,
+        @DrawableRes resourceId: Int,
         padding: Int,
         width: Int,
         height: Int,
@@ -40,9 +43,10 @@ open class BaseToolbarMenu {
 
     protected fun createBaseTextView(
         context: Context,
-        resourceId: Int,
+        @StringRes resourceId: Int,
         padding: Int,
         textSize: Float,
+        @FontRes fontRes: Int
     ): AppCompatTextView {
         val paddingPx = padding.dpToPx(context)
         val titleText = context.getString(resourceId)
@@ -55,7 +59,7 @@ open class BaseToolbarMenu {
         return AppCompatTextView(context).apply {
             text = titleText
             gravity = Gravity.CENTER
-            typeface = ResourcesCompat.getFont(context, R.font.pretendard_bold)
+            typeface = ResourcesCompat.getFont(context, fontRes)
 
             setPadding(paddingPx, 0, paddingPx, 0)
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
