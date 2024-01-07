@@ -48,6 +48,7 @@ import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.getStampResId
@@ -140,7 +141,7 @@ class CourseDetailActivity :
             addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(this)
         }
-        applyScreenExitAnimation()
+        applyScreenEnterAnimation()
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
