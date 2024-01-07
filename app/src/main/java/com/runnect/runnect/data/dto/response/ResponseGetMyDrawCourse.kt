@@ -51,3 +51,15 @@ data class ResponseGetMyDrawCourse(
         )
     }
 }
+
+fun List<ResponseGetMyDrawCourse.Data.Course>.toMyDrawCourse(): List<MyDrawCourse> {
+    return this.map {
+        MyDrawCourse(
+            courseId = it.id,
+            image = it.image,
+            city = it.departure.city,
+            region = it.departure.region,
+            title = it.title
+        )
+    }
+}

@@ -1,11 +1,10 @@
 package com.runnect.runnect.data.repository
 
-import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
-import com.runnect.runnect.data.dto.changeMyDrawData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
+import com.runnect.runnect.data.dto.response.toMyDrawCourse
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
 import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.domain.repository.StorageRepository
@@ -16,7 +15,7 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
     StorageRepository {
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
         return remoteStorageDataSource.getMyDrawCourse().body()?.let {
-            it.data.courses.changeMyDrawData().toMutableList()
+            it.data.courses.toMyDrawCourse().toMutableList()
         } ?: mutableListOf()
     }
 
