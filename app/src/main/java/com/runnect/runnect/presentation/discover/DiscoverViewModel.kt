@@ -64,12 +64,11 @@ class DiscoverViewModel @Inject constructor(
 
     fun refreshCurrentCourses() {
         getMarathonCourses()
-
-        initRecommendCoursePageState()
+        initRecommendCoursePagingData()
         getRecommendCourses()
     }
 
-    private fun initRecommendCoursePageState() {
+    private fun initRecommendCoursePagingData() {
         currentPageNumber = FIRST_PAGE_NUM
         isRecommendCoursePageEnd = false
     }
@@ -137,7 +136,7 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun sortRecommendCourses(criteria: String) {
-        initRecommendCoursePageState()
+        initRecommendCoursePagingData()
         saveCurrentSortCriteria(criteria)
 
         viewModelScope.launch {
