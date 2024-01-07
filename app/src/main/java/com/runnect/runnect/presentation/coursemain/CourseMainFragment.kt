@@ -96,7 +96,7 @@ class CourseMainFragment :
 
         map.locationSource = locationSource
 
-        if(isLocationPermissionGranted()){
+        if (isLocationPermissionGranted()) {
             map.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
         }
 
@@ -139,8 +139,5 @@ class CourseMainFragment :
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        const val PERMISSION_TITLE = "위치권한 요청"
-        const val PERMISSION_CONTENT = "코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다."
-        const val PERMISSION_GUIDE = "권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]"
     }
 }
