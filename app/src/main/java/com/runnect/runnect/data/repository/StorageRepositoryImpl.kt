@@ -2,8 +2,8 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
+import com.runnect.runnect.data.dto.changeMyDrawData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
@@ -14,21 +14,9 @@ import javax.inject.Inject
 class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSource: RemoteStorageDataSource) :
     StorageRepository {
     override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
-        return changeMyDrawData(
-            data = remoteStorageDataSource.getMyDrawCourse().body()!!.data.courses
-        ).toMutableList()
-    }
-
-    private fun changeMyDrawData(data: List<ResponseGetMyDrawCourse.Data.Course>): List<MyDrawCourse> {
-        val changedData = data.map {
-            MyDrawCourse(
-                courseId = it.id,
-                image = it.image,
-                city = it.departure.city,
-                region = it.departure.region
-            )
-        }
-        return changedData
+        return remoteStorageDataSource.getMyDrawCourse().body()?.let {
+            it.data.courses.changeMyDrawData().toMutableList()
+        } ?: mutableListOf()
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
