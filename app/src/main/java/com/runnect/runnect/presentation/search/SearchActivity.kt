@@ -173,8 +173,10 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
         binding.cvStartCurrentLocation.setOnClickListener {
             this.let {
                 PermissionUtil.requestLocationPermission(
-                    it, { startCurrentLocation() },
-                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                    context = it,
+                    onPermissionGranted = { startCurrentLocation() },
+                    onPermissionDenied = { showPermissionDeniedToast() },
+                    permissionType = PermissionUtil.PermissionType.LOCATION
                 )
             }
         }

@@ -66,8 +66,10 @@ class CourseMainFragment :
         } else {
             context?.let {
                 PermissionUtil.requestLocationPermission(
-                    it, { updateCamera(currentLocation) },
-                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                    context = it,
+                    onPermissionGranted = { updateCamera(currentLocation) },
+                    onPermissionDenied = { showPermissionDeniedToast() },
+                    permissionType = PermissionUtil.PermissionType.LOCATION
                 )
             }
         }
@@ -81,8 +83,10 @@ class CourseMainFragment :
             } else {
                 context?.let {
                     PermissionUtil.requestLocationPermission(
-                        it, { updateCamera(currentLocation) },
-                        { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                        context = it,
+                        onPermissionGranted = { updateCamera(currentLocation) },
+                        onPermissionDenied = { showPermissionDeniedToast() },
+                        permissionType = PermissionUtil.PermissionType.LOCATION
                     )
                 }
             }

@@ -93,11 +93,12 @@ class MyDrawDetailActivity :
 
     private fun initDrawButtonClickListener() {
         binding.btnMyDrawDetailRun.setOnClickListener {
-
             this.let {
                 PermissionUtil.requestLocationPermission(
-                    it, { navigateToCountDown() },
-                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                    context = it,
+                    onPermissionGranted = { navigateToCountDown() },
+                    onPermissionDenied = { showPermissionDeniedToast() },
+                    permissionType = PermissionUtil.PermissionType.LOCATION
                 )
             }
         }

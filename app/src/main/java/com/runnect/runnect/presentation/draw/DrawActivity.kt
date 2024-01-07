@@ -312,12 +312,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         btnCreateCourse.setOnClickListener {
             this.let {
                 PermissionUtil.requestLocationPermission(
-                    it, {
+                    context = it,
+                    onPermissionGranted = {
                         hideKeyboard(etCourseName)
                         bottomSheetDialog.dismiss()
                         createMBR()
                     },
-                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                    onPermissionDenied = { showPermissionDeniedToast() },
+                    permissionType = PermissionUtil.PermissionType.LOCATION
                 )
             }
         }
