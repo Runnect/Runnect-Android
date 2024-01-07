@@ -2,7 +2,6 @@ package com.runnect.runnect.util.custom.toolbar
 
 import android.content.Context
 import android.view.View
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
 import androidx.annotation.StringRes
@@ -25,7 +24,7 @@ sealed class ToolbarMenu(
         val width: Int = CommonToolbarLayout.MENU_ITEM_SIZE,
         val height: Int = CommonToolbarLayout.MENU_ITEM_SIZE,
         val clickEvent: ((View) -> Unit)? = null,
-    ) : ToolbarMenu(resourceId, padding) {
+    ): ToolbarMenu(resourceId, padding) {
 
         override fun createMenu(
             context: Context,
@@ -39,7 +38,7 @@ sealed class ToolbarMenu(
         override val padding: Int = 0,
         val textSize: Int = CommonToolbarLayout.MENU_ITEM_TEXT_SIZE,
         @FontRes val fontRes: Int = CommonToolbarLayout.TOOLBAR_TITLE_FONT_RES
-    ) : ToolbarMenu(resourceId, padding) {
+    ): ToolbarMenu(resourceId, padding) {
 
         override fun createMenu(
             context: Context
@@ -55,7 +54,7 @@ sealed class ToolbarMenu(
         val height: Int = CommonToolbarLayout.MENU_ITEM_SIZE,
         private val popupItems: List<PopupItem>,
         private val menuItemClickListener: (View, PopupItem, Int) -> Unit,
-    ) : ToolbarMenu(resourceId, padding) {
+    ): ToolbarMenu(resourceId, padding) {
 
         private var popupMenu: RunnectPopupMenu? = null
 

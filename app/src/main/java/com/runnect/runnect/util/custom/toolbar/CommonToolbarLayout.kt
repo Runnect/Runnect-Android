@@ -63,7 +63,7 @@ interface CommonToolbarLayout {
      * @param backButtonResId back 버튼의 아이콘 리소스 id
      * @param backButtonEvent back 버튼의 클릭 이벤트 핸들러
      */
-    fun setToolbar (
+    fun setToolbar(
         @ColorRes bgColorResId: Int = TOOLBAR_BACKGROUND_COLOR,
         @StringRes textResId: Int? = null,
         @ColorRes textColorResId: Int = TOOLBAR_TITLE_TEXT_COLOR,
@@ -74,7 +74,7 @@ interface CommonToolbarLayout {
         backButtonEvent: ((View) -> Unit)? = null
     ) {
         // title 영역 text
-        if(textResId != null) {
+        if (textResId != null) {
             setToolBarTitleText(textResId)
         } else if (titleText != null) {
             setToolBarTitleText(titleText)
@@ -157,7 +157,7 @@ interface CommonToolbarLayout {
      * @param fontResId - title 폰트 리소스 id
      */
     fun setToolBarTitleFont(@FontRes fontResId: Int) {
-        with(toolbarBinding){
+        with(toolbarBinding) {
             val context = toolbar.context ?: return
             tvTitle.typeface = ResourcesCompat.getFont(context, fontResId)
         }
@@ -170,7 +170,7 @@ interface CommonToolbarLayout {
      * @param menu 추가할 메뉴 아이템 리스트(가변 인자)
      */
     fun addMenuTo(@Direction direction: Int, vararg menu: ToolbarMenu) {
-        val menuLayout = when(direction) {
+        val menuLayout = when (direction) {
             LEFT -> toolbarBinding.llLeftMenu
             else -> toolbarBinding.llRightMenu
         }
