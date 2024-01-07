@@ -163,8 +163,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun isCompletedLoadingCourse() =
-        multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
+    private fun isCompletedLoadingCourse() = ::multiViewAdapter.isInitialized &&
+            multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
 
     private fun showCircleUploadButton() {
         binding.fabDiscoverUploadText.isVisible = false
@@ -391,9 +391,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    // 마라톤 코스로 리사이클러뷰가 초기화 된 경우에만
+                    // 마라톤 코스로 리사이클러뷰 어댑터가 초기화 된 경우에만
                     if (::multiViewAdapter.isInitialized) {
-                        // 멀티뷰 어댑터에 추천 코스 목록 추가
+                        // 추천 코스 목록 추가하기
                         multiViewAdapter.addMultiViewItem(state.data)
                     }
                 }
