@@ -31,6 +31,8 @@ data class ResponseGetMyDrawCourse(
             val id: Int,
             @SerialName("image")
             val image: String,
+            @SerialName("title")
+            val title: String
         ) {
             @Serializable
             data class Departure(
