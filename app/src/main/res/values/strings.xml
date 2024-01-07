@@ -167,6 +167,7 @@
     <string name="discover_recommend_sort_by_date">최신순</string>
     <string name="discover_recommend_sort_by_scrap">스크랩순</string>
 
+    <string name="common_permission_denied">권한이 거부되었습니다.</string>
     <!-- location permission -->
     <string name="location_permission_denied">위치 권한이 거부되었습니다.</string>
     <string name="location_permission_title">위치권한 요청</string>

@@ -11,7 +11,13 @@ object PermissionUtil {
     fun requestLocationPermission(
         context: Context,
         onPermissionGranted: () -> Unit,
-        onPermissionDenied: () -> Unit,
+        onPermissionDenied: () -> Unit = {
+            Toast.makeText(
+                context,
+                R.string.common_permission_denied,
+                Toast.LENGTH_SHORT
+            ).show()
+        },
         permissionType: PermissionType
     ) {
         val permission = setUpPermissionByType(permissionType)
