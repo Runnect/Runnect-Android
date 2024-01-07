@@ -6,7 +6,7 @@ import com.runnect.runnect.util.extension.getViewDataBinding
 
 class DiscoverMultiViewHolderFactory {
     lateinit var marathonViewHolder: DiscoverMultiViewHolder.MarathonCourseViewHolder
-    lateinit var recommendViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
+    lateinit var recommendCourseViewHolder: DiscoverMultiViewHolder.RecommendCourseViewHolder
 
     fun createMultiViewHolder(
         parent: ViewGroup,
@@ -27,15 +27,21 @@ class DiscoverMultiViewHolderFactory {
                 return marathonViewHolder
             }
 
-            DiscoverMultiViewType.RECOMMEND -> {
-                recommendViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
-                    binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_recommend),
-                    onHeartButtonClick = onHeartButtonClick,
-                    onCourseItemClick = onCourseItemClick,
-                    handleVisitorMode = handleVisitorMode,
+            DiscoverMultiViewType.RECOMMEND_HEADER -> {
+                return DiscoverMultiViewHolder.RecommendHeaderViewHolder(
+                    binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_recommend_header),
                     onSortButtonClick = onSortButtonClick
                 )
-                return recommendViewHolder
+            }
+
+            DiscoverMultiViewType.RECOMMEND_COURSE -> {
+                recommendCourseViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
+                    binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_recommend_course),
+                    onHeartButtonClick = onHeartButtonClick,
+                    onCourseItemClick = onCourseItemClick,
+                    handleVisitorMode = handleVisitorMode
+                )
+                return recommendCourseViewHolder
             }
         }
     }

@@ -164,7 +164,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun isCompletedLoadingCourse() = multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
+    private fun isCompletedLoadingCourse() =
+        multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
 
     private fun showCircleUploadButton() {
         binding.fabDiscoverUploadText.isVisible = false
@@ -298,8 +299,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
 
-                    val multiViewItems = mutableListOf<MutableList<DiscoverMultiViewItem>>()
-                    multiViewItems.add(state.data.toMutableList())
+                    // 마라톤 코스와 추천 코스 헤더 추가
+                    val multiViewItems: MutableList<List<DiscoverMultiViewItem>> = mutableListOf()
+                    multiViewItems.add(state.data)
+                    multiViewItems.add(
+                        listOf(
+                            DiscoverMultiViewItem.RecommendHeader(
+                                id = RECOMMEND_HEADER_INDEX,
+                                title = getString(R.string.discover_recommend_header_title),
+                                subtitle = getString(R.string.discover_recommend_header_subtitle)
+                            )
+                        )
+                    )
 
                     // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
                     initMultiViewAdapter(multiViewItems)
@@ -330,7 +341,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.pbDiscoverLoading.isVisible = false
     }
 
-    private fun initMultiViewAdapter(multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>>) {
+    private fun initMultiViewAdapter(multiViewItems: List<List<DiscoverMultiViewItem>>) {
         multiViewAdapter = DiscoverMultiViewAdapter(
             multiViewItems = multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
@@ -501,6 +512,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         private const val BANNER_SCROLL_DELAY_TIME = 5000L
         private const val CENTER_POS_OF_INFINITE_BANNERS = Int.MAX_VALUE / 2
         private const val SCROLL_DIRECTION = 1
+        private const val RECOMMEND_HEADER_INDEX = -1
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"

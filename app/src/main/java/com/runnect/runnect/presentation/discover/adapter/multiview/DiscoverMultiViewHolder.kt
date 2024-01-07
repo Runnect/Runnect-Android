@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemDiscoverMultiviewMarathonBinding
-import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendBinding
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendCourseBinding
+import com.runnect.runnect.databinding.ItemDiscoverMultiviewRecommendHeaderBinding
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.presentation.discover.adapter.DiscoverMarathonAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
@@ -18,7 +18,6 @@ import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
 import com.runnect.runnect.util.extension.colorOf
 import com.runnect.runnect.util.extension.fontOf
-import org.w3c.dom.Text
 import timber.log.Timber
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
@@ -68,24 +67,11 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
     }
 
-    class RecommendCourseViewHolder(
-        private val binding: ItemDiscoverMultiviewRecommendBinding,
-        onHeartButtonClick: (Int, Boolean) -> Unit,
-        onCourseItemClick: (Int) -> Unit,
-        handleVisitorMode: () -> Unit,
+    class RecommendHeaderViewHolder(
+        private val binding: ItemDiscoverMultiviewRecommendHeaderBinding,
         private val onSortButtonClick: (String) -> Unit
     ) : DiscoverMultiViewHolder(binding) {
-        private val recommendAdapter by lazy {
-            DiscoverRecommendAdapter(
-                onHeartButtonClick,
-                onCourseItemClick,
-                handleVisitorMode
-            )
-        }
-
-        fun bind(courses: List<RecommendCourse>) {
-            Timber.d("추천 코스 리스트 크기: ${courses.size}")
-            initRecommendRecyclerView(courses)
+        fun bind() {
             initSortButtonClickListener()
         }
 
@@ -93,7 +79,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             binding.tvDiscoverRecommendSortByDate.setOnClickListener {
                 val context = it.context ?: return@setOnClickListener
                 activateTextStyle(view = it as TextView, context = context)
-                deactivateTextStyle(
+                deactivateOtherTextStyle(
                     view = binding.tvDiscoverRecommendSortByScrap,
                     context = context
                 )
@@ -103,7 +89,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             binding.tvDiscoverRecommendSortByScrap.setOnClickListener {
                 val context = it.context ?: return@setOnClickListener
                 activateTextStyle(view = it as TextView, context = context)
-                deactivateTextStyle(
+                deactivateOtherTextStyle(
                     view = binding.tvDiscoverRecommendSortByDate,
                     context = context
                 )
@@ -116,9 +102,34 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             view.typeface = context.fontOf(R.font.pretendard_semibold, Typeface.NORMAL)
         }
 
-        private fun deactivateTextStyle(view: TextView, context: Context) {
+        private fun deactivateOtherTextStyle(view: TextView, context: Context) {
             view.setTextColor(context.colorOf(R.color.G2))
             view.typeface = context.fontOf(R.font.pretendard_regular, Typeface.NORMAL)
+        }
+
+        companion object {
+            private const val SORT_BY_DATE = "date"
+            private const val SORT_BY_SCRAP = "scrap"
+        }
+    }
+
+    class RecommendCourseViewHolder(
+        private val binding: ItemDiscoverMultiviewRecommendCourseBinding,
+        onHeartButtonClick: (Int, Boolean) -> Unit,
+        onCourseItemClick: (Int) -> Unit,
+        handleVisitorMode: () -> Unit
+    ) : DiscoverMultiViewHolder(binding) {
+        private val recommendAdapter by lazy {
+            DiscoverRecommendAdapter(
+                onHeartButtonClick,
+                onCourseItemClick,
+                handleVisitorMode
+            )
+        }
+
+        fun bind(courses: List<RecommendCourse>) {
+            Timber.d("추천 코스 리스트 크기: ${courses.size}")
+            initRecommendRecyclerView(courses)
         }
 
         private fun initRecommendRecyclerView(courses: List<RecommendCourse>) {
@@ -156,11 +167,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 scrap = updatedCourse.scrap
             }
             recommendAdapter.notifyItemChanged(targetIndex)
-        }
-
-        companion object {
-            private const val SORT_BY_DATE = "date"
-            private const val SORT_BY_SCRAP = "scrap"
         }
     }
 }
