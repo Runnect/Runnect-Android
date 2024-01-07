@@ -51,6 +51,7 @@ interface CommonToolbarLayout {
 
     /**
      * ToolBar 초기화 메소드
+     * Activity or Fragment에서 구현
      */
     fun initToolBarLayout()
 
@@ -109,7 +110,8 @@ interface CommonToolbarLayout {
     }
 
     /**
-     * AppBar의 Title Text 설정
+     * Toolbar의 Title Text 설정
+     * - Title Text는 Toolbar의 정가운데에 위치하는 TextView를 의미
      * @param textResId title 텍스트 리소스 id
      */
     fun setToolBarTitleText(@StringRes textResId: Int) {
@@ -119,7 +121,8 @@ interface CommonToolbarLayout {
     }
 
     /**
-     * AppBar의 Title Text 설정
+     * Toolbar의 Title Text 설정
+     * - Title Text는 Toolbar의 정가운데에 위치하는 TextView를 의미
      * @param title title 텍스트
      */
     fun setToolBarTitleText(title: String) {
@@ -150,30 +153,6 @@ interface CommonToolbarLayout {
         }
     }
 
-    /**
-     * Toolbar 높이 설정 메소드
-     * @param height 높이 값(dp)
-     */
-    fun setToolbarHeight(height: Int = TOOLBAR_HEIGHT) {
-        toolbarBinding.toolbar.run {
-            context?.let {
-                setViewSize(toolbarBinding.toolbar, height = height.dpToPx(it))
-            }
-        }
-    }
-
-    /**
-     * 뷰 size 설정
-     * @param view
-     * @param width
-     * @param height
-     */
-    private fun setViewSize(view: View, width: Int = VIEW_SIZE_NONE, height: Int = VIEW_SIZE_NONE) {
-        view.layoutParams = view.layoutParams.apply {
-            this.width = if (width > VIEW_SIZE_NONE) width else this.width
-            this.height = if (height > VIEW_SIZE_NONE) height else this.height
-        }
-    }
 
     /**
      * Toolbar의 왼쪽 영역에 메뉴 아이템들을 추가합니다.
