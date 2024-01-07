@@ -66,7 +66,7 @@ class CourseMainFragment :
         } else {
             context?.let {
                 PermissionUtil.requestLocationPermission(
-                    it, { cameraUpdate(currentLocation) },
+                    it, { updateCamera(currentLocation) },
                     { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
                 )
             }
@@ -77,11 +77,11 @@ class CourseMainFragment :
     private fun initCurrentLocationButtonClickListener() {
         binding.btnCurrentLocation.setOnClickListener {
             if (isLocationPermissionGranted()) {
-                cameraUpdate(currentLocation)
+                updateCamera(currentLocation)
             } else {
                 context?.let {
                     PermissionUtil.requestLocationPermission(
-                        it, { cameraUpdate(currentLocation) },
+                        it, { updateCamera(currentLocation) },
                         { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
                     )
                 }
@@ -140,7 +140,7 @@ class CourseMainFragment :
         } == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun cameraUpdate(location: LatLng) {
+    private fun updateCamera(location: LatLng) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude))
             .animate(CameraAnimation.Easing)
         naverMap.moveCamera(cameraUpdate)

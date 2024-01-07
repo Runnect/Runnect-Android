@@ -96,7 +96,7 @@ class MyDrawDetailActivity :
 
             this.let {
                 PermissionUtil.requestLocationPermission(
-                    it, { toCountDownButton() },
+                    it, { navigateToCountDown() },
                     { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
                 )
             }
@@ -111,7 +111,7 @@ class MyDrawDetailActivity :
         ).show()
     }
 
-    private fun toCountDownButton() {
+    private fun navigateToCountDown() {
         startActivity(Intent(this, CountDownActivity::class.java).apply {
             putExtra(EXTRA_COURSE_DATA, viewModel.myDrawToRunData.value)
         })
