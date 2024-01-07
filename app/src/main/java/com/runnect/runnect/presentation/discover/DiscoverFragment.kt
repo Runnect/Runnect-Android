@@ -98,7 +98,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Timber.d("viewpager position: $position")
                 updateBannerPosition(position)
                 updateBannerIndicatorPosition()
             }
@@ -392,8 +391,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    // 추천 코스 조회에 성공하면, 멀티뷰 어댑터에 아이템 추가
-                    multiViewAdapter.addMultiViewItem(state.data)
+                    // 마라톤 코스로 리사이클러뷰가 초기화 된 경우에만
+                    if (::multiViewAdapter.isInitialized) {
+                        // 멀티뷰 어댑터에 추천 코스 목록 추가
+                        multiViewAdapter.addMultiViewItem(state.data)
+                    }
                 }
 
                 is UiStateV2.Failure -> {

@@ -128,7 +128,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         }
 
         fun bind(courses: List<RecommendCourse>) {
-            Timber.d("추천 코스 리스트 크기: ${courses.size}")
             initRecommendRecyclerView(courses)
         }
 

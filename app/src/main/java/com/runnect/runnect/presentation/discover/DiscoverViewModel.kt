@@ -48,9 +48,9 @@ class DiscoverViewModel @Inject constructor(
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
-    private var isRecommendCoursePageEnd = false
     private var currentPageNumber = FIRST_PAGE_NUM
-    private var currentSortCriteria: String = DEFAULT_COURSE_SORT_CRITERIA
+    private var isRecommendCoursePageEnd = false
+    private var currentSortCriteria = DEFAULT_COURSE_SORT_CRITERIA
 
     init {
         getDiscoverBanners()
@@ -64,12 +64,14 @@ class DiscoverViewModel @Inject constructor(
 
     fun refreshCurrentCourses() {
         getMarathonCourses()
-        initRecommendCoursePageNumber()
+
+        initRecommendCoursePageState()
         getRecommendCourses()
     }
 
-    private fun initRecommendCoursePageNumber() {
+    private fun initRecommendCoursePageState() {
         currentPageNumber = FIRST_PAGE_NUM
+        isRecommendCoursePageEnd = false
     }
 
     private fun getDiscoverBanners() {
@@ -123,6 +125,8 @@ class DiscoverViewModel @Inject constructor(
                 }
 
                 isRecommendCoursePageEnd = pagingData.isEnd
+                Timber.d("페이지 끝에 도달? $isRecommendCoursePageEnd")
+
                 _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
                 Timber.d("RECOMMEND COURSE GET SUCCESS")
             }.onFailure { exception ->
@@ -133,6 +137,7 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun sortRecommendCourses(criteria: String) {
+        initRecommendCoursePageState()
         saveCurrentSortCriteria(criteria)
 
         viewModelScope.launch {
@@ -149,6 +154,8 @@ class DiscoverViewModel @Inject constructor(
                 }
 
                 isRecommendCoursePageEnd = pagingData.isEnd
+                Timber.d("페이지 끝에 도달? $isRecommendCoursePageEnd")
+
                 _recommendCourseSortState.value = UiStateV2.Success(pagingData.recommendCourses)
                 Timber.d("RECOMMEND COURSE GET SUCCESS")
             }.onFailure { exception ->
@@ -168,7 +175,7 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             if (isRecommendCoursePageEnd) return@launch
 
-            Timber.d("다음 페이지를 요청했어요!")
+            Timber.d("다음 페이지를 요청했어요! (정렬 기준: $currentSortCriteria)")
             _recommendCourseNextPageState.value = UiStateV2.Loading
             currentPageNumber++
 
@@ -184,6 +191,8 @@ class DiscoverViewModel @Inject constructor(
                     }
 
                     isRecommendCoursePageEnd = pagingData.isEnd
+                    Timber.d("페이지 끝에 도달? $isRecommendCoursePageEnd")
+
                     _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 }
