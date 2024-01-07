@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -170,8 +171,11 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
         })
 
         binding.cvStartCurrentLocation.setOnClickListener {
-            PermissionUtil.requestLocationPermission(this) {
-                startCurrentLocation()
+            this.let {
+                PermissionUtil.requestLocationPermission(
+                    it, { startCurrentLocation() },
+                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                )
             }
         }
 
@@ -180,6 +184,13 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
         }
     }
 
+    private fun showPermissionDeniedToast() {
+        Toast.makeText(
+            this,
+            R.string.location_permission_denied,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 
     private fun startCurrentLocation() {
         startActivity(

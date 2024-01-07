@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -63,19 +64,26 @@ class CourseMainFragment :
                 initView()
             }
         } else {
-            PermissionUtil.requestLocationPermission(requireContext()) {
-                cameraUpdate(currentLocation)
+            context?.let {
+                PermissionUtil.requestLocationPermission(
+                    it, { cameraUpdate(currentLocation) },
+                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                )
             }
         }
     }
+
 
     private fun initCurrentLocationButtonClickListener() {
         binding.btnCurrentLocation.setOnClickListener {
             if (isLocationPermissionGranted()) {
                 cameraUpdate(currentLocation)
             } else {
-                PermissionUtil.requestLocationPermission(requireContext()) {
-                    cameraUpdate(currentLocation)
+                context?.let {
+                    PermissionUtil.requestLocationPermission(
+                        it, { cameraUpdate(currentLocation) },
+                        { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                    )
                 }
             }
         }
@@ -124,10 +132,12 @@ class CourseMainFragment :
     }
 
     private fun isLocationPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        return context?.let {
+            ContextCompat.checkSelfPermission(
+                it,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        } == PackageManager.PERMISSION_GRANTED
     }
 
     private fun cameraUpdate(location: LatLng) {
@@ -135,6 +145,14 @@ class CourseMainFragment :
             .animate(CameraAnimation.Easing)
         naverMap.moveCamera(cameraUpdate)
 
+    }
+
+    private fun showPermissionDeniedToast() {
+        Toast.makeText(
+            context,
+            R.string.location_permission_denied,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     companion object {

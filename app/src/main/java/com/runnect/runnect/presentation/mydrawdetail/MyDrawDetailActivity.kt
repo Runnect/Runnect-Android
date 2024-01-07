@@ -3,6 +3,7 @@ package com.runnect.runnect.presentation.mydrawdetail
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.net.toUri
@@ -92,10 +93,22 @@ class MyDrawDetailActivity :
 
     private fun initDrawButtonClickListener() {
         binding.btnMyDrawDetailRun.setOnClickListener {
-            PermissionUtil.requestLocationPermission(this) {
-                toCountDownButton()
+
+            this.let {
+                PermissionUtil.requestLocationPermission(
+                    it, { toCountDownButton() },
+                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                )
             }
         }
+    }
+
+    private fun showPermissionDeniedToast() {
+        Toast.makeText(
+            this,
+            R.string.location_permission_denied,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun toCountDownButton() {

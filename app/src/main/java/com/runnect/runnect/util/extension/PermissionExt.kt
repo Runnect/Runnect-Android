@@ -6,10 +6,15 @@ import android.widget.Toast
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.runnect.runnect.R
-import com.runnect.runnect.presentation.coursemain.CourseMainFragment
 
 object PermissionUtil {
-    fun requestLocationPermission(context: Context, onPermissionGranted: () -> Unit) {
+    fun requestLocationPermission(
+        context: Context,
+        onPermissionGranted: () -> Unit,
+        onPermissionDenied: () -> Unit,
+        permissionType: PermissionType
+    ) {
+        val permission = setUpPermissionByType(permissionType)
         TedPermission.create()
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
@@ -17,20 +22,41 @@ object PermissionUtil {
                 }
 
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(
-                        context,
-                        R.string.location_permission_denied,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    onPermissionDenied()
                 }
             })
-            .setRationaleTitle(R.string.location_permission_title)
-            .setRationaleMessage(R.string.location_permission_content)
-            .setDeniedMessage(R.string.location_permission_guide)
-            .setPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
+            .setRationaleTitle(permission.title)
+            .setRationaleMessage(permission.content)
+            .setDeniedMessage(permission.guide)
+            .setPermissions(*permission.permissions.toTypedArray())
             .check()
+    }
+
+    enum class PermissionType {
+        LOCATION,
+        // 필요한 권한 있을 시 추가
+    }
+
+    data class PermissionInfo(
+        val permissions: List<String>,
+        val title: Int,
+        val content: Int,
+        val guide: Int
+    )
+
+    private fun setUpPermissionByType(permissionType: PermissionType): PermissionInfo {
+        return when (permissionType) {
+            PermissionType.LOCATION -> {
+                PermissionInfo(
+                    listOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ),
+                    R.string.location_permission_title,
+                    R.string.location_permission_content,
+                    R.string.location_permission_guide
+                )
+            }
+        }
     }
 }

@@ -309,14 +309,27 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         bottomSheetDialog.setContentView(bottomSheetView)
 
         btnCreateCourse.setOnClickListener {
-            PermissionUtil.requestLocationPermission(this) {
-                hideKeyboard(etCourseName)
-                bottomSheetDialog.dismiss()
-                createMBR()
+            this.let {
+                PermissionUtil.requestLocationPermission(
+                    it, {
+                        hideKeyboard(etCourseName)
+                        bottomSheetDialog.dismiss()
+                        createMBR()
+                    },
+                    { showPermissionDeniedToast() }, PermissionUtil.PermissionType.LOCATION
+                )
             }
         }
 
         return bottomSheetDialog
+    }
+
+    private fun showPermissionDeniedToast() {
+        Toast.makeText(
+            this,
+            R.string.location_permission_denied,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun activateDrawCourse() {
