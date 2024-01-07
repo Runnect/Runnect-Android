@@ -70,14 +70,9 @@ class DiscoverMultiViewAdapter(
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
         // 외부 리사이클러뷰의 추천 코스 리스트 갱신 -> 내부 리사이클러뷰 재바인딩 -> 새로운 데이터 submitList
         val position = DiscoverMultiViewType.RECOMMEND_COURSE.ordinal
-        val originSize = currentList[position].size
-        Timber.d("원래 배열 크기: $originSize")
         currentList[position].addAll(nextPageCourses)
-
-        if (currentList[position].size > originSize) {
-            Timber.d("페이지가 추가된 배열 크기: ${currentList[position].size}")
-            notifyItemChanged(position)
-        }
+        Timber.d("페이지가 추가된 배열 크기: ${currentList[position].size}")
+        notifyItemChanged(position)
     }
 
     fun updateCourseItem(
