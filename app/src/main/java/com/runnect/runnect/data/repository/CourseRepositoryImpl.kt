@@ -12,6 +12,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
@@ -100,7 +101,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
-    ): Result<Unit?> = runCatching {
+    ): Result<ResponsePostScrap?> = runCatching {
         remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).data
     }
 }
