@@ -229,7 +229,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
-        setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
@@ -304,6 +303,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
                     initMultiViewAdapter(multiViewItems)
                     initMultiRecyclerView()
+
+                    // 어댑터 초기화 되면 추천 코스 목록 추가
+                    setupRecommendCourseGetStateObserver()
                 }
 
                 is UiStateV2.Failure -> {
@@ -324,11 +326,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    // 마라톤 코스로 리사이클러뷰 어댑터가 초기화 된 경우에만
-                    if (::multiViewAdapter.isInitialized) {
-                        // 추천 코스 목록 추가하기
-                        multiViewAdapter.addMultiViewItem(state.data)
-                    }
+                    multiViewAdapter.addMultiViewItem(state.data)
                 }
 
                 is UiStateV2.Failure -> {
