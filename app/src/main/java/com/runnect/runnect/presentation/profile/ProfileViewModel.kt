@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
@@ -21,22 +22,14 @@ class ProfileViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
-    val courseScrapState: LiveData<UiStateV2<Unit?>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
+    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
     private val _userProfileState = MutableLiveData<UiStateV2<UserProfile>>()
     val userProfileState: LiveData<UiStateV2<UserProfile>>
         get() = _userProfileState
 
-    private val _scrapCourseData = MutableLiveData<Pair<Int, Boolean>>()
-
-    val scrapCourseData: LiveData<Pair<Int, Boolean>>
-        get() = _scrapCourseData
-
-    fun saveScrapCourseData(courseId: Int, scrapTF: Boolean) {
-        _scrapCourseData.value = Pair(courseId, scrapTF)
-    }
 
     fun getUserProfile(userId: Int) {
         viewModelScope.launch {
@@ -62,7 +55,6 @@ class ProfileViewModel @Inject constructor(
     fun postCourseScrap(courseId: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             _courseScrapState.value = UiStateV2.Loading
-
             courseRepository.postCourseScrap(
                 RequestPostCourseScrap(
                     publicCourseId = courseId, scrapTF = scrapTF.toString()

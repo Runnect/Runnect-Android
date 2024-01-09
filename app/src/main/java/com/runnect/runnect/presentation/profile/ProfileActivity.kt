@@ -36,7 +36,6 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     private fun initAdapter() {
         adapter = ProfileCourseAdapter(onScrapButtonClick = { courseId, scrapTF ->
             viewModel.postCourseScrap(courseId = courseId, scrapTF = scrapTF)
-            viewModel.saveScrapCourseData(courseId = courseId, scrapTF = scrapTF)
         }, onCourseItemClick = { courseId ->
             navigateToCourseDetail(courseId)
         }).also { adapter ->
@@ -106,10 +105,11 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
                 }
 
                 is UiStateV2.Success -> {
-                    viewModel.scrapCourseData.value?.let { scrapCourseData ->
-                        scrapCourseData.let { data ->
-                            adapter.updateCourseItem(courseId = data.first, scrapTF = data.second)
-                        }
+                    state.data?.let { it ->
+                        adapter.updateCourseItem(
+                            courseId = it.publicCourseId.toInt(),
+                            scrapTF = it.scrapTF
+                        )
                     }
                 }
 
