@@ -1,6 +1,10 @@
 package com.runnect.runnect.domain.entity
 
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType.*
+
 sealed class DiscoverMultiViewItem(
+    private val viewType: DiscoverMultiViewType,
     open val id: Int
 ) {
     data class MarathonCourse(
@@ -10,7 +14,7 @@ sealed class DiscoverMultiViewItem(
         val image: String,
         var scrap: Boolean,
         val departure: String,
-    ) : DiscoverMultiViewItem(id)
+    ) : DiscoverMultiViewItem(MARATHON, id)
 
     data class RecommendCourse(
         override val id: Int,
@@ -19,5 +23,7 @@ sealed class DiscoverMultiViewItem(
         val image: String,
         var scrap: Boolean,
         val departure: String,
-    ) : DiscoverMultiViewItem(id)
+    ) : DiscoverMultiViewItem(RECOMMEND, id)
+
+    fun getMultiViewType() = viewType
 }
