@@ -15,8 +15,10 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
@@ -40,7 +42,7 @@ class MyDrawDetailActivity :
         getMyDrawDetail()
         backButton()
         addObserver()
-        toCountDownButton()
+        initDrawButtonClickListener()
         deleteButton()
     }
 
@@ -88,12 +90,28 @@ class MyDrawDetailActivity :
         viewModel.getMyDrawDetail(courseId = courseId)
     }
 
-    fun toCountDownButton() {
+
+    private fun initDrawButtonClickListener() {
         binding.btnMyDrawDetailRun.setOnClickListener {
-            startActivity(Intent(this, CountDownActivity::class.java).apply {
-                putExtra(EXTRA_COURSE_DATA, viewModel.myDrawToRunData.value)
-            })
+            this.let {
+                PermissionUtil.requestLocationPermission(
+                    context = it,
+                    onPermissionGranted = { navigateToCountDown() },
+                    onPermissionDenied = { showPermissionDeniedToast() },
+                    permissionType = PermissionUtil.PermissionType.LOCATION
+                )
+            }
         }
+    }
+
+    private fun showPermissionDeniedToast() {
+        showToast(getString(R.string.location_permission_denied))
+    }
+
+    private fun navigateToCountDown() {
+        startActivity(Intent(this, CountDownActivity::class.java).apply {
+            putExtra(EXTRA_COURSE_DATA, viewModel.myDrawToRunData.value)
+        })
     }
 
     fun addObserver() {
@@ -158,7 +176,7 @@ class MyDrawDetailActivity :
         }
     }
 
-    fun deleteCourse() {
+    private fun deleteCourse() {
         viewModel.deleteMyDrawCourse(selectList)
     }
 
