@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
@@ -37,8 +38,8 @@ class DiscoverViewModel @Inject constructor(
     val nextPageState: LiveData<UiStateV2<List<RecommendCourse>>>
         get() = _nextPageState
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
-    val courseScrapState: LiveData<UiStateV2<Unit?>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
+    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
     private var _clickedCourseId = -1

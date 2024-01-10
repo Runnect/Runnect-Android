@@ -20,7 +20,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
@@ -47,8 +46,10 @@ import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
@@ -186,7 +187,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     private fun initCustomLocationMode() {
         isCustomLocationMode = true
-
         with(binding) {
             customDepartureMarker.isVisible = true
             customDepartureInfoWindow.isVisible = true
@@ -197,7 +197,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 showDrawGuide()
                 hideDeparture()
                 showDrawCourse()
-                drawCourse(departureLatLng = getCenterPosition())
+                getCenterPosition().apply {
+                    departureLatLng = this
+                }.let(::drawCourse)
                 hideFloatedDeparture()
             }
         }
@@ -308,12 +310,25 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         bottomSheetDialog.setContentView(bottomSheetView)
 
         btnCreateCourse.setOnClickListener {
-            hideKeyboard(etCourseName)
-            bottomSheetDialog.dismiss()
-            createMBR()
+            this.let {
+                PermissionUtil.requestLocationPermission(
+                    context = it,
+                    onPermissionGranted = {
+                        hideKeyboard(etCourseName)
+                        bottomSheetDialog.dismiss()
+                        createMBR()
+                    },
+                    onPermissionDenied = { showPermissionDeniedToast() },
+                    permissionType = PermissionUtil.PermissionType.LOCATION
+                )
+            }
         }
 
         return bottomSheetDialog
+    }
+
+    private fun showPermissionDeniedToast() {
+        showToast(getString(R.string.location_permission_denied))
     }
 
     private fun activateDrawCourse() {
