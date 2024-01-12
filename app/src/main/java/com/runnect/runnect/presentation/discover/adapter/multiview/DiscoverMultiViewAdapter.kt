@@ -8,21 +8,23 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
-    private val multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>>,
+    multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
+    private val currentList: MutableList<MutableList<DiscoverMultiViewItem>> =
+        multiViewItems.map { it.toMutableList() }.toMutableList()
 
     override fun getItemViewType(position: Int): Int {
-        return when (multiViewItems[position].first()) {
+        return when (currentList[position].first()) {
             is MarathonCourse -> DiscoverMultiViewType.MARATHON.ordinal
             is RecommendCourse -> DiscoverMultiViewType.RECOMMEND.ordinal
         }
     }
 
-    override fun getItemCount(): Int = multiViewItems.size
+    override fun getItemCount(): Int = currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return multiViewHolderFactory.createMultiViewHolder(
@@ -37,13 +39,13 @@ class DiscoverMultiViewAdapter(
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
-                (multiViewItems[position] as? List<MarathonCourse>)?.let {
+                (currentList[position] as? List<MarathonCourse>)?.let {
                     holder.bind(it)
                 }
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                (multiViewItems[position] as? List<RecommendCourse>)?.let {
+                (currentList[position] as? List<RecommendCourse>)?.let {
                     holder.bind(it)
                 }
             }
@@ -51,14 +53,14 @@ class DiscoverMultiViewAdapter(
     }
 
     fun addMultiViewItem(courses: List<DiscoverMultiViewItem>) {
-        multiViewItems.add(courses.toMutableList())
+        currentList.add(courses.toMutableList())
         notifyItemInserted(itemCount - 1)
     }
 
     fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
         // 외부 리사이클러뷰의 추천 코스 리스트 갱신 -> 내부 리사이클러뷰 재바인딩 -> 새로운 데이터 submitList
         val position = DiscoverMultiViewType.RECOMMEND.ordinal
-        multiViewItems[position].addAll(nextPageCourses)
+        currentList[position].addAll(nextPageCourses)
         notifyItemChanged(position)
     }
 
@@ -66,14 +68,14 @@ class DiscoverMultiViewAdapter(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        val targetItem = multiViewItems.flatten().find { item ->
+        val targetItem = currentList.flatten().find { item ->
             item.id == publicCourseId
         } ?: return
 
         when (targetItem) {
             is MarathonCourse -> {
                 val position = DiscoverMultiViewType.MARATHON.ordinal
-                val targetIndex = multiViewItems[position].indexOf(targetItem)
+                val targetIndex = currentList[position].indexOf(targetItem)
                 multiViewHolderFactory.marathonViewHolder.updateMarathonCourseItem(
                     targetIndex = targetIndex,
                     updatedCourse = updatedCourse
@@ -82,7 +84,7 @@ class DiscoverMultiViewAdapter(
 
             is RecommendCourse -> {
                 val position = DiscoverMultiViewType.RECOMMEND.ordinal
-                val targetIndex = multiViewItems[position].indexOf(targetItem)
+                val targetIndex = currentList[position].indexOf(targetItem)
                 multiViewHolderFactory.recommendViewHolder.updateRecommendCourseItem(
                     targetIndex = targetIndex,
                     updatedCourse = updatedCourse

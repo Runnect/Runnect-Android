@@ -297,8 +297,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
 
-                    val multiViewItems = mutableListOf<MutableList<DiscoverMultiViewItem>>()
-                    multiViewItems.add(state.data.toMutableList())
+                    val multiViewItems = mutableListOf<List<DiscoverMultiViewItem>>()
+                    multiViewItems.add(state.data)
 
                     // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
                     initMultiViewAdapter(multiViewItems)
@@ -352,7 +352,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.pbDiscoverLoading.isVisible = false
     }
 
-    private fun initMultiViewAdapter(multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>>) {
+    private fun initMultiViewAdapter(multiViewItems: List<List<DiscoverMultiViewItem>>) {
         multiViewAdapter = DiscoverMultiViewAdapter(
             multiViewItems = multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
