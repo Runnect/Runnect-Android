@@ -454,8 +454,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
     }
 
-    fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourses(pageNo = pageNo, ordering = "date")
+    fun getRecommendCourses() {
+        viewModel.getRecommendCourses()
     }
 
     override fun onAttach(context: Context) {

@@ -51,7 +51,7 @@ class DiscoverViewModel @Inject constructor(
     init {
         getDiscoverBanners()
         getMarathonCourses()
-        getRecommendCourses(pageNo = FIRST_PAGE_NUM, ordering = "date")
+        getRecommendCourses()
     }
 
     fun saveClickedCourseId(id: Int) {
@@ -61,7 +61,7 @@ class DiscoverViewModel @Inject constructor(
     fun refreshDiscoverCourses() {
         getMarathonCourses()
         initRecommendCoursePagingData()
-        getRecommendCourses(pageNo = currentPageNumber, ordering = "date")
+        getRecommendCourses()
     }
 
     private fun initRecommendCoursePagingData() {
@@ -90,7 +90,8 @@ class DiscoverViewModel @Inject constructor(
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
                     if (courses == null) {
-                        _marathonCourseState.value = UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
+                        _marathonCourseState.value =
+                            UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
                         return@launch
                     }
 
@@ -104,25 +105,27 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourses(pageNo: Int, ordering: String) {
+    fun getRecommendCourses() {
         viewModelScope.launch {
             _recommendCourseState.value = UiStateV2.Loading
 
-            courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
-                .onSuccess { pagingData ->
-                    if (pagingData == null) {
-                        _recommendCourseState.value =
-                            UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
-                        return@onSuccess
-                    }
-
-                    isRecommendCoursePageEnd = pagingData.isEnd
-                    _recommendCourseState.value = UiStateV2.Success(pagingData.recommendCourses)
-                    Timber.d("RECOMMEND COURSE GET SUCCESS")
-                }.onFailure { exception ->
-                    _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
-                    Timber.e("RECOMMEND COURSE GET FAIL")
+            courseRepository.getRecommendCourse(
+                pageNo = FIRST_PAGE_NUM.toString(),
+                ordering = DEFAULT_SORT_CRITERIA
+            ).onSuccess { pagingData ->
+                if (pagingData == null) {
+                    _recommendCourseState.value =
+                        UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                    return@onSuccess
                 }
+
+                isRecommendCoursePageEnd = pagingData.isEnd
+                _recommendCourseState.value = UiStateV2.Success(pagingData.recommendCourses)
+                Timber.d("RECOMMEND COURSE GET SUCCESS")
+            }.onFailure { exception ->
+                _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
+                Timber.e("RECOMMEND COURSE GET FAIL")
+            }
         }
     }
 
@@ -138,7 +141,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = currentPageNumber.toString(),
-                ordering = "date"
+                ordering = DEFAULT_SORT_CRITERIA
             )
                 .onSuccess { pagingData ->
                     if (pagingData == null) {
@@ -176,5 +179,6 @@ class DiscoverViewModel @Inject constructor(
 
     companion object {
         private const val FIRST_PAGE_NUM = 1
+        private const val DEFAULT_SORT_CRITERIA = "date"
     }
 }
