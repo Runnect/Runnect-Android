@@ -18,10 +18,11 @@ class DiscoverMultiViewAdapter(
         multiViewItems.map { it.toMutableList() }.toMutableList()
 
     override fun getItemViewType(position: Int): Int {
-        return when (currentList[position].first()) {
-            is MarathonCourse -> DiscoverMultiViewType.MARATHON.ordinal
-            is RecommendCourse -> DiscoverMultiViewType.RECOMMEND.ordinal
-        }
+        if (currentList.isEmpty())
+            return DiscoverMultiViewType.MARATHON.ordinal
+
+        val multiViewItem = currentList[position].first()
+        return multiViewItem.getMultiViewType().ordinal
     }
 
     override fun getItemCount(): Int = currentList.size
