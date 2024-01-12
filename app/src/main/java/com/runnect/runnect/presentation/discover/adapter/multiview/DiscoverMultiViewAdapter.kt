@@ -38,6 +38,8 @@ class DiscoverMultiViewAdapter(
     }
 
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
+        if (currentList.isEmpty()) return
+
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
                 (currentList[position] as? List<MarathonCourse>)?.let {
