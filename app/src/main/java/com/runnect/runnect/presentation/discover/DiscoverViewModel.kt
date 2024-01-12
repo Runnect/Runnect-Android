@@ -8,7 +8,6 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -39,8 +38,6 @@ class DiscoverViewModel @Inject constructor(
     val nextPageState: LiveData<UiStateV2<List<RecommendCourse>>>
         get() = _nextPageState
 
-    private val multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>> = mutableListOf()
-
     private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
     val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
@@ -49,22 +46,27 @@ class DiscoverViewModel @Inject constructor(
     val clickedCourseId get() = _clickedCourseId
 
     private var isRecommendCoursePageEnd = false
-    private var currentPageNo = 1
+    private var currentPageNumber = FIRST_PAGE_NUM
 
     init {
         getDiscoverBanners()
-        getMarathonCourse()
-        getRecommendCourse(pageNo = 1, ordering = "date")
+        getMarathonCourses()
+        getRecommendCourses(pageNo = FIRST_PAGE_NUM, ordering = "date")
     }
 
     fun saveClickedCourseId(id: Int) {
         _clickedCourseId = id
     }
 
-    fun refreshCurrentCourses() {
-        currentPageNo = 1
-        getMarathonCourse()
-        getRecommendCourse(pageNo = currentPageNo, ordering = "date")
+    fun refreshDiscoverCourses() {
+        getMarathonCourses()
+        initRecommendCoursePagingData()
+        getRecommendCourses(pageNo = currentPageNumber, ordering = "date")
+    }
+
+    private fun initRecommendCoursePagingData() {
+        isRecommendCoursePageEnd = false
+        currentPageNumber = FIRST_PAGE_NUM
     }
 
     private fun getDiscoverBanners() {
@@ -81,7 +83,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun getMarathonCourse() {
+    private fun getMarathonCourses() {
         viewModelScope.launch {
             _marathonCourseState.value = UiStateV2.Loading
 
@@ -102,7 +104,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourse(pageNo: Int, ordering: String) {
+    fun getRecommendCourses(pageNo: Int, ordering: String) {
         viewModelScope.launch {
             _recommendCourseState.value = UiStateV2.Loading
 
@@ -132,10 +134,10 @@ class DiscoverViewModel @Inject constructor(
 
             Timber.d("다음 페이지를 요청했어요!")
             _nextPageState.value = UiStateV2.Loading
-            currentPageNo++
+            currentPageNumber++
 
             courseRepository.getRecommendCourse(
-                pageNo = currentPageNo.toString(),
+                pageNo = currentPageNumber.toString(),
                 ordering = "date"
             )
                 .onSuccess { pagingData ->
@@ -170,5 +172,9 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
+    }
+
+    companion object {
+        private const val FIRST_PAGE_NUM = 1
     }
 }

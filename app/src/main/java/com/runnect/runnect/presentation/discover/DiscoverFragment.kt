@@ -17,7 +17,6 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -231,7 +230,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.refreshCurrentCourses()
+            multiViewAdapter.clearMultiViewItems()
+            viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -274,6 +274,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
+        setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
@@ -341,15 +342,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
-
-                    val multiViewItems = mutableListOf<List<DiscoverMultiViewItem>>()
-                    multiViewItems.add(state.data)
-
-                    // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
-
-
-                    // 어댑터 초기화 되면 추천 코스 목록 추가
-                    setupRecommendCourseGetStateObserver()
+                    multiViewAdapter.addMultiViewItem(courses = state.data)
                 }
 
                 is UiStateV2.Failure -> {
@@ -369,11 +362,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
                 is UiStateV2.Success -> {
-                    multiViewAdapter.addMultiViewItem(state.data)
+                    dismissLoadingProgressBar()
+                    multiViewAdapter.addMultiViewItem(courses = state.data)
                 }
 
                 is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
@@ -400,8 +397,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val nextPageCourses = state.data
-                    multiViewAdapter.addRecommendCourseNextPage(nextPageCourses)
+                    multiViewAdapter.addRecommendCourseNextPage(courses = state.data)
                 }
 
                 is UiStateV2.Failure -> {
@@ -459,7 +455,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
+        viewModel.getRecommendCourses(pageNo = pageNo, ordering = "date")
     }
 
     override fun onAttach(context: Context) {

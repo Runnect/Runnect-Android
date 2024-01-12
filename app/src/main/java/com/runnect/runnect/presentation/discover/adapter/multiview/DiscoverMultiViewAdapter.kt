@@ -51,15 +51,20 @@ class DiscoverMultiViewAdapter(
         }
     }
 
+    fun clearMultiViewItems() {
+        currentList.clear()
+        notifyItemRangeRemoved(0, itemCount)
+    }
+
     fun addMultiViewItem(courses: List<DiscoverMultiViewItem>) {
         currentList.add(courses.toMutableList())
         notifyItemInserted(itemCount - 1)
     }
 
-    fun addRecommendCourseNextPage(nextPageCourses: List<RecommendCourse>) {
+    fun addRecommendCourseNextPage(courses: List<RecommendCourse>) {
         // 외부 리사이클러뷰의 추천 코스 리스트 갱신 -> 내부 리사이클러뷰 재바인딩 -> 새로운 데이터 submitList
         val position = DiscoverMultiViewType.RECOMMEND.ordinal
-        currentList[position].addAll(nextPageCourses)
+        currentList[position].addAll(courses)
         notifyItemChanged(position)
     }
 
