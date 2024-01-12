@@ -93,6 +93,45 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         initMultiRecyclerView()
     }
 
+    private fun initMultiViewAdapter() {
+        multiViewAdapter = DiscoverMultiViewAdapter(
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(courseId, scrap)
+            },
+            onCourseItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            handleVisitorMode = {
+                context?.let { showCourseScrapWarningToast(it) }
+            }
+        )
+    }
+
+    private fun initMultiRecyclerView() {
+        binding.rvDiscoverMultiView.apply {
+            setHasFixedSize(true)
+            adapter = multiViewAdapter
+        }
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val context = context ?: return
+        Intent(context, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+            resultLauncher.launch(this)
+        }
+        activity?.applyScreenEnterAnimation()
+    }
+
+    private fun showCourseScrapWarningToast(context: Context) {
+        RunnectToast.createToast(
+            context = context,
+            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+        ).show()
+    }
+
     private fun registerCallback() {
         registerBannerPageChangeCallback()
         registerBackPressedCallback()
@@ -355,45 +394,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun dismissLoadingProgressBar() {
         binding.rvDiscoverMultiView.isVisible = true
         binding.pbDiscoverLoading.isVisible = false
-    }
-
-    private fun initMultiViewAdapter() {
-        multiViewAdapter = DiscoverMultiViewAdapter(
-            onHeartButtonClick = { courseId, scrap ->
-                viewModel.postCourseScrap(courseId, scrap)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
-            },
-            handleVisitorMode = {
-                context?.let { showCourseScrapWarningToast(it) }
-            }
-        )
-    }
-
-    private fun initMultiRecyclerView() {
-        binding.rvDiscoverMultiView.apply {
-            setHasFixedSize(true)
-            adapter = multiViewAdapter
-        }
-    }
-
-    private fun navigateToDetailScreen(publicCourseId: Int) {
-        val context = context ?: return
-        Intent(context, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-            resultLauncher.launch(this)
-        }
-        activity?.applyScreenEnterAnimation()
-    }
-
-    private fun showCourseScrapWarningToast(context: Context) {
-        RunnectToast.createToast(
-            context = context,
-            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
-        ).show()
     }
 
     private fun setupRecommendCourseNextPageStateObserver() {
