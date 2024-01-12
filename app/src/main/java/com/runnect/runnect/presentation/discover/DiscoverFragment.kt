@@ -75,6 +75,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = viewLifecycleOwner
 
         createBannerScrollJob()
+        initView()
         addListener()
         addObserver()
         registerCallback()
@@ -85,6 +86,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             delay(BANNER_SCROLL_DELAY_TIME)
             binding.vpDiscoverBanner.setCurrentItem(++currentBannerPosition, true)
         }
+    }
+
+    private fun initView() {
+        initMultiViewAdapter()
+        initMultiRecyclerView()
     }
 
     private fun registerCallback() {
@@ -301,8 +307,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     multiViewItems.add(state.data)
 
                     // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
-                    initMultiViewAdapter(multiViewItems)
-                    initMultiRecyclerView()
+
 
                     // 어댑터 초기화 되면 추천 코스 목록 추가
                     setupRecommendCourseGetStateObserver()
@@ -352,9 +357,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.pbDiscoverLoading.isVisible = false
     }
 
-    private fun initMultiViewAdapter(multiViewItems: List<List<DiscoverMultiViewItem>>) {
+    private fun initMultiViewAdapter() {
         multiViewAdapter = DiscoverMultiViewAdapter(
-            multiViewItems = multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             },

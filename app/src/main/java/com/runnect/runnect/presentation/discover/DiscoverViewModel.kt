@@ -8,6 +8,7 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -37,6 +38,8 @@ class DiscoverViewModel @Inject constructor(
     private val _nextPageState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
     val nextPageState: LiveData<UiStateV2<List<RecommendCourse>>>
         get() = _nextPageState
+
+    private val multiViewItems: MutableList<MutableList<DiscoverMultiViewItem>> = mutableListOf()
 
     private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
     val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>

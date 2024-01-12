@@ -8,19 +8,15 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
-    multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
-    private val currentList: MutableList<MutableList<DiscoverMultiViewItem>> =
-        multiViewItems.map { it.toMutableList() }.toMutableList()
+    private val currentList = mutableListOf<MutableList<DiscoverMultiViewItem>>()
 
     override fun getItemViewType(position: Int): Int {
-        if (currentList.isEmpty())
-            return DiscoverMultiViewType.MARATHON.ordinal
-
+        if (currentList.isEmpty()) return DiscoverMultiViewType.MARATHON.ordinal
         val multiViewItem = currentList[position].first()
         return multiViewItem.getMultiViewType().ordinal
     }
