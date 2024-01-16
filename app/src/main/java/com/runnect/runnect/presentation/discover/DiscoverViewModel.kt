@@ -116,7 +116,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = FIRST_PAGE_NUM.toString(),
-                ordering = DEFAULT_COURSE_SORT_CRITERIA
+                sort = DEFAULT_COURSE_SORT_CRITERIA
             ).onSuccess { pagingData ->
                 if (pagingData == null) {
                     _recommendCourseGetState.value =
@@ -149,7 +149,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = FIRST_PAGE_NUM.toString(),
-                ordering = criteria
+                sort = criteria
             ).onSuccess { pagingData ->
                 if (pagingData == null) {
                     _recommendCourseSortState.value =
@@ -185,7 +185,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = currentPageNumber.toString(),
-                ordering = currentSortCriteria
+                sort = currentSortCriteria
             )
                 .onSuccess { pagingData ->
                     if (pagingData == null) {
@@ -197,11 +197,13 @@ class DiscoverViewModel @Inject constructor(
                     isRecommendCoursePageEnd = pagingData.isEnd
                     Timber.d("페이지 끝에 도달? $isRecommendCoursePageEnd")
 
-                    _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
+                    _recommendCourseNextPageState.value =
+                        UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 }
                 .onFailure { exception ->
-                    _recommendCourseNextPageState.value = UiStateV2.Failure(exception.message.toString())
+                    _recommendCourseNextPageState.value =
+                        UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE NEXT PAGE GET FAIL")
                 }
         }

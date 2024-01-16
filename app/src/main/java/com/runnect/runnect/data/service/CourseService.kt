@@ -19,7 +19,7 @@ interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
         @Query("pageNo") pageNo: String,
-        @Query("ordering") ordering: String
+        @Query("sort") sort: String
     ): BaseResponse<ResponseGetDiscoverRecommend>
 
     @POST("/api/scrap")
