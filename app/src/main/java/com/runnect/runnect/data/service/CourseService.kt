@@ -1,10 +1,10 @@
 package com.runnect.runnect.data.service
 
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
-import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
@@ -25,7 +25,7 @@ interface CourseService {
     @POST("/api/scrap")
     suspend fun postCourseScrap(
         @Body requestPostCourseScrap: RequestPostCourseScrap,
-    ): BaseResponse<Unit>
+    ): BaseResponse<ResponsePostScrap>
 
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(

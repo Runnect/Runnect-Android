@@ -45,11 +45,20 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 adapter = marathonAdapter.apply {
                     submitList(courses)
                 }
+                addItemDecorationOnlyOnce(recyclerView = this, itemCount = courses.size)
+            }
+        }
+
+        private fun addItemDecorationOnlyOnce(recyclerView: RecyclerView, itemCount: Int) {
+            with(recyclerView) {
+                if (itemDecorationCount > 0) {
+                    removeItemDecorationAt(0)
+                }
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
                         spaceSize = 10,
-                        itemCount = courses.size
+                        itemCount = itemCount
                     )
                 )
             }
@@ -138,7 +147,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 adapter = recommendAdapter.apply {
                     submitList(courses)
                 }
-                addItemDecorationOnlyOnce(this)
+                addItemDecorationOnlyOnce(recyclerView = this)
             }
         }
 

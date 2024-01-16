@@ -28,7 +28,7 @@ class DiscoverMultiViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return multiViewHolderFactory.createMultiViewHolder(
             parent = parent,
-            viewType = DiscoverMultiViewType.values()[viewType],
+            viewType = viewType,
             onHeartButtonClick = onHeartButtonClick,
             onCourseItemClick = onCourseItemClick,
             handleVisitorMode = handleVisitorMode,
@@ -54,6 +54,11 @@ class DiscoverMultiViewAdapter(
                 }
             }
         }
+    }
+
+    fun clearMultiViewItems() {
+        currentList.clear()
+        notifyItemRangeRemoved(0, itemCount)
     }
 
     fun addMultiViewItem(courses: List<DiscoverMultiViewItem>) {

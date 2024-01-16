@@ -1,40 +1,72 @@
 package com.runnect.runnect.presentation.profile
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.runnect.runnect.data.dto.DepartureData
-import com.runnect.runnect.data.dto.ProfileCourseData
+import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.domain.entity.UserProfile
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.state.UiStateV2
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
-class ProfileViewModel : ViewModel() {
-    val courseList: List<ProfileCourseData> = generateMockData()
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val courseRepository: CourseRepository
+) :
+    ViewModel() {
 
-    private fun generateMockData(): List<ProfileCourseData> {
-        val mockDataList = mutableListOf<ProfileCourseData>()
+    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
+    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
+        get() = _courseScrapState
 
-        val mockData1 = ProfileCourseData(
-            publicCourseId = 1,
-            courseId = 101,
-            title = "제목 1",
-            image = "이미지 1",
-            departure = DepartureData(
-                region = "지역 1",
-                city = "도시 1",
-                town = "동네 1",
-                detail = null,
-                name = "출발지 1"
-            ),
-            scrapTF = true
-        )
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        mockDataList.add(mockData1)
-        return mockDataList
+    private val _userProfileState = MutableLiveData<UiStateV2<UserProfile>>()
+    val userProfileState: LiveData<UiStateV2<UserProfile>>
+        get() = _userProfileState
+
+
+    fun getUserProfile(userId: Int) {
+        viewModelScope.launch {
+            _userProfileState.value = UiStateV2.Loading
+
+            userRepository.getUserProfile(userId = userId)
+                .onSuccess { profileData ->
+                    if (profileData == null) {
+                        _userProfileState.value = UiStateV2.Failure("PROFILE DATA IS NULL")
+                        Timber.d("PROFILE DATA IS NULL")
+                        return@launch
+                    }
+                    _userProfileState.value = UiStateV2.Success(profileData)
+                    Timber.d("GET PROFILE DATA SUCCESS")
+                }
+                .onFailure { error ->
+                    _userProfileState.value = UiStateV2.Failure(error.message.toString())
+                    Timber.e("GET PROFILE DATA FAILURE")
+                }
+        }
+    }
+
+    fun postCourseScrap(courseId: Int, scrapTF: Boolean) {
+        viewModelScope.launch {
+            _courseScrapState.value = UiStateV2.Loading
+            courseRepository.postCourseScrap(
+                RequestPostCourseScrap(
+                    publicCourseId = courseId, scrapTF = scrapTF.toString()
+                )
+            ).onSuccess { response ->
+                Timber.d("POST COURSE SCRAP SUCCESS")
+                _courseScrapState.value = UiStateV2.Success(response)
+            }.onFailure { exception ->
+                Timber.e("POST COURSE SCRAP FAILURE")
+                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
+            }
+        }
     }
 }
+

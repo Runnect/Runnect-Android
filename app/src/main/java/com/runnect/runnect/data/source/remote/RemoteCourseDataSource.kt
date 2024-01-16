@@ -1,16 +1,17 @@
 package com.runnect.runnect.data.source.remote
 
-import com.runnect.runnect.data.service.CourseService
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
-import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
-import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
+import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.base.BaseResponse
+import com.runnect.runnect.data.service.CourseService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class RemoteCourseDataSource @Inject constructor(
     ): BaseResponse<ResponseGetDiscoverRecommend> =
         courseService.getRecommendCourse(pageNo = pageNo, ordering = ordering)
 
-    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): BaseResponse<Unit> =
+    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): BaseResponse<ResponsePostScrap> =
         courseService.postCourseScrap(requestPostCourseScrap)
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)

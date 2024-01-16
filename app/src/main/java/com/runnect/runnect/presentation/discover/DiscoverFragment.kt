@@ -62,6 +62,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val updatedCourse: EditableDiscoverCourse =
                     result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
+
                 multiViewAdapter.updateCourseItem(
                     publicCourseId = viewModel.clickedCourseId,
                     updatedCourse = updatedCourse
@@ -156,14 +157,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (isCompletedLoadingCourse() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
+        if (isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
             Timber.d("스크롤이 끝에 도달했어요!")
             if (viewModel.isNextPageLoading()) return
             viewModel.getRecommendCourseNextPage()
         }
     }
 
-    private fun isCompletedLoadingCourse() = ::multiViewAdapter.isInitialized &&
+    private fun isCourseLoadingCompleted() = ::multiViewAdapter.isInitialized &&
             multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
 
     private fun showCircleUploadButton() {
@@ -185,7 +186,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.refreshCurrentCourses()
+            multiViewAdapter.clearMultiViewItems()
+            viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -437,8 +439,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.recommendCourseNextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val nextPageCourses = state.data
-                    multiViewAdapter.addRecommendCourseNextPage(nextPageCourses)
+                    multiViewAdapter.addRecommendCourseNextPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {

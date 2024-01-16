@@ -12,6 +12,22 @@ fun ImageView.setLocalImageByResourceId(resId: Int) {
     load(resId)
 }
 
+@BindingAdapter("setStampImageByResourceId")
+fun ImageView.setStampImageByResourceId(stampId: String?) {
+    val resNameParam = "mypage_img_stamp_"
+    val resType = "drawable"
+    val packageName = context.packageName
+
+    var resName = ""
+    resName = if (stampId == "CSPR0") {
+        "${resNameParam}basic"
+    } else {
+        "${resNameParam}$stampId"
+    }
+    val resId = context.resources.getIdentifier(resName, resType, packageName)
+    setImageResource(resId)
+}
+
 @BindingAdapter("setImageUrl")
 fun ImageView.setImageUrl(url: String?) {
     if (url == null) return
