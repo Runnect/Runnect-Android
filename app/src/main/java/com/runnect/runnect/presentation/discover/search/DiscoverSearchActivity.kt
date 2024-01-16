@@ -29,6 +29,7 @@ import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showKeyboard
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -67,7 +68,7 @@ class DiscoverSearchActivity :
 
     private fun initSearchAdapter() {
         searchAdapter = DiscoverSearchAdapter(
-            onRecommendItemClick = { courseId ->
+            onCourseItemClick = { courseId ->
                 navigateToDetailScreen(courseId)
                 viewModel.saveClickedCourseId(courseId)
             },
@@ -141,23 +142,54 @@ class DiscoverSearchActivity :
 
     private fun addObserver() {
         setupCourseSearchStateObserver()
+        setupCourseScrapStateObserver()
     }
 
     private fun setupCourseSearchStateObserver() {
         viewModel.courseSearchState.observe(this) { state ->
             when (state) {
-                is UiStateV2.Loading -> showProgressBar()
+                is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    dismissProgressBar()
+                    dismissLoadingProgressBar()
                     showRecyclerView()
                     searchAdapter.submitList(state.data)
                 }
 
+                is UiStateV2.Failure -> {
+                    showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg
+                    )
+                }
+
                 else -> {
-                    dismissProgressBar()
+                    dismissLoadingProgressBar()
                     showEmptySearchResult()
                 }
+            }
+        }
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data ?: return@observe
+                    searchAdapter.updateCourseScrap(
+                        publicCourseId = response.publicCourseId.toInt(),
+                        scrap = response.scrapTF
+                    )
+                }
+
+                is UiStateV2.Failure -> {
+                    showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg
+                    )
+                }
+
+                else -> {}
             }
         }
     }
@@ -174,11 +206,11 @@ class DiscoverSearchActivity :
         }
     }
 
-    private fun showProgressBar() {
+    private fun showLoadingProgressBar() {
         binding.pbDiscoverSearch.isVisible = true
     }
 
-    private fun dismissProgressBar() {
+    private fun dismissLoadingProgressBar() {
         binding.pbDiscoverSearch.isVisible = false
     }
 

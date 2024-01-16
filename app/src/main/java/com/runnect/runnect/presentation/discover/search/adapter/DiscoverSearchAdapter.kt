@@ -12,14 +12,16 @@ import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class DiscoverSearchAdapter(
-    private val onRecommendItemClick: (Int) -> Unit,
+    private val onCourseItemClick: (Int) -> Unit,
     private val onHeartButtonClick: (Int, Boolean) -> Unit
 ) : ListAdapter<DiscoverSearchCourse, DiscoverSearchAdapter.DiscoverSearchViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverSearchViewHolder {
         return DiscoverSearchViewHolder(
-            ItemDiscoverSearchBinding.inflate(
+            binding = ItemDiscoverSearchBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            )
+            ),
+            onCourseItemClick = onCourseItemClick,
+            onHeartButtonClick = onHeartButtonClick
         )
     }
 
@@ -27,26 +29,18 @@ class DiscoverSearchAdapter(
         holder.bind(currentList[position])
     }
 
-    inner class DiscoverSearchViewHolder(
-        private val binding: com.runnect.runnect.databinding.ItemDiscoverSearchBinding
+    class DiscoverSearchViewHolder(
+        private val binding: ItemDiscoverSearchBinding,
+        private val onCourseItemClick: (Int) -> Unit,
+        private val onHeartButtonClick: (Int, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverSearchCourse) {
             with(binding) {
                 this.course = course
                 ivItemDiscoverCourseScrap.isSelected = course.scrap
 
-                initHeartButtonClickListener(ivItemDiscoverCourseScrap, course)
                 initCourseItemClickListener(root, course)
-            }
-        }
-
-        private fun initHeartButtonClickListener(
-            imageView: AppCompatImageView,
-            course: DiscoverSearchCourse
-        ) {
-            imageView.setOnClickListener { view ->
-                view.isSelected = !view.isSelected
-                onHeartButtonClick(course.id, view.isSelected)
+                initHeartButtonClickListener(ivItemDiscoverCourseScrap, course)
             }
         }
 
@@ -55,7 +49,16 @@ class DiscoverSearchAdapter(
             course: DiscoverSearchCourse
         ) {
             itemView.setOnClickListener {
-                onRecommendItemClick(course.id)
+                onCourseItemClick(course.id)
+            }
+        }
+
+        private fun initHeartButtonClickListener(
+            imageView: AppCompatImageView,
+            course: DiscoverSearchCourse
+        ) {
+            imageView.setOnClickListener { view ->
+                onHeartButtonClick(course.id, !view.isSelected)
             }
         }
     }
@@ -65,6 +68,19 @@ class DiscoverSearchAdapter(
             if (course.id == publicCourseId) {
                 course.title = updatedCourse.title
                 course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return@forEachIndexed
+            }
+        }
+    }
+
+    fun updateCourseScrap(
+        publicCourseId: Int,
+        scrap: Boolean
+    ) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.scrap = scrap
                 notifyItemChanged(index)
                 return@forEachIndexed
             }
