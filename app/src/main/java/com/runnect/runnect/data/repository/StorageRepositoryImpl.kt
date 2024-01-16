@@ -13,10 +13,8 @@ import javax.inject.Inject
 
 class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSource: RemoteStorageDataSource) :
     StorageRepository {
-    override suspend fun getMyDrawCourse(): MutableList<MyDrawCourse> {
-        return remoteStorageDataSource.getMyDrawCourse().body()?.let {
-            it.data.courses.toMyDrawCourse().toMutableList()
-        } ?: mutableListOf()
+    override suspend fun getMyDrawCourse(): Result<List<MyDrawCourse>?> = runCatching{
+        remoteStorageDataSource.getMyDrawCourse().data?.toMyDrawCourse()
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
