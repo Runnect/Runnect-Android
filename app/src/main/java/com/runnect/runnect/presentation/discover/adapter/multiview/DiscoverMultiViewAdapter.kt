@@ -8,15 +8,16 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 
 class DiscoverMultiViewAdapter(
+    multiViewItems: List<List<DiscoverMultiViewItem>>,
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
-    private val currentList = mutableListOf<MutableList<DiscoverMultiViewItem>>()
+    private val currentList: MutableList<MutableList<DiscoverMultiViewItem>> =
+        multiViewItems.map { it.toMutableList() }.toMutableList()
 
     override fun getItemViewType(position: Int): Int {
-        if (currentList.isEmpty()) return DiscoverMultiViewType.MARATHON.ordinal
         val multiViewItem = currentList[position].first()
         return multiViewItem.getMultiViewType().ordinal
     }
@@ -26,7 +27,7 @@ class DiscoverMultiViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return multiViewHolderFactory.createMultiViewHolder(
             parent = parent,
-            viewType = DiscoverMultiViewType.values()[viewType],
+            viewType = viewType,
             onHeartButtonClick = onHeartButtonClick,
             onCourseItemClick = onCourseItemClick,
             handleVisitorMode = handleVisitorMode
@@ -34,8 +35,6 @@ class DiscoverMultiViewAdapter(
     }
 
     override fun onBindViewHolder(holder: DiscoverMultiViewHolder, position: Int) {
-        if (currentList.isEmpty()) return
-
         when (holder) {
             is DiscoverMultiViewHolder.MarathonCourseViewHolder -> {
                 (currentList[position] as? List<MarathonCourse>)?.let {
