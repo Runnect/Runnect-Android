@@ -135,6 +135,10 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
+    fun initRecommendCourseGetState() {
+        _recommendCourseGetState.value = UiStateV2.Empty
+    }
+
     fun sortRecommendCourses(criteria: String) {
         initRecommendCoursePagingData()
         saveCurrentSortCriteria(criteria)
