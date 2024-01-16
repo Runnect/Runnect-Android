@@ -10,13 +10,13 @@ class DiscoverMultiViewHolderFactory {
 
     fun createMultiViewHolder(
         parent: ViewGroup,
-        viewType: DiscoverMultiViewType,
+        viewType: Int,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
     ): DiscoverMultiViewHolder {
         when (viewType) {
-            DiscoverMultiViewType.MARATHON -> {
+            DiscoverMultiViewType.MARATHON.ordinal -> {
                 marathonViewHolder = DiscoverMultiViewHolder.MarathonCourseViewHolder(
                     binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_marathon),
                     onHeartButtonClick = onHeartButtonClick,
@@ -26,7 +26,7 @@ class DiscoverMultiViewHolderFactory {
                 return marathonViewHolder
             }
 
-            DiscoverMultiViewType.RECOMMEND -> {
+            else -> {
                 recommendViewHolder = DiscoverMultiViewHolder.RecommendCourseViewHolder(
                     binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_recommend),
                     onHeartButtonClick = onHeartButtonClick,
