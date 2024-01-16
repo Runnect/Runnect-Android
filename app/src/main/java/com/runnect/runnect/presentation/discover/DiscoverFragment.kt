@@ -17,6 +17,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -74,7 +75,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.lifecycleOwner = viewLifecycleOwner
 
         createBannerScrollJob()
-        initView()
         addListener()
         addObserver()
         registerCallback()
@@ -87,13 +87,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun initView() {
-        initMultiViewAdapter()
-        initMultiRecyclerView()
-    }
-
-    private fun initMultiViewAdapter() {
+    private fun initMultiViewAdapter(multiViewItems: List<List<DiscoverMultiViewItem>>) {
         multiViewAdapter = DiscoverMultiViewAdapter(
+            multiViewItems = multiViewItems,
             onHeartButtonClick = { courseId, scrap ->
                 viewModel.postCourseScrap(courseId, scrap)
             },
@@ -201,14 +197,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (isCompletedLoadingCourse() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
+        if (isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
             Timber.d("스크롤이 끝에 도달했어요!")
             if (viewModel.isNextPageLoading()) return
             viewModel.getRecommendCourseNextPage()
         }
     }
 
-    private fun isCompletedLoadingCourse() = ::multiViewAdapter.isInitialized &&
+    private fun isCourseLoadingCompleted() = ::multiViewAdapter.isInitialized &&
             multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
 
     private fun showCircleUploadButton() {
@@ -274,7 +270,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
-        setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
@@ -342,7 +337,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
-                    multiViewAdapter.addMultiViewItem(courses = state.data)
+
+                    val multiViewItems = mutableListOf<List<DiscoverMultiViewItem>>()
+                    multiViewItems.add(state.data)
+
+                    // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
+                    initMultiViewAdapter(multiViewItems)
+                    initMultiRecyclerView()
+
+                    // 어댑터 초기화 되면 추천 코스 목록 추가
+                    setupRecommendCourseGetStateObserver()
                 }
 
                 is UiStateV2.Failure -> {
@@ -362,15 +366,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Loading -> showLoadingProgressBar()
-
                 is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
-                    multiViewAdapter.addMultiViewItem(courses = state.data)
+                    multiViewAdapter.addMultiViewItem(state.data)
+                    viewModel.initRecommendCourseGetState()
                 }
 
                 is UiStateV2.Failure -> {
-                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
@@ -397,7 +398,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    multiViewAdapter.addRecommendCourseNextPage(courses = state.data)
+                    multiViewAdapter.addRecommendCourseNextPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {
