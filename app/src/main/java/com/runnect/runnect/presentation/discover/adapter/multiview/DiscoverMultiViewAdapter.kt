@@ -87,4 +87,33 @@ class DiscoverMultiViewAdapter(
             }
         }
     }
+
+    fun updateCourseScrap(
+        publicCourseId: Int,
+        scrap: Boolean
+    ) {
+        val targetItem = currentList.flatten().find { item ->
+            item.id == publicCourseId
+        } ?: return
+
+        when (targetItem) {
+            is MarathonCourse -> {
+                val position = DiscoverMultiViewType.MARATHON.ordinal
+                val targetIndex = currentList[position].indexOf(targetItem)
+                multiViewHolderFactory.marathonViewHolder.updateMarathonCourseScrap(
+                    targetIndex = targetIndex,
+                    scrap = scrap
+                )
+            }
+
+            is RecommendCourse -> {
+                val position = DiscoverMultiViewType.RECOMMEND.ordinal
+                val targetIndex = currentList[position].indexOf(targetItem)
+                multiViewHolderFactory.recommendViewHolder.updateRecommendCourseScrap(
+                    targetIndex = targetIndex,
+                    scrap = scrap
+                )
+            }
+        }
+    }
 }

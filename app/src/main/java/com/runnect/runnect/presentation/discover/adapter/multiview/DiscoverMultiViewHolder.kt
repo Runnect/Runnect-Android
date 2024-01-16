@@ -60,6 +60,13 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             }
             marathonAdapter.notifyItemChanged(targetIndex)
         }
+
+        fun updateMarathonCourseScrap(targetIndex: Int, scrap: Boolean) {
+            marathonAdapter.currentList[targetIndex].apply {
+                this.scrap = scrap
+            }
+            marathonAdapter.notifyItemChanged(targetIndex)
+        }
     }
 
     class RecommendCourseViewHolder(
@@ -114,6 +121,13 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             recommendAdapter.currentList[targetIndex].apply {
                 title = updatedCourse.title
                 scrap = updatedCourse.scrap
+            }
+            recommendAdapter.notifyItemChanged(targetIndex)
+        }
+
+        fun updateRecommendCourseScrap(targetIndex: Int, scrap: Boolean) {
+            recommendAdapter.currentList[targetIndex].apply {
+                this.scrap = scrap
             }
             recommendAdapter.notifyItemChanged(targetIndex)
         }

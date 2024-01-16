@@ -60,9 +60,7 @@ class DiscoverRecommendAdapter(
                     handleVisitorMode.invoke()
                     return@setOnClickListener
                 }
-
-                view.isSelected = !view.isSelected
-                onHeartButtonClick.invoke(course.id, view.isSelected)
+                onHeartButtonClick.invoke(course.id, !view.isSelected)
             }
         }
 
