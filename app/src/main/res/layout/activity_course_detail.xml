@@ -323,7 +323,7 @@
                 android:fontFamily="@font/pretendard_semibold"
                 android:text="@{courseDetail.scrapCount}"
                 android:textColor="@color/G2"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="@id/iv_course_detail_scrap"
                 app:layout_constraintStart_toStartOf="@id/iv_course_detail_scrap"
                 app:layout_constraintTop_toBottomOf="@id/iv_course_detail_scrap"
