@@ -186,8 +186,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            multiViewAdapter.clearMultiViewItems()
-            viewModel.refreshDiscoverCourses()
+            viewModel.refreshCurrentCourses()
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -321,8 +320,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun createMultiViewItems(courses: List<DiscoverMultiViewItem>): MutableList<List<DiscoverMultiViewItem>> {
-        return mutableListOf<List<DiscoverMultiViewItem>>().apply {
+    private fun createMultiViewItems(courses: List<DiscoverMultiViewItem>) =
+        mutableListOf<List<DiscoverMultiViewItem>>().apply {
             add(courses)
             add(
                 listOf(
@@ -334,7 +333,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 )
             )
         }
-    }
 
     private fun showLoadingProgressBar() {
         binding.rvDiscoverMultiView.isVisible = false
