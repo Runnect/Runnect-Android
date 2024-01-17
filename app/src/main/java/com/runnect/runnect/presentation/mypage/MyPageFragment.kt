@@ -11,6 +11,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.talk.TalkApiClient
 import com.runnect.runnect.BuildConfig
@@ -25,6 +28,7 @@ import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -34,10 +38,10 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private val viewModel: MyPageViewModel by activityViewModels()
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initFirebaseAnalytics()
         if (isVisitorMode) {
             activateVisitorMode()
         } else {
@@ -46,6 +50,9 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
     }
 
+    private fun initFirebaseAnalytics(){
+        firebaseAnalytics = Firebase.analytics
+    }
     private fun activateVisitorMode() {
         with(binding) {
             ivVisitorMode.isVisible = true
@@ -103,18 +110,22 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
 
         binding.viewMyPageMainRewardFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_TO_REWARD)
             startActivity(Intent(requireContext(), MyRewardActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
         binding.viewMyPageMainHistoryFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_TO_HISTORY)
             startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
+
         binding.viewMyPageMainUploadFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_TO_UPLOADED_COURSE)
             startActivity(Intent(requireContext(), MyUploadActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
@@ -181,5 +192,10 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         const val EXTRA_NICK_NAME = "nickname"
         const val EXTRA_PROFILE = "profile_img"
         const val ACCOUNT_INFO_TAG = "accountInfo"
+
+        const val EVENT_TO_HISTORY = "toHistory"
+        const val EVENT_TO_REWARD = "toReward"
+        const val EVENT_TO_UPLOADED_COURSE = "toUpload"
+
     }
 }
