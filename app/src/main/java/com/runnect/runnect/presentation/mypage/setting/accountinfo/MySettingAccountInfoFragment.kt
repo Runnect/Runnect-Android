@@ -10,6 +10,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingFragment
@@ -17,6 +20,7 @@ import com.runnect.runnect.databinding.FragmentMySettingAccountInfoBinding
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import com.runnect.runnect.util.extension.showToast
@@ -29,6 +33,7 @@ class MySettingAccountInfoFragment :
     BindingFragment<FragmentMySettingAccountInfoBinding>(R.layout.fragment_my_setting_account_info) {
     private lateinit var logoutDialog: AlertDialog
     private lateinit var withdrawalDialog: AlertDialog
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val viewModel: MySettingAccountInfoViewModel by viewModels()
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -44,11 +49,16 @@ class MySettingAccountInfoFragment :
         initLogoutDialog()
         setLogoutDialogClickEvent()
         initWithdrawalDialog()
+        initFirebaseAnalytics()
         setWithdrawalDialogClickEvent()
     }
 
     private fun initLayout() {
         setEmailFromMySetting()
+    }
+
+    private fun initFirebaseAnalytics() {
+        firebaseAnalytics = Firebase.analytics
     }
 
     private fun addListener() {
@@ -57,10 +67,12 @@ class MySettingAccountInfoFragment :
         }
 
         binding.viewSettingAccountInfoLogoutFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_ACCOUNT_TRY_LOGOUT)
             logoutDialog.show()
         }
 
         binding.viewSettingAccountInfoWithdrawalFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_ACCOUNT_TRY_WITHDRAWL)
             withdrawalDialog.show()
         }
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -84,6 +96,7 @@ class MySettingAccountInfoFragment :
     }
 
     private fun handleSuccessfulUserDeletion() {
+        Analytics.logClickedItemEvent(EVENT_ACCOUNT_COMPLETE_WITHDRAWL)
         binding.indeterminateBar.isVisible = false
         moveToLogin()
         showToast("탈퇴 처리되었습니다.")
@@ -114,6 +127,7 @@ class MySettingAccountInfoFragment :
         logoutDialog.setDialogButtonClickListener { which ->
             when (which) {
                 logoutDialog.btn_delete_yes -> {
+                    Analytics.logClickedItemEvent(EVENT_ACCOUNT_COMPLETE_LOGOUT)
                     moveToLogin()
                 }
             }
@@ -160,5 +174,11 @@ class MySettingAccountInfoFragment :
         const val DESCRIPTION_WITHDRAWAL_NO = "아니오"
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
+
+        const val EVENT_ACCOUNT_TRY_LOGOUT = "tryLogout"
+        const val EVENT_ACCOUNT_COMPLETE_LOGOUT = "completeLogout"
+        const val EVENT_ACCOUNT_TRY_WITHDRAWL = "tryWithdrawl"
+        const val EVENT_ACCOUNT_COMPLETE_WITHDRAWL = "completeWithdrawl"
+
     }
 }

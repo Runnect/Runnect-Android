@@ -8,6 +8,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
@@ -17,13 +20,17 @@ import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAcco
 import com.runnect.runnect.util.extension.showWebBrowser
 
 class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fragment_my_setting) {
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initFirebaseAnalytics()
         addListener()
         setVisibleDeveloperMode()
         registerBackPressedCallback()
     }
-
+    private fun initFirebaseAnalytics() {
+        firebaseAnalytics = Firebase.analytics
+    }
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -90,5 +97,6 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         const val TERMS_URL =
             "https://third-sight-046.notion.site/Runnect-5dfee19ccff04c388590e5ee335e77ed"
         private const val DEV_MODE_SCHEME = "runnect://devmode"
+
     }
 }
