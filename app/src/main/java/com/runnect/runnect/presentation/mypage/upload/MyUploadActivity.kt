@@ -9,6 +9,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
@@ -17,8 +20,9 @@ import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -33,13 +37,14 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private val viewModel: MyUploadViewModel by viewModels()
     private lateinit var adapter: MyUploadAdapter
     private lateinit var dialog: AlertDialog
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         viewModel.getUserUploadCourse()
-
+        initFirebaseAnalytics()
         initLayout()
         addListener()
         addObserver()
@@ -50,6 +55,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
     private fun initLayout() {
         initRecyclerView()
+    }
+
+    private fun initFirebaseAnalytics() {
+        firebaseAnalytics = Firebase.analytics
     }
 
     private fun initRecyclerView() {
@@ -75,6 +84,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             handleDeleteButtonClicked(it)
         }
         binding.cvUploadMyPageUploadCourse.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_UPLOAD_COURSE)
             startActivity(Intent(this, DiscoverPickActivity::class.java))
             finish()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -268,5 +278,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         const val DELETE_BTN = "삭제하기"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
+
+        const val EVENT_UPLOAD_COURSE = "uploadCourse"
     }
 }
