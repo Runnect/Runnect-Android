@@ -43,6 +43,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         binding.vm = viewModel
         binding.lifecycleOwner = this
         initLayout()
+        initFirebaseAnalytics()
         addListener()
         addObserver()
         initDialog()
@@ -265,6 +266,6 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         const val EXTRA_HISTORY_DATA = "historyData"
         const val BUNDLE_HISTORY = "historyDataBundle"
 
-        const val EVENT_CLICK_COURSE_DRAWING_IN_RUNNING_RECORD = "clickCourseDrawingInRunningRecord"
+        const val EVENT_CLICK_COURSE_DRAWING_IN_RUNNING_RECORD = "click_course_drawing_in_running_record"
     }
 }

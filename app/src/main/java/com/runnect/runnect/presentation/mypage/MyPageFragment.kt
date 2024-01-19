@@ -195,9 +195,9 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         const val EXTRA_PROFILE = "profile_img"
         const val ACCOUNT_INFO_TAG = "accountInfo"
 
-        const val EVENT_CLICK_RUNNING_RECORD = "clickRunningRecord"
-        const val EVENT_CLICK_GOAL_REWARD = "clickGoalReward"
-        const val EVENT_CLICK_UPLOADED_COURSE = "clickUploadedCourse"
+        const val EVENT_CLICK_RUNNING_RECORD = "click_running_record"
+        const val EVENT_CLICK_GOAL_REWARD = "click_goal_reward"
+        const val EVENT_CLICK_UPLOADED_COURSE = "click_uploaded_course"
 
     }
 }

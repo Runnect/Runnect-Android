@@ -175,10 +175,10 @@ class MySettingAccountInfoFragment :
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
 
-        const val EVENT_VIEW_SUCCESS_LOGOUT = "viewSuccessLogout"
-        const val EVENT_CLICK_TRY_LOGOUT = "clickTryLogout"
-        const val EVENT_VIEW_SUCCESS_WITHDRAW = "viewSuccessWithdraw"
-        const val EVENT_CLICK_TRY_WITHDRAW = "clickTryLogout"
+        const val EVENT_VIEW_SUCCESS_LOGOUT = "view_success_logout"
+        const val EVENT_CLICK_TRY_LOGOUT = "click_try_logout"
+        const val EVENT_VIEW_SUCCESS_WITHDRAW = "view_success_withdraw"
+        const val EVENT_CLICK_TRY_WITHDRAW = "click_try_withdraw"
 
     }
 }

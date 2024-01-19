@@ -13,17 +13,22 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
+import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.setFragmentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -35,6 +40,7 @@ class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
     OnMyDrawItemClick, ItemCount {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     val viewModel: StorageViewModel by viewModels()
 
     lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
@@ -60,6 +66,7 @@ class StorageMyDrawFragment :
         initLayout()
         binding.lifecycleOwner = requireActivity()
         initAdapter()
+        initFirebaseAnalytics()
         editCourse()
         getCourse()
         requireCourse()
@@ -93,6 +100,10 @@ class StorageMyDrawFragment :
             submitList(viewModel.myDrawCourses)
         } //지금 밑에 updateAdapterData()가 있는데 함수들 간 호출 시점만 잘 정해주면 둘 중 하나 없애도 될듯?
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
+    }
+
+    private fun initFirebaseAnalytics() {
+        firebaseAnalytics = Firebase.analytics
     }
 
     fun hideBottomNav() {
@@ -214,6 +225,7 @@ class StorageMyDrawFragment :
     }
 
     private fun handleSuccessfulUploadDeletion() {
+        Analytics.logClickedItemEvent(EVENT_MY_STORAGE_TRY_REMOVE)
         binding.indeterminateBar.isVisible = false
         storageMyDrawAdapter.removeItems(viewModel.itemsToDelete)
         storageMyDrawAdapter.clearSelection()
@@ -355,5 +367,8 @@ class StorageMyDrawFragment :
         const val EXTRA_COURSE_ID = "courseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EDIT_MODE = "선택"
+        const val EVENT_MY_STORAGE_TRY_MODIFY = "click_my_storage_try_modify"
+        const val EVENT_MY_STORAGE_TRY_REMOVE = "click_my_storage_try_remove"
+
     }
 }

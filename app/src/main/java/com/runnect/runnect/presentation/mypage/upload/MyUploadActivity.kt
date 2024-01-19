@@ -279,6 +279,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
 
-        const val EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE = "clickCourseUploadInUploadedCourse"
+        const val EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE = "click_course_upload_in_uploaded_course"
     }
 }
