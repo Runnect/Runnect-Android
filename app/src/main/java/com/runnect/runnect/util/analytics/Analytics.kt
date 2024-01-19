@@ -2,6 +2,7 @@ package com.runnect.runnect.util.analytics
 
 import android.content.Context
 import android.os.Bundle
+import android.util.StatsLog.logEvent
 import com.google.android.gms.common.wrappers.InstantApps
 import com.google.firebase.analytics.FirebaseAnalytics
 
@@ -27,14 +28,13 @@ object Analytics {
         firebaseAnalytics?.setUserProperty(property, value)
     }
 
-    fun logClickedItemEvent(itemName: String) {
-        val bundle = Bundle().apply {
-            putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
+    fun logClickedItemEvent(eventName: String, itemName: String? = null) {
+        val bundle = itemName?.let {
+            Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_NAME, it)
+            }
         }
-        logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle)
+        firebaseAnalytics?.logEvent(eventName, bundle)
     }
 
-    private fun logEvent(eventName: String, params: Bundle) {
-        firebaseAnalytics?.logEvent(eventName, params)
-    }
 }
