@@ -67,12 +67,12 @@ class MySettingAccountInfoFragment :
         }
 
         binding.viewSettingAccountInfoLogoutFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_ACCOUNT_TRY_LOGOUT)
+            Analytics.logClickedItemEvent(EVENT_CLICK_TRY_LOGOUT)
             logoutDialog.show()
         }
 
         binding.viewSettingAccountInfoWithdrawalFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_ACCOUNT_TRY_WITHDRAWL)
+            Analytics.logClickedItemEvent(EVENT_CLICK_TRY_WITHDRAW)
             withdrawalDialog.show()
         }
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -96,7 +96,7 @@ class MySettingAccountInfoFragment :
     }
 
     private fun handleSuccessfulUserDeletion() {
-        Analytics.logClickedItemEvent(EVENT_ACCOUNT_COMPLETE_WITHDRAWL)
+        Analytics.logClickedItemEvent(EVENT_VIEW_SUCCESS_WITHDRAW)
         binding.indeterminateBar.isVisible = false
         moveToLogin()
         showToast("탈퇴 처리되었습니다.")
@@ -127,7 +127,7 @@ class MySettingAccountInfoFragment :
         logoutDialog.setDialogButtonClickListener { which ->
             when (which) {
                 logoutDialog.btn_delete_yes -> {
-                    Analytics.logClickedItemEvent(EVENT_ACCOUNT_COMPLETE_LOGOUT)
+                    Analytics.logClickedItemEvent(EVENT_VIEW_SUCCESS_LOGOUT)
                     moveToLogin()
                 }
             }
@@ -175,10 +175,10 @@ class MySettingAccountInfoFragment :
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
 
-        const val EVENT_ACCOUNT_TRY_LOGOUT = "tryLogout"
-        const val EVENT_ACCOUNT_COMPLETE_LOGOUT = "completeLogout"
-        const val EVENT_ACCOUNT_TRY_WITHDRAWL = "tryWithdrawl"
-        const val EVENT_ACCOUNT_COMPLETE_WITHDRAWL = "completeWithdrawl"
+        const val EVENT_VIEW_SUCCESS_LOGOUT = "viewSuccessLogout"
+        const val EVENT_CLICK_TRY_LOGOUT = "clickTryLogout"
+        const val EVENT_VIEW_SUCCESS_WITHDRAW = "viewSuccessWithdraw"
+        const val EVENT_CLICK_TRY_WITHDRAW = "clickTryLogout"
 
     }
 }
