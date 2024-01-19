@@ -84,7 +84,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             handleDeleteButtonClicked(it)
         }
         binding.cvUploadMyPageUploadCourse.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_UPLOAD_COURSE)
+            Analytics.logClickedItemEvent(EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE)
             startActivity(Intent(this, DiscoverPickActivity::class.java))
             finish()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -279,6 +279,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
 
-        const val EVENT_UPLOAD_COURSE = "uploadCourse"
+        const val EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE = "clickCourseUploadInUploadedCourse"
     }
 }

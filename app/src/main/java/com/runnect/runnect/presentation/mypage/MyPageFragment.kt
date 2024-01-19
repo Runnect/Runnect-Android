@@ -50,9 +50,10 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
     }
 
-    private fun initFirebaseAnalytics(){
+    private fun initFirebaseAnalytics() {
         firebaseAnalytics = Firebase.analytics
     }
+
     private fun activateVisitorMode() {
         with(binding) {
             ivVisitorMode.isVisible = true
@@ -110,14 +111,14 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
 
         binding.viewMyPageMainRewardFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_TO_REWARD)
+            Analytics.logClickedItemEvent(EVENT_CLICK_GOAL_REWARD)
             startActivity(Intent(requireContext(), MyRewardActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
         binding.viewMyPageMainHistoryFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_TO_HISTORY)
+            Analytics.logClickedItemEvent(EVENT_CLICK_RUNNING_RECORD)
             startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
@@ -125,7 +126,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
 
         binding.viewMyPageMainUploadFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_TO_UPLOADED_COURSE)
+            Analytics.logClickedItemEvent(EVENT_CLICK_UPLOADED_COURSE)
             startActivity(Intent(requireContext(), MyUploadActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
@@ -182,10 +183,11 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
     }
 
-    private fun inquiryKakao(){
+    private fun inquiryKakao() {
         val url = TalkApiClient.instance.channelChatUrl(BuildConfig.KAKAO_CHANNEL_ID)
         KakaoCustomTabsClient.openWithDefault(requireActivity(), url)
     }
+
     companion object {
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"
@@ -193,9 +195,9 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         const val EXTRA_PROFILE = "profile_img"
         const val ACCOUNT_INFO_TAG = "accountInfo"
 
-        const val EVENT_TO_HISTORY = "toHistory"
-        const val EVENT_TO_REWARD = "toReward"
-        const val EVENT_TO_UPLOADED_COURSE = "toUpload"
+        const val EVENT_CLICK_RUNNING_RECORD = "clickRunningRecord"
+        const val EVENT_CLICK_GOAL_REWARD = "clickGoalReward"
+        const val EVENT_CLICK_UPLOADED_COURSE = "clickUploadedCourse"
 
     }
 }

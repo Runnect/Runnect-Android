@@ -9,6 +9,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.HistoryInfoDTO
@@ -17,8 +20,9 @@ import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
+import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.callback.listener.OnMyHistoryItemClick
+import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -32,6 +36,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     private val viewModel: MyHistoryViewModel by viewModels()
     private lateinit var adapter: MyHistoryAdapter
     private lateinit var dialog: AlertDialog
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +61,10 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         getRecord()
         binding.rvMyPageHistory.layoutManager = LinearLayoutManager(this)
         binding.rvMyPageHistory.addItemDecoration(RecyclerOffsetDecorationHeight(this, 10))
+    }
+
+    private fun initFirebaseAnalytics() {
+        firebaseAnalytics = Firebase.analytics
     }
 
     private fun getRecord() {
@@ -84,6 +93,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             navigateToPreviousScreenWithAnimation()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_COURSE_DRAWING_IN_RUNNING_RECORD)
             startDrawCourseSearchActivity()
         }
         binding.btnMyPageHistoryEditHistory.setOnClickListener {
@@ -245,6 +255,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
+
     companion object {
         const val CHOICE_MODE_DESC = "기록 선택"
         const val EDIT_CANCEL = "취소"
@@ -253,5 +264,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         const val DELETE_BTN = "삭제하기"
         const val EXTRA_HISTORY_DATA = "historyData"
         const val BUNDLE_HISTORY = "historyDataBundle"
+
+        const val EVENT_CLICK_COURSE_DRAWING_IN_RUNNING_RECORD = "clickCourseDrawingInRunningRecord"
     }
 }
