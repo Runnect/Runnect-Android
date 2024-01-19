@@ -13,21 +13,25 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewAdapter
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
+import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
@@ -45,6 +49,7 @@ import timber.log.Timber
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
     private val viewModel: DiscoverViewModel by viewModels()
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var bannerAdapter: BannerAdapter
     private lateinit var bannerScrollJob: Job
     private var currentBannerPosition = 0
@@ -71,7 +76,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
+        initFirebaseAnalytics()
         createBannerScrollJob()
         addListener()
         addObserver()
@@ -83,6 +88,10 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             delay(BANNER_SCROLL_DELAY_TIME)
             binding.vpDiscoverBanner.setCurrentItem(++currentBannerPosition, true)
         }
+    }
+
+    private fun initFirebaseAnalytics() {
+        firebaseAnalytics = Firebase.analytics
     }
 
     private fun registerCallback() {
@@ -195,6 +204,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initSearchButtonClickListener() {
         val context = context ?: return
         binding.ivDiscoverSearch.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_TRY_SEARCH_COURSE)
             startActivity(Intent(context, DiscoverSearchActivity::class.java))
             activity?.applyScreenEnterAnimation()
         }
@@ -216,6 +226,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             showCourseUploadWarningToast(context)
             return
         }
+        Analytics.logClickedItemEvent(EVENT_CLICK_UPLOAD_BUTTON)
         startActivity(Intent(context, DiscoverPickActivity::class.java))
         activity?.applyScreenEnterAnimation()
     }
@@ -472,5 +483,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EXTRA_EDITABLE_DISCOVER_COURSE = "editable_discover_course"
+
+        const val EVENT_CLICK_UPLOAD_BUTTON = "click_upload_button"
+        const val EVENT_CLICK_TRY_SEARCH_COURSE = "click_try_search_course"
     }
 }
