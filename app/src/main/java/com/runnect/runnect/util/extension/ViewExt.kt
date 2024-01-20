@@ -25,6 +25,7 @@ inline fun View.setOnSingleClickListener(
 fun View.setPadding(@Px size: Int) {
     setPadding(size, size, size, size)
 }
+
 fun <T : ViewDataBinding> ViewGroup.getViewDataBinding(
     @LayoutRes layoutRes: Int
 ): T = DataBindingUtil.inflate(
