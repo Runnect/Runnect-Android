@@ -15,4 +15,5 @@ data class CourseDetail(
     val path: List<List<Double>>,
     val distance: String,
     val departure: String,
+    val userId: Int
 )

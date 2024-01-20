@@ -134,6 +134,9 @@
         <activity
             android:name=".presentation.mypage.upload.MyUploadActivity"
             android:exported="false" />
+        <activity
+            android:name=".presentation.profile.ProfileActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

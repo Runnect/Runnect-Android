@@ -157,6 +157,7 @@
 
     <!-- course detail -->
     <string name="course_detail_title_edit_success_msg">수정이 완료되었습니다</string>
+    <string name="course_detail_list_empty_error_msg">Error: 코스 데이터가 비어있습니다.</string>
 
     <!-- course discover -->
     <string name="discover_marathon_header_title">2023 마라톤 코스</string>
@@ -165,4 +166,11 @@
     <string name="discover_recommend_header_subtitle">나에게 최적화된 코스를 찾아보세요</string>
     <string name="discover_recommend_sort_by_date">최신순</string>
     <string name="discover_recommend_sort_by_scrap">스크랩순</string>
+
+    <string name="common_permission_denied">권한이 거부되었습니다.</string>
+    <!-- location permission -->
+    <string name="location_permission_denied">위치 권한이 거부되었습니다.</string>
+    <string name="location_permission_title">위치권한 요청</string>
+    <string name="location_permission_content">코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.</string>
+    <string name="location_permission_guide">권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]</string>
 </resources>

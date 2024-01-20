@@ -48,4 +48,10 @@ interface UserService {
 
     @DELETE("api/user")
     suspend fun deleteUser(): ResponseDeleteUser
+
+    // 유저 프로필 조회
+    @GET("/api/user/{profileUserId}")
+    suspend fun getUserProfile(
+        @Path("profileUserId") userId: Int,
+    ): BaseResponse<ResponseGetUserProfile>
 }

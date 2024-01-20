@@ -12,10 +12,12 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.util.extension.toData
 import okhttp3.MultipartBody
@@ -32,11 +34,15 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun getRecommendCourse(
         pageNo: String,
         ordering: String
-    ): Result<List<RecommendCourse>?> = runCatching {
-        remoteCourseDataSource.getRecommendCourse(
+    ): Result<RecommendCoursePagingData?> = runCatching {
+        val response = remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
             ordering = ordering
-        ).data?.toRecommendCourses()
+        ).data
+
+        response?.let {
+            RecommendCoursePagingData(response.isEnd, response.toRecommendCourses())
+        }
     }
 
     override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?> =
@@ -95,7 +101,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
-    ): Result<Unit?> = runCatching {
+    ): Result<ResponsePostScrap?> = runCatching {
         remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).data
     }
 }

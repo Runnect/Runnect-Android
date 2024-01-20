@@ -5,14 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
-import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,8 +38,8 @@ class CourseDetailViewModel @Inject constructor(
     val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourse?>>
         get() = _courseDeleteState
 
-    private var _courseScrapState = MutableLiveData<UiStateV2<Unit?>>()
-    val courseScrapState: LiveData<UiStateV2<Unit?>>
+    private var _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
+    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
     // 플래그 변수
@@ -58,21 +59,19 @@ class CourseDetailViewModel @Inject constructor(
     private var _currentScreenMode: ScreenMode = ScreenMode.ReadOnlyMode
     val currentScreenMode get() = _currentScreenMode
 
-    private var savedCourseDetailContents = EditableCourseDetail("", "")
+    private var savedCourseDetail = EditableCourseDetail("", "")
 
-    fun updateCourseDetailContents(courseDetail: EditableCourseDetail?) {
-        courseDetail?.let {
-            _title.value = courseDetail.title
-            _description.value = courseDetail.description
-        }
+    fun updateCourseDetailEditText(course: EditableCourseDetail) {
+        _title.value = course.title
+        _description.value = course.description
     }
 
-    fun saveCurrentContents() {
-        savedCourseDetailContents = EditableCourseDetail(title, description)
+    fun saveCurrentCourseDetail() {
+        savedCourseDetail = EditableCourseDetail(title, description)
     }
 
-    fun restoreOriginalContents() {
-        updateCourseDetailContents(savedCourseDetailContents)
+    fun restoreOriginalCourseDetail() {
+        updateCourseDetailEditText(savedCourseDetail)
     }
 
     fun updateCurrentScreenMode(mode: ScreenMode) {

@@ -25,7 +25,7 @@
             app:scale_base_width="162">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cv_item_discover_course_scrap"
+                android:id="@+id/cv_item_discover_course_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/G4"
@@ -58,13 +58,13 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/pretendard_medium"
                 android:gravity="center_vertical"
-                android:maxLength="13"
+                android:maxLines="1"
                 android:text="@{course.title}"
                 android:textColor="@color/G1"
                 app:scale_height="22"
                 app:scale_textsize="14"
                 app:scale_top="116"
-                app:scale_width="144"
+                app:scale_width="140"
                 tools:text="제목" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -73,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/pretendard_regular"
                 android:gravity="center_vertical"
+                android:maxLines="1"
                 android:text="@{course.departure}"
                 android:textColor="@color/G2"
                 app:scale_height="16"

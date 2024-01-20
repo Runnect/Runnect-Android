@@ -29,21 +29,26 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.*
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER_SEARCH
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE
 import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
+import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
-import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
+import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import com.runnect.runnect.util.extension.getStampResId
@@ -51,7 +56,8 @@ import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
-import com.runnect.runnect.util.mode.ScreenMode.*
+import com.runnect.runnect.util.mode.ScreenMode.EditMode
+import com.runnect.runnect.util.mode.ScreenMode.ReadOnlyMode
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -129,10 +135,29 @@ class CourseDetailActivity :
         applyScreenExitAnimation()
     }
 
+    private fun navigateToUserProfileWithBundle() {
+        Intent(this@CourseDetailActivity, ProfileActivity::class.java).apply {
+            putExtra(EXTRA_COURSE_USER_ID, courseDetail.userId)
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            startActivity(this)
+        }
+        applyScreenEnterAnimation()
+    }
+
     private fun handleBackButtonByCurrentScreenMode() {
         when (viewModel.currentScreenMode) {
             is ReadOnlyMode -> navigateToPreviousScreen()
             is EditMode -> showStopEditingDialog()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let { newIntent ->
+            newIntent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)
+                ?.let { rootScreen = it }
+            publicCourseId = newIntent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, 0)
+            getCourseDetail()
         }
     }
 
@@ -178,6 +203,7 @@ class CourseDetailActivity :
         initScrapButtonClickListener()
         initStartRunButtonClickListener()
         initEditFinishButtonClickListener()
+        initUserInfoClickListener()
 
         initShareButtonClickListener()
         initShowMoreButtonClickListener()
@@ -212,6 +238,12 @@ class CourseDetailActivity :
                 desc = courseDetail.description,
                 image = courseDetail.image
             )
+        }
+    }
+
+    private fun initUserInfoClickListener() {
+        binding.constCourseDetailUserInfo.setOnClickListener {
+            navigateToUserProfileWithBundle()
         }
     }
 
@@ -287,24 +319,33 @@ class CourseDetailActivity :
                 return@setOnClickListener
             }
 
-            Intent(
-                this@CourseDetailActivity,
-                CountDownActivity::class.java
-            ).apply {
-                putExtra(
-                    EXTRA_COURSE_DATA, CourseData(
-                        courseId = courseDetail.courseId,
-                        publicCourseId = courseDetail.id,
-                        touchList = connectedSpots,
-                        startLatLng = departureLatLng,
-                        departure = courseDetail.departure,
-                        distance = courseDetail.distance.toFloat(),
-                        image = courseDetail.image,
-                        dataFrom = "detail"
-                    )
-                )
-                startActivity(this)
+            if (!::departureLatLng.isInitialized || connectedSpots.isEmpty()) {
+                showSnackbar(binding.root, getString(R.string.course_detail_list_empty_error_msg))
+                return@setOnClickListener
             }
+
+            navigateToCountDownActivity()
+        }
+    }
+
+    private fun navigateToCountDownActivity() {
+        Intent(
+            this@CourseDetailActivity,
+            CountDownActivity::class.java
+        ).apply {
+            putExtra(
+                EXTRA_COURSE_DATA, CourseData(
+                    courseId = courseDetail.courseId,
+                    publicCourseId = courseDetail.id,
+                    touchList = connectedSpots,
+                    startLatLng = departureLatLng,
+                    departure = courseDetail.departure,
+                    distance = courseDetail.distance.toFloat(),
+                    image = courseDetail.image,
+                    dataFrom = "detail"
+                )
+            )
+            startActivity(this)
         }
     }
 
@@ -334,7 +375,7 @@ class CourseDetailActivity :
             onNegativeButtonClicked = {},
             onPositiveButtonClicked = {
                 // 편집 모드 -> 뒤로가기 버튼 -> 편집 중단 확인 -> 뷰에 원래 제목으로 보여줌.
-                viewModel.restoreOriginalContents()
+                viewModel.restoreOriginalCourseDetail()
                 enterReadMode()
             }
         )
@@ -396,7 +437,7 @@ class CourseDetailActivity :
     private fun enterEditMode() {
         viewModel.apply {
             updateCurrentScreenMode(EditMode)
-            saveCurrentContents()
+            saveCurrentCourseDetail()
         }
         updateLayoutForEditMode()
     }
@@ -448,7 +489,12 @@ class CourseDetailActivity :
                     courseDetail = state.data ?: return@observe
                     binding.courseDetail = courseDetail
 
-                    viewModel.updateCourseDetailContents(courseDetail.toCourseDetailContents())
+                    val editableCourseDetail = EditableCourseDetail(
+                        title = courseDetail.title,
+                        description = courseDetail.description
+                    )
+                    viewModel.updateCourseDetailEditText(editableCourseDetail)
+
                     updateUserProfileStamp()
                     updateUserLevel()
                     updateScrapState()
@@ -466,16 +512,10 @@ class CourseDetailActivity :
         }
     }
 
-    private fun <T : Any> T.toCourseDetailContents(): EditableCourseDetail? {
-        return when (this) {
-            is CourseDetail -> EditableCourseDetail(title, description)
-            is EditableCourseDetail -> EditableCourseDetail(title, description)
-            else -> null
-        }
-    }
-
     private fun initDepartureLatLng() {
-        departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
+        if (courseDetail.path.isNotEmpty()) {
+            departureLatLng = LatLng(courseDetail.path[0][0], courseDetail.path[0][1])
+        }
     }
 
     private fun initConnectedSpots() {
@@ -494,8 +534,8 @@ class CourseDetailActivity :
                     binding.indeterminateBar.isVisible = false
 
                     state.data?.let { response ->
-                        viewModel.updateCourseDetailContents(response.toCourseDetailContents())
-                        updateTextView(response)
+                        viewModel.updateCourseDetailEditText(response)
+                        updateCourseDetailTextView(response)
                     }
 
                     enterReadMode()
@@ -512,7 +552,7 @@ class CourseDetailActivity :
         }
     }
 
-    private fun updateTextView(courseDetail: EditableCourseDetail) {
+    private fun updateCourseDetailTextView(courseDetail: EditableCourseDetail) {
         binding.apply {
             tvCourseDetailTitle.text = courseDetail.title
             tvCourseDetailDesc.text = courseDetail.description
@@ -600,6 +640,7 @@ class CourseDetailActivity :
         private const val EXTRA_COURSE_DATA = "CourseData"
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
+        private const val EXTRA_COURSE_USER_ID = "courseUserId"
 
         private const val POPUP_MENU_X_OFFSET = 17
         private const val POPUP_MENU_Y_OFFSET = -10
