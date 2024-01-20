@@ -187,7 +187,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            multiViewAdapter.clearMultiViewItems()
             viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
