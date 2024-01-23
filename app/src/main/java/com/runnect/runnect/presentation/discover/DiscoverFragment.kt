@@ -333,15 +333,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupMarathonCourseGetStateObserver() {
         viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Loading -> showLoadingProgressBar()
-
                 is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
                     multiViewAdapter.initMarathonCourses(state.data)
                 }
 
                 is UiStateV2.Failure -> {
-                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
@@ -357,11 +353,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
+                is UiStateV2.Loading -> showLoadingProgressBar()
+
                 is UiStateV2.Success -> {
+                    dismissLoadingProgressBar()
                     multiViewAdapter.initRecommendCourses(state.data)
                 }
 
                 is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
