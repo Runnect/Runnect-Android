@@ -390,7 +390,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    // todo: 추천 코스 다음 페이지 추가
                     multiViewAdapter.addRecommendCourseNextPage(state.data)
                 }
 

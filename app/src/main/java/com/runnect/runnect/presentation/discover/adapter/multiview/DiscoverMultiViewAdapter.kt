@@ -62,7 +62,7 @@ class DiscoverMultiViewAdapter(
     }
 
     private fun refreshViewHolder(viewType: Int) {
-        // 데이터 로딩 시간 차이와 관계 없이
+        // 데이터 로딩 시간과 관계 없이
         // 항상 마라톤 다음에 추천 코스가 추가되도록 뷰 타입 리스트 갱신
         viewTypes = initItemViewTypes()
 
