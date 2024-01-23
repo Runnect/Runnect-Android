@@ -1,8 +1,5 @@
 package com.runnect.runnect.domain.entity
 
-import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
-import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType.*
-
 sealed class DiscoverMultiViewItem(
     open val id: Int
 ) {
