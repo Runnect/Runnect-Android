@@ -51,6 +51,7 @@ class DiscoverViewModel @Inject constructor(
 
     private var isRecommendCoursePageEnd = false
     private var currentPageNumber = FIRST_PAGE_NUM
+    private var currentSortCriteria = DEFAULT_SORT_CRITERIA
 
     init {
         getDiscoverBanners()
@@ -71,6 +72,7 @@ class DiscoverViewModel @Inject constructor(
     private fun initRecommendCoursePagingData() {
         isRecommendCoursePageEnd = false
         currentPageNumber = FIRST_PAGE_NUM
+        currentSortCriteria = DEFAULT_SORT_CRITERIA
     }
 
     private fun getDiscoverBanners() {
@@ -139,13 +141,13 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
             if (isRecommendCoursePageEnd) return@launch
 
-            Timber.d("다음 페이지를 요청했어요!")
+            Timber.d("다음 페이지를 요청했어요! 정렬 기준: $currentSortCriteria")
             _recommendCourseNextPageState.value = UiStateV2.Loading
             currentPageNumber++
 
             courseRepository.getRecommendCourse(
                 pageNo = currentPageNumber.toString(),
-                sort = DEFAULT_SORT_CRITERIA
+                sort = currentSortCriteria
             )
                 .onSuccess { pagingData ->
                     if (pagingData == null) {
@@ -166,6 +168,9 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun sortRecommendCourses(criteria: String) {
+        initRecommendCoursePagingData()
+        saveCurrentSortCriteria(criteria)
+
         viewModelScope.launch {
             _recommendCourseSortState.value = UiStateV2.Loading
 
@@ -187,6 +192,10 @@ class DiscoverViewModel @Inject constructor(
                 Timber.e("RECOMMEND COURSE SORT FAIL")
             }
         }
+    }
+
+    private fun saveCurrentSortCriteria(criteria: String) {
+        currentSortCriteria = criteria
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {

@@ -274,6 +274,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupMarathonCourseGetStateObserver()
         setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
+        setupRecommendCourseSortStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -392,6 +393,26 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Success -> {
                     multiViewAdapter.addRecommendCourseNextPage(state.data)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseSortStateObserver() {
+        viewModel.recommendCourseSortState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    multiViewAdapter.updateRecommendCourseBySorting(state.data)
                 }
 
                 is UiStateV2.Failure -> {

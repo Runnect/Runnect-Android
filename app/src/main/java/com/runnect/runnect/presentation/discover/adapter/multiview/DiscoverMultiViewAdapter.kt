@@ -95,6 +95,14 @@ class DiscoverMultiViewAdapter(
         multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(items)
     }
 
+    fun updateRecommendCourseBySorting(items: List<RecommendCourse>) {
+        recommendCourses.apply {
+            clear()
+            addAll(items)
+        }
+        multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseBySorting(items)
+    }
+
     fun updateCourseItem(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
