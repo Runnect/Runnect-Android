@@ -9,29 +9,25 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
-import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SCRAP_COURSE
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class StorageMainFragment :
     BindingFragment<FragmentStorageMainBinding>(R.layout.fragment_storage_main) {
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
     val viewModel: StorageViewModel by viewModels()
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initFirebaseAnalytics()
         if (isVisitorMode) {
             activateVisitorMode()
         } else {
@@ -75,17 +71,15 @@ class StorageMainFragment :
         }
     }
 
-    private fun initFirebaseAnalytics() {
-        firebaseAnalytics = Firebase.analytics
-    }
-
     private fun tabLayoutAction() {
         binding.storageTab.addOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when (tab?.position) {
                         0 -> childFragmentManager.commit {
-                            Analytics.logClickedItemEvent(EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START)
+                            Analytics.logClickedItemEvent(
+                                EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START
+                            )
                             replace<StorageMyDrawFragment>(R.id.fl_main)
                             Timber.tag("hu").d("내가 그린 코스로 이동하였음")
                         }
@@ -111,9 +105,4 @@ class StorageMainFragment :
             }
         )
     }
-    companion object {
-        const val EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START= "click_my_storage_course_drawing_start"
-        const val EVENT_CLICK_SCRAP_COURSE = "click_scrap_course"
-    }
-
 }

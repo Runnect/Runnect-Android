@@ -11,9 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.talk.TalkApiClient
 import com.runnect.runnect.BuildConfig
@@ -29,6 +26,9 @@ import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOAL_REWARD
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_RUNNING_RECORD
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOADED_COURSE
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -38,20 +38,14 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private val viewModel: MyPageViewModel by activityViewModels()
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initFirebaseAnalytics()
         if (isVisitorMode) {
             activateVisitorMode()
         } else {
             deactivateVisitorMode()
         }
 
-    }
-
-    private fun initFirebaseAnalytics() {
-        firebaseAnalytics = Firebase.analytics
     }
 
     private fun activateVisitorMode() {
@@ -194,10 +188,5 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         const val EXTRA_NICK_NAME = "nickname"
         const val EXTRA_PROFILE = "profile_img"
         const val ACCOUNT_INFO_TAG = "accountInfo"
-
-        const val EVENT_CLICK_RUNNING_RECORD = "click_running_record"
-        const val EVENT_CLICK_GOAL_REWARD = "click_goal_reward"
-        const val EVENT_CLICK_UPLOADED_COURSE = "click_uploaded_course"
-
     }
 }
