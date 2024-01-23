@@ -96,6 +96,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             },
             handleVisitorMode = {
                 context?.let { showCourseScrapWarningToast(it) }
+            },
+            onSortButtonClick = { criteria ->
+                viewModel.sortRecommendCourse()
             }
         ).apply {
             binding.rvDiscoverMultiView.adapter = this
@@ -331,7 +334,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupMarathonCourseGetStateObserver() {
-        viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     multiViewAdapter.initMarathonCourses(state.data)
@@ -351,7 +354,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupRecommendCourseGetStateObserver() {
-        viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
@@ -385,7 +388,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupRecommendCourseNextPageStateObserver() {
-        viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseNextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     multiViewAdapter.addRecommendCourseNextPage(state.data)

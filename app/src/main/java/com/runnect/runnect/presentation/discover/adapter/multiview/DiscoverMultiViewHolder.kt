@@ -18,6 +18,7 @@ import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.colorOf
+import com.runnect.runnect.util.extension.fontOf
 import timber.log.Timber
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
@@ -111,23 +112,34 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             }
         }
         private fun initSortButtonClickListener() {
+            initSortByDateClickListener()
+            initSortByScrapClickListener()
+        }
+
+        private fun initSortByDateClickListener() {
             binding.tvDiscoverRecommendSortByDate.setOnClickListener {
                 val context = it.context ?: return@setOnClickListener
+
                 activateTextStyle(view = it as TextView, context = context)
                 deactivateOtherTextStyle(
                     view = binding.tvDiscoverRecommendSortByScrap,
                     context = context
                 )
+
                 onSortButtonClick.invoke(SORT_BY_DATE)
             }
+        }
 
+        private fun initSortByScrapClickListener() {
             binding.tvDiscoverRecommendSortByScrap.setOnClickListener {
                 val context = it.context ?: return@setOnClickListener
+
                 activateTextStyle(view = it as TextView, context = context)
                 deactivateOtherTextStyle(
                     view = binding.tvDiscoverRecommendSortByDate,
                     context = context
                 )
+
                 onSortButtonClick.invoke(SORT_BY_SCRAP)
             }
         }

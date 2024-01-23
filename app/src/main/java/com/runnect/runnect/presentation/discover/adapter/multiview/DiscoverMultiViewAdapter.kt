@@ -11,6 +11,7 @@ class DiscoverMultiViewAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
+    private val onSortButtonClick: (String) -> Unit
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
     private val marathonCourses = arrayListOf<MarathonCourse>()
@@ -23,7 +24,8 @@ class DiscoverMultiViewAdapter(
             viewType = viewType,
             onHeartButtonClick = onHeartButtonClick,
             onCourseItemClick = onCourseItemClick,
-            handleVisitorMode = handleVisitorMode
+            handleVisitorMode = handleVisitorMode,
+            onSortButtonClick = onSortButtonClick
         )
     }
 
