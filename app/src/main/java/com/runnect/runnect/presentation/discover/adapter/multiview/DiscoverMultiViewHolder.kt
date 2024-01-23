@@ -65,6 +65,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
+        private val onSortButtonClick: (String) -> Unit
     ) : DiscoverMultiViewHolder(binding) {
         val recommendAdapter by lazy {
             DiscoverRecommendAdapter(
@@ -77,6 +78,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         fun bind(courses: List<RecommendCourse>) {
             Timber.d("추천 코스 리스트 크기: ${courses.size}")
             initRecommendRecyclerView(courses)
+            initSortButtonClickListener()
         }
 
         private fun initRecommendRecyclerView(courses: List<RecommendCourse>) {
@@ -101,6 +103,12 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                         bottomSpacing = 20
                     )
                 )
+            }
+        }
+
+        private fun initSortButtonClickListener() {
+            binding.tvDiscoverRecommendSortByDate.setOnClickListener {
+
             }
         }
     }

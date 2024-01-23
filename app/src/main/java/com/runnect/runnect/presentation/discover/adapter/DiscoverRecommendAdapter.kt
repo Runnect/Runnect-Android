@@ -41,7 +41,7 @@ class DiscoverRecommendAdapter(
         private val binding: ItemDiscoverRecommendBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
-        private val handleVisitorMode: () -> Unit,
+        private val handleVisitorMode: () -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverMultiViewItem.RecommendCourse) {
             with(binding) {
@@ -93,6 +93,10 @@ class DiscoverRecommendAdapter(
         val newList = currentList.toMutableList()
         newList.addAll(items)
         submitList(newList)
+    }
+
+    fun updateRecommendCourseBySorting(items: List<DiscoverMultiViewItem.RecommendCourse>) {
+        submitList(items)
     }
 
     companion object {
