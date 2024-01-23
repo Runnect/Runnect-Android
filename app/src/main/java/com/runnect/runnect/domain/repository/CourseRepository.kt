@@ -26,7 +26,7 @@ interface CourseRepository {
 
     suspend fun getRecommendCourse(
         pageNo: String,
-        ordering: String
+        sort: String
     ): Result<RecommendCoursePagingData?>
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>

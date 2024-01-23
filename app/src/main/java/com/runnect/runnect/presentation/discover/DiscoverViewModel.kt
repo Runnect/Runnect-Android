@@ -115,7 +115,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = FIRST_PAGE_NUM.toString(),
-                ordering = DEFAULT_SORT_CRITERIA
+                sort = DEFAULT_SORT_CRITERIA
             ).onSuccess { pagingData ->
                 if (pagingData == null) {
                     _recommendCourseGetState.value =
@@ -145,7 +145,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = currentPageNumber.toString(),
-                ordering = DEFAULT_SORT_CRITERIA
+                sort = DEFAULT_SORT_CRITERIA
             )
                 .onSuccess { pagingData ->
                     if (pagingData == null) {
@@ -171,7 +171,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = FIRST_PAGE_NUM.toString(),
-                ordering = criteria
+                sort = criteria
             ).onSuccess { pagingData ->
                 if (pagingData == null) {
                     _recommendCourseSortState.value =

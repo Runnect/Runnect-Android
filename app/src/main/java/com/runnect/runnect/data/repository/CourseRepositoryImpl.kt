@@ -33,11 +33,11 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun getRecommendCourse(
         pageNo: String,
-        ordering: String
+        sort: String
     ): Result<RecommendCoursePagingData?> = runCatching {
         val response = remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
-            ordering = ordering
+            sort = sort
         ).data
 
         response?.let {
