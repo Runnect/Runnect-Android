@@ -129,10 +129,6 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun initRecommendCourseGetState() {
-        _recommendCourseState.value = UiStateV2.Empty
-    }
-
     fun isNextPageLoading() = nextPageState.value is UiStateV2.Loading
 
     fun getRecommendCourseNextPage() {

@@ -41,6 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -75,10 +76,49 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        initView()
         createBannerScrollJob()
         addListener()
         addObserver()
         registerCallback()
+    }
+
+    private fun initView() {
+        initMultiViewAdapter()
+    }
+
+    private fun initMultiViewAdapter() {
+        multiViewAdapter = DiscoverMultiViewAdapter(
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(courseId, scrap)
+            },
+            onCourseItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            handleVisitorMode = {
+                context?.let { showCourseScrapWarningToast(it) }
+            }
+        ).apply {
+            binding.rvDiscoverMultiView.adapter = this
+        }
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val context = context ?: return
+        Intent(context, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+            resultLauncher.launch(this)
+        }
+        activity?.applyScreenEnterAnimation()
+    }
+
+    private fun showCourseScrapWarningToast(context: Context) {
+        RunnectToast.createToast(
+            context = context,
+            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+        ).show()
     }
 
     private fun createBannerScrollJob() {
@@ -230,6 +270,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun addObserver() {
         setupBannerGetStateObserver()
         setupMarathonCourseGetStateObserver()
+        setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
         setupCourseScrapStateObserver()
     }
@@ -297,16 +338,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
-
-                    val multiViewItems = mutableListOf<List<DiscoverMultiViewItem>>()
-                    multiViewItems.add(state.data)
-
-                    // 마라톤 코스 조회에 성공하면 외부 리사이클러뷰 초기화
-                    initMultiViewAdapter(multiViewItems)
-                    initMultiRecyclerView()
-
-                    // 어댑터 초기화 되면 추천 코스 목록 추가
-                    setupRecommendCourseGetStateObserver()
+                    multiViewAdapter.initMarathonCourses(state.data)
                 }
 
                 is UiStateV2.Failure -> {
@@ -323,52 +355,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         }
     }
 
-    private fun initMultiViewAdapter(multiViewItems: List<List<DiscoverMultiViewItem>>) {
-        multiViewAdapter = DiscoverMultiViewAdapter(
-            multiViewItems = multiViewItems,
-            onHeartButtonClick = { courseId, scrap ->
-                viewModel.postCourseScrap(courseId, scrap)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
-            },
-            handleVisitorMode = {
-                context?.let { showCourseScrapWarningToast(it) }
-            }
-        )
-    }
-
-    private fun initMultiRecyclerView() {
-        binding.rvDiscoverMultiView.apply {
-            setHasFixedSize(true)
-            adapter = multiViewAdapter
-        }
-    }
-
-    private fun navigateToDetailScreen(publicCourseId: Int) {
-        val context = context ?: return
-        Intent(context, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-            resultLauncher.launch(this)
-        }
-        activity?.applyScreenEnterAnimation()
-    }
-
-    private fun showCourseScrapWarningToast(context: Context) {
-        RunnectToast.createToast(
-            context = context,
-            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
-        ).show()
-    }
-
     private fun setupRecommendCourseGetStateObserver() {
         viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    multiViewAdapter.addMultiViewItem(state.data)
-                    viewModel.initRecommendCourseGetState()
+                    multiViewAdapter.initRecommendCourses(state.data)
                 }
 
                 is UiStateV2.Failure -> {
@@ -398,7 +389,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    multiViewAdapter.addRecommendCourseNextPage(state.data)
+                    // todo: 추천 코스 다음 페이지 추가
+//                    multiViewAdapter.addRecommendCourseNextPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {
