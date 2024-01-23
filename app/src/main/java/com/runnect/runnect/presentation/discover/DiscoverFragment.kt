@@ -101,6 +101,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             }
         ).apply {
             binding.rvDiscoverMultiView.adapter = this
+            binding.rvDiscoverMultiView.setHasFixedSize(true)
         }
     }
 
@@ -390,7 +391,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             when (state) {
                 is UiStateV2.Success -> {
                     // todo: 추천 코스 다음 페이지 추가
-//                    multiViewAdapter.addRecommendCourseNextPage(state.data)
+                    multiViewAdapter.addRecommendCourseNextPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {

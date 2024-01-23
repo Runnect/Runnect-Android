@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class DiscoverRecommendAdapter(
@@ -74,6 +75,26 @@ class DiscoverRecommendAdapter(
                 onCourseItemClick.invoke(course.id)
             }
         }
+    }
+
+    fun updateRecommendCourseItem(
+        publicCourseId: Int,
+        updatedCourse: EditableDiscoverCourse
+    ) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
+    fun addRecommendCourseNextPage(items: List<DiscoverMultiViewItem.RecommendCourse>) {
+        val newList = currentList.toMutableList()
+        newList.addAll(items)
+        submitList(newList)
     }
 
     companion object {

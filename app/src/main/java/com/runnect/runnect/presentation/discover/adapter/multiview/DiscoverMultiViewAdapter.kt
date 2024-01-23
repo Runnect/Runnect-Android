@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.discover.adapter.multiview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
@@ -15,7 +14,7 @@ class DiscoverMultiViewAdapter(
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
     private val marathonCourses = arrayListOf<MarathonCourse>()
     private val recommendCourses = arrayListOf<RecommendCourse>()
-    private var viewTypes: ArrayList<Int> = arrayListOf()
+    private var viewTypes = arrayListOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverMultiViewHolder {
         return multiViewHolderFactory.createMultiViewHolder(
@@ -84,17 +83,13 @@ class DiscoverMultiViewAdapter(
         }
     }
 
-    // 특정 뷰 타입이 시작되는 포지션을 찾는 메소드
     private fun getViewTypeStartPosition(viewType: Int): Int {
-        // 조건에 일치하는 첫 데이터의 인덱스 반환
         return viewTypes.indexOfFirst { viewType == it }
     }
 
-//    fun addRecommendCourseNextPage(courses: List<RecommendCourse>) {
-//        val position = DiscoverMultiViewType.RECOMMEND.ordinal
-//        currentList[position].addAll(courses)
-//        notifyItemChanged(position)
-//    }
+    fun addRecommendCourseNextPage(items: List<RecommendCourse>) {
+        multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(items)
+    }
 
     fun updateCourseItem(
         publicCourseId: Int,

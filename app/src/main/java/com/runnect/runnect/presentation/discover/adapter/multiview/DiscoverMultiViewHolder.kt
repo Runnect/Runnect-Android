@@ -24,7 +24,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit
     ) : DiscoverMultiViewHolder(binding) {
-        private val marathonAdapter by lazy {
+        val marathonAdapter by lazy {
             DiscoverMarathonAdapter(
                 onHeartButtonClick, onCourseItemClick, handleVisitorMode
             )
@@ -36,38 +36,18 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
         private fun initMarathonRecyclerView(courses: List<MarathonCourse>) {
             binding.rvDiscoverMarathon.apply {
-                setHasFixedSize(true)
                 adapter = marathonAdapter.apply {
                     submitList(courses)
                 }
-                addItemDecorationOnlyOnce(recyclerView = this, itemCount = courses.size)
-            }
-        }
-
-        private fun addItemDecorationOnlyOnce(recyclerView: RecyclerView, itemCount: Int) {
-            with(recyclerView) {
-                if (itemDecorationCount > 0) {
-                    removeItemDecorationAt(0)
-                }
+                setHasFixedSize(true)
                 addItemDecoration(
                     DiscoverMarathonItemDecoration(
                         context = context,
                         spaceSize = 10,
-                        itemCount = itemCount
+                        itemCount = courses.size
                     )
                 )
             }
-        }
-
-        fun updateMarathonCourseItem(
-            targetIndex: Int,
-            updatedCourse: EditableDiscoverCourse
-        ) {
-            marathonAdapter.currentList[targetIndex].apply {
-                title = updatedCourse.title
-                scrap = updatedCourse.scrap
-            }
-            marathonAdapter.notifyItemChanged(targetIndex)
         }
     }
 
@@ -77,7 +57,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
     ) : DiscoverMultiViewHolder(binding) {
-        private val recommendAdapter by lazy {
+        val recommendAdapter by lazy {
             DiscoverRecommendAdapter(
                 onHeartButtonClick,
                 onCourseItemClick,
@@ -92,19 +72,9 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
         private fun initRecommendRecyclerView(courses: List<RecommendCourse>) {
             binding.rvDiscoverRecommend.apply {
-                setHasFixedSize(true)
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = recommendAdapter.apply {
                     submitList(courses)
-                }
-                addItemDecorationOnlyOnce(recyclerView = this)
-            }
-        }
-
-        private fun addItemDecorationOnlyOnce(recyclerView: RecyclerView) {
-            with(recyclerView) {
-                if (itemDecorationCount > 0) {
-                    removeItemDecorationAt(0)
                 }
                 addItemDecoration(
                     DiscoverRecommendItemDecoration(
@@ -114,17 +84,6 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                     )
                 )
             }
-        }
-
-        fun updateRecommendCourseItem(
-            targetIndex: Int,
-            updatedCourse: EditableDiscoverCourse
-        ) {
-            recommendAdapter.currentList[targetIndex].apply {
-                title = updatedCourse.title
-                scrap = updatedCourse.scrap
-            }
-            recommendAdapter.notifyItemChanged(targetIndex)
         }
     }
 }
