@@ -165,8 +165,28 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun sortRecommendCourse() {
+    fun sortRecommendCourses(criteria: String) {
+        viewModelScope.launch {
+            _recommendCourseSortState.value = UiStateV2.Loading
 
+            courseRepository.getRecommendCourse(
+                pageNo = FIRST_PAGE_NUM.toString(),
+                ordering = criteria
+            ).onSuccess { pagingData ->
+                if (pagingData == null) {
+                    _recommendCourseSortState.value =
+                        UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                    return@onSuccess
+                }
+
+                isRecommendCoursePageEnd = pagingData.isEnd
+                _recommendCourseSortState.value = UiStateV2.Success(pagingData.recommendCourses)
+                Timber.d("RECOMMEND COURSE SORT SUCCESS")
+            }.onFailure { exception ->
+                _recommendCourseSortState.value = UiStateV2.Failure(exception.message.toString())
+                Timber.e("RECOMMEND COURSE SORT FAIL")
+            }
+        }
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {

@@ -98,7 +98,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 context?.let { showCourseScrapWarningToast(it) }
             },
             onSortButtonClick = { criteria ->
-                viewModel.sortRecommendCourse()
+                viewModel.sortRecommendCourses(criteria)
             }
         ).apply {
             binding.rvDiscoverMultiView.adapter = this
