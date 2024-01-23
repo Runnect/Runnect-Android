@@ -11,6 +11,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import timber.log.Timber
 
 class DiscoverRecommendAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
@@ -78,17 +79,14 @@ class DiscoverRecommendAdapter(
     }
 
     fun updateRecommendCourseItem(
-        publicCourseId: Int,
+        targetIndex: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        currentList.forEachIndexed { index, course ->
-            if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                course.scrap = updatedCourse.scrap
-                notifyItemChanged(index)
-                return
-            }
+        currentList[targetIndex].apply {
+            title = updatedCourse.title
+            scrap = updatedCourse.scrap
         }
+        notifyItemChanged(targetIndex)
     }
 
     fun addRecommendCourseNextPage(items: List<DiscoverMultiViewItem.RecommendCourse>) {

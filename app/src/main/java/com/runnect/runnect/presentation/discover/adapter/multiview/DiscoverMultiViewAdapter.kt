@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
+import timber.log.Timber
 
 class DiscoverMultiViewAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
@@ -88,6 +89,7 @@ class DiscoverMultiViewAdapter(
     }
 
     fun addRecommendCourseNextPage(items: List<RecommendCourse>) {
+        recommendCourses.addAll(items)
         multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(items)
     }
 
@@ -95,28 +97,27 @@ class DiscoverMultiViewAdapter(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-//        val targetItem = currentList.flatten().find { item ->
-//            item.id == publicCourseId
-//        } ?: return
-//
-//        when (targetItem) {
-//            is MarathonCourse -> {
-//                val position = DiscoverMultiViewType.MARATHON.ordinal
-//                val targetIndex = currentList[position].indexOf(targetItem)
-//                multiViewHolderFactory.marathonViewHolder.updateMarathonCourseItem(
-//                    targetIndex = targetIndex,
-//                    updatedCourse = updatedCourse
-//                )
-//            }
-//
-//            is RecommendCourse -> {
-//                val position = DiscoverMultiViewType.RECOMMEND.ordinal
-//                val targetIndex = currentList[position].indexOf(targetItem)
-//                multiViewHolderFactory.recommendViewHolder.updateRecommendCourseItem(
-//                    targetIndex = targetIndex,
-//                    updatedCourse = updatedCourse
-//                )
-//            }
-//        }
+        val multiViewItems = marathonCourses + recommendCourses
+        val targetItem = multiViewItems.find { item ->
+            item.id == publicCourseId
+        } ?: return
+
+        when (targetItem) {
+            is MarathonCourse -> {
+                val targetIndex = marathonCourses.indexOf(targetItem)
+                multiViewHolderFactory.marathonCourseAdapter.updateMarathonCourseItem(
+                    targetIndex = targetIndex,
+                    updatedCourse = updatedCourse
+                )
+            }
+
+            is RecommendCourse -> {
+                val targetIndex = recommendCourses.indexOf(targetItem)
+                multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseItem(
+                    targetIndex = targetIndex,
+                    updatedCourse = updatedCourse
+                )
+            }
+        }
     }
 }

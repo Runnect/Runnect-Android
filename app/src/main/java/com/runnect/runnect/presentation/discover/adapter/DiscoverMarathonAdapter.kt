@@ -78,17 +78,14 @@ class DiscoverMarathonAdapter(
     }
 
     fun updateMarathonCourseItem(
-        publicCourseId: Int,
+        targetIndex: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        currentList.forEachIndexed { index, course ->
-            if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                course.scrap = updatedCourse.scrap
-                notifyItemChanged(index)
-                return
-            }
+        currentList[targetIndex].apply {
+            title = updatedCourse.title
+            scrap = updatedCourse.scrap
         }
+        notifyItemChanged(targetIndex)
     }
 
     companion object {
