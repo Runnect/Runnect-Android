@@ -102,7 +102,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             }
         ).apply {
             binding.rvDiscoverMultiView.adapter = this
-            binding.rvDiscoverMultiView.setHasFixedSize(true)
         }
     }
 

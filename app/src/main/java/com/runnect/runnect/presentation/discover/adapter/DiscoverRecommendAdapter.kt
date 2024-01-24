@@ -90,8 +90,7 @@ class DiscoverRecommendAdapter(
     }
 
     fun addRecommendCourseNextPage(items: List<DiscoverMultiViewItem.RecommendCourse>) {
-        val newList = currentList.toMutableList()
-        newList.addAll(items)
+        val newList = currentList + items
         submitList(newList)
     }
 
