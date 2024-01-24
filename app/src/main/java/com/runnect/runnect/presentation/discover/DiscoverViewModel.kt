@@ -65,13 +65,18 @@ class DiscoverViewModel @Inject constructor(
 
     fun refreshDiscoverCourses() {
         getMarathonCourses()
+
         initRecommendCoursePagingData()
+        initRecommendCourseSortCriteria()
         getRecommendCourses()
     }
 
     private fun initRecommendCoursePagingData() {
         isRecommendCoursePageEnd = false
         currentPageNumber = FIRST_PAGE_NUM
+    }
+
+    private fun initRecommendCourseSortCriteria() {
         currentSortCriteria = DEFAULT_SORT_CRITERIA
     }
 
@@ -111,7 +116,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendCourses() {
+    private fun getRecommendCourses() {
         viewModelScope.launch {
             _recommendCourseGetState.value = UiStateV2.Loading
 
@@ -169,7 +174,7 @@ class DiscoverViewModel @Inject constructor(
 
     fun sortRecommendCourses(criteria: String) {
         initRecommendCoursePagingData()
-        saveCurrentSortCriteria(criteria)
+        updateCurrentSortCriteria(criteria)
 
         viewModelScope.launch {
             _recommendCourseSortState.value = UiStateV2.Loading
@@ -194,7 +199,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun saveCurrentSortCriteria(criteria: String) {
+    private fun updateCurrentSortCriteria(criteria: String) {
         currentSortCriteria = criteria
     }
 

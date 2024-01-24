@@ -13,13 +13,10 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.adapter.DiscoverMarathonAdapter
 import com.runnect.runnect.presentation.discover.adapter.DiscoverRecommendAdapter
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.colorOf
 import com.runnect.runnect.util.extension.fontOf
-import timber.log.Timber
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -83,6 +80,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
 
         fun bind(courses: List<RecommendCourse>) {
             initRecommendRecyclerView(courses)
+            initSortButtonTextStyle()
             initSortButtonClickListener()
         }
 
@@ -110,6 +108,17 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
                 )
             }
         }
+
+        private fun initSortButtonTextStyle() {
+            binding.tvDiscoverRecommendSortByDate.apply {
+                activateTextStyle(view = this, context = this.context)
+            }
+
+            binding.tvDiscoverRecommendSortByScrap.apply {
+                deactivateTextStyle(view = this, context = this.context)
+            }
+        }
+
         private fun initSortButtonClickListener() {
             initSortByDateClickListener()
             initSortByScrapClickListener()
@@ -118,13 +127,11 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         private fun initSortByDateClickListener() {
             binding.tvDiscoverRecommendSortByDate.setOnClickListener {
                 val context = it.context ?: return@setOnClickListener
-
                 activateTextStyle(view = it as TextView, context = context)
-                deactivateOtherTextStyle(
+                deactivateTextStyle(
                     view = binding.tvDiscoverRecommendSortByScrap,
                     context = context
                 )
-
                 onSortButtonClick.invoke(SORT_BY_DATE)
             }
         }
@@ -132,13 +139,11 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         private fun initSortByScrapClickListener() {
             binding.tvDiscoverRecommendSortByScrap.setOnClickListener {
                 val context = it.context ?: return@setOnClickListener
-
                 activateTextStyle(view = it as TextView, context = context)
-                deactivateOtherTextStyle(
+                deactivateTextStyle(
                     view = binding.tvDiscoverRecommendSortByDate,
                     context = context
                 )
-
                 onSortButtonClick.invoke(SORT_BY_SCRAP)
             }
         }
@@ -148,7 +153,7 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             view.typeface = context.fontOf(R.font.pretendard_semibold, Typeface.NORMAL)
         }
 
-        private fun deactivateOtherTextStyle(view: TextView, context: Context) {
+        private fun deactivateTextStyle(view: TextView, context: Context) {
             view.setTextColor(context.colorOf(R.color.G2))
             view.typeface = context.fontOf(R.font.pretendard_regular, Typeface.NORMAL)
         }

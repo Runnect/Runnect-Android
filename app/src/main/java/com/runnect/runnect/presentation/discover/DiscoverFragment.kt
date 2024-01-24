@@ -141,7 +141,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Timber.d("viewpager position: $position")
                 updateBannerPosition(position)
                 updateBannerIndicatorPosition()
             }
