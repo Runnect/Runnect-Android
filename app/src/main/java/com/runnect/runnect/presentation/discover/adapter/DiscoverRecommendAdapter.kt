@@ -63,8 +63,7 @@ class DiscoverRecommendAdapter(
                     return@setOnClickListener
                 }
 
-                view.isSelected = !view.isSelected
-                onHeartButtonClick.invoke(course.id, view.isSelected)
+                onHeartButtonClick.invoke(course.id, !view.isSelected)
             }
         }
 
@@ -86,6 +85,14 @@ class DiscoverRecommendAdapter(
             title = updatedCourse.title
             scrap = updatedCourse.scrap
         }
+        notifyItemChanged(targetIndex)
+    }
+
+    fun updateRecommendCourseScrap(
+        targetIndex: Int,
+        scrap: Boolean
+    ) {
+        currentList[targetIndex].scrap = scrap
         notifyItemChanged(targetIndex)
     }
 

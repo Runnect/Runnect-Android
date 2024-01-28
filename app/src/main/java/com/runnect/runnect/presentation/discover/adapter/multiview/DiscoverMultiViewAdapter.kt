@@ -130,4 +130,32 @@ class DiscoverMultiViewAdapter(
             }
         }
     }
+
+    fun updateCourseScrap(
+        publicCourseId: Int,
+        scrap: Boolean
+    ) {
+        val multiViewItems = marathonCourses + recommendCourses
+        val targetItem = multiViewItems.find { item ->
+            item.id == publicCourseId
+        } ?: return
+
+        when (targetItem) {
+            is MarathonCourse -> {
+                val targetIndex = marathonCourses.indexOf(targetItem)
+                multiViewHolderFactory.marathonCourseAdapter.updateMarathonCourseScrap(
+                    targetIndex = targetIndex,
+                    scrap = scrap
+                )
+            }
+
+            is RecommendCourse -> {
+                val targetIndex = recommendCourses.indexOf(targetItem)
+                multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseScrap(
+                    targetIndex = targetIndex,
+                    scrap = scrap
+                )
+            }
+        }
+    }
 }

@@ -429,12 +429,24 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
-            if (state is UiStateV2.Failure) {
-                context?.showSnackbar(
-                    anchorView = binding.root,
-                    message = state.msg,
-                    gravity = Gravity.TOP
-                )
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data ?: return@observe
+                    multiViewAdapter.updateCourseScrap(
+                        publicCourseId = response.publicCourseId.toInt(),
+                        scrap = response.scrapTF
+                    )
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
             }
         }
     }

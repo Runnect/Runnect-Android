@@ -88,6 +88,14 @@ class DiscoverMarathonAdapter(
         notifyItemChanged(targetIndex)
     }
 
+    fun updateMarathonCourseScrap(
+        targetIndex: Int,
+        scrap: Boolean
+    ) {
+        currentList[targetIndex].scrap = scrap
+        notifyItemChanged(targetIndex)
+    }
+
     companion object {
         private val diffUtil = ItemDiffCallback<DiscoverMultiViewItem.MarathonCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
