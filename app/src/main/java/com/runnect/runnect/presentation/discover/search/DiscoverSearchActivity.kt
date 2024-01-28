@@ -29,6 +29,7 @@ import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showKeyboard
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -141,6 +142,7 @@ class DiscoverSearchActivity :
 
     private fun addObserver() {
         setupCourseSearchStateObserver()
+        setupCourseScrapStateObserver()
     }
 
     private fun setupCourseSearchStateObserver() {
@@ -180,6 +182,26 @@ class DiscoverSearchActivity :
 
     private fun dismissProgressBar() {
         binding.pbDiscoverSearch.isVisible = false
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data ?: return@observe
+                    searchAdapter.updateCourseScrap(
+                        publicCourseId = response.publicCourseId.toInt(),
+                        scrap = response.scrapTF
+                    )
+                }
+
+                is UiStateV2.Failure -> {
+                    showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
