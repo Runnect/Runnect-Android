@@ -4,9 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.CourseLoadInfoDTO
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -16,11 +17,9 @@ import javax.inject.Inject
 class DiscoverPickViewModel @Inject constructor(
     private val courseRepository: CourseRepository
 ) : ViewModel() {
-    private var _courseLoadState = MutableLiveData<UiState>()
-    val courseLoadState: LiveData<UiState>
-        get() = _courseLoadState
-
-    var courseLoadList = mutableListOf<CourseLoadInfoDTO>()
+    private var _uploadCourseGetState = MutableLiveData<UiStateV2<List<DiscoverUploadCourse>?>>()
+    val uploadCourseGetState: LiveData<UiStateV2<List<DiscoverUploadCourse>?>>
+        get() = _uploadCourseGetState
 
     private var _idSelectedItem: MutableLiveData<Int> = MutableLiveData(0)
     val idSelectedItem: LiveData<Int>
@@ -38,7 +37,32 @@ class DiscoverPickViewModel @Inject constructor(
     val distanceSelectedItem: LiveData<String>
         get() = _distanceSelectedItem
 
-    val errorMessage = MutableLiveData<String>()
+    init {
+        getMyCourseLoad()
+    }
+
+    private fun getMyCourseLoad() {
+        viewModelScope.launch {
+            _uploadCourseGetState.value = UiStateV2.Loading
+
+            courseRepository.getMyCourseLoad()
+                .onSuccess { response ->
+                    if (response == null) {
+                        _uploadCourseGetState.value =
+                            UiStateV2.Failure("DISCOVER UPLOAD COURSE DATA IS NULL")
+                        return@launch
+                    }
+
+                    if (response.isEmpty()) UiStateV2.Empty
+                    else _uploadCourseGetState.value = UiStateV2.Success(response)
+                    Timber.d("DISCOVER UPLOAD COURSE GET SUCCESS")
+                }.onFailure { t ->
+                    _uploadCourseGetState.value = UiStateV2.Failure(t.message.toString())
+                    Timber.e("DISCOVER UPLOAD COURSE GET FAIL")
+                    Timber.e("${t.message}")
+                }
+        }
+    }
 
     fun checkSelectEnable(id: Int, img: String, departure: String, distance: String) {
         Timber.d("3. 선택된 아이템의 아이디값을 Adapter로부터 받아와서 라이브 데이터 변경")
@@ -47,24 +71,4 @@ class DiscoverPickViewModel @Inject constructor(
         _departureSelectedItem.value = departure
         _distanceSelectedItem.value = distance
     }
-
-    fun getMyCourseLoad() {
-        viewModelScope.launch {
-            _courseLoadState.value = UiState.Loading
-            runCatching {
-                courseRepository.getMyCourseLoad()
-            }.onSuccess {
-                if (it.isEmpty()) {
-                    _courseLoadState.value = UiState.Empty
-                } else {
-                    courseLoadList = it
-                    _courseLoadState.value = UiState.Success
-                }
-            }.onFailure {
-                errorMessage.value = it.message
-                _courseLoadState.value = UiState.Failure
-            }
-        }
-    }
-
 }

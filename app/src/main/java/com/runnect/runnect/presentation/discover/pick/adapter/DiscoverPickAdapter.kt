@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.databinding.ItemDiscoverPickBinding
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnCourseUploadItemClick
 import timber.log.Timber
 
 class DiscoverPickAdapter(
     private val onCourseUploadItemClick: OnCourseUploadItemClick
-) : ListAdapter<CourseLoadInfoDTO, DiscoverPickAdapter.DiscoverPickViewHolder>(diffUtil) {
+) : ListAdapter<DiscoverUploadCourse, DiscoverPickAdapter.DiscoverPickViewHolder>(diffUtil) {
     private var beforePicked: View? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscoverPickViewHolder {
@@ -41,7 +41,7 @@ class DiscoverPickAdapter(
 
     inner class DiscoverPickViewHolder(private val binding: ItemDiscoverPickBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data: CourseLoadInfoDTO) {
+        fun onBind(data: DiscoverUploadCourse) {
             binding.ivItemDiscoverPickMap.load(data.img)
             binding.ivItemDiscoverPickBackground.isSelected = false
             binding.tvItemDiscoverPickLocation.text = data.departure
@@ -66,7 +66,7 @@ class DiscoverPickAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<CourseLoadInfoDTO>(
+        private val diffUtil = ItemDiffCallback<DiscoverUploadCourse>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )

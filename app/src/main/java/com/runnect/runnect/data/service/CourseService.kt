@@ -38,8 +38,7 @@ interface CourseService {
     ): BaseResponse<ResponseGetCourseDetail>
 
     @GET("/api/course/private/user")
-    suspend fun getMyCourseLoad(
-    ): ResponseGetDiscoverPick
+    suspend fun getMyCourseLoad(): BaseResponse<ResponseGetDiscoverUploadCourse>
 
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(

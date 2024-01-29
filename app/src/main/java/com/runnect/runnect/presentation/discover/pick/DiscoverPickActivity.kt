@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.discover.pick
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -10,13 +9,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverPickBinding
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.presentation.discover.pick.adapter.DiscoverPickAdapter
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
-import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.callback.listener.OnCourseUploadItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -25,7 +26,7 @@ class DiscoverPickActivity :
     BindingActivity<ActivityDiscoverPickBinding>(R.layout.activity_discover_pick),
     OnCourseUploadItemClick {
     private val viewModel: DiscoverPickViewModel by viewModels()
-    private lateinit var adapter: DiscoverPickAdapter
+    private lateinit var discoverPickAdapter: DiscoverPickAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,19 +34,9 @@ class DiscoverPickActivity :
         binding.lifecycleOwner = this
 
         initLayout()
-        viewModel.getMyCourseLoad()
-        addObserver()
         addListener()
+        addObserver()
         registerBackPressedCallback()
-    }
-
-    private fun registerBackPressedCallback() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                navigateToPreviousScreenWithAnimation()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun initLayout() {
@@ -62,18 +53,72 @@ class DiscoverPickActivity :
         }
     }
 
+    private fun addListener() {
+        initBackButtonClickListener()
+        initPickFinishButtonClickListener()
+        initGoToDrawCourseClickListener()
+    }
+
+    private fun initBackButtonClickListener() {
+        binding.ivDiscoverPickBack.setOnClickListener {
+            navigateToPreviousScreenWithAnimation()
+        }
+    }
+
+    private fun initPickFinishButtonClickListener() {
+        binding.ivDiscoverPickFinish.setOnClickListener {
+            if (it.isActivated) {
+                val intent = Intent(this, DiscoverUploadActivity::class.java)
+                intent.apply {
+                    putExtra(EXTRA_COURSE_ID, viewModel.idSelectedItem.value)
+                    putExtra(EXTRA_IMG, viewModel.imgSelectedItem.value)
+                    putExtra(EXTRA_DEPARTURE, viewModel.departureSelectedItem.value)
+                    putExtra(EXTRA_DISTANCE, viewModel.distanceSelectedItem.value)
+                }
+                startActivity(intent)
+                discoverPickAdapter.clearSelection()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+        }
+    }
+
+    private fun initGoToDrawCourseClickListener() {
+        binding.cvDiscoverDrawCourse.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivity(intent)
+            finish()
+        }
+    }
+
     private fun addObserver() {
+        setupItemSelectObserver()
+        setupUploadCourseGetStateObserver()
+    }
+
+    private fun setupItemSelectObserver() {
         viewModel.idSelectedItem.observe(this) {
-            Timber.d("4. ViewModel에서 변경된 라이브데이터 관찰")
             binding.ivDiscoverPickFinish.isActivated = it != 0
         }
+    }
 
-        viewModel.courseLoadState.observe(this) {
-            when (it) {
-                UiState.Empty -> handleEmptyCourseLoad()
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> handleSuccessfulCourseLoad()
-                UiState.Failure -> handleUnsuccessfulCourseLoad()
+    private fun setupUploadCourseGetStateObserver() {
+        viewModel.uploadCourseGetState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Empty -> handleEmptyCourseLoad()
+                is UiStateV2.Loading -> {
+                    binding.indeterminateBar.isVisible = true
+                }
+
+                is UiStateV2.Success -> {
+                    val courses = state.data ?: return@observe
+                    handleSuccessfulCourseLoad(courses)
+                }
+
+                is UiStateV2.Failure -> {
+                    binding.indeterminateBar.isVisible = false
+                    showSnackbar(anchorView = binding.root, message = state.msg)
+                }
             }
         }
     }
@@ -87,8 +132,8 @@ class DiscoverPickActivity :
         }
     }
 
-    private fun handleSuccessfulCourseLoad() {
-        initAdapter()
+    private fun handleSuccessfulCourseLoad(courses: List<DiscoverUploadCourse>) {
+        initAdapter(courses)
         with(binding) {
             indeterminateBar.isVisible = false
             layoutDiscoverPick.isVisible = false
@@ -97,44 +142,22 @@ class DiscoverPickActivity :
         }
     }
 
-    private fun handleUnsuccessfulCourseLoad() {
-        binding.indeterminateBar.isVisible = false
-        Timber.tag(ContentValues.TAG)
-            .d("Failure : ${viewModel.errorMessage.value}")
+    private fun initAdapter(courses: List<DiscoverUploadCourse>) {
+        discoverPickAdapter = DiscoverPickAdapter(
+            onCourseUploadItemClick = this
+        ).apply {
+            binding.rvDiscoverPick.adapter = this
+            submitList(courses)
+        }
     }
 
-    private fun addListener() {
-        binding.ivDiscoverPickBack.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        }
-        binding.ivDiscoverPickFinish.setOnClickListener {
-            if (it.isActivated) {
-                val intent = Intent(this, DiscoverUploadActivity::class.java)
-                intent.apply {
-                    putExtra(EXTRA_COURSE_ID, viewModel.idSelectedItem.value)
-                    putExtra(EXTRA_IMG, viewModel.imgSelectedItem.value)
-                    putExtra(EXTRA_DEPARTURE, viewModel.departureSelectedItem.value)
-                    putExtra(EXTRA_DISTANCE, viewModel.distanceSelectedItem.value)
-                }
-                startActivity(intent)
-                adapter.clearSelection()
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreenWithAnimation()
             }
         }
-        binding.cvDiscoverDrawCourse.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
-            finish()
-        }
-    }
-
-    private fun initAdapter() {
-        adapter = DiscoverPickAdapter(this).apply {
-            submitList(viewModel.courseLoadList)
-        }
-        binding.rvDiscoverPick.adapter = this@DiscoverPickActivity.adapter
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun selectCourse(id: Int, img: String, departure: String, distance: String) {
