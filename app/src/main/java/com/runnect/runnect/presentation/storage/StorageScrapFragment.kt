@@ -1,6 +1,5 @@
 package com.runnect.runnect.presentation.storage
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -102,8 +101,24 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
     }
 
     private fun addObserver() {
-        observeItemSize()
+        setupItemSizeObserver()
         setupMyScrapCourseGetStateObserver()
+    }
+
+    private fun setupItemSizeObserver() {
+        viewModel.itemSize.observe(viewLifecycleOwner) { itemSize ->
+            val isEmpty = (itemSize == 0)
+            updateEmptyView(isEmpty, itemSize)
+        }
+    }
+
+    private fun updateEmptyView(isEmpty: Boolean, itemSize: Int) {
+        binding.apply {
+            layoutMyDrawNoScrap.isVisible = isEmpty
+            recyclerViewStorageScrap.isVisible = !isEmpty
+            tvTotalScrapCount.isVisible = !isEmpty
+            tvTotalScrapCount.text = if (!isEmpty) "총 코스 ${itemSize}개" else ""
+        }
     }
 
     private fun setupMyScrapCourseGetStateObserver() {
@@ -115,7 +130,10 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
 
                 is UiStateV2.Success -> {
                     dismissLoadingProgressBar()
-                    storageScrapAdapter.submitList(state.data)
+
+                    val scrapCourses = state.data
+                    updateEmptyView(scrapCourses.isEmpty(), scrapCourses.size)
+                    storageScrapAdapter.submitList(scrapCourses)
                 }
 
                 is UiStateV2.Failure -> {
@@ -137,32 +155,6 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
 
     private fun dismissLoadingProgressBar() {
         binding.indeterminateBar.isVisible = false
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun observeItemSize() {
-        viewModel.itemSize.observe(viewLifecycleOwner) { itemSize ->
-            val isEmpty = (itemSize == 0)
-            updateEmptyView(isEmpty, itemSize)
-        }
-    }
-
-    private fun updateEmptyView(isEmpty: Boolean, itemSize: Int) {
-        binding.apply {
-            layoutMyDrawNoScrap.isVisible = isEmpty
-            recyclerViewStorageScrap.isVisible = !isEmpty
-            tvTotalScrapCount.isVisible = !isEmpty
-            tvTotalScrapCount.text = if (!isEmpty) "총 코스 ${itemSize}개" else ""
-        }
-    }
-
-    private fun showScrapResult() {
-        val scrapListResult = viewModel.getScrapListResult.value ?: emptyList()
-        updateEmptyView(scrapListResult.isEmpty(), scrapListResult.size)
-    }
-
-    private fun updateAdapterData() {
-        storageScrapAdapter.submitList(viewModel.getScrapListResult.value!!)
     }
 
     override fun calcItemSize(itemCount: Int) {

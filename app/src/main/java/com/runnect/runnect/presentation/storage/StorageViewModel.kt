@@ -106,6 +106,7 @@ class StorageViewModel @Inject constructor(
 
                     Timber.d("MY SCRAP COURSE GET SUCCESS")
                     _myScrapCoursesGetState.value = UiStateV2.Success(response)
+                    itemSize.value = response.size
                 }
                 .onFailure { t ->
                     Timber.e("MY SCRAP COURSE GET FAIL")
@@ -115,12 +116,11 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    // todo: id를 non-null 타입으로 바꾸기
-    fun postCourseScrap(id: Int?, scrapTF: Boolean) {
+    fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
             courseRepository.postCourseScrap(
                 RequestPostCourseScrap(
-                    publicCourseId = id!!, scrapTF = scrapTF.toString()
+                    publicCourseId = id, scrapTF = scrapTF.toString()
                 )
             )
         }

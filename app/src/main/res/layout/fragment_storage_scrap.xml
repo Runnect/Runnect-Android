@@ -55,7 +55,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="총 기록 152개" />
+                    tools:text="총 코스 5개" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
