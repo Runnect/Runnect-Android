@@ -40,13 +40,11 @@ class StorageViewModel @Inject constructor(
     val myScrapCoursesGetState: LiveData<UiStateV2<List<MyScrapCourse>>?>
         get() = _myScrapCoursesGetState
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap>>()
-    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
+    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
-    val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
     val errorMessage = MutableLiveData<String>()
-
     val itemSize = MutableLiveData<Int>()
     val myDrawSize = MutableLiveData<Int>()
 
@@ -118,11 +116,19 @@ class StorageViewModel @Inject constructor(
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
         viewModelScope.launch {
+            _courseScrapState.value = UiStateV2.Loading
+
             courseRepository.postCourseScrap(
                 RequestPostCourseScrap(
                     publicCourseId = id, scrapTF = scrapTF.toString()
                 )
-            )
+            ).onSuccess { response ->
+                _courseScrapState.value = UiStateV2.Success(response)
+            }
+            .onFailure { t ->
+                Timber.e("${t.message}")
+                _courseScrapState.value = UiStateV2.Failure(t.message.toString())
+            }
         }
     }
 

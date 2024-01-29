@@ -26,7 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap),
+class StorageScrapFragment :
+    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap),
     OnHeartButtonClick,
     OnScrapItemClick,
     ItemCount {
@@ -103,6 +104,26 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
     private fun addObserver() {
         setupItemSizeObserver()
         setupMyScrapCourseGetStateObserver()
+        setupCourseScrapStateObserver()
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    storageScrapAdapter.removeCourseItem()
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg
+                    )
+                }
+
+                else -> {}
+            }
+        }
     }
 
     private fun setupItemSizeObserver() {
