@@ -31,14 +31,13 @@ class StorageScrapFragment :
     OnHeartButtonClick,
     OnScrapItemClick,
     ItemCount {
-
     val viewModel: StorageViewModel by viewModels()
-    lateinit var storageScrapAdapter: StorageScrapAdapter
+    private lateinit var storageScrapAdapter: StorageScrapAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.lifecycleOwner = requireActivity()
         initLayout()
         initAdapter()
         getCourse()
