@@ -38,8 +38,7 @@ interface CourseService {
     ): BaseResponse<ResponseGetCourseDetail>
 
     @GET("/api/course/private/user")
-    suspend fun getMyCourseLoad(
-    ): ResponseGetDiscoverPick
+    suspend fun getMyCourseLoad(): ResponseGetDiscoverPick
 
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(
@@ -61,13 +60,12 @@ interface CourseService {
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
-    suspend fun getCourseList(
+    suspend fun getDrawCourseList(
     ): Response<ResponseGetMyDrawCourse>
 
     //보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
-    suspend fun getScrapList(
-    ): Response<ResponseGetMyScrapCourse>
+    suspend fun getScrapCourseList(): BaseResponse<ResponseGetMyScrapCourse>
 
     //내가 그린 코스 Detail 가져오기
     @GET("/api/course/detail/{courseId}")
