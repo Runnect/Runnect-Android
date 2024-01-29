@@ -2,11 +2,9 @@ package com.runnect.runnect.presentation.storage.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.runnect.runnect.data.dto.MyDrawCourse
-import com.runnect.runnect.data.dto.MyScrapCourse
+import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.databinding.ItemStorageScrapBinding
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback

@@ -6,12 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.MyDrawCourse
-import com.runnect.runnect.data.dto.MyScrapCourse
+import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -22,17 +24,25 @@ class StorageViewModel @Inject constructor(
     private val storageRepository: StorageRepository,
     private val courseRepository: CourseRepository
 ) : ViewModel() {
-    private var _myDrawCoursesDeleteState = MutableLiveData<UiState>()
+    private val _myDrawCoursesDeleteState = MutableLiveData<UiState>()
     val myDrawCourseDeleteState: LiveData<UiState>
         get() = _myDrawCoursesDeleteState
+
+    private val _myDrawCoursesGetState = MutableLiveData<UiState>(UiState.Empty)
+    val myDrawCoursesGetState: LiveData<UiState>
+        get() = _myDrawCoursesGetState
 
     private var _myDrawCourses = mutableListOf<MyDrawCourse>()
     val myDrawCourses: List<MyDrawCourse>
         get() = _myDrawCourses
 
-    private var _storageState = MutableLiveData<UiState>(UiState.Empty)
-    val storageState: LiveData<UiState>
-        get() = _storageState
+    private val _myScrapCoursesGetState = MutableLiveData<UiStateV2<List<MyScrapCourse>>?>()
+    val myScrapCoursesGetState: LiveData<UiStateV2<List<MyScrapCourse>>?>
+        get() = _myScrapCoursesGetState
+
+    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap>>()
+    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap>>
+        get() = _courseScrapState
 
     val getScrapListResult = MutableLiveData<List<MyScrapCourse>>()
     val errorMessage = MutableLiveData<String>()
@@ -46,16 +56,16 @@ class StorageViewModel @Inject constructor(
     fun getMyDrawList() {
         viewModelScope.launch {
             runCatching {
-                _storageState.value = UiState.Loading
+                _myDrawCoursesGetState.value = UiState.Loading
                 storageRepository.getMyDrawCourse()
             }.onSuccess {
                 _myDrawCourses = it!!
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
-                _storageState.value = UiState.Success
+                _myDrawCoursesGetState.value = UiState.Success
             }.onFailure {
                 Timber.tag(ContentValues.TAG).d("onFailure 메세지 : $it")
                 errorMessage.value = it.message
-                _storageState.value = UiState.Failure
+                _myDrawCoursesGetState.value = UiState.Failure
             }
         }
     }
@@ -82,19 +92,26 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    fun getScrapList() {
+    fun getMyScrapCoures() {
         viewModelScope.launch {
-            runCatching {
-                _storageState.value = UiState.Loading
-                storageRepository.getMyScrapCourse()
-            }.onSuccess {
-                getScrapListResult.value = it
-                Timber.tag(ContentValues.TAG).d("스크랩 리스트 사이즈 : ${it!!.size}")
-                _storageState.value = UiState.Success
-            }.onFailure {
-                errorMessage.value = it.message
-                _storageState.value = UiState.Failure
-            }
+            _myScrapCoursesGetState.value = UiStateV2.Loading
+
+            storageRepository.getMyScrapCourse()
+                .onSuccess {  response ->
+                    if (response == null) {
+                        _myScrapCoursesGetState.value =
+                            UiStateV2.Failure("MY SCRAP COURSE DATA IS NULL")
+                        return@launch
+                    }
+
+                    Timber.d("MY SCRAP COURSE GET SUCCESS")
+                    _myScrapCoursesGetState.value = UiStateV2.Success(response)
+                }
+                .onFailure { t ->
+                    Timber.e("MY SCRAP COURSE GET FAIL")
+                    Timber.e("${t.message}")
+                    _myScrapCoursesGetState.value = UiStateV2.Failure(t.message.toString())
+                }
         }
     }
 
