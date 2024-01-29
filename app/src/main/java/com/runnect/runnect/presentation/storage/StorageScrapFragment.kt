@@ -49,7 +49,7 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
     }
 
     private fun initLayout() {
-        binding.recyclerViewStorageScrap.apply {
+        binding.rvStorageScrap.apply {
             val context = context ?: return
             layoutManager = GridLayoutManager(context, 2)
             addItemDecoration(
@@ -69,7 +69,7 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
             onHeartButtonClick = this,
             itemCount = this
         ).apply {
-            binding.recyclerViewStorageScrap.adapter = this
+            binding.rvStorageScrap.adapter = this
         }
     }
 
@@ -114,10 +114,10 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
 
     private fun updateEmptyView(isEmpty: Boolean, itemSize: Int) {
         binding.apply {
-            layoutMyDrawNoScrap.isVisible = isEmpty
-            recyclerViewStorageScrap.isVisible = !isEmpty
-            tvTotalScrapCount.isVisible = !isEmpty
-            tvTotalScrapCount.text = if (!isEmpty) "총 코스 ${itemSize}개" else ""
+            clMyDrawNoScrap.isVisible = isEmpty
+            rvStorageScrap.isVisible = !isEmpty
+            tvStorageScrapCount.isVisible = !isEmpty
+            tvStorageScrapCount.text = if (!isEmpty) "총 코스 ${itemSize}개" else ""
         }
     }
 
@@ -150,11 +150,11 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
     }
 
     private fun showLoadingProgressBar() {
-        binding.indeterminateBar.isVisible = true
+        binding.pbStorageScrapLoading.isVisible = true
     }
 
     private fun dismissLoadingProgressBar() {
-        binding.indeterminateBar.isVisible = false
+        binding.pbStorageScrapLoading.isVisible = false
     }
 
     override fun calcItemSize(itemCount: Int) {
