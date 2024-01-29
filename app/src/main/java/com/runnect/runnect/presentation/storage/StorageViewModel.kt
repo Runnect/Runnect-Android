@@ -92,7 +92,7 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    fun getMyScrapCoures() {
+    fun getMyScrapCourses() {
         viewModelScope.launch {
             _myScrapCoursesGetState.value = UiStateV2.Loading
 

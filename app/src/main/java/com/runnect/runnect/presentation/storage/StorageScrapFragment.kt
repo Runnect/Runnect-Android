@@ -45,7 +45,7 @@ class StorageScrapFragment : BindingFragment<FragmentStorageScrapBinding>(R.layo
     }
 
     fun getMyScrapCourses() {
-        viewModel.getMyScrapCoures()
+        viewModel.getMyScrapCourses()
     }
 
     private fun initLayout() {
