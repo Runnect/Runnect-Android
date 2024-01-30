@@ -21,6 +21,7 @@ import com.runnect.runnect.presentation.mypage.MyPageFragment
 import com.runnect.runnect.presentation.storage.StorageMainFragment
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -67,6 +68,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun changeFragment(menuItemId: Int) {
+        logClickEvent(menuItemId)
         supportFragmentManager.commit {
             replace(
                 R.id.fl_main, when (menuItemId) {
@@ -77,6 +79,18 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
                     else -> throw IllegalArgumentException("${this@MainActivity::class.java.simpleName} Not found menu item id")
                 }
             )
+        }
+    }
+
+    private fun logClickEvent(menuItemId: Int) {
+        with(EventName) {
+            when (menuItemId) {
+                R.id.menu_main_drawing -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DRAWING else EVENT_CLICK_NAV_COURSE_DRAWING
+                R.id.menu_main_storage -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_STORAGE else EVENT_CLICK_NAV_STORAGE
+                R.id.menu_main_discover -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DISCOVERY else EVENT_CLICK_NAV_COURSE_DISCOVERY
+                R.id.menu_main_my_page -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_MY_PAGE else EVENT_CLICK_NAV_MY_PAGE
+                else -> ""
+            }.let(Analytics::logClickedItemEvent)
         }
     }
 
