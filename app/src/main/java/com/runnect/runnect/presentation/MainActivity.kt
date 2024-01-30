@@ -20,6 +20,8 @@ import com.runnect.runnect.presentation.discover.DiscoverFragment
 import com.runnect.runnect.presentation.mypage.MyPageFragment
 import com.runnect.runnect.presentation.storage.StorageMainFragment
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -31,6 +33,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Analytics.logClickedItemEvent(EVENT_VIEW_HOME)
         initRemoteConfig()
         checkVisitorMode()
         checkIntentValue()

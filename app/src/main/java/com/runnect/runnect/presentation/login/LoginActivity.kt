@@ -11,6 +11,8 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -34,6 +36,8 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Analytics.logClickedItemEvent(EVENT_VIEW_SOCIAL_LOGIN)
         googleLogin = GoogleLogin(
             activity = this@LoginActivity,
             viewModel = viewModel
