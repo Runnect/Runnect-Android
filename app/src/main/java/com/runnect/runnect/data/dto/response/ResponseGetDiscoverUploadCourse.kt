@@ -48,7 +48,7 @@ data class ResponseGetDiscoverUploadCourse(
     fun toUploadCourses(): List<DiscoverUploadCourse> = courses.map { course ->
         DiscoverUploadCourse(
             id = course.id,
-            img = course.image,
+            imageUrl = course.image,
             departure = course.departure.region + ' ' + course.departure.city,
             distance = course.distance.toString()
         )

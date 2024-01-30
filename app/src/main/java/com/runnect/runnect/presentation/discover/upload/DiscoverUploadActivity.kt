@@ -12,8 +12,11 @@ import coil.load
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +26,12 @@ import timber.log.Timber
 class DiscoverUploadActivity :
     BindingActivity<ActivityDiscoverUploadBinding>(R.layout.activity_discover_upload) {
     private val viewModel: DiscoverUploadViewModel by viewModels()
+    private val uploadCourse: DiscoverUploadCourse? by lazy {
+        intent.getCompatibleParcelableExtra(
+            DiscoverPickActivity.EXTRA_UPLOAD_COURSE
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
@@ -34,14 +43,11 @@ class DiscoverUploadActivity :
     }
 
     private fun initLayout() {
-        binding.etDiscoverUploadDesc.movementMethod = null //내용 초과시 스크롤 되지 않도록 함
-        with(binding) {
-            ivDiscoverUploadMap.load(intent.getStringExtra(EXTRA_IMG))
-            tvDiscoverUploadDistance.text = intent.getStringExtra(EXTRA_DISTANCE)
-            tvDiscoverUploadDeparture.text = intent.getStringExtra(EXTRA_DEPARTURE)
-            viewModel.id = intent.getIntExtra(EXTRA_COURSE_ID, 0) //선택한 코스의 id로 API 호출 예정
-        }
+        viewModel.id = uploadCourse?.id ?: -1
 
+        // 내용 초과시 스크롤 되지 않도록 함
+        binding.etDiscoverUploadDesc.movementMethod = null
+        binding.course = uploadCourse
     }
 
     private fun addListener() {
@@ -84,6 +90,7 @@ class DiscoverUploadActivity :
                 UiState.Success -> {
                     handleReturnToDiscover()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
@@ -118,12 +125,5 @@ class DiscoverUploadActivity :
             }
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    companion object {
-        const val EXTRA_IMG = "img"
-        const val EXTRA_DISTANCE = "distance"
-        const val EXTRA_DEPARTURE = "departure"
-        const val EXTRA_COURSE_ID = "courseId"
     }
 }

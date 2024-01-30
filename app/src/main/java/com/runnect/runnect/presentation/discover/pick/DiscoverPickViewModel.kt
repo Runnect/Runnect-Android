@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,25 +16,16 @@ import javax.inject.Inject
 class DiscoverPickViewModel @Inject constructor(
     private val courseRepository: CourseRepository
 ) : ViewModel() {
-    private var _uploadCourseGetState = MutableLiveData<UiStateV2<List<DiscoverUploadCourse>?>>()
-    val uploadCourseGetState: LiveData<UiStateV2<List<DiscoverUploadCourse>?>>
-        get() = _uploadCourseGetState
+    private val _courseGetState = MutableLiveData<UiStateV2<List<DiscoverUploadCourse>?>>()
+    val courseGetState: LiveData<UiStateV2<List<DiscoverUploadCourse>?>>
+        get() = _courseGetState
 
-    private var _idSelectedItem: MutableLiveData<Int> = MutableLiveData(0)
-    val idSelectedItem: LiveData<Int>
-        get() = _idSelectedItem
+    private val _courseSelectState = MutableLiveData<Boolean>()
+    val courseSelectState: LiveData<Boolean>
+        get() = _courseSelectState
 
-    private var _imgSelectedItem: MutableLiveData<String> = MutableLiveData()
-    val imgSelectedItem: LiveData<String>
-        get() = _imgSelectedItem
-
-    private var _departureSelectedItem: MutableLiveData<String> = MutableLiveData()
-    val departureSelectedItem: LiveData<String>
-        get() = _departureSelectedItem
-
-    private var _distanceSelectedItem: MutableLiveData<String> = MutableLiveData()
-    val distanceSelectedItem: LiveData<String>
-        get() = _distanceSelectedItem
+    private var _currentSelectedCourse = DiscoverUploadCourse()
+    val currentSelectedCourse get() = _currentSelectedCourse
 
     init {
         getMyCourseLoad()
@@ -43,32 +33,33 @@ class DiscoverPickViewModel @Inject constructor(
 
     private fun getMyCourseLoad() {
         viewModelScope.launch {
-            _uploadCourseGetState.value = UiStateV2.Loading
+            _courseGetState.value = UiStateV2.Loading
 
             courseRepository.getMyCourseLoad()
                 .onSuccess { response ->
                     if (response == null) {
-                        _uploadCourseGetState.value =
+                        _courseGetState.value =
                             UiStateV2.Failure("DISCOVER UPLOAD COURSE DATA IS NULL")
                         return@launch
                     }
 
-                    if (response.isEmpty()) UiStateV2.Empty
-                    else _uploadCourseGetState.value = UiStateV2.Success(response)
                     Timber.d("DISCOVER UPLOAD COURSE GET SUCCESS")
+                    if (response.isEmpty()) UiStateV2.Empty
+                    else _courseGetState.value = UiStateV2.Success(response)
+
                 }.onFailure { t ->
-                    _uploadCourseGetState.value = UiStateV2.Failure(t.message.toString())
                     Timber.e("DISCOVER UPLOAD COURSE GET FAIL")
                     Timber.e("${t.message}")
+                    _courseGetState.value = UiStateV2.Failure(t.message.toString())
                 }
         }
     }
 
-    fun checkSelectEnable(id: Int, img: String, departure: String, distance: String) {
-        Timber.d("3. 선택된 아이템의 아이디값을 Adapter로부터 받아와서 라이브 데이터 변경")
-        _idSelectedItem.value = id
-        _imgSelectedItem.value = img
-        _departureSelectedItem.value = departure
-        _distanceSelectedItem.value = distance
+    fun updateCourseSelectState(isSelected: Boolean) {
+        _courseSelectState.value = isSelected
+    }
+
+    fun saveCurrentSelectedCourse(course: DiscoverUploadCourse) {
+        _currentSelectedCourse = course
     }
 }

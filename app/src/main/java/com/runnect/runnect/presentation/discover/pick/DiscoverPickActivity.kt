@@ -14,19 +14,17 @@ import com.runnect.runnect.presentation.discover.pick.adapter.DiscoverPickAdapte
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.util.callback.listener.OnCourseUploadItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverPickActivity :
-    BindingActivity<ActivityDiscoverPickBinding>(R.layout.activity_discover_pick),
-    OnCourseUploadItemClick {
+    BindingActivity<ActivityDiscoverPickBinding>(R.layout.activity_discover_pick) {
     private val viewModel: DiscoverPickViewModel by viewModels()
-    private lateinit var discoverPickAdapter: DiscoverPickAdapter
+    private lateinit var pickAdapter: DiscoverPickAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +38,10 @@ class DiscoverPickActivity :
     }
 
     private fun initLayout() {
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
         binding.rvDiscoverPick.apply {
             layoutManager = GridLayoutManager(this@DiscoverPickActivity, 2)
             addItemDecoration(
@@ -68,42 +70,38 @@ class DiscoverPickActivity :
     private fun initPickFinishButtonClickListener() {
         binding.ivDiscoverPickFinish.setOnClickListener {
             if (it.isActivated) {
-                val intent = Intent(this, DiscoverUploadActivity::class.java)
-                intent.apply {
-                    putExtra(EXTRA_COURSE_ID, viewModel.idSelectedItem.value)
-                    putExtra(EXTRA_IMG, viewModel.imgSelectedItem.value)
-                    putExtra(EXTRA_DEPARTURE, viewModel.departureSelectedItem.value)
-                    putExtra(EXTRA_DISTANCE, viewModel.distanceSelectedItem.value)
+                Intent(this, DiscoverUploadActivity::class.java).apply {
+                    putExtra(EXTRA_UPLOAD_COURSE, viewModel.currentSelectedCourse)
+                    startActivity(this)
                 }
-                startActivity(intent)
-                discoverPickAdapter.clearSelection()
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                applyScreenEnterAnimation()
             }
         }
     }
 
     private fun initGoToDrawCourseClickListener() {
         binding.cvDiscoverDrawCourse.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
+            Intent(this, SearchActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(this)
+            }
             finish()
         }
     }
 
     private fun addObserver() {
-        setupItemSelectObserver()
+        setupItemSelectStateObserver()
         setupUploadCourseGetStateObserver()
     }
 
-    private fun setupItemSelectObserver() {
-        viewModel.idSelectedItem.observe(this) {
-            binding.ivDiscoverPickFinish.isActivated = it != 0
+    private fun setupItemSelectStateObserver() {
+        viewModel.courseSelectState.observe(this) { isSelected ->
+            binding.ivDiscoverPickFinish.isActivated = isSelected
         }
     }
 
     private fun setupUploadCourseGetStateObserver() {
-        viewModel.uploadCourseGetState.observe(this) { state ->
+        viewModel.courseGetState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Empty -> handleEmptyCourseLoad()
                 is UiStateV2.Loading -> {
@@ -143,8 +141,13 @@ class DiscoverPickActivity :
     }
 
     private fun initAdapter(courses: List<DiscoverUploadCourse>) {
-        discoverPickAdapter = DiscoverPickAdapter(
-            onCourseUploadItemClick = this
+        pickAdapter = DiscoverPickAdapter(
+            onCourseItemClick = { isSelected, course ->
+                viewModel.apply {
+                    updateCourseSelectState(isSelected)
+                    if (isSelected) saveCurrentSelectedCourse(course)
+                }
+            }
         ).apply {
             binding.rvDiscoverPick.adapter = this
             submitList(courses)
@@ -160,15 +163,7 @@ class DiscoverPickActivity :
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun selectCourse(id: Int, img: String, departure: String, distance: String) {
-        Timber.d("2. Adapter로부터 호출되는 콜백함수 selectItem")
-        viewModel.checkSelectEnable(id, img, departure, distance)
-    }
-
     companion object {
-        const val EXTRA_COURSE_ID = "courseId"
-        const val EXTRA_IMG = "img"
-        const val EXTRA_DEPARTURE = "departure"
-        const val EXTRA_DISTANCE = "distance"
+        const val EXTRA_UPLOAD_COURSE = "uploadCourse"
     }
 }
