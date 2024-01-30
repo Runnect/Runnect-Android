@@ -45,6 +45,8 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -464,6 +466,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
         with(dialogLayout) {
             this.btn_run.setOnClickListener {
+                Analytics.logClickedItemEvent(EventName.EVENT_CLICK_RUN_AFTER_COURSE_COMPLETE)
                 val courseData = CourseData(
                     courseId = viewModel.uploadResult.value?.data?.id,
                     publicCourseId = null,
@@ -490,6 +493,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             }
 
             this.btn_storage.setOnClickListener {
+                Analytics.logClickedItemEvent(EventName.EVENT_CLICK_STORED_AFTER_COURSE_COMPLETE)
                 val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
                     putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDrawCourse")
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
