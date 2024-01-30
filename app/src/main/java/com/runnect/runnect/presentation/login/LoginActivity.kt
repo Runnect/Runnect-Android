@@ -12,6 +12,10 @@ import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOOGLE_LOGIN
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_KAKAO_LOGIN
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -61,6 +65,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
                 socialLogin.signIn()
             }
             btnVisitorMode.setOnClickListener {
+                Analytics.logClickedItemEvent(EVENT_CLICK_VISITOR)
                 PreferenceManager.setString(
                     context = applicationContext,
                     key = TOKEN_KEY_ACCESS,

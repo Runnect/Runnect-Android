@@ -12,6 +12,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.data.dto.request.RequestPostLogin
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOOGLE_LOGIN
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -60,7 +62,9 @@ class GoogleLogin(activity: LoginActivity, viewModel: LoginViewModel) : SocialLo
                     token = socialToken,
                     provider = LoginActivity.GOOGLE_SIGN
                 )
-            )
+            ) {
+                Analytics.logClickedItemEvent(EVENT_CLICK_GOOGLE_LOGIN)
+            }
         } catch (e: ApiException) {
             Timber.tag("failed").w("signInResult:failed code=%s", e.statusCode)
         }
