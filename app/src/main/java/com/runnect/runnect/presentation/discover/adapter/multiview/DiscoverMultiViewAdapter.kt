@@ -90,21 +90,21 @@ class DiscoverMultiViewAdapter(
         return viewTypes.indexOfFirst { viewType == it }
     }
 
-    fun addRecommendCourseNextPage(items: List<RecommendCourse>) {
-        recommendCourses.addAll(items)
-        Timber.d("item count in outer recyclerview: ${items.size} ${recommendCourses.size}")
+    fun addRecommendCourseNextPage(nextPageItems: List<RecommendCourse>) {
+        recommendCourses.addAll(nextPageItems)
+        Timber.d("item count in outer recyclerview: ${nextPageItems.size} ${recommendCourses.size}")
 
-        multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(items)
+        multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(nextPageItems)
     }
 
-    fun updateRecommendCourseBySorting(items: List<RecommendCourse>) {
+    fun updateRecommendCourseBySorting(firstPageItems: List<RecommendCourse>) {
         recommendCourses.apply {
             clear()
-            addAll(items)
+            addAll(firstPageItems)
         }
-        Timber.d("item count in outer recyclerview: ${items.size} ${recommendCourses.size}")
+        Timber.d("item count in outer recyclerview: ${firstPageItems.size} ${recommendCourses.size}")
 
-        multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseBySorting(items)
+        multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseBySorting(firstPageItems)
     }
 
     fun updateCourseItem(

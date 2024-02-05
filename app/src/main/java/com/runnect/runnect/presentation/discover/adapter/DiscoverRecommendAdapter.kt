@@ -89,14 +89,14 @@ class DiscoverRecommendAdapter(
         notifyItemChanged(targetIndex)
     }
 
-    fun addRecommendCourseNextPage(items: List<DiscoverMultiViewItem.RecommendCourse>) {
-        notifyItemRangeInserted(itemCount - 1, items.size)
-        Timber.d("item count in inner recyclerview: ${items.size} ${itemCount}")
+    fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
+        notifyItemRangeInserted(itemCount - 1, nextPageItems.size)
+        Timber.d("item count in inner recyclerview: ${nextPageItems.size} ${itemCount}")
     }
 
-    fun updateRecommendCourseBySorting(items: List<DiscoverMultiViewItem.RecommendCourse>) {
+    fun updateRecommendCourseBySorting(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
         notifyDataSetChanged()
-        Timber.d("item count in inner recyclerview: ${items.size} ${itemCount}")
+        Timber.d("item count in inner recyclerview: ${firstPageItems.size} ${itemCount}")
     }
 
     companion object {
