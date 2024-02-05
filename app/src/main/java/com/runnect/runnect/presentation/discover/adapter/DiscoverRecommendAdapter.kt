@@ -90,12 +90,13 @@ class DiscoverRecommendAdapter(
     }
 
     fun addRecommendCourseNextPage(items: List<DiscoverMultiViewItem.RecommendCourse>) {
-        val newList = currentList + items
-        submitList(newList)
+        notifyItemRangeInserted(itemCount - 1, items.size)
+        Timber.d("item count in inner recyclerview: ${items.size} ${itemCount}")
     }
 
     fun updateRecommendCourseBySorting(items: List<DiscoverMultiViewItem.RecommendCourse>) {
-        submitList(items)
+        notifyDataSetChanged()
+        Timber.d("item count in inner recyclerview: ${items.size} ${itemCount}")
     }
 
     companion object {

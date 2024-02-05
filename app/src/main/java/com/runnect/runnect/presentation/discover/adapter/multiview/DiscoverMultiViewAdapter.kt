@@ -92,6 +92,8 @@ class DiscoverMultiViewAdapter(
 
     fun addRecommendCourseNextPage(items: List<RecommendCourse>) {
         recommendCourses.addAll(items)
+        Timber.d("item count in outer recyclerview: ${items.size} ${recommendCourses.size}")
+
         multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(items)
     }
 
@@ -100,6 +102,8 @@ class DiscoverMultiViewAdapter(
             clear()
             addAll(items)
         }
+        Timber.d("item count in outer recyclerview: ${items.size} ${recommendCourses.size}")
+
         multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseBySorting(items)
     }
 
