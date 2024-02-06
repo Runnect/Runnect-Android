@@ -36,7 +36,9 @@ class DiscoverMultiViewAdapter(
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                holder.bind(recommendCourses)
+                // 내부 리사이클러뷰에서는 완전히 새로운 리스트를 참조하도록 깊은 복사 수행
+                val newList = recommendCourses.map { it.copy() }.toList()
+                holder.bind(newList)
             }
         }
     }
@@ -92,8 +94,6 @@ class DiscoverMultiViewAdapter(
 
     fun addRecommendCourseNextPage(nextPageItems: List<RecommendCourse>) {
         recommendCourses.addAll(nextPageItems)
-        Timber.d("item count in outer recyclerview: ${nextPageItems.size} ${recommendCourses.size}")
-
         multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(nextPageItems)
     }
 
@@ -102,8 +102,6 @@ class DiscoverMultiViewAdapter(
             clear()
             addAll(firstPageItems)
         }
-        Timber.d("item count in outer recyclerview: ${firstPageItems.size} ${recommendCourses.size}")
-
         multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseBySorting(firstPageItems)
     }
 

@@ -11,6 +11,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import okhttp3.internal.wait
 import timber.log.Timber
 
 class DiscoverRecommendAdapter(
@@ -90,18 +91,33 @@ class DiscoverRecommendAdapter(
     }
 
     fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
-        notifyItemRangeInserted(itemCount - 1, nextPageItems.size)
-        Timber.d("item count in inner recyclerview: ${nextPageItems.size} ${itemCount}")
+        Timber.d("before item count : $itemCount")
+
+        val newList = currentList.toMutableList()
+        newList.addAll(nextPageItems)
+
+        submitList(newList) { // 비동기 작업이 끝나고 나서 호출되는 콜백 함수
+            Timber.d("after item count : $itemCount")
+        }
     }
 
     fun updateRecommendCourseBySorting(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
-        notifyDataSetChanged()
-        Timber.d("item count in inner recyclerview: ${firstPageItems.size} ${itemCount}")
+        Timber.d("before item count : $itemCount")
+
+        val newList = currentList.toMutableList()
+        newList.apply {
+            clear()
+            addAll(firstPageItems)
+        }
+
+        submitList(newList) {
+            Timber.d("after item count : $itemCount")
+        }
     }
 
     companion object {
         private val diffUtil = ItemDiffCallback<DiscoverMultiViewItem.RecommendCourse>(
-            onItemsTheSame = { old, new -> old.id == new.id },
+            onItemsTheSame = { old, new -> old === new },
             onContentsTheSame = { old, new -> old == new }
         )
     }
