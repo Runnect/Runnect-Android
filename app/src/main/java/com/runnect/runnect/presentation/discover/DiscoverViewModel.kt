@@ -144,14 +144,14 @@ class DiscoverViewModel @Inject constructor(
 
     fun getRecommendCourseNextPage() {
         viewModelScope.launch {
+            // 다음 페이지가 없으면 요청하지 않는다.
             if (isRecommendCoursePageEnd) return@launch
 
             Timber.d("다음 페이지를 요청했어요! 정렬 기준: $currentSortCriteria")
             _recommendCourseNextPageState.value = UiStateV2.Loading
-            currentPageNumber++
 
             courseRepository.getRecommendCourse(
-                pageNo = currentPageNumber.toString(),
+                pageNo = (currentPageNumber + 1).toString(),
                 sort = currentSortCriteria
             )
                 .onSuccess { pagingData ->
@@ -161,12 +161,16 @@ class DiscoverViewModel @Inject constructor(
                         return@onSuccess
                     }
 
+                    // 전역변수 업데이트
                     isRecommendCoursePageEnd = pagingData.isEnd
+                    currentPageNumber++
+
                     _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 }
                 .onFailure { exception ->
-                    _recommendCourseNextPageState.value = UiStateV2.Failure(exception.message.toString())
+                    _recommendCourseNextPageState.value =
+                        UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE NEXT PAGE GET FAIL")
                 }
         }

@@ -40,7 +40,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
@@ -192,19 +191,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
 
-                checkNextPageLoadingCondition(recyclerView)
+                if (checkNextPageLoadingCondition(recyclerView)) {
+                    viewModel.getRecommendCourseNextPage()
+                }
             }
         })
     }
 
-    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
-            Timber.d("스크롤이 끝에 도달했어요!")
-            if (!viewModel.isNextPageLoading()) {
-                viewModel.getRecommendCourseNextPage()
-            }
-        }
-    }
+    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) =
+        isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION) && !viewModel.isNextPageLoading()
 
     private fun isCourseLoadingCompleted() = ::multiViewAdapter.isInitialized &&
             multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
