@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.MyDrawCourse
+import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.data.dto.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
@@ -49,7 +49,7 @@ class StorageViewModel @Inject constructor(
                 _storageState.value = UiState.Loading
                 storageRepository.getMyDrawCourse()
             }.onSuccess {
-                _myDrawCourses = it!!
+                _myDrawCourses = (it.getOrNull() ?: emptyList()).toMutableList()
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
                 _storageState.value = UiState.Success
             }.onFailure {
