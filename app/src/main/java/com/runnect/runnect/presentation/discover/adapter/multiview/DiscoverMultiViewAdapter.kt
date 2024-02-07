@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
-import timber.log.Timber
 
 class DiscoverMultiViewAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
@@ -93,43 +92,20 @@ class DiscoverMultiViewAdapter(
     }
 
     fun addRecommendCourseNextPage(nextPageItems: List<RecommendCourse>) {
-        recommendCourses.addAll(nextPageItems)
         multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(nextPageItems)
     }
 
-    fun updateRecommendCourseBySorting(firstPageItems: List<RecommendCourse>) {
-        recommendCourses.apply {
-            clear()
-            addAll(firstPageItems)
-        }
-        multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseBySorting(firstPageItems)
+    fun sortRecommendCourseFirstPage(firstPageItems: List<RecommendCourse>) {
+        multiViewHolderFactory.recommendCourseAdapter.sortRecommendCourseFirstPage(firstPageItems)
     }
 
     fun updateCourseItem(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        val multiViewItems = marathonCourses + recommendCourses
-        val targetItem = multiViewItems.find { item ->
-            item.id == publicCourseId
-        } ?: return
-
-        when (targetItem) {
-            is MarathonCourse -> {
-                val targetIndex = marathonCourses.indexOf(targetItem)
-                multiViewHolderFactory.marathonCourseAdapter.updateMarathonCourseItem(
-                    targetIndex = targetIndex,
-                    updatedCourse = updatedCourse
-                )
-            }
-
-            is RecommendCourse -> {
-                val targetIndex = recommendCourses.indexOf(targetItem)
-                multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseItem(
-                    targetIndex = targetIndex,
-                    updatedCourse = updatedCourse
-                )
-            }
+        multiViewHolderFactory.apply {
+            marathonCourseAdapter.updateMarathonCourseItem(publicCourseId, updatedCourse)
+            recommendCourseAdapter.updateRecommendCourseItem(publicCourseId, updatedCourse)
         }
     }
 }

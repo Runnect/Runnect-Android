@@ -11,7 +11,6 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
-import okhttp3.internal.wait
 import timber.log.Timber
 
 class DiscoverRecommendAdapter(
@@ -80,14 +79,17 @@ class DiscoverRecommendAdapter(
     }
 
     fun updateRecommendCourseItem(
-        targetIndex: Int,
+        publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        currentList[targetIndex].apply {
-            title = updatedCourse.title
-            scrap = updatedCourse.scrap
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return
+            }
         }
-        notifyItemChanged(targetIndex)
     }
 
     fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
@@ -101,7 +103,7 @@ class DiscoverRecommendAdapter(
         }
     }
 
-    fun updateRecommendCourseBySorting(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
+    fun sortRecommendCourseFirstPage(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
         Timber.d("before item count : $itemCount")
 
         val newList = currentList.toMutableList()

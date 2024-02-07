@@ -411,7 +411,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.recommendCourseSortState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    multiViewAdapter.updateRecommendCourseBySorting(state.data)
+                    multiViewAdapter.sortRecommendCourseFirstPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {
