@@ -203,7 +203,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 showDrawCourse()
                 customDepartureLatLng = getCenterPosition()
                 isBlockUpdateDeparture = true
-                drawCourse(departureLatLng = customDepartureLatLng)
+                getCenterPosition().apply {
+                    departureLatLng = this
+                }.let(::drawCourse)
 
                 //커스텀 모드 시 departureLatLng이 계속 현위치 좌표값으로 갱신되어 RunActivity로 path 넘길 때 잘못된 값이 넘어가서 대응 조치
                 //위의 방법으로도 한계가 있어서 putExtra 직전에 값을 한 번 더 갱신해주는 식으로 대응
