@@ -132,13 +132,13 @@ class DiscoverViewModel @Inject constructor(
                     return@onSuccess
                 }
 
-                _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
-                Timber.d("RECOMMEND COURSE GET SUCCESS")
-
                 updateRecommendCoursePagingData(
                     isEnd = pagingData.isEnd,
                     pageNo = FIRST_PAGE_NUM
                 )
+
+                _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
+                Timber.d("RECOMMEND COURSE GET SUCCESS")
 
             }.onFailure { exception ->
                 _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
