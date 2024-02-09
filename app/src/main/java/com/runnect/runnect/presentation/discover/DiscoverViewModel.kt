@@ -65,19 +65,21 @@ class DiscoverViewModel @Inject constructor(
 
     fun refreshDiscoverCourses() {
         getMarathonCourses()
-
-        initRecommendCoursePagingData()
-        initRecommendCourseSortCriteria()
+        updateRecommendCourseSortCriteria(
+            criteria = DEFAULT_SORT_CRITERIA
+        )
         getRecommendCourses()
     }
 
-    private fun initRecommendCoursePagingData() {
-        isRecommendCoursePageEnd = false
-        currentPageNumber = FIRST_PAGE_NUM
+    private fun updateRecommendCoursePagingData(isEnd: Boolean, pageNo: Int) {
+        isRecommendCoursePageEnd = isEnd
+        currentPageNumber = pageNo
+        Timber.d("isEnd: ${isRecommendCoursePageEnd}, page: ${currentPageNumber}")
     }
 
-    private fun initRecommendCourseSortCriteria() {
-        currentSortCriteria = DEFAULT_SORT_CRITERIA
+    private fun updateRecommendCourseSortCriteria(criteria: String) {
+        currentSortCriteria = criteria
+        Timber.d("sort: ${currentSortCriteria}")
     }
 
     private fun getDiscoverBanners() {
@@ -122,7 +124,7 @@ class DiscoverViewModel @Inject constructor(
 
             courseRepository.getRecommendCourse(
                 pageNo = FIRST_PAGE_NUM.toString(),
-                sort = DEFAULT_SORT_CRITERIA
+                sort = currentSortCriteria
             ).onSuccess { pagingData ->
                 if (pagingData == null) {
                     _recommendCourseGetState.value =
@@ -130,9 +132,14 @@ class DiscoverViewModel @Inject constructor(
                     return@onSuccess
                 }
 
-                isRecommendCoursePageEnd = pagingData.isEnd
                 _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
                 Timber.d("RECOMMEND COURSE GET SUCCESS")
+
+                updateRecommendCoursePagingData(
+                    isEnd = pagingData.isEnd,
+                    pageNo = FIRST_PAGE_NUM
+                )
+
             }.onFailure { exception ->
                 _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
                 Timber.e("RECOMMEND COURSE GET FAIL")
@@ -147,7 +154,6 @@ class DiscoverViewModel @Inject constructor(
             // 다음 페이지가 없으면 요청하지 않는다.
             if (isRecommendCoursePageEnd) return@launch
 
-            Timber.d("다음 페이지를 요청했어요! 정렬 기준: $currentSortCriteria")
             _recommendCourseNextPageState.value = UiStateV2.Loading
 
             courseRepository.getRecommendCourse(
@@ -161,9 +167,10 @@ class DiscoverViewModel @Inject constructor(
                         return@onSuccess
                     }
 
-                    // 전역변수 업데이트
-                    isRecommendCoursePageEnd = pagingData.isEnd
-                    currentPageNumber++
+                    updateRecommendCoursePagingData(
+                        isEnd = pagingData.isEnd,
+                        pageNo = currentPageNumber + 1
+                    )
 
                     _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
@@ -177,15 +184,14 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun sortRecommendCourses(criteria: String) {
-        initRecommendCoursePagingData()
-        updateCurrentSortCriteria(criteria)
+        updateRecommendCourseSortCriteria(criteria)
 
         viewModelScope.launch {
             _recommendCourseSortState.value = UiStateV2.Loading
 
             courseRepository.getRecommendCourse(
                 pageNo = FIRST_PAGE_NUM.toString(),
-                sort = criteria
+                sort = currentSortCriteria
             ).onSuccess { pagingData ->
                 if (pagingData == null) {
                     _recommendCourseSortState.value =
@@ -193,7 +199,11 @@ class DiscoverViewModel @Inject constructor(
                     return@onSuccess
                 }
 
-                isRecommendCoursePageEnd = pagingData.isEnd
+                updateRecommendCoursePagingData(
+                    isEnd = pagingData.isEnd,
+                    pageNo = FIRST_PAGE_NUM
+                )
+
                 _recommendCourseSortState.value = UiStateV2.Success(pagingData.recommendCourses)
                 Timber.d("RECOMMEND COURSE SORT SUCCESS")
             }.onFailure { exception ->
@@ -201,10 +211,6 @@ class DiscoverViewModel @Inject constructor(
                 Timber.e("RECOMMEND COURSE SORT FAIL")
             }
         }
-    }
-
-    private fun updateCurrentSortCriteria(criteria: String) {
-        currentSortCriteria = criteria
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
