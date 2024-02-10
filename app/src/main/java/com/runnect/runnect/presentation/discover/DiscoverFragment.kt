@@ -17,7 +17,6 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
@@ -41,8 +40,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
@@ -98,10 +95,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             },
             handleVisitorMode = {
                 context?.let { showCourseScrapWarningToast(it) }
+            },
+            onSortButtonClick = { criteria ->
+                viewModel.sortRecommendCourses(criteria)
             }
         ).apply {
             binding.rvDiscoverMultiView.adapter = this
-            binding.rvDiscoverMultiView.setHasFixedSize(true)
         }
     }
 
@@ -192,19 +191,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
 
-                checkNextPageLoadingCondition(recyclerView)
+                if (checkNextPageLoadingCondition(recyclerView)) {
+                    viewModel.getRecommendCourseNextPage()
+                }
             }
         })
     }
 
-    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
-            Timber.d("스크롤이 끝에 도달했어요!")
-            if (!viewModel.isNextPageLoading()) {
-                viewModel.getRecommendCourseNextPage()
-            }
-        }
-    }
+    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) =
+        isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION) && !viewModel.isNextPageLoading()
 
     private fun isCourseLoadingCompleted() = ::multiViewAdapter.isInitialized &&
             multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
@@ -228,6 +223,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
+            // 리프레시 직후에 비어있는 리스트로 리사이클러뷰 초기화
+            multiViewAdapter.initMarathonCourses(emptyList())
+            multiViewAdapter.initRecommendCourses(emptyList())
+
+            // 서버통신 직후에 첫 페이지 데이터로 리사이클러뷰 초기화
             viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
@@ -273,6 +273,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupMarathonCourseGetStateObserver()
         setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
+        setupRecommendCourseSortStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -333,7 +334,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupMarathonCourseGetStateObserver() {
-        viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     multiViewAdapter.initMarathonCourses(state.data)
@@ -353,13 +354,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupRecommendCourseGetStateObserver() {
-        viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
+                    // todo: 리프레시에 의한 추천코스 어댑터의 submitList 동작이 완료되고 나서
                     multiViewAdapter.initRecommendCourses(state.data)
+
+                    // todo: 로딩 프로그레스바를 삭제해야 한다.
+                    dismissLoadingProgressBar()
                 }
 
                 is UiStateV2.Failure -> {
@@ -387,10 +391,30 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupRecommendCourseNextPageStateObserver() {
-        viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseNextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     multiViewAdapter.addRecommendCourseNextPage(state.data)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseSortStateObserver() {
+        viewModel.recommendCourseSortState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    multiViewAdapter.sortRecommendCourseFirstPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {
@@ -447,8 +471,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
     }
 
-    fun getRecommendCourses() {
-        viewModel.getRecommendCourses()
+    fun refreshDiscoverCourses() {
+        viewModel.refreshDiscoverCourses()
     }
 
     override fun onAttach(context: Context) {

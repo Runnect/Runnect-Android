@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
-import timber.log.Timber
 
 class DiscoverMultiViewAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
+    private val onSortButtonClick: (String) -> Unit
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
     private val marathonCourses = arrayListOf<MarathonCourse>()
@@ -23,7 +23,8 @@ class DiscoverMultiViewAdapter(
             viewType = viewType,
             onHeartButtonClick = onHeartButtonClick,
             onCourseItemClick = onCourseItemClick,
-            handleVisitorMode = handleVisitorMode
+            handleVisitorMode = handleVisitorMode,
+            onSortButtonClick = onSortButtonClick
         )
     }
 
@@ -34,7 +35,9 @@ class DiscoverMultiViewAdapter(
             }
 
             is DiscoverMultiViewHolder.RecommendCourseViewHolder -> {
-                holder.bind(recommendCourses)
+                // 내부 리사이클러뷰에서는 완전히 새로운 리스트를 참조하도록 깊은 복사 수행
+                val newList = recommendCourses.map { it.copy() }.toList()
+                holder.bind(newList)
             }
         }
     }
@@ -88,36 +91,21 @@ class DiscoverMultiViewAdapter(
         return viewTypes.indexOfFirst { viewType == it }
     }
 
-    fun addRecommendCourseNextPage(items: List<RecommendCourse>) {
-        recommendCourses.addAll(items)
-        multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(items)
+    fun addRecommendCourseNextPage(nextPageItems: List<RecommendCourse>) {
+        multiViewHolderFactory.recommendCourseAdapter.addRecommendCourseNextPage(nextPageItems)
+    }
+
+    fun sortRecommendCourseFirstPage(firstPageItems: List<RecommendCourse>) {
+        multiViewHolderFactory.recommendCourseAdapter.sortRecommendCourseFirstPage(firstPageItems)
     }
 
     fun updateCourseItem(
         publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        val multiViewItems = marathonCourses + recommendCourses
-        val targetItem = multiViewItems.find { item ->
-            item.id == publicCourseId
-        } ?: return
-
-        when (targetItem) {
-            is MarathonCourse -> {
-                val targetIndex = marathonCourses.indexOf(targetItem)
-                multiViewHolderFactory.marathonCourseAdapter.updateMarathonCourseItem(
-                    targetIndex = targetIndex,
-                    updatedCourse = updatedCourse
-                )
-            }
-
-            is RecommendCourse -> {
-                val targetIndex = recommendCourses.indexOf(targetItem)
-                multiViewHolderFactory.recommendCourseAdapter.updateRecommendCourseItem(
-                    targetIndex = targetIndex,
-                    updatedCourse = updatedCourse
-                )
-            }
+        multiViewHolderFactory.apply {
+            marathonCourseAdapter.updateMarathonCourseItem(publicCourseId, updatedCourse)
+            recommendCourseAdapter.updateRecommendCourseItem(publicCourseId, updatedCourse)
         }
     }
 }
