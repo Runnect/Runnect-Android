@@ -10,7 +10,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class RemoteStorageDataSource @Inject constructor(private val courseService: CourseService) {
-    suspend fun getMyDrawCourse(): Response<ResponseGetMyDrawCourse> =
+    suspend fun getMyDrawCourse(): BaseResponse<ResponseGetMyDrawCourse> =
         courseService.getDrawCourseList()
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> =

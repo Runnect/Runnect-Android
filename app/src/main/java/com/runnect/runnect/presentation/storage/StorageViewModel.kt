@@ -57,7 +57,7 @@ class StorageViewModel @Inject constructor(
                 _myDrawCoursesGetState.value = UiState.Loading
                 storageRepository.getMyDrawCourse()
             }.onSuccess {
-                _myDrawCourses = it!!
+                _myDrawCourses = (it.getOrNull() ?: emptyList()).toMutableList()
                 Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
                 _myDrawCoursesGetState.value = UiState.Success
             }.onFailure {

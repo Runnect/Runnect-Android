@@ -78,14 +78,17 @@ class DiscoverRecommendAdapter(
     }
 
     fun updateRecommendCourseItem(
-        targetIndex: Int,
+        publicCourseId: Int,
         updatedCourse: EditableDiscoverCourse
     ) {
-        currentList[targetIndex].apply {
-            title = updatedCourse.title
-            scrap = updatedCourse.scrap
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return
+            }
         }
-        notifyItemChanged(targetIndex)
     }
 
     fun updateRecommendCourseScrap(
@@ -96,18 +99,34 @@ class DiscoverRecommendAdapter(
         notifyItemChanged(targetIndex)
     }
 
-    fun addRecommendCourseNextPage(items: List<DiscoverMultiViewItem.RecommendCourse>) {
-        val newList = currentList + items
-        submitList(newList)
+    fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
+        Timber.d("before item count : $itemCount")
+
+        val newList = currentList.toMutableList()
+        newList.addAll(nextPageItems)
+
+        submitList(newList) { // 비동기 작업이 끝나고 나서 호출되는 콜백 함수
+            Timber.d("after item count : $itemCount")
+        }
     }
 
-    fun updateRecommendCourseBySorting(items: List<DiscoverMultiViewItem.RecommendCourse>) {
-        submitList(items)
+    fun sortRecommendCourseFirstPage(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
+        Timber.d("before item count : $itemCount")
+
+        val newList = currentList.toMutableList()
+        newList.apply {
+            clear()
+            addAll(firstPageItems)
+        }
+
+        submitList(newList) {
+            Timber.d("after item count : $itemCount")
+        }
     }
 
     companion object {
         private val diffUtil = ItemDiffCallback<DiscoverMultiViewItem.RecommendCourse>(
-            onItemsTheSame = { old, new -> old.id == new.id },
+            onItemsTheSame = { old, new -> old === new },
             onContentsTheSame = { old, new -> old == new }
         )
     }

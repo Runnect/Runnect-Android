@@ -24,8 +24,6 @@ class DrawViewModel @Inject constructor(
     val reverseGeocodingRepository: ReverseGeocodingRepository
 ) : ViewModel() {
 
-    val editTextValue = MutableLiveData<String>()
-
     private var _drawState = MutableLiveData<UiState>(UiState.Empty)
     val drawState: LiveData<UiState>
         get() = _drawState
@@ -36,7 +34,7 @@ class DrawViewModel @Inject constructor(
     var distanceSum = MutableLiveData(0.0f)
     val departureAddress = MutableLiveData<String>()
     var courseTitle = ""
-    val departureName = MutableLiveData<String>()
+    val departureName = MutableLiveData("내가 설정한 출발지")
     val isBtnAvailable = MutableLiveData(false)
 
     val reverseGeocodingResult = MutableLiveData<LocationData>()
@@ -91,7 +89,7 @@ class DrawViewModel @Inject constructor(
                 _drawState.value = UiState.Loading
                 courseRepository.uploadCourse(
                     image = _image.value!!.toFormData(),
-                    courseCreateRequestDto = CourseCreateRequestDto(
+                    data = CourseCreateRequestDto(
                         path = path.value ?: listOf(
                             UploadLatLng(
                                 37.52901832956373,
@@ -100,11 +98,15 @@ class DrawViewModel @Inject constructor(
                         ),
                         title = courseTitle,
                         distance = distanceSum.value!!,
-                        departureAddress = departureAddress.value!!, //커스텀의 경우 지금 여기에 들어가는 게 아무것도 없음.
+                        departureAddress = departureAddress.value!!,
                         departureName = departureName.value!!
                     ).toRequestBody()
                 )
             }.onSuccess {
+                if (it.body() == null) {
+                    _drawState.value = UiState.Failure
+                    return@onSuccess //추가 조치 필요
+                }
                 Timber.tag(ContentValues.TAG).d("통신success")
                 uploadResult.value = it.body()
                 _drawState.value = UiState.Success

@@ -40,7 +40,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
@@ -192,19 +191,15 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
 
-                checkNextPageLoadingCondition(recyclerView)
+                if (checkNextPageLoadingCondition(recyclerView)) {
+                    viewModel.getRecommendCourseNextPage()
+                }
             }
         })
     }
 
-    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
-            Timber.d("스크롤이 끝에 도달했어요!")
-            if (!viewModel.isNextPageLoading()) {
-                viewModel.getRecommendCourseNextPage()
-            }
-        }
-    }
+    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) =
+        isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION) && !viewModel.isNextPageLoading()
 
     private fun isCourseLoadingCompleted() = ::multiViewAdapter.isInitialized &&
             multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
@@ -228,6 +223,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
+            // 리프레시 직후에 비어있는 리스트로 리사이클러뷰 초기화
+            multiViewAdapter.initMarathonCourses(emptyList())
+            multiViewAdapter.initRecommendCourses(emptyList())
+
+            // 서버통신 직후에 첫 페이지 데이터로 리사이클러뷰 초기화
             viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
@@ -359,8 +359,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
+                    // todo: 리프레시에 의한 추천코스 어댑터의 submitList 동작이 완료되고 나서
                     multiViewAdapter.initRecommendCourses(state.data)
+
+                    // todo: 로딩 프로그레스바를 삭제해야 한다.
+                    dismissLoadingProgressBar()
                 }
 
                 is UiStateV2.Failure -> {
@@ -411,7 +414,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.recommendCourseSortState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    multiViewAdapter.updateRecommendCourseBySorting(state.data)
+                    multiViewAdapter.sortRecommendCourseFirstPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {

@@ -7,7 +7,7 @@ import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import retrofit2.Response
 
 interface StorageRepository {
-    suspend fun getMyDrawCourse(): MutableList<MyDrawCourse>?
+    suspend fun getMyDrawCourse(): Result<List<MyDrawCourse>?>
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) : Response<ResponsePutMyDrawCourse>
     suspend fun getMyScrapCourse(): Result<List<MyScrapCourse>?>
 }

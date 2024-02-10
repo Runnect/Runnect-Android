@@ -81,9 +81,9 @@ interface CourseService {
 
     //코스 업로드
     @Multipart
-    @POST("/api/course/v2")
+    @POST("/api/course")
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
-        @Part("courseCreateRequestDto") courseCreateRequestDto: RequestBody,
+        @Part("data") data: RequestBody,
     ): Response<ResponsePostMyDrawCourse>
 }
