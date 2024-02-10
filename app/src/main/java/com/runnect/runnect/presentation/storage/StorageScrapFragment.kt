@@ -143,7 +143,7 @@ class StorageScrapFragment :
     }
 
     private fun setupMyScrapCourseGetStateObserver() {
-        viewModel.myScrapCoursesGetState.observe(viewLifecycleOwner) { state ->
+        viewModel.myScrapCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> {
                     showLoadingProgressBar()

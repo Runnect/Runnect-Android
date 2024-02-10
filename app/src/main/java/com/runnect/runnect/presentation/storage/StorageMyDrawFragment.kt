@@ -258,7 +258,7 @@ class StorageMyDrawFragment :
     }
 
     private fun observeStorageState() {
-        viewModel.myDrawCoursesGetState.observe(viewLifecycleOwner) {
+        viewModel.myDrawCourseGetState.observe(viewLifecycleOwner) {
             when (it) {
                 UiState.Empty -> hideLoadingBar()
                 UiState.Loading -> showLoadingBar()

@@ -1,10 +1,11 @@
 package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.MyDrawCourse
 import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
+import com.runnect.runnect.data.dto.response.toMyDrawCourse
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
+import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.domain.repository.StorageRepository
 import retrofit2.Response
 import javax.inject.Inject
