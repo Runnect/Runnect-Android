@@ -44,7 +44,7 @@ class DiscoverPickViewModel @Inject constructor(
                     }
 
                     Timber.d("DISCOVER UPLOAD COURSE GET SUCCESS")
-                    if (response.isEmpty()) UiStateV2.Empty
+                    if (response.isEmpty()) _courseGetState.value = UiStateV2.Empty
                     else _courseGetState.value = UiStateV2.Success(response)
 
                 }.onFailure { t ->

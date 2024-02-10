@@ -104,6 +104,7 @@ class DiscoverPickActivity :
         viewModel.courseGetState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Empty -> handleEmptyCourseLoad()
+
                 is UiStateV2.Loading -> {
                     binding.indeterminateBar.isVisible = true
                 }
