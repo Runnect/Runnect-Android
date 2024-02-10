@@ -22,38 +22,40 @@ data class ResponseGetMyDrawDetail(
         @SerialName("user")
         val user: User,
     ) {
-        @Serializable
-        data class Course(
-            @SerialName("createdAt")
-            val createdAt: String,
-            @SerialName("departure")
-            val departure: Departure,
-            @SerialName("distance")
-            val distance: Float,
-            @SerialName("id")
-            val id: Int,
-            @SerialName("image")
-            val image: String,
-            @SerialName("path")
-            val path: List<List<Double>>,
-        ) {
-            @Serializable
-            data class Departure(
-                @SerialName("city")
-                val city: String,
-                @SerialName("name")
-                val name: String,
-                @SerialName("region")
-                val region: String,
-                @SerialName("town")
-                val town: String,
-            )
-        }
 
         @Serializable
         data class User(
-            @SerialName("id")
+            @SerialName("userId")
             val id: Int,
         )
+        @Serializable
+        data class Course(
+            @SerialName("id")
+            val id: Int,
+            @SerialName("createdAt")
+            val createdAt: String,
+            @SerialName("path")
+            val path: List<List<Double>>,
+            @SerialName("distance")
+            val distance: Float,
+            @SerialName("image")
+            val image: String,
+            @SerialName("title")
+            val title: String,
+            @SerialName("departure")
+            val departure: Departure,
+        ) {
+            @Serializable
+            data class Departure(
+                @SerialName("region")
+                val region: String,
+                @SerialName("city")
+                val city: String,
+                @SerialName("town")
+                val town: String,
+                @SerialName("name")
+                val name: String,
+            )
+        }
     }
 }

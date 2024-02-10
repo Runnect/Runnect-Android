@@ -17,6 +17,7 @@ import com.runnect.runnect.util.custom.deco.DiscoverMarathonItemDecoration
 import com.runnect.runnect.util.custom.deco.DiscoverRecommendItemDecoration
 import com.runnect.runnect.util.extension.colorOf
 import com.runnect.runnect.util.extension.fontOf
+import timber.log.Timber
 
 sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -88,7 +89,10 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
             binding.rvDiscoverRecommend.apply {
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = recommendAdapter.apply {
-                    submitList(courses)
+                    Timber.e("refresh before item count: ${itemCount}")
+                    submitList(courses) {
+                        Timber.e("refresh after item count: ${itemCount}")
+                    }
                 }
                 addItemDecorationOnlyOnce(this)
             }
