@@ -223,9 +223,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
+            // 리프레시 직후에 비어있는 리스트로 리사이클러뷰 초기화
             multiViewAdapter.initMarathonCourses(emptyList())
             multiViewAdapter.initRecommendCourses(emptyList())
 
+            // 서버통신 직후에 첫 페이지 데이터로 리사이클러뷰 초기화
             viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
