@@ -223,6 +223,9 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
+            multiViewAdapter.initMarathonCourses(emptyList())
+            multiViewAdapter.initRecommendCourses(emptyList())
+
             viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
@@ -354,8 +357,11 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
+                    // todo: 리프레시에 의한 추천코스 어댑터의 submitList 동작이 완료되고 나서
                     multiViewAdapter.initRecommendCourses(state.data)
+
+                    // todo: 로딩 프로그레스바를 삭제해야 한다.
+                    dismissLoadingProgressBar()
                 }
 
                 is UiStateV2.Failure -> {
