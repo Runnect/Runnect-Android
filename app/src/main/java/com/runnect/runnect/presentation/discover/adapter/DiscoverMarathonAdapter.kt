@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMarathonBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
 class DiscoverMarathonAdapter(
@@ -72,6 +73,20 @@ class DiscoverMarathonAdapter(
         ) {
             itemView.setOnClickListener {
                 onCourseItemClick.invoke(course.id)
+            }
+        }
+    }
+
+    fun updateMarathonCourseItem(
+        publicCourseId: Int,
+        updatedCourse: EditableDiscoverCourse
+    ) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return
             }
         }
     }

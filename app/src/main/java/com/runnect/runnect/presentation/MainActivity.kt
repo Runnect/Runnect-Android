@@ -149,7 +149,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         var storageScrapFragment: StorageScrapFragment? = null
 
         fun updateCourseDiscoverScreen() {
-            discoverFragment?.getRecommendCourses(pageNo = 1)
+            discoverFragment?.refreshDiscoverCourses()
         }
 
         fun updateStorageScrapScreen() {

@@ -26,7 +26,7 @@ interface CourseRepository {
 
     suspend fun getRecommendCourse(
         pageNo: String,
-        ordering: String
+        sort: String
     ): Result<RecommendCoursePagingData?>
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
@@ -42,7 +42,7 @@ interface CourseRepository {
     suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory>
 
     suspend fun uploadCourse(
-        image: MultipartBody.Part, courseCreateRequestDto: RequestBody
+        image: MultipartBody.Part, data: RequestBody
     ): Response<ResponsePostMyDrawCourse>
 
     suspend fun getCourseDetail(publicCourseId: Int): Result<CourseDetail?>

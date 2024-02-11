@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
+import timber.log.Timber
 
 class DiscoverRecommendAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
@@ -39,7 +41,7 @@ class DiscoverRecommendAdapter(
         private val binding: ItemDiscoverRecommendBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
-        private val handleVisitorMode: () -> Unit,
+        private val handleVisitorMode: () -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverMultiViewItem.RecommendCourse) {
             with(binding) {
@@ -76,9 +78,48 @@ class DiscoverRecommendAdapter(
         }
     }
 
+    fun updateRecommendCourseItem(
+        publicCourseId: Int,
+        updatedCourse: EditableDiscoverCourse
+    ) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.title = updatedCourse.title
+                course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
+    fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
+        Timber.d("before item count : $itemCount")
+
+        val newList = currentList.toMutableList()
+        newList.addAll(nextPageItems)
+
+        submitList(newList) { // 비동기 작업이 끝나고 나서 호출되는 콜백 함수
+            Timber.d("after item count : $itemCount")
+        }
+    }
+
+    fun sortRecommendCourseFirstPage(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
+        Timber.d("before item count : $itemCount")
+
+        val newList = currentList.toMutableList()
+        newList.apply {
+            clear()
+            addAll(firstPageItems)
+        }
+
+        submitList(newList) {
+            Timber.d("after item count : $itemCount")
+        }
+    }
+
     companion object {
         private val diffUtil = ItemDiffCallback<DiscoverMultiViewItem.RecommendCourse>(
-            onItemsTheSame = { old, new -> old.id == new.id },
+            onItemsTheSame = { old, new -> old === new },
             onContentsTheSame = { old, new -> old == new }
         )
     }
