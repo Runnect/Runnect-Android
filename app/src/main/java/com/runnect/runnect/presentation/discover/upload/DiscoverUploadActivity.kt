@@ -14,6 +14,9 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_UPLOAD
+import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_UPLOAD
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +30,7 @@ class DiscoverUploadActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
-
+        Analytics.logClickedItemEvent(VIEW_COURSE_UPLOAD)
         initLayout()
         addListener()
         addObserver()
@@ -54,6 +57,7 @@ class DiscoverUploadActivity :
             if (it.isActivated) {
                 viewModel.postUploadMyCourse()
             }
+            Analytics.logClickedItemEvent(EVENT_CLICK_COURSE_UPLOAD)
         }
         //키보드 이벤트에 따른 동작 정의
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
@@ -84,6 +88,7 @@ class DiscoverUploadActivity :
                 UiState.Success -> {
                     handleReturnToDiscover()
                 }
+
                 UiState.Failure -> {
                     binding.indeterminateBar.isVisible = false
                     Timber.tag(ContentValues.TAG)
