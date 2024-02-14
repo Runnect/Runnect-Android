@@ -21,6 +21,8 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentCourseMainBinding
 import com.runnect.runnect.presentation.search.SearchActivity
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_DRAWING
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.showToast
 
@@ -95,6 +97,7 @@ class CourseMainFragment :
 
     private fun initDrawCourseButtonClickListener() {
         binding.btnDraw.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_COURSE_DRAWING)
             val intent = Intent(activity, SearchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             startActivity(intent)

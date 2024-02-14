@@ -17,8 +17,10 @@ import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE
 import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -39,7 +41,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         binding.vm = viewModel
         binding.lifecycleOwner = this
         viewModel.getUserUploadCourse()
-
         initLayout()
         addListener()
         addObserver()
@@ -51,6 +52,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun initLayout() {
         initRecyclerView()
     }
+
 
     private fun initRecyclerView() {
         binding.rvMyPageUpload.layoutManager = GridLayoutManager(this, 2)
@@ -75,6 +77,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             handleDeleteButtonClicked(it)
         }
         binding.cvUploadMyPageUploadCourse.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE)
             startActivity(Intent(this, DiscoverPickActivity::class.java))
             finish()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

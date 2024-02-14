@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.kakao.sdk.common.KakaoSdk
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
+import com.runnect.runnect.util.analytics.Analytics
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -20,13 +21,18 @@ class ApplicationClass : Application() {
             Timber.plant(Timber.DebugTree())
         }
         appContext = applicationContext
-        KakaoSdk.init(this,getString(R.string.kakao_native_app_key))
+        KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
         initApiMode()
+        initAnalytics()
     }
 
     private fun initApiMode() {
         val currentApi = ApiMode.getCurrentApiMode(appContext)
         PreferenceManager.setString(appContext, API_MODE, currentApi.name)
+    }
+
+    private fun initAnalytics() {
+        Analytics.initializeFirebaseAnalytics(applicationContext)
     }
 
     companion object {
@@ -39,7 +45,7 @@ class ApplicationClass : Application() {
                 !::appContext.isInitialized -> BuildConfig.RUNNECT_NODE_URL
                 else -> {
                     val mode = ApiMode.getCurrentApiMode(appContext)
-                    when(mode) {
+                    when (mode) {
                         ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
                         ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL
                         else -> BuildConfig.RUNNECT_NODE_URL

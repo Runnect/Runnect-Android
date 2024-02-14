@@ -42,6 +42,10 @@ import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SHARE
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_USER_PROFILE
+import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_DETAIL
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
@@ -83,6 +87,8 @@ class CourseDetailActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+
+        Analytics.logClickedItemEvent(VIEW_COURSE_DETAIL)
 
         initIntentExtraData()
         updatePublicCourseIdFromDeepLink()
@@ -142,6 +148,7 @@ class CourseDetailActivity :
             startActivity(this)
         }
         applyScreenEnterAnimation()
+        Analytics.logClickedItemEvent(EVENT_CLICK_USER_PROFILE)
     }
 
     private fun handleBackButtonByCurrentScreenMode() {
@@ -238,6 +245,7 @@ class CourseDetailActivity :
                 desc = courseDetail.description,
                 image = courseDetail.image
             )
+            Analytics.logClickedItemEvent(EVENT_CLICK_SHARE)
         }
     }
 

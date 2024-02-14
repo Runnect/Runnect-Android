@@ -21,9 +21,11 @@ import com.runnect.runnect.presentation.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_MY_STORAGE_TRY_REMOVE
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
+import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.setFragmentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -34,7 +36,6 @@ import timber.log.Timber
 class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
     OnMyDrawItemClick, ItemCount {
-
     val viewModel: StorageViewModel by viewModels()
 
     lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
@@ -94,6 +95,7 @@ class StorageMyDrawFragment :
         } //지금 밑에 updateAdapterData()가 있는데 함수들 간 호출 시점만 잘 정해주면 둘 중 하나 없애도 될듯?
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
+
 
     fun hideBottomNav() {
         animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
@@ -214,6 +216,7 @@ class StorageMyDrawFragment :
     }
 
     private fun handleSuccessfulUploadDeletion() {
+        Analytics.logClickedItemEvent(EVENT_MY_STORAGE_TRY_REMOVE)
         binding.indeterminateBar.isVisible = false
         storageMyDrawAdapter.removeItems(viewModel.itemsToDelete)
         storageMyDrawAdapter.clearSelection()

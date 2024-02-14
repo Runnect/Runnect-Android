@@ -18,6 +18,9 @@ import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_BACK_RUNNING_TRACKING
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_STORE_RUNNING_TRACKING
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.round
@@ -67,6 +70,7 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
 
     private fun backBtn() {
         binding.imgBtnBack.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_BACK_RUNNING_TRACKING)
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, viewModel.dataFrom.value)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -152,6 +156,7 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
 
     private fun saveRecord() {
         binding.btnEndRunSave.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_STORE_RUNNING_TRACKING)
             viewModel.postRecord(
                 RequestPostRunningHistory(
                     courseId = viewModel.courseId.value!!,
