@@ -19,7 +19,7 @@ interface CourseService {
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
         @Query("pageNo") pageNo: String,
-        @Query("ordering") ordering: String
+        @Query("sort") sort: String
     ): BaseResponse<ResponseGetDiscoverRecommend>
 
     @POST("/api/scrap")
@@ -62,7 +62,7 @@ interface CourseService {
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
     suspend fun getCourseList(
-    ): Response<ResponseGetMyDrawCourse>
+    ): BaseResponse<ResponseGetMyDrawCourse>
 
     //보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
@@ -83,9 +83,9 @@ interface CourseService {
 
     //코스 업로드
     @Multipart
-    @POST("/api/course/v2")
+    @POST("/api/course")
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
-        @Part("courseCreateRequestDto") courseCreateRequestDto: RequestBody,
+        @Part("data") data: RequestBody,
     ): Response<ResponsePostMyDrawCourse>
 }

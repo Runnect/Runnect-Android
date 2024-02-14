@@ -1,5 +1,4 @@
-package com.runnect.runnect.data.dto
-
+package com.runnect.runnect.domain.entity
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -10,4 +9,5 @@ data class MyDrawCourse(
     val image: String?,
     val city: String,
     val region: String,
+    val title: String
 ) : Parcelable

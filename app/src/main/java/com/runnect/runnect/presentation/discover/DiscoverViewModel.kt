@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
-import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -28,49 +26,60 @@ class DiscoverViewModel @Inject constructor(
     val bannerGetState: LiveData<UiStateV2<List<DiscoverBanner>>>
         get() = _bannerGetState
 
-    private val _marathonCourseState = MutableLiveData<UiStateV2<List<MarathonCourse>?>>()
-    val marathonCourseState: LiveData<UiStateV2<List<MarathonCourse>?>>
-        get() = _marathonCourseState
+    private val _marathonCourseGetState = MutableLiveData<UiStateV2<List<MarathonCourse>>>()
+    val marathonCourseGetState: LiveData<UiStateV2<List<MarathonCourse>>>
+        get() = _marathonCourseGetState
 
-    private val _recommendCourseState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
-    val recommendCourseState: LiveData<UiStateV2<List<RecommendCourse>>>
-        get() = _recommendCourseState
+    private val _recommendCourseGetState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
+    val recommendCourseGetState: LiveData<UiStateV2<List<RecommendCourse>>>
+        get() = _recommendCourseGetState
 
-    private val _nextPageState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
-    val nextPageState: LiveData<UiStateV2<List<RecommendCourse>>>
-        get() = _nextPageState
+    private val _recommendCourseNextPageState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
+    val recommendCourseNextPageState: LiveData<UiStateV2<List<RecommendCourse>>>
+        get() = _recommendCourseNextPageState
+
+    private val _recommendCourseSortState = MutableLiveData<UiStateV2<List<RecommendCourse>>>()
+    val recommendCourseSortState: LiveData<UiStateV2<List<RecommendCourse>>>
+        get() = _recommendCourseSortState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
     val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
-    private val _multiViewItems: MutableList<List<DiscoverMultiViewItem>> = mutableListOf()
-    val multiViewItems: List<List<DiscoverMultiViewItem>> get() = _multiViewItems
-
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
     private var isRecommendCoursePageEnd = false
-    private var currentPageNo = 1
+    private var currentPageNumber = FIRST_PAGE_NUM
+    private var currentSortCriteria = DEFAULT_SORT_CRITERIA
 
     init {
         getDiscoverBanners()
-        getMarathonCourse()
-        getRecommendCourse(pageNo = 1, ordering = "date")
+        getMarathonCourses()
+        getRecommendCourses()
     }
 
     fun saveClickedCourseId(id: Int) {
         _clickedCourseId = id
     }
 
-    fun resetMultiViewItems() {
-        _multiViewItems.clear()
-        currentPageNo = 1
+    fun refreshDiscoverCourses() {
+        getMarathonCourses()
+        updateRecommendCourseSortCriteria(
+            criteria = DEFAULT_SORT_CRITERIA
+        )
+        getRecommendCourses()
     }
 
-    fun refreshCurrentCourses() {
-        getMarathonCourse()
-        getRecommendCourse(pageNo = 1, ordering = "date")
+    private fun updateRecommendCoursePagingData(isEnd: Boolean, pageNo: Int) {
+        isRecommendCoursePageEnd = isEnd
+        currentPageNumber = pageNo
+        Timber.d("isEnd: ${isRecommendCoursePageEnd}, page: ${currentPageNumber}")
+    }
+
+    private fun updateRecommendCourseSortCriteria(criteria: String) {
+        currentSortCriteria = criteria
+        Timber.d("sort: ${currentSortCriteria}")
     }
 
     private fun getDiscoverBanners() {
@@ -87,86 +96,121 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun getMarathonCourse() {
+    private fun getMarathonCourses() {
         viewModelScope.launch {
-            _marathonCourseState.value = UiStateV2.Loading
+            _marathonCourseGetState.value = UiStateV2.Loading
 
             courseRepository.getMarathonCourse()
                 .onSuccess { courses ->
-                    courses?.let {
-                        _multiViewItems.add(it)
-                        _marathonCourseState.value = UiStateV2.Success(it)
-                        Timber.d("MARATHON COURSE GET SUCCESS")
+                    if (courses == null) {
+                        _marathonCourseGetState.value =
+                            UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
+                        return@launch
                     }
+
+                    _marathonCourseGetState.value = UiStateV2.Success(courses)
+                    Timber.d("MARATHON COURSE GET SUCCESS")
                 }
                 .onFailure { exception ->
-                    _marathonCourseState.value = UiStateV2.Failure(exception.message.toString())
+                    _marathonCourseGetState.value = UiStateV2.Failure(exception.message.toString())
                     Timber.e("MARATHON COURSE GET FAIL")
                 }
         }
     }
 
-    fun getRecommendCourse(pageNo: Int, ordering: String) {
+    private fun getRecommendCourses() {
         viewModelScope.launch {
-            _recommendCourseState.value = UiStateV2.Loading
+            _recommendCourseGetState.value = UiStateV2.Loading
 
-            courseRepository.getRecommendCourse(pageNo = pageNo.toString(), ordering = ordering)
-                .onSuccess { pagingData ->
-                    if (pagingData == null) {
-                        _recommendCourseState.value =
-                            UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
-                        return@onSuccess
-                    }
-
-                    isRecommendCoursePageEnd = pagingData.isEnd
-                    _multiViewItems.add(pagingData.recommendCourses)
-                    _recommendCourseState.value = UiStateV2.Success(pagingData.recommendCourses)
-                    Timber.d("RECOMMEND COURSE GET SUCCESS")
-                    Timber.d("ITEM SIZE: ${multiViewItems.size}")
-                }.onFailure { exception ->
-                    _recommendCourseState.value = UiStateV2.Failure(exception.message.toString())
-                    Timber.e("RECOMMEND COURSE GET FAIL")
+            courseRepository.getRecommendCourse(
+                pageNo = FIRST_PAGE_NUM.toString(),
+                sort = currentSortCriteria
+            ).onSuccess { pagingData ->
+                if (pagingData == null) {
+                    _recommendCourseGetState.value =
+                        UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                    return@onSuccess
                 }
+
+                updateRecommendCoursePagingData(
+                    isEnd = pagingData.isEnd,
+                    pageNo = FIRST_PAGE_NUM
+                )
+
+                _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
+                Timber.d("RECOMMEND COURSE GET SUCCESS")
+
+            }.onFailure { exception ->
+                _recommendCourseGetState.value = UiStateV2.Failure(exception.message.toString())
+                Timber.e("RECOMMEND COURSE GET FAIL")
+            }
         }
     }
 
-    fun isNextPageLoading() = nextPageState.value is UiStateV2.Loading
+    fun isNextPageLoading() = recommendCourseNextPageState.value is UiStateV2.Loading
 
     fun getRecommendCourseNextPage() {
         viewModelScope.launch {
+            // 다음 페이지가 없으면 요청하지 않는다.
             if (isRecommendCoursePageEnd) return@launch
 
-            Timber.d("다음 페이지를 요청했어요!")
-            _nextPageState.value = UiStateV2.Loading
-            currentPageNo++
+            _recommendCourseNextPageState.value = UiStateV2.Loading
 
             courseRepository.getRecommendCourse(
-                pageNo = currentPageNo.toString(),
-                ordering = "date"
+                pageNo = (currentPageNumber + 1).toString(),
+                sort = currentSortCriteria
             )
                 .onSuccess { pagingData ->
                     if (pagingData == null) {
-                        _nextPageState.value =
+                        _recommendCourseNextPageState.value =
                             UiStateV2.Failure("RECOMMEND COURSE NEXT PAGE DATA IS NULL")
                         return@onSuccess
                     }
 
-                    isRecommendCoursePageEnd = pagingData.isEnd
-                    _nextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
+                    updateRecommendCoursePagingData(
+                        isEnd = pagingData.isEnd,
+                        pageNo = currentPageNumber + 1
+                    )
+
+                    _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 }
                 .onFailure { exception ->
-                    _nextPageState.value = UiStateV2.Failure(exception.message.toString())
+                    _recommendCourseNextPageState.value =
+                        UiStateV2.Failure(exception.message.toString())
                     Timber.e("RECOMMEND COURSE NEXT PAGE GET FAIL")
                 }
         }
     }
 
-    // todo: 동기 처리 로직 수정 필요 (간헐적으로 무한 로딩 상태에 빠짐)
-    fun checkCourseLoadState(): Boolean {
-        return marathonCourseState.value is UiStateV2.Success &&
-                recommendCourseState.value is UiStateV2.Success &&
-                multiViewItems.size >= DiscoverMultiViewType.values().size
+    fun sortRecommendCourses(criteria: String) {
+        updateRecommendCourseSortCriteria(criteria)
+
+        viewModelScope.launch {
+            _recommendCourseSortState.value = UiStateV2.Loading
+
+            courseRepository.getRecommendCourse(
+                pageNo = FIRST_PAGE_NUM.toString(),
+                sort = currentSortCriteria
+            ).onSuccess { pagingData ->
+                if (pagingData == null) {
+                    _recommendCourseSortState.value =
+                        UiStateV2.Failure("RECOMMEND COURSE DATA IS NULL")
+                    return@onSuccess
+                }
+
+                updateRecommendCoursePagingData(
+                    isEnd = pagingData.isEnd,
+                    pageNo = FIRST_PAGE_NUM
+                )
+
+                _recommendCourseSortState.value = UiStateV2.Success(pagingData.recommendCourses)
+                Timber.d("RECOMMEND COURSE SORT SUCCESS")
+            }.onFailure { exception ->
+                _recommendCourseSortState.value = UiStateV2.Failure(exception.message.toString())
+                Timber.e("RECOMMEND COURSE SORT FAIL")
+            }
+        }
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
@@ -183,5 +227,10 @@ class DiscoverViewModel @Inject constructor(
                 _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
+    }
+
+    companion object {
+        private const val FIRST_PAGE_NUM = 1
+        private const val DEFAULT_SORT_CRITERIA = "date"
     }
 }

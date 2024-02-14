@@ -5,11 +5,12 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
+import com.runnect.runnect.data.dto.response.base.BaseResponse
 import retrofit2.Response
 import javax.inject.Inject
 
 class RemoteStorageDataSource @Inject constructor(private val courseService: CourseService) {
-    suspend fun getMyDrawCourse(): Response<ResponseGetMyDrawCourse> =
+    suspend fun getMyDrawCourse(): BaseResponse<ResponseGetMyDrawCourse> =
         courseService.getCourseList()
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> =

@@ -23,13 +23,16 @@ import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewAdapter
+import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.analytics.Analytics
-import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_SEARCH_COURSE
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_DATE
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SCRAP
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_BANNER
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOAD_BUTTON
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
@@ -63,6 +66,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val updatedCourse: EditableDiscoverCourse =
                     result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
+
                 multiViewAdapter.updateCourseItem(
                     publicCourseId = viewModel.clickedCourseId,
                     updatedCourse = updatedCourse
@@ -74,10 +78,63 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        initView()
         createBannerScrollJob()
         addListener()
         addObserver()
         registerCallback()
+    }
+
+    private fun initView() {
+        initMultiViewAdapter()
+    }
+
+    private fun initMultiViewAdapter() {
+        multiViewAdapter = DiscoverMultiViewAdapter(
+            onHeartButtonClick = { courseId, scrap ->
+                viewModel.postCourseScrap(courseId, scrap)
+            },
+            onCourseItemClick = { courseId ->
+                navigateToDetailScreen(courseId)
+                viewModel.saveClickedCourseId(courseId)
+            },
+            handleVisitorMode = {
+                context?.let { showCourseScrapWarningToast(it) }
+            },
+            onSortButtonClick = { criteria ->
+                viewModel.sortRecommendCourses(criteria)
+                Analytics.logClickedItemEvent(returnEventName(criteria))
+            }
+        ).apply {
+            binding.rvDiscoverMultiView.adapter = this
+        }
+    }
+
+    private fun returnEventName(criteria: String): String {
+        var eventName = ""
+        when (criteria) {
+            "date" -> eventName = EVENT_CLICK_DATE
+            "scrap" -> eventName = EVENT_CLICK_SCRAP
+        }
+        return eventName
+    }
+
+    private fun navigateToDetailScreen(publicCourseId: Int) {
+        val context = context ?: return
+        Intent(context, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
+            resultLauncher.launch(this)
+        }
+        activity?.applyScreenEnterAnimation()
+    }
+
+    private fun showCourseScrapWarningToast(context: Context) {
+        RunnectToast.createToast(
+            context = context,
+            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
+        ).show()
     }
 
     private fun createBannerScrollJob() {
@@ -86,8 +143,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             binding.vpDiscoverBanner.setCurrentItem(++currentBannerPosition, true)
         }
     }
-
-
 
     private fun registerCallback() {
         registerBannerPageChangeCallback()
@@ -153,23 +208,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                 val isScrollDown = dy > 0
                 if (isScrollDown) showCircleUploadButton()
 
-                checkNextPageLoadingCondition(recyclerView)
+                if (checkNextPageLoadingCondition(recyclerView)) {
+                    viewModel.getRecommendCourseNextPage()
+                }
             }
         })
     }
 
-    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) {
-        if (!recyclerView.canScrollVertically(SCROLL_DIRECTION)) {
-            Timber.d("스크롤이 끝에 도달했어요!")
+    private fun checkNextPageLoadingCondition(recyclerView: RecyclerView) =
+        isCourseLoadingCompleted() && !recyclerView.canScrollVertically(SCROLL_DIRECTION) && !viewModel.isNextPageLoading()
 
-            if (viewModel.isNextPageLoading()) {
-                Timber.d("다음 페이지 로딩 중입니다.")
-                return
-            }
-
-            viewModel.getRecommendCourseNextPage()
-        }
-    }
+    private fun isCourseLoadingCompleted() = ::multiViewAdapter.isInitialized &&
+            multiViewAdapter.itemCount >= DiscoverMultiViewType.values().size
 
     private fun showCircleUploadButton() {
         binding.fabDiscoverUploadText.isVisible = false
@@ -190,8 +240,12 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.resetMultiViewItems()
-            viewModel.refreshCurrentCourses()
+            // 리프레시 직후에 비어있는 리스트로 리사이클러뷰 초기화
+            multiViewAdapter.initMarathonCourses(emptyList())
+            multiViewAdapter.initRecommendCourses(emptyList())
+
+            // 서버통신 직후에 첫 페이지 데이터로 리사이클러뷰 초기화
+            viewModel.refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
     }
@@ -199,7 +253,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun initSearchButtonClickListener() {
         val context = context ?: return
         binding.ivDiscoverSearch.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_CLICK_TRY_SEARCH_COURSE)
             startActivity(Intent(context, DiscoverSearchActivity::class.java))
             activity?.applyScreenEnterAnimation()
         }
@@ -238,6 +291,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupMarathonCourseGetStateObserver()
         setupRecommendCourseGetStateObserver()
         setupRecommendCourseNextPageStateObserver()
+        setupRecommendCourseSortStateObserver()
         setupCourseScrapStateObserver()
     }
 
@@ -273,6 +327,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             banners = banners,
             onBannerItemClick = { url ->
                 showPromotionWebsite(url)
+                Analytics.logClickedItemEvent(EVENT_CLICK_TRY_BANNER)
             }
         ).apply {
             binding.vpDiscoverBanner.adapter = this
@@ -298,12 +353,13 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupMarathonCourseGetStateObserver() {
-        viewModel.marathonCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.marathonCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiStateV2.Loading -> showLoadingProgressBar()
+                is UiStateV2.Success -> {
+                    multiViewAdapter.initMarathonCourses(state.data)
+                }
 
                 is UiStateV2.Failure -> {
-                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg,
@@ -317,16 +373,16 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun setupRecommendCourseGetStateObserver() {
-        viewModel.recommendCourseState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseGetState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Loading -> showLoadingProgressBar()
 
                 is UiStateV2.Success -> {
-                    if (viewModel.checkCourseLoadState()) {
-                        dismissLoadingProgressBar()
-                        initMultiViewAdapter()
-                        initMultiRecyclerView()
-                    }
+                    // todo: 리프레시에 의한 추천코스 어댑터의 submitList 동작이 완료되고 나서
+                    multiViewAdapter.initRecommendCourses(state.data)
+
+                    // todo: 로딩 프로그레스바를 삭제해야 한다.
+                    dismissLoadingProgressBar()
                 }
 
                 is UiStateV2.Failure -> {
@@ -353,52 +409,31 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         binding.pbDiscoverLoading.isVisible = false
     }
 
-    private fun initMultiViewAdapter() {
-        multiViewAdapter = DiscoverMultiViewAdapter(
-            multiViewItems = viewModel.multiViewItems,
-            onHeartButtonClick = { courseId, scrap ->
-                viewModel.postCourseScrap(courseId, scrap)
-            },
-            onCourseItemClick = { courseId ->
-                navigateToDetailScreen(courseId)
-                viewModel.saveClickedCourseId(courseId)
-            },
-            handleVisitorMode = {
-                context?.let { showCourseScrapWarningToast(it) }
-            }
-        )
-    }
-
-    private fun initMultiRecyclerView() {
-        binding.rvDiscoverMultiView.apply {
-            setHasFixedSize(true)
-            adapter = multiViewAdapter
-        }
-    }
-
-    private fun navigateToDetailScreen(publicCourseId: Int) {
-        val context = context ?: return
-        Intent(context, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, publicCourseId)
-            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_DISCOVER)
-            resultLauncher.launch(this)
-        }
-        activity?.applyScreenEnterAnimation()
-    }
-
-    private fun showCourseScrapWarningToast(context: Context) {
-        RunnectToast.createToast(
-            context = context,
-            message = context.getString(R.string.visitor_mode_course_detail_scrap_warning_msg)
-        ).show()
-    }
-
     private fun setupRecommendCourseNextPageStateObserver() {
-        viewModel.nextPageState.observe(viewLifecycleOwner) { state ->
+        viewModel.recommendCourseNextPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val nextPageCourses = state.data
-                    multiViewAdapter.addRecommendCourseNextPage(nextPageCourses)
+                    multiViewAdapter.addRecommendCourseNextPage(state.data)
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupRecommendCourseSortStateObserver() {
+        viewModel.recommendCourseSortState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    multiViewAdapter.sortRecommendCourseFirstPage(state.data)
                 }
 
                 is UiStateV2.Failure -> {
@@ -455,8 +490,8 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
     }
 
-    fun getRecommendCourses(pageNo: Int) {
-        viewModel.getRecommendCourse(pageNo = pageNo, ordering = "date")
+    fun refreshDiscoverCourses() {
+        viewModel.refreshDiscoverCourses()
     }
 
     override fun onAttach(context: Context) {
