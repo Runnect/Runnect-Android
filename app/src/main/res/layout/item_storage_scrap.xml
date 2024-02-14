@@ -7,7 +7,7 @@
 
         <variable
             name="storage_scrap"
-            type="com.runnect.runnect.data.dto.MyScrapCourse" />
+            type="com.runnect.runnect.domain.entity.MyScrapCourse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

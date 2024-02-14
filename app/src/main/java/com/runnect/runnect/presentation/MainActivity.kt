@@ -171,7 +171,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         }
 
         fun updateStorageScrapScreen() {
-            storageScrapFragment?.getCourse()
+            storageScrapFragment?.getMyScrapCourses()
         }
     }
 }

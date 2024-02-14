@@ -20,7 +20,7 @@
             android:layout_height="match_parent">
 
             <ProgressBar
-                android:id="@+id/indeterminateBar"
+                android:id="@+id/pb_storage_scrap_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="2dp"
@@ -33,34 +33,50 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/top_constraint"
-                android:layout_width="match_parent"
-                android:layout_height="28dp"
+                android:id="@+id/cl_storage_scrap_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:background="@color/W1"
-                app:layout_constraintBottom_toTopOf="@id/scrollview_scrap"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_total_scrap_count"
+                    android:id="@+id/tv_storage_scrap_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:layout_marginStart="15dp"
                     android:fontFamily="@font/pretendard_regular"
                     android:textColor="@color/G2"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="총 기록 152개" />
-
+                    tools:text="총 코스 5개" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_storage_scrap"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="7dp"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                android:paddingBottom="30dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_storage_scrap_count"
+                tools:listitem="@layout/item_storage_my_draw" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_my_draw_no_scrap"
+                android:id="@+id/cl_my_draw_no_scrap"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="64dp"
@@ -113,39 +129,8 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_storage_no_scrap_guide" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scrollview_scrap"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="7dp"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/top_constraint">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView_storage_scrap"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="15dp"
-                        android:orientation="vertical"
-                        android:overScrollMode="never"
-                        android:paddingBottom="50dp"
-                        android:visibility="visible"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:listitem="@layout/item_storage_my_draw" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.core.widget.NestedScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </layout>

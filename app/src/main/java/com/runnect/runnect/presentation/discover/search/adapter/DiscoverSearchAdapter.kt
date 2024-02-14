@@ -28,7 +28,7 @@ class DiscoverSearchAdapter(
     }
 
     inner class DiscoverSearchViewHolder(
-        private val binding: com.runnect.runnect.databinding.ItemDiscoverSearchBinding
+        private val binding: ItemDiscoverSearchBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverSearchCourse) {
             with(binding) {
@@ -45,8 +45,7 @@ class DiscoverSearchAdapter(
             course: DiscoverSearchCourse
         ) {
             imageView.setOnClickListener { view ->
-                view.isSelected = !view.isSelected
-                onHeartButtonClick(course.id, view.isSelected)
+                onHeartButtonClick(course.id, !view.isSelected)
             }
         }
 
@@ -65,6 +64,19 @@ class DiscoverSearchAdapter(
             if (course.id == publicCourseId) {
                 course.title = updatedCourse.title
                 course.scrap = updatedCourse.scrap
+                notifyItemChanged(index)
+                return@forEachIndexed
+            }
+        }
+    }
+
+    fun updateCourseScrap(
+        publicCourseId: Int,
+        scrap: Boolean
+    ) {
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.scrap = scrap
                 notifyItemChanged(index)
                 return@forEachIndexed
             }

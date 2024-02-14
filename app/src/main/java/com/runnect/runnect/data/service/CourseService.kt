@@ -5,7 +5,20 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.*
+import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverPick
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
+import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
+import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -38,8 +51,7 @@ interface CourseService {
     ): BaseResponse<ResponseGetCourseDetail>
 
     @GET("/api/course/private/user")
-    suspend fun getMyCourseLoad(
-    ): ResponseGetDiscoverPick
+    suspend fun getMyCourseLoad(): ResponseGetDiscoverPick
 
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(
@@ -61,13 +73,11 @@ interface CourseService {
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
-    suspend fun getCourseList(
-    ): BaseResponse<ResponseGetMyDrawCourse>
+    suspend fun getDrawCourseList(): BaseResponse<ResponseGetMyDrawCourse>
 
     //보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
-    suspend fun getScrapList(
-    ): Response<ResponseGetMyScrapCourse>
+    suspend fun getScrapCourseList(): BaseResponse<ResponseGetMyScrapCourse>
 
     //내가 그린 코스 Detail 가져오기
     @GET("/api/course/detail/{courseId}")

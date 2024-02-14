@@ -367,8 +367,7 @@ class CourseDetailActivity :
                 return@setOnClickListener
             }
 
-            it.isSelected = !it.isSelected
-            viewModel.postCourseScrap(publicCourseId, it.isSelected)
+            viewModel.postCourseScrap(publicCourseId, !it.isSelected)
         }
     }
 
@@ -589,8 +588,18 @@ class CourseDetailActivity :
 
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(this) { state ->
-            if (state is UiStateV2.Failure) {
-                showSnackbar(binding.root, state.msg)
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data ?: return@observe
+                    binding.tvCourseDetailScrapCount.text = response.scrapCount.toString()
+                    binding.ivCourseDetailScrap.isSelected = response.scrapTF
+                }
+
+                is UiStateV2.Failure -> {
+                    showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
             }
         }
     }
