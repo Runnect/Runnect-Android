@@ -24,7 +24,7 @@ class DiscoverPickViewModel @Inject constructor(
     val courseSelectState: LiveData<Boolean>
         get() = _courseSelectState
 
-    private var _currentSelectedCourse = DiscoverUploadCourse()
+    private var _currentSelectedCourse = DiscoverUploadCourse(-1, "", "", "")
     val currentSelectedCourse get() = _currentSelectedCourse
 
     init {
