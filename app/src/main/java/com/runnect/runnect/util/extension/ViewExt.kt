@@ -2,6 +2,7 @@ package com.runnect.runnect.util.extension
 
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.Px
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
@@ -19,6 +20,10 @@ inline fun View.setOnSingleClickListener(
             previousClickedTime = clickedTime
         }
     }
+}
+
+fun View.setPadding(@Px size: Int) {
+    setPadding(size, size, size, size)
 }
 
 fun <T : ViewDataBinding> ViewGroup.getViewDataBinding(
