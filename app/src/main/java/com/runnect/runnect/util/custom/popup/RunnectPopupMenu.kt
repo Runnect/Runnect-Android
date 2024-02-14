@@ -2,10 +2,12 @@ package com.runnect.runnect.util.custom.popup
 
 import android.content.Context
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import com.google.android.material.transition.platform.SlideDistanceProvider.GravityFlag
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.ItemRunnectPopupMenuBinding
 import com.runnect.runnect.databinding.LayoutRunnectPopupMenuBinding
@@ -62,7 +64,13 @@ class RunnectPopupMenu(
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, dm).toInt()
     }
 
+    fun showCustomPosition(anchorView: View, @GravityFlag gravity: Int = Gravity.END) {
+        showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, gravity)
+    }
+
     companion object {
         private const val POPUP_MENU_WIDTH = 170F
+        private const val POPUP_MENU_X_OFFSET = 17
+        private const val POPUP_MENU_Y_OFFSET = -10
     }
 }

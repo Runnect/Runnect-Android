@@ -17,8 +17,10 @@ import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_DRAWING_IN_RUNNING_RECORD
 import com.runnect.runnect.util.callback.listener.OnMyHistoryItemClick
+import com.runnect.runnect.util.custom.deco.RecyclerOffsetDecorationHeight
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -84,6 +86,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
             navigateToPreviousScreenWithAnimation()
         }
         binding.cvHistoryMyPageDrawCourse.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_COURSE_DRAWING_IN_RUNNING_RECORD)
             startDrawCourseSearchActivity()
         }
         binding.btnMyPageHistoryEditHistory.setOnClickListener {
@@ -244,6 +247,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
+
 
     companion object {
         const val CHOICE_MODE_DESC = "기록 선택"

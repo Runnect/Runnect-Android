@@ -17,18 +17,22 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityDiscoverSearchBinding
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_SEARCH_COURSE
+import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_SEARCH
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showKeyboard
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,7 +56,7 @@ class DiscoverSearchActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this@DiscoverSearchActivity
-
+        Analytics.logClickedItemEvent(VIEW_COURSE_SEARCH)
         showSearchKeyboard()
         initSearchAdapter()
         initSearchRecyclerView()
@@ -129,6 +133,7 @@ class DiscoverSearchActivity :
                 if (actionId == IME_ACTION_SEARCH) {
                     val keyword = binding.etDiscoverSearchTitle.text
                     if (!keyword.isNullOrBlank()) {
+                        Analytics.logClickedItemEvent(EVENT_CLICK_TRY_SEARCH_COURSE)
                         viewModel.getCourseSearch(keyword = keyword.toString())
                         hideKeyboard(binding.etDiscoverSearchTitle)
                     }
@@ -141,6 +146,7 @@ class DiscoverSearchActivity :
 
     private fun addObserver() {
         setupCourseSearchStateObserver()
+        setupCourseScrapStateObserver()
     }
 
     private fun setupCourseSearchStateObserver() {
@@ -180,6 +186,26 @@ class DiscoverSearchActivity :
 
     private fun dismissProgressBar() {
         binding.pbDiscoverSearch.isVisible = false
+    }
+
+    private fun setupCourseScrapStateObserver() {
+        viewModel.courseScrapState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data ?: return@observe
+                    searchAdapter.updateCourseScrap(
+                        publicCourseId = response.publicCourseId.toInt(),
+                        scrap = response.scrapTF
+                    )
+                }
+
+                is UiStateV2.Failure -> {
+                    showSnackbar(binding.root, state.msg)
+                }
+
+                else -> {}
+            }
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

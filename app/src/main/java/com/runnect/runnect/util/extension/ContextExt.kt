@@ -175,8 +175,8 @@ fun Context.showToast(message: String) {
 
 fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int = Gravity.BOTTOM) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
-    val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-    layoutParams.apply {
+    val layoutParams = snackbar.view.layoutParams as? CoordinatorLayout.LayoutParams
+    layoutParams?.apply {
         this.gravity = gravity
         snackbar.view.layoutParams = this
     }

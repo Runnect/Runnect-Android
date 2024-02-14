@@ -9,6 +9,8 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.VIEW_USER_PROFILE
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +24,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        Analytics.logClickedItemEvent(VIEW_USER_PROFILE)
         initAdapter()
         addListener()
         addObserver()

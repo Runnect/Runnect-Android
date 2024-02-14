@@ -17,7 +17,6 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
@@ -25,10 +24,16 @@ import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewAdapter
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewType
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_DATE
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SCRAP
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_BANNER
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOAD_BUTTON
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
@@ -40,6 +45,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
@@ -98,10 +104,20 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             },
             onSortButtonClick = { criteria ->
                 viewModel.sortRecommendCourses(criteria)
+                Analytics.logClickedItemEvent(returnEventName(criteria))
             }
         ).apply {
             binding.rvDiscoverMultiView.adapter = this
         }
+    }
+
+    private fun returnEventName(criteria: String): String {
+        var eventName = ""
+        when (criteria) {
+            "date" -> eventName = EVENT_CLICK_DATE
+            "scrap" -> eventName = EVENT_CLICK_SCRAP
+        }
+        return eventName
     }
 
     private fun navigateToDetailScreen(publicCourseId: Int) {
@@ -139,6 +155,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                Timber.d("viewpager position: $position")
                 updateBannerPosition(position)
                 updateBannerIndicatorPosition()
             }
@@ -257,6 +274,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             showCourseUploadWarningToast(context)
             return
         }
+        Analytics.logClickedItemEvent(EVENT_CLICK_UPLOAD_BUTTON)
         startActivity(Intent(context, DiscoverPickActivity::class.java))
         activity?.applyScreenEnterAnimation()
     }
@@ -309,6 +327,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             banners = banners,
             onBannerItemClick = { url ->
                 showPromotionWebsite(url)
+                Analytics.logClickedItemEvent(EVENT_CLICK_TRY_BANNER)
             }
         ).apply {
             binding.vpDiscoverBanner.adapter = this
@@ -432,12 +451,24 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
-            if (state is UiStateV2.Failure) {
-                context?.showSnackbar(
-                    anchorView = binding.root,
-                    message = state.msg,
-                    gravity = Gravity.TOP
-                )
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data ?: return@observe
+                    multiViewAdapter.updateCourseScrap(
+                        publicCourseId = response.publicCourseId.toInt(),
+                        scrap = response.scrapTF
+                    )
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg,
+                        gravity = Gravity.TOP
+                    )
+                }
+
+                else -> {}
             }
         }
     }

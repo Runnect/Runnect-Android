@@ -26,19 +26,19 @@ class CourseDetailViewModel @Inject constructor(
     private val courseRepository: CourseRepository, private val userRepository: UserRepository
 ) : ViewModel() {
     // 서버통신 코드
-    private var _courseGetState = MutableLiveData<UiStateV2<CourseDetail?>>()
+    private val _courseGetState = MutableLiveData<UiStateV2<CourseDetail?>>()
     val courseGetState: LiveData<UiStateV2<CourseDetail?>>
         get() = _courseGetState
 
-    private var _coursePatchState = MutableLiveData<UiStateV2<EditableCourseDetail?>>()
+    private val _coursePatchState = MutableLiveData<UiStateV2<EditableCourseDetail?>>()
     val coursePatchState: LiveData<UiStateV2<EditableCourseDetail?>>
         get() = _coursePatchState
 
-    private var _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourse?>>()
+    private val _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourse?>>()
     val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourse?>>
         get() = _courseDeleteState
 
-    private var _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
+    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
     val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 

@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         get() = _loginState
 
 
-    fun postLogin(request: RequestPostLogin) {
+    fun postLogin(request: RequestPostLogin, logEvent: (() -> Unit)? = null) {
         viewModelScope.launch {
             runCatching {
                 _loginState.value = UiState.Loading
@@ -37,6 +37,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
             }.onSuccess {
                 loginResult.value = it
                 _loginState.value = UiState.Success
+                logEvent?.invoke()
             }.onFailure {
                 errorMessage.value = it.message
                 _loginState.value = UiState.Failure

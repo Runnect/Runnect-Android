@@ -17,6 +17,11 @@ import com.runnect.runnect.databinding.FragmentMySettingAccountInfoBinding
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_LOGOUT
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_WITHDRAW
+import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SUCCESS_LOGOUT
+import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SUCCESS_WITHDRAW
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import com.runnect.runnect.util.extension.showToast
@@ -57,10 +62,12 @@ class MySettingAccountInfoFragment :
         }
 
         binding.viewSettingAccountInfoLogoutFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_TRY_LOGOUT)
             logoutDialog.show()
         }
 
         binding.viewSettingAccountInfoWithdrawalFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_TRY_WITHDRAW)
             withdrawalDialog.show()
         }
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -84,6 +91,7 @@ class MySettingAccountInfoFragment :
     }
 
     private fun handleSuccessfulUserDeletion() {
+        Analytics.logClickedItemEvent(EVENT_VIEW_SUCCESS_WITHDRAW)
         binding.indeterminateBar.isVisible = false
         moveToLogin()
         showToast("탈퇴 처리되었습니다.")
@@ -114,6 +122,7 @@ class MySettingAccountInfoFragment :
         logoutDialog.setDialogButtonClickListener { which ->
             when (which) {
                 logoutDialog.btn_delete_yes -> {
+                    Analytics.logClickedItemEvent(EVENT_VIEW_SUCCESS_LOGOUT)
                     moveToLogin()
                 }
             }

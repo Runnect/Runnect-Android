@@ -63,8 +63,7 @@ class DiscoverRecommendAdapter(
                     return@setOnClickListener
                 }
 
-                view.isSelected = !view.isSelected
-                onHeartButtonClick.invoke(course.id, view.isSelected)
+                onHeartButtonClick.invoke(course.id, !view.isSelected)
             }
         }
 
@@ -90,6 +89,14 @@ class DiscoverRecommendAdapter(
                 return
             }
         }
+    }
+
+    fun updateRecommendCourseScrap(
+        targetIndex: Int,
+        scrap: Boolean
+    ) {
+        currentList[targetIndex].scrap = scrap
+        notifyItemChanged(targetIndex)
     }
 
     fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {

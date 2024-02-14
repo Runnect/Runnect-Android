@@ -11,11 +11,11 @@ import javax.inject.Inject
 
 class RemoteStorageDataSource @Inject constructor(private val courseService: CourseService) {
     suspend fun getMyDrawCourse(): BaseResponse<ResponseGetMyDrawCourse> =
-        courseService.getCourseList()
+        courseService.getDrawCourseList()
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> =
         courseService.deleteMyDrawCourse(deleteCourseList)
 
-    suspend fun getMyScrapCourse(): Response<ResponseGetMyScrapCourse> =
-        courseService.getScrapList()
+    suspend fun getMyScrapCourse(): BaseResponse<ResponseGetMyScrapCourse> =
+        courseService.getScrapCourseList()
 }
