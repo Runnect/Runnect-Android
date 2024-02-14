@@ -90,5 +90,6 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
         const val TERMS_URL =
             "https://third-sight-046.notion.site/Runnect-5dfee19ccff04c388590e5ee335e77ed"
         private const val DEV_MODE_SCHEME = "runnect://devmode"
+
     }
 }

@@ -25,6 +25,10 @@ import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOAL_REWARD
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_RUNNING_RECORD
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOADED_COURSE
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -34,10 +38,8 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private val viewModel: MyPageViewModel by activityViewModels()
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         if (isVisitorMode) {
             activateVisitorMode()
         } else {
@@ -103,18 +105,22 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
 
         binding.viewMyPageMainRewardFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_GOAL_REWARD)
             startActivity(Intent(requireContext(), MyRewardActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
         binding.viewMyPageMainHistoryFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_RUNNING_RECORD)
             startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
             )
         }
+
         binding.viewMyPageMainUploadFrame.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_UPLOADED_COURSE)
             startActivity(Intent(requireContext(), MyUploadActivity::class.java))
             requireActivity().overridePendingTransition(
                 R.anim.slide_in_right, R.anim.slide_out_left
@@ -171,10 +177,11 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
     }
 
-    private fun inquiryKakao(){
+    private fun inquiryKakao() {
         val url = TalkApiClient.instance.channelChatUrl(BuildConfig.KAKAO_CHANNEL_ID)
         KakaoCustomTabsClient.openWithDefault(requireActivity(), url)
     }
+
     companion object {
         const val RES_NAME = "mypage_img_stamp_"
         const val RES_STAMP_TYPE = "drawable"

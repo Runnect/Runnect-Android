@@ -14,19 +14,20 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SCRAP_COURSE
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class StorageMainFragment :
     BindingFragment<FragmentStorageMainBinding>(R.layout.fragment_storage_main) {
-
     val viewModel: StorageViewModel by viewModels()
     var isVisitorMode: Boolean = MainActivity.isVisitorMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         if (isVisitorMode) {
             activateVisitorMode()
         } else {
@@ -76,14 +77,19 @@ class StorageMainFragment :
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when (tab?.position) {
                         0 -> childFragmentManager.commit {
+                            Analytics.logClickedItemEvent(
+                                EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START
+                            )
                             replace<StorageMyDrawFragment>(R.id.fl_main)
                             Timber.tag("hu").d("내가 그린 코스로 이동하였음")
                         }
 
                         1 -> childFragmentManager.commit {
+                            Analytics.logClickedItemEvent(EVENT_CLICK_SCRAP_COURSE)
                             replace<StorageScrapFragment>(R.id.fl_main)
                             Timber.tag("hu").d("스크랩으로 이동하였음")
                         }
+
                         else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
                     }
                 }
@@ -91,6 +97,7 @@ class StorageMainFragment :
                 // 다른 탭 버튼을 눌러 선택된 탭 버튼이 해제될 때 이벤트
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                 }
+
                 // 선택된 탭 버튼을 다시 선택할 때 이벤트
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
@@ -98,6 +105,4 @@ class StorageMainFragment :
             }
         )
     }
-
-
 }
