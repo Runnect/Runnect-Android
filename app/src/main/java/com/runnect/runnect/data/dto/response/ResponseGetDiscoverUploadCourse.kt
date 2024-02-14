@@ -49,7 +49,7 @@ data class ResponseGetDiscoverUploadCourse(
         DiscoverUploadCourse(
             id = course.id,
             imageUrl = course.image,
-            departure = course.departure.region + ' ' + course.departure.city,
+            departure = "${course.departure.region} ${course.departure.city}",
             distance = course.distance.toString()
         )
     }
