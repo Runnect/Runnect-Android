@@ -7,9 +7,9 @@ import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
-import com.runnect.runnect.data.dto.response.ResponseGetDiscoverPick
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
@@ -51,7 +51,7 @@ interface CourseService {
     ): BaseResponse<ResponseGetCourseDetail>
 
     @GET("/api/course/private/user")
-    suspend fun getMyCourseLoad(): ResponseGetDiscoverPick
+    suspend fun getMyCourseLoad(): BaseResponse<ResponseGetDiscoverUploadCourse>
 
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(

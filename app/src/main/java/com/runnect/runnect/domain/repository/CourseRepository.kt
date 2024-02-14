@@ -1,6 +1,5 @@
 package com.runnect.runnect.domain.repository
 
-import com.runnect.runnect.data.dto.CourseLoadInfoDTO
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
@@ -15,6 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import okhttp3.MultipartBody
@@ -31,7 +31,7 @@ interface CourseRepository {
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 
-    suspend fun getMyCourseLoad(): MutableList<CourseLoadInfoDTO>
+    suspend fun getMyCourseLoad(): Result<List<DiscoverUploadCourse>?>
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload
 

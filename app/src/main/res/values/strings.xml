@@ -166,11 +166,12 @@
     <string name="discover_recommend_header_subtitle">나에게 최적화된 코스를 찾아보세요</string>
     <string name="discover_recommend_sort_by_date">최신순</string>
     <string name="discover_recommend_sort_by_scrap">스크랩순</string>
+    <string name="discover_course_pick_guide">모든 코스는 한 번만 업로드 할 수 있어요</string>
 
-    <string name="common_permission_denied">권한이 거부되었습니다.</string>
     <!-- location permission -->
     <string name="location_permission_denied">위치 권한이 거부되었습니다.</string>
     <string name="location_permission_title">위치권한 요청</string>
     <string name="location_permission_content">코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.</string>
     <string name="location_permission_guide">권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]</string>
+    <string name="common_permission_denied">권한이 거부되었습니다.</string>
 </resources>

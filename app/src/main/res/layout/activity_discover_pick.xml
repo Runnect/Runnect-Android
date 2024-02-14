@@ -54,42 +54,53 @@
                 android:textSize="18sp" />
         </androidx.appcompat.widget.Toolbar>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/sv_discover_pick_scroll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="56dp"
-            android:orientation="vertical"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_discover_pick_guide"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_discover_pick">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/const_discover_pick_scroll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_discover_pick"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                app:dividerColor="@color/G4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_discover_pick"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="15dp"
-                    android:nestedScrollingEnabled="false"
-                    android:orientation="vertical"
-                    android:overScrollMode="never"
-                    android:paddingBottom="30dp"
-                    android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/item_discover_pick" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_discover_pick_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:text="@string/discover_course_pick_guide"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_discover_pick" />
 
-        </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_discover_pick"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="16dp"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:paddingBottom="30dp"
+            android:scrollbars="none"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/iv_discover_pick_finish"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_discover_pick_guide"
+            tools:listitem="@layout/item_discover_pick" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_discover_pick_finish"

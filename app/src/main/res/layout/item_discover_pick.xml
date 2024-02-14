@@ -1,62 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.ssomai.android.scalablelayout.ScalableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:scale_base_height="138"
-        app:scale_base_width="162">
+    <data>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_item_discover_pick_map"
-            android:layout_width="wrap_content"
+        <variable
+            name="course"
+            type="com.runnect.runnect.domain.entity.DiscoverUploadCourse" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="5dp"
-            app:scale_height="114"
-            app:scale_width="162">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_item_discover_pick_map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
-        </androidx.cardview.widget.CardView>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_item_discover_pick_background"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/discover_pick_course_selector"
-            android:elevation="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:scale_height="114"
-            app:scale_width="162" />
+            app:scale_base_height="138"
+            app:scale_base_width="162">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_item_discover_pick_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/pretendard_medium"
-            android:gravity="center_vertical"
-            android:maxLength="14"
-            android:maxLines="1"
-            android:textColor="@color/G1"
-            app:scale_height="22"
-            app:scale_textsize="14"
-            app:scale_top="116"
-            app:scale_width="162"
-            tools:text="서울시 송파구 한강" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_item_discover_pick_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp"
+                app:scale_height="114"
+                app:scale_width="162">
 
-    </com.ssomai.android.scalablelayout.ScalableLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_item_discover_pick_map"
+                    setImageUrl="@{course.imageUrl}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_item_discover_pick_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/discover_pick_course_selector"
+                android:elevation="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:scale_height="114"
+                app:scale_width="162" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_item_discover_pick_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="center_vertical"
+                android:maxLength="14"
+                android:maxLines="1"
+                android:text="@{course.departure}"
+                android:textColor="@color/G1"
+                app:scale_height="22"
+                app:scale_textsize="14"
+                app:scale_top="116"
+                app:scale_width="162"
+                tools:text="서울시 송파구 한강" />
+
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -22,15 +22,6 @@ fun PublicCourseUpload.toData(): UserUploadCourseDTO {
     )
 }
 
-fun PrivateCourse.toData(): CourseLoadInfoDTO {
-    return CourseLoadInfoDTO(
-        id = id,
-        img = image,
-        departure = departure.region + ' ' + departure.city,
-        distance = distance.toString()
-    )
-}
-
 fun ResponsePostLogin.toData(): LoginDTO {
     with(this.data) {
         return LoginDTO(
