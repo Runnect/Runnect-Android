@@ -110,11 +110,17 @@ class StorageScrapFragment :
     private fun setupCourseScrapStateObserver() {
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
             when (state) {
+                is UiStateV2.Loading -> {
+                    showLoadingProgressBar()
+                }
+
                 is UiStateV2.Success -> {
+                    dismissLoadingProgressBar()
                     storageScrapAdapter.removeCourseItem()
                 }
 
                 is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
                     context?.showSnackbar(
                         anchorView = binding.root,
                         message = state.msg
