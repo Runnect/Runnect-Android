@@ -7,6 +7,8 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient.Companion.instance
 import com.runnect.runnect.data.dto.request.RequestPostLogin
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_KAKAO_LOGIN
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -23,7 +25,9 @@ class KakaoLogin(context: Context, viewModel: LoginViewModel) : SocialLogin {
                 RequestPostLogin(
                     token.accessToken, LoginActivity.KAKAO_SIGN
                 )
-            )
+            ) {
+                Analytics.logClickedItemEvent(EVENT_CLICK_KAKAO_LOGIN)
+            }
         }
     }
 

@@ -20,6 +20,9 @@ import com.runnect.runnect.databinding.ActivitySearchBinding
 import com.runnect.runnect.presentation.draw.DrawActivity
 import com.runnect.runnect.presentation.search.adapter.SearchAdapter
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_CURRENT_LOCATE
+import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_MAP_LOCATE
 import com.runnect.runnect.util.callback.listener.OnSearchItemClick
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -171,6 +174,7 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
         })
 
         binding.cvStartCurrentLocation.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_CURRENT_LOCATE)
             this.let {
                 PermissionUtil.requestLocationPermission(
                     context = it,
@@ -182,6 +186,7 @@ class SearchActivity : BindingActivity<ActivitySearchBinding>(R.layout.activity_
         }
 
         binding.cvStartCustomLocation.setOnClickListener {
+            Analytics.logClickedItemEvent(EVENT_CLICK_MAP_LOCATE)
             startCustomLocation()
         }
     }
