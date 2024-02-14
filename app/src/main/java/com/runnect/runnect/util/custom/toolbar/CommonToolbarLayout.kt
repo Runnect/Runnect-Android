@@ -20,30 +20,6 @@ interface CommonToolbarLayout {
     @Retention(AnnotationRetention.SOURCE)
     annotation class Direction
 
-    companion object {
-        // 메뉴 추가 위치
-        const val LEFT = 0
-        const val RIGHT = 1
-
-        // Toolbar 관련
-        private const val TOOLBAR_TITLE_TEXT_SIZE = 18  // Title 텍스트 기본 크기(sp)
-        private const val TOOLBAR_MENU_LIMIT_COUNT = 2  // 메뉴 최대 노출 갯수
-
-
-        // 메뉴 아이템 관련
-        const val MENU_ITEM_SIZE = 48           // 메뉴 아이템 뷰 기본 크기
-        const val MENU_ITEM_PADDING = 15        // 메뉴 아이템 뷰 기본 패딩(dp)
-        const val MENU_ITEM_TEXT_SIZE = 18      // 텍스트 기본 크기
-        const val MENU_ITEM_RESOURCE_NONE = -1  // 메뉴 아이템 리소스(아이콘,텍스트) 없음
-
-        // 기본 리소스
-        @DrawableRes val MENU_ICON_BACK_BUTTON: Int = R.drawable.all_back_arrow
-        @FontRes val TOOLBAR_TITLE_FONT_RES: Int = R.font.pretendard_bold
-        @ColorRes private val TOOLBAR_TITLE_TEXT_COLOR = R.color.G1
-        @ColorRes private val TOOLBAR_BACKGROUND_COLOR = R.color.white
-    }
-
-
     val toolbarBinding: LayoutCommonToolbarBinding
 
     /**
@@ -201,5 +177,28 @@ interface CommonToolbarLayout {
     /* 유틸 메소드 */
     private fun getColor(context: Context, @ColorRes colorResId: Int): Int {
         return ContextCompat.getColor(context, colorResId)
+    }
+
+    companion object {
+        // 메뉴 추가 위치
+        const val LEFT = 0
+        const val RIGHT = 1
+
+        // Toolbar 관련
+        private const val TOOLBAR_TITLE_TEXT_SIZE = 18  // Title 텍스트 기본 크기(sp)
+        private const val TOOLBAR_MENU_LIMIT_COUNT = 2  // 메뉴 최대 노출 갯수
+
+
+        // 메뉴 아이템 관련
+        const val MENU_ITEM_SIZE = 48           // 메뉴 아이템 뷰 기본 크기
+        const val MENU_ITEM_PADDING = 15        // 메뉴 아이템 뷰 기본 패딩(dp)
+        const val MENU_ITEM_TEXT_SIZE = 18      // 텍스트 기본 크기
+        const val MENU_ITEM_RESOURCE_NONE = -1  // 메뉴 아이템 리소스(아이콘,텍스트) 없음
+
+        // 기본 리소스
+        @DrawableRes val MENU_ICON_BACK_BUTTON: Int = R.drawable.all_back_arrow
+        @FontRes val TOOLBAR_TITLE_FONT_RES: Int = R.font.pretendard_bold
+        @ColorRes private val TOOLBAR_TITLE_TEXT_COLOR = R.color.G1
+        @ColorRes private val TOOLBAR_BACKGROUND_COLOR = R.color.white
     }
 }
