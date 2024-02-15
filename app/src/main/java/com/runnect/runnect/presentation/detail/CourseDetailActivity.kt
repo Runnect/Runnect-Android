@@ -1,7 +1,6 @@
 package com.runnect.runnect.presentation.detail
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
@@ -10,21 +9,12 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import coil.load
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import com.gun0912.tedpermission.provider.TedPermissionProvider.context
-import com.kakao.sdk.common.util.KakaoCustomTabsClient
-import com.kakao.sdk.link.LinkClient
-import com.kakao.sdk.link.WebSharerClient
-import com.kakao.sdk.template.model.Button
-import com.kakao.sdk.template.model.Content
-import com.kakao.sdk.template.model.FeedTemplate
-import com.kakao.sdk.template.model.Link
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -258,7 +248,6 @@ class CourseDetailActivity :
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse(link))
             .setDomainUriPrefix("https://rnnt.page.link")
-            // Set parameters
             .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
             .setIosParameters(DynamicLink.IosParameters.Builder("com.runnect.Runnect-iOS").build())
             .setSocialMetaTagParameters(
@@ -266,7 +255,8 @@ class CourseDetailActivity :
                     .setTitle(title)
                     .setDescription(desc)
                     .setImageUrl(Uri.parse(image))
-                    .build())
+                    .build()
+            )
             .buildShortDynamicLink()
             .addOnSuccessListener { result ->
                 val shortLink = result.shortLink
