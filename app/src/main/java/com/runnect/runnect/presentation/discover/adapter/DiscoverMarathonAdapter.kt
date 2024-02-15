@@ -92,11 +92,16 @@ class DiscoverMarathonAdapter(
     }
 
     fun updateMarathonCourseScrap(
-        targetIndex: Int,
+        publicCourseId: Int,
         scrap: Boolean
     ) {
-        currentList[targetIndex].scrap = scrap
-        notifyItemChanged(targetIndex)
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.scrap = scrap
+                notifyItemChanged(index)
+                return
+            }
+        }
     }
 
     companion object {

@@ -92,11 +92,16 @@ class DiscoverRecommendAdapter(
     }
 
     fun updateRecommendCourseScrap(
-        targetIndex: Int,
+        publicCourseId: Int,
         scrap: Boolean
     ) {
-        currentList[targetIndex].scrap = scrap
-        notifyItemChanged(targetIndex)
+        currentList.forEachIndexed { index, course ->
+            if (course.id == publicCourseId) {
+                course.scrap = scrap
+                notifyItemChanged(index)
+                return
+            }
+        }
     }
 
     fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
@@ -105,7 +110,7 @@ class DiscoverRecommendAdapter(
         val newList = currentList.toMutableList()
         newList.addAll(nextPageItems)
 
-        submitList(newList) { // 비동기 작업이 끝나고 나서 호출되는 콜백 함수
+        submitList(newList) {
             Timber.d("after item count : $itemCount")
         }
     }
