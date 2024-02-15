@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
@@ -41,17 +40,6 @@ class TokenAuthenticator(val context: Context) : Authenticator {
         return null
     }
 
-    private fun clearToken() {
-        PreferenceManager.setString(
-            context,
-            TOKEN_KEY_ACCESS, "none"
-        )
-        PreferenceManager.setString(
-            context,
-            TOKEN_KEY_REFRESH, "none"
-        )
-    }
-
     private suspend inline fun getNewDeviceToken(): Boolean {
         return withContext(Dispatchers.IO) {
             //토큰 재발급
@@ -69,10 +57,9 @@ class TokenAuthenticator(val context: Context) : Authenticator {
             return true
         }.onFailure {
             Timber.tag("test").d("callRefresh-onFailure")
-            //이 부분을 onSuccess 안에 추가해야 하는 것인지, onFailure에 두는 것이 맞는지 헷갈립니다.
             if (it.message == "Unauthorized") {
                 Timber.tag("test").d("callRefresh-onFailure-inner-if")
-                clearToken()
+                PreferenceManager.clear(context)
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(
                         context,
