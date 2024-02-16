@@ -71,7 +71,7 @@ class DiscoverPickActivity :
         binding.ivDiscoverPickFinish.setOnClickListener {
             if (it.isActivated) {
                 Intent(this, DiscoverUploadActivity::class.java).apply {
-                    putExtra(EXTRA_UPLOAD_COURSE, viewModel.currentSelectedCourse)
+                    putExtra(EXTRA_UPLOAD_COURSE, viewModel.selectedCourse)
                     startActivity(this)
                 }
                 applyScreenEnterAnimation()
@@ -146,7 +146,7 @@ class DiscoverPickActivity :
             onCourseItemClick = { isSelected, course ->
                 viewModel.apply {
                     updateCourseSelectState(isSelected)
-                    if (isSelected) saveCurrentSelectedCourse(course)
+                    if (isSelected) saveSelectedCourse(course)
                 }
             }
         ).apply {
