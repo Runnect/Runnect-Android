@@ -20,12 +20,12 @@ class DiscoverPickViewModel @Inject constructor(
     val courseGetState: LiveData<UiStateV2<List<DiscoverUploadCourse>?>>
         get() = _courseGetState
 
-    private val _courseSelectState = MutableLiveData<Boolean>()
+    private val _courseSelectState = MutableLiveData(false)
     val courseSelectState: LiveData<Boolean>
         get() = _courseSelectState
 
-    private var _currentSelectedCourse = DiscoverUploadCourse(-1, "", "", "")
-    val currentSelectedCourse get() = _currentSelectedCourse
+    private var _selectedCourse = DiscoverUploadCourse(-1, "", "", "")
+    val selectedCourse get() = _selectedCourse
 
     init {
         getMyCourseLoad()
@@ -59,7 +59,7 @@ class DiscoverPickViewModel @Inject constructor(
         _courseSelectState.value = isSelected
     }
 
-    fun saveCurrentSelectedCourse(course: DiscoverUploadCourse) {
-        _currentSelectedCourse = course
+    fun saveSelectedCourse(course: DiscoverUploadCourse) {
+        _selectedCourse = course
     }
 }
