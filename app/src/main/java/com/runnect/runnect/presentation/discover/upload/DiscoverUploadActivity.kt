@@ -18,6 +18,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_UPLOAD
 import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_UPLOAD
+import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
@@ -106,12 +107,14 @@ class DiscoverUploadActivity :
     private fun handleReturnToDiscover() {
         showToast("업로드 완료!")
         binding.indeterminateBar.isVisible = false
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+
+        Intent(this, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(this)
+        }
+
         MainActivity.updateCourseDiscoverScreen()
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        applyScreenExitAnimation()
     }
 
 
