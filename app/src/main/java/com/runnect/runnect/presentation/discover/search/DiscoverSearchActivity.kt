@@ -44,13 +44,28 @@ class DiscoverSearchActivity :
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+                // 상세페이지 갔다가 이전으로 돌아오면 아이템 변경사항이 바로 반영되도록 (제목, 스크랩)
                 val updatedCourse: EditableDiscoverCourse =
                     result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
 
-                searchAdapter.updateSearchItem(viewModel.clickedCourseId, updatedCourse)
+                if (updatedCourse.isDeleted) {
+                    searchCourseForKeyword()
+                } else {
+                    searchAdapter.updateSearchItem(
+                        publicCourseId = viewModel.clickedCourseId,
+                        updatedCourse = updatedCourse
+                    )
+                }
             }
         }
+
+    private fun searchCourseForKeyword() {
+        val keyword = binding.etDiscoverSearchTitle.text.toString()
+        if (keyword.isNotBlank()) {
+            viewModel.getCourseSearch(keyword = keyword)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,10 +146,10 @@ class DiscoverSearchActivity :
             TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == IME_ACTION_SEARCH) {
-                    val keyword = binding.etDiscoverSearchTitle.text
-                    if (!keyword.isNullOrBlank()) {
+                    val keyword = binding.etDiscoverSearchTitle.text.toString()
+                    if (keyword.isNotBlank()) {
                         Analytics.logClickedItemEvent(EVENT_CLICK_TRY_SEARCH_COURSE)
-                        viewModel.getCourseSearch(keyword = keyword.toString())
+                        viewModel.getCourseSearch(keyword = keyword)
                         hideKeyboard(binding.etDiscoverSearchTitle)
                     }
                     return true
