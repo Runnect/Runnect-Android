@@ -6,5 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class EditableDiscoverCourse(
     val title: String,
-    val scrap: Boolean
+    val scrap: Boolean,
+    val isDeleted: Boolean
 ): Parcelable
