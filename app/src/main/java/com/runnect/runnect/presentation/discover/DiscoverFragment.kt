@@ -67,10 +67,14 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
                     result.data?.getCompatibleParcelableExtra(EXTRA_EDITABLE_DISCOVER_COURSE)
                         ?: return@registerForActivityResult
 
-                multiViewAdapter.updateCourseItem(
-                    publicCourseId = viewModel.clickedCourseId,
-                    updatedCourse = updatedCourse
-                )
+                if (updatedCourse.isDeleted) {
+                    refreshDiscoverCourses()
+                } else {
+                    multiViewAdapter.updateCourseItem(
+                        publicCourseId = viewModel.clickedCourseId,
+                        updatedCourse = updatedCourse
+                    )
+                }
             }
         }
 
@@ -155,7 +159,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Timber.d("viewpager position: $position")
                 updateBannerPosition(position)
                 updateBannerIndicatorPosition()
             }
@@ -240,14 +243,18 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun initRefreshLayoutListener() {
         binding.refreshLayout.setOnRefreshListener {
-            // 리프레시 직후에 비어있는 리스트로 리사이클러뷰 초기화
-            multiViewAdapter.initMarathonCourses(emptyList())
-            multiViewAdapter.initRecommendCourses(emptyList())
-
-            // 서버통신 직후에 첫 페이지 데이터로 리사이클러뷰 초기화
-            viewModel.refreshDiscoverCourses()
+            refreshDiscoverCourses()
             binding.refreshLayout.isRefreshing = false
         }
+    }
+
+    fun refreshDiscoverCourses() {
+        // 리프레시 직후에 비어있는 리스트로 리사이클러뷰 초기화
+        multiViewAdapter.initMarathonCourses(emptyList())
+        multiViewAdapter.initRecommendCourses(emptyList())
+
+        // 첫 페이지 데이터로 리사이클러뷰 초기화
+        viewModel.refreshDiscoverCourses()
     }
 
     private fun initSearchButtonClickListener() {
@@ -500,10 +507,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun checkRefreshPossibleCondition(): Boolean {
         val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
         return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
-    }
-
-    fun refreshDiscoverCourses() {
-        viewModel.refreshDiscoverCourses()
     }
 
     override fun onAttach(context: Context) {
