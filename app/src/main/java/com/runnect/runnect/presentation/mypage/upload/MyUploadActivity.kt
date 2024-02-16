@@ -1,11 +1,13 @@
 package com.runnect.runnect.presentation.mypage.upload
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,6 +16,8 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
+import com.runnect.runnect.presentation.discover.DiscoverFragment
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.mypage.upload.adapter.MyUploadAdapter
 import com.runnect.runnect.presentation.state.UiState
@@ -21,6 +25,7 @@ import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE
 import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
@@ -33,8 +38,26 @@ import timber.log.Timber
 class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activity_my_upload),
     OnMyUploadItemClick {
     private val viewModel: MyUploadViewModel by viewModels()
-    private lateinit var adapter: MyUploadAdapter
+    private lateinit var uploadAdapter: MyUploadAdapter
     private lateinit var dialog: AlertDialog
+
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val updatedCourse: EditableDiscoverCourse =
+                    result.data?.getCompatibleParcelableExtra(DiscoverFragment.EXTRA_EDITABLE_DISCOVER_COURSE)
+                        ?: return@registerForActivityResult
+
+                if (updatedCourse.isDeleted) {
+                    viewModel.getUserUploadCourse()
+                } else {
+                    uploadAdapter.updateMyUploadItem(
+                        publicCourseId = viewModel.clickedCourseId,
+                        updatedCourse = updatedCourse
+                    )
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +75,6 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private fun initLayout() {
         initRecyclerView()
     }
-
 
     private fun initRecyclerView() {
         binding.rvMyPageUpload.layoutManager = GridLayoutManager(this, 2)
@@ -136,20 +158,19 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     private fun initAdapter() {
-        adapter = MyUploadAdapter(this).apply {
+        uploadAdapter = MyUploadAdapter(this).apply {
             submitList(
                 viewModel.myUploadCourses
             )
         }
-        binding.rvMyPageUpload.adapter = adapter
+        binding.rvMyPageUpload.adapter = uploadAdapter
     }
 
     private fun addObserver() {
-
         viewModel.myUploadCourseState.observe(this) {
             when (it) {
                 UiState.Empty -> handleEmptyUploadCourse()
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Loading -> handleLoadingUploadCourse()
                 UiState.Success -> handleSuccessfulCourseLoad()
                 UiState.Failure -> handleUnsuccessfulUploadCall()
             }
@@ -158,11 +179,10 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         viewModel.myUploadDeleteState.observe(this) {
             updateDeleteButton(viewModel.selectedItemsCount.value ?: 0)
             when (it) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Empty -> handleEmptyUploadCourse()
+                UiState.Loading -> handleLoadingUploadCourse()
                 UiState.Success -> handleSuccessfulUploadDeletion()
                 UiState.Failure -> handleUnsuccessfulUploadCall()
-                else -> binding.indeterminateBar.isVisible = false
-
             }
         }
 
@@ -185,7 +205,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         with(binding) {
             btnMyPageUploadEditCourse.text = EDIT_CANCEL
             tvMyPageUploadTotalCourseCount.text = DESCRIPTION_CHOICE_MODE
-            if (::adapter.isInitialized) adapter.handleCheckBoxVisibility(true)
+            if (::uploadAdapter.isInitialized) uploadAdapter.handleCheckBoxVisibility(true)
         }
     }
 
@@ -195,9 +215,9 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             btnMyPageUploadEditCourse.text = EDIT_MODE
             tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
             tvMyPageUploadDelete.isVisible = viewModel.editMode.value!!
-            if (::adapter.isInitialized) {
-                adapter.clearSelection()
-                adapter.handleCheckBoxVisibility(false)
+            if (::uploadAdapter.isInitialized) {
+                uploadAdapter.clearSelection()
+                uploadAdapter.handleCheckBoxVisibility(false)
             }
             viewModel.clearItemsToDelete()
         }
@@ -218,34 +238,49 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         }
     }
 
+    private fun handleEmptyUploadCourse() {
+        with(binding) {
+            indeterminateBar.isVisible = false
+            constMyPageUploadEditBar.isVisible = false
+            svMyPageUpload.isVisible = false
+            layoutMyPageUploadNoResult.isVisible = true
+        }
+    }
+
+    private fun handleLoadingUploadCourse() {
+        with(binding) {
+            indeterminateBar.isVisible = true
+            constMyPageUploadEditBar.isVisible = false
+            svMyPageUpload.isVisible = false
+        }
+    }
+
     private fun handleSuccessfulCourseLoad() {
         with(binding) {
             indeterminateBar.isVisible = false
+            layoutMyPageUploadNoResult.isVisible = false
+
             tvMyPageUploadTotalCourseCount.text = viewModel.getCourseCount()
             constMyPageUploadEditBar.isVisible = true
-            layoutMyPageUploadNoResult.isVisible = false
+            svMyPageUpload.isVisible = true
         }
+
         initAdapter()
     }
 
     private fun handleSuccessfulUploadDeletion() {
-        binding.indeterminateBar.isVisible = false
-        adapter.removeItems(viewModel.itemsToDelete)
-        adapter.clearSelection()
+        uploadAdapter.removeItems(viewModel.itemsToDelete)
+        uploadAdapter.clearSelection()
         viewModel.clearItemsToDelete()
+
+        binding.indeterminateBar.isVisible = false
+        binding.constMyPageUploadEditBar.isVisible = true
+        binding.svMyPageUpload.isVisible = true
     }
 
     private fun handleUnsuccessfulUploadCall() {
         binding.indeterminateBar.isVisible = false
         Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
-    }
-
-    private fun handleEmptyUploadCourse() {
-        with(binding) {
-            indeterminateBar.isVisible = false
-            constMyPageUploadEditBar.isVisible = false
-            layoutMyPageUploadNoResult.isVisible = true
-        }
     }
 
     override fun selectItem(id: Int): Boolean {
@@ -254,11 +289,12 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
             viewModel.modifyItemsToDelete(id)
             true
         } else {
-            val intent = Intent(this, CourseDetailActivity::class.java).apply {
+            viewModel.saveClickedCourseId(id)
+            Intent(this, CourseDetailActivity::class.java).apply {
                 putExtra(EXTRA_PUBLIC_COURSE_ID, id)
                 putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.MY_PAGE_UPLOAD_COURSE)
+                resultLauncher.launch(this)
             }
-            startActivity(intent)
             false
         }
     }

@@ -32,6 +32,7 @@ import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTR
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
@@ -182,7 +183,7 @@ class CourseDetailActivity :
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
             COURSE_DISCOVER -> setActivityResult<MainActivity>()
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
-            MY_PAGE_UPLOAD_COURSE -> finish()
+            MY_PAGE_UPLOAD_COURSE -> setActivityResult<MyUploadActivity>()
         }
 
         finish()
@@ -192,7 +193,8 @@ class CourseDetailActivity :
     private inline fun <reified E : Activity> setActivityResult() {
         val updatedCourse = EditableDiscoverCourse(
             title = viewModel.title,
-            scrap = binding.ivCourseDetailScrap.isSelected
+            scrap = binding.ivCourseDetailScrap.isSelected,
+            isDeleted = viewModel.courseDeleteState.value is UiStateV2.Success
         )
 
         Intent(this@CourseDetailActivity, E::class.java).apply {

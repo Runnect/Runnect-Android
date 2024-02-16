@@ -42,6 +42,13 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
 
     val selectCountMediator = MediatorLiveData<List<Int>>()
 
+    private var _clickedCourseId = -1
+    val clickedCourseId get() = _clickedCourseId
+
+    fun saveClickedCourseId(id: Int) {
+        _clickedCourseId = id
+    }
+
     init {
         selectCountMediator.addSource(itemsToDeleteLiveData) {
             setSelectedItemsCount(_itemsToDelete.count())
