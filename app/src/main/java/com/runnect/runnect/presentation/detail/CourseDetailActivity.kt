@@ -179,7 +179,7 @@ class CourseDetailActivity :
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
             COURSE_DISCOVER -> setActivityResult<MainActivity>()
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
-            MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
+            MY_PAGE_UPLOAD_COURSE -> finish()
         }
 
         finish()
