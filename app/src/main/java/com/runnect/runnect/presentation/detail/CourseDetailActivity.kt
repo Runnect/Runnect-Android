@@ -39,7 +39,6 @@ import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTR
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
-import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
@@ -179,7 +178,7 @@ class CourseDetailActivity :
             COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
             COURSE_DISCOVER -> setActivityResult<MainActivity>()
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
-            MY_PAGE_UPLOAD_COURSE -> navigateToMyUploadCourseScreen()
+            MY_PAGE_UPLOAD_COURSE -> finish()
         }
 
         finish()
@@ -195,12 +194,6 @@ class CourseDetailActivity :
         Intent(this@CourseDetailActivity, E::class.java).apply {
             putExtra(EXTRA_EDITABLE_DISCOVER_COURSE, updatedCourse)
             setResult(RESULT_OK, this)
-        }
-    }
-
-    private fun navigateToMyUploadCourseScreen() {
-        Intent(this, MyUploadActivity::class.java).apply {
-            startActivity(this)
         }
     }
 
