@@ -269,10 +269,13 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     }
 
     private fun handleSuccessfulUploadDeletion() {
-        binding.indeterminateBar.isVisible = false
         uploadAdapter.removeItems(viewModel.itemsToDelete)
         uploadAdapter.clearSelection()
         viewModel.clearItemsToDelete()
+
+        binding.indeterminateBar.isVisible = false
+        binding.constMyPageUploadEditBar.isVisible = true
+        binding.svMyPageUpload.isVisible = true
     }
 
     private fun handleUnsuccessfulUploadCall() {
