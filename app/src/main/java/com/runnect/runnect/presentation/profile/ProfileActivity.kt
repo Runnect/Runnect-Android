@@ -8,7 +8,6 @@ import com.runnect.runnect.navigator.feature.detail.CourseDetailNavigator
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
-import com.runnect.runnect.presentation.detail.navigator.impl.CourseDetailNavigatorImpl
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.VIEW_USER_PROFILE
