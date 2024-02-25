@@ -41,8 +41,8 @@ class ApplicationClass : Application() {
 
         fun getBaseUrl(): String {
             return when {
-                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_NODE_URL // 추후 Prod 서버로 변경
-                !::appContext.isInitialized -> BuildConfig.RUNNECT_NODE_URL
+                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_PROD_URL
+                !::appContext.isInitialized -> BuildConfig.RUNNECT_PROD_URL
                 else -> {
                     val mode = ApiMode.getCurrentApiMode(appContext)
                     when (mode) {
