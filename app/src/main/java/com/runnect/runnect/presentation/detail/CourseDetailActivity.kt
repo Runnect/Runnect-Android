@@ -22,7 +22,7 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
-import com.runnect.runnect.navigator.feature.detail.CourseDetailNavigator
+import com.runnect.runnect.navigator.base.Extras
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
@@ -99,7 +99,7 @@ class CourseDetailActivity :
         intent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)?.let {
             rootScreen = it
         }
-        publicCourseId = intent.getIntExtra(CourseDetailNavigator.EXTRA_PUBLIC_COURSE_ID,-1)
+        publicCourseId = intent.getIntExtra(Extras.PUBLIC_COURSE_ID,-1)
         Timber.tag("intent-publicCourseId").d("$publicCourseId")
     }
 
@@ -170,7 +170,7 @@ class CourseDetailActivity :
                 ?.let { rootScreen = it }
 
             publicCourseId = newIntent.getIntExtra(
-                CourseDetailNavigator.EXTRA_PUBLIC_COURSE_ID,
+                Extras.PUBLIC_COURSE_ID,
                 -1
             )
             getCourseDetail()

@@ -8,6 +8,7 @@ import com.runnect.runnect.navigator.feature.detail.CourseDetailNavigator
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
+import com.runnect.runnect.navigator.base.Extras
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.VIEW_USER_PROFILE
@@ -64,7 +65,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
         detailNavigator.navigateFrom(
             this,
             intentBuilder = {
-                putExtra(CourseDetailNavigator.EXTRA_PUBLIC_COURSE_ID, courseId)
+                putExtra(Extras.PUBLIC_COURSE_ID, courseId)
                 addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             },
         )
