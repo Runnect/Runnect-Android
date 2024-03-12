@@ -400,10 +400,6 @@ class CourseDetailActivity :
         }
     }
 
-    private fun RunnectPopupMenu.showCustomPosition(anchorView: View) {
-        showAsDropDown(anchorView, POPUP_MENU_X_OFFSET, POPUP_MENU_Y_OFFSET, Gravity.END)
-    }
-
     private fun showRequireLoginDialog() {
         RequireLoginDialogFragment().show(supportFragmentManager, TAG_REQUIRE_LOGIN_DIALOG)
     }
@@ -626,8 +622,6 @@ class CourseDetailActivity :
         private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
         private const val EXTRA_COURSE_USER_ID = "courseUserId"
 
-        private const val POPUP_MENU_X_OFFSET = 17
-        private const val POPUP_MENU_Y_OFFSET = -10
         private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
         private const val TAG_MY_UPLOAD_COURSE_EDIT_DIALOG = "MY_UPLOAD_COURSE_EDIT_DIALOG"
         private const val TAG_REQUIRE_LOGIN_DIALOG = "REQUIRE_LOGIN_DIALOG"
