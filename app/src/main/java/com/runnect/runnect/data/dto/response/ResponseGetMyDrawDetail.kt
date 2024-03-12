@@ -22,12 +22,12 @@ data class ResponseGetMyDrawDetail(
         @SerialName("user")
         val user: User,
     ) {
-
         @Serializable
         data class User(
             @SerialName("userId")
             val id: Int,
         )
+
         @Serializable
         data class Course(
             @SerialName("id")

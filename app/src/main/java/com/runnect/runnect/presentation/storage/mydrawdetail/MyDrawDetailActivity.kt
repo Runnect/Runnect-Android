@@ -13,11 +13,15 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
+import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.util.custom.toolbar.CommonToolbarLayout
+import com.runnect.runnect.util.custom.toolbar.ToolbarMenu
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
@@ -26,26 +30,56 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
-    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
+    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail),
+    CommonToolbarLayout {
     val viewModel: MyDrawDetailViewModel by viewModels()
-
-    val selectList = arrayListOf<Int>()
-
-    lateinit var departureLatLng: LatLng
+    private val selectList = arrayListOf<Int>()
     private val touchList = arrayListOf<LatLng>()
+    private lateinit var departureLatLng: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding.lifecycleOwner = this
+
         getMyDrawDetail()
-        backButton()
+        addListener()
         addObserver()
-        initDrawButtonClickListener()
-        deleteButton()
+        registerBackPressedCallback()
     }
 
-    private fun deletingDialog() {
+    private fun getMyDrawDetail() {
+        val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
+        if (courseId == 0) {
+            showSnackbar(
+                anchorView = binding.root,
+                message = "fail get my draw course detail"
+            )
+            return
+        }
+
+        selectList.add(courseId)
+        viewModel.getMyDrawDetail(courseId)
+    }
+
+    private fun addListener() {
+        initBackButtonClickListener()
+        initDeleteButtonClickListener()
+        initDrawButtonClickListener()
+    }
+
+    private fun initBackButtonClickListener() {
+        binding.imgBtnBack.setOnClickListener {
+            navigateToPreviousScreenWithAnimation()
+        }
+    }
+
+    private fun initDeleteButtonClickListener() {
+        binding.imgBtnDelete.setOnClickListener {
+            showDeleteConfirmDialog()
+        }
+    }
+
+    private fun showDeleteConfirmDialog() {
         val (dialog, dialogLayout) = setActivityDialog(
             layoutInflater = layoutInflater,
             view = binding.root,
@@ -69,26 +103,9 @@ class MyDrawDetailActivity :
         dialog.show()
     }
 
-    private fun deleteButton() {
-        binding.imgBtnDelete.setOnClickListener {
-            deletingDialog()
-        }
+    private fun deleteCourse() {
+        viewModel.deleteMyDrawCourse(selectList)
     }
-
-    private fun backButton() { //png가 imgBtn으로 하면 잘리길래 어차피 임시로 해놓는 거니까 imgView로 component를 추가해줬음
-        binding.imgBtnBack.setOnClickListener {
-            navigateToPreviousScreenWithAnimation()
-        }
-    }
-
-    private fun getMyDrawDetail() {
-        val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
-        Timber.tag(ContentValues.TAG).d("courseId from Storage : $courseId")
-
-        selectList.add(courseId) //courseId를 지역변수로 선언해서 여기에 작성해주었음
-        viewModel.getMyDrawDetail(courseId = courseId)
-    }
-
 
     private fun initDrawButtonClickListener() {
         binding.btnMyDrawDetailRun.setOnClickListener {
@@ -114,17 +131,16 @@ class MyDrawDetailActivity :
     }
 
     fun addObserver() {
-        observeGetResult()
-        registerBackPressedCallback()
+        observeMyDrawCourseGetResult()
     }
 
-    private fun registerBackPressedCallback() { // 이 함수를 addObserver에서 호출
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                navigateToPreviousScreenWithAnimation()
-            }
+    private fun observeMyDrawCourseGetResult() {
+        viewModel.getResult.observe(this) { response ->
+            setImage(response) //이거 그냥 BindingAdapter로 빼도 되는데 지금 xml에서 뷰모델이 아닌 dto를 바로 구독하고 있어서 이러는 것 같음
+            setDepartureLatLng(response)
+            setTouchList(response)
+            setPutExtraValue(response)
         }
-        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun setImage(src: ResponseGetMyDrawDetail) {
@@ -140,7 +156,6 @@ class MyDrawDetailActivity :
         }
     }
 
-    //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
     private fun setDepartureLatLng(src: ResponseGetMyDrawDetail) {
         departureLatLng =
             LatLng(src.data.course.path[0][0], src.data.course.path[0][1])
@@ -166,17 +181,38 @@ class MyDrawDetailActivity :
         )
     }
 
-    private fun observeGetResult() {
-        viewModel.getResult.observe(this) {
-            setImage(it) //이거 그냥 BindingAdapter로 빼도 되는데 지금 xml에서 뷰모델이 아닌 dto를 바로 구독하고 있어서 이러는 것 같음
-            setDepartureLatLng(it)
-            setTouchList(it)
-            setPutExtraValue(it)
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreenWithAnimation()
+            }
         }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    private fun deleteCourse() {
-        viewModel.deleteMyDrawCourse(selectList)
+    override val toolbarBinding: LayoutCommonToolbarBinding
+        get() = binding.layoutCommonToolbar
+
+    override fun initToolBarLayout() {
+        addMenuTo(
+            CommonToolbarLayout.LEFT,
+            ToolbarMenu.Icon(
+                resourceId = R.drawable.all_back_arrow,
+                clickEvent = {
+                    // todo: 공유 링크 타고 들어왔을 때는
+                    //  뒤로가기 누르면 보관함 프래그먼트로 이동
+                    navigateToPreviousScreenWithAnimation()
+                }
+            ),
+            ToolbarMenu.Text(
+                resourceId =
+                /** 내가 그린 코스 제목 */
+                ,
+                padding = 0,
+                textSize = 18,
+                fontRes = R.font.pretendard_bold
+            )
+        )
     }
 
     companion object {
@@ -184,6 +220,4 @@ class MyDrawDetailActivity :
         const val EXTRA_COURSE_DATA = "CourseData"
         const val EXTRA_COURSE_ID = "courseId"
     }
-
-
 }

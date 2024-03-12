@@ -17,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MyDrawDetailViewModel @Inject constructor(private val courseRepository: CourseRepository) :
     ViewModel() {
-
     val distance = MutableLiveData<Float>()
     val image = MutableLiveData<Uri>()
     val myDrawToRunData = MutableLiveData<CourseData>()
@@ -47,7 +46,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                         courseIdList = deleteList
                     )
                 )
-
             }.onSuccess {
                 Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
             }.onFailure {
