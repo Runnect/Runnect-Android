@@ -1,7 +1,5 @@
 package com.runnect.runnect.presentation.storage.mydrawdetail
 
-import android.content.ContentValues
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,9 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
-import com.runnect.runnect.data.dto.response.toMyDrawCourse
-import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,9 +19,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
     ViewModel() {
     val myDrawToRunData = MutableLiveData<CourseData>()
     val getResult = MutableLiveData<ResponseGetMyDrawDetail>()
-    var isNowUser: Boolean = false
-    val errorMessage = MutableLiveData<String>()
-
+    var isNowUser: Boolean = true
     private val _myDrawCourseDeleteState = MutableLiveData<UiStateV2<Unit>>()
     val myDrawCourseDeleteState: LiveData<UiStateV2<Unit>>
         get() = _myDrawCourseDeleteState
@@ -40,15 +33,18 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
             }.onSuccess { response ->
                 val responseBody = response.body()
                 if (responseBody == null) {
-                    errorMessage.value = "get my draw course response is null"
+                    Timber.e("get my draw course response is null")
                     return@launch
                 }
 
                 responseBody.let {
+                    Timber.d("$responseBody")
                     getResult.value = it
+                    isNowUser = it.data.course.isNowUser
                 }
+
             }.onFailure { t ->
-                errorMessage.value = t.message
+                Timber.e("${t.message}")
             }
         }
     }
