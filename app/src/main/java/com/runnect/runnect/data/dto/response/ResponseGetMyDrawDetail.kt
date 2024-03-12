@@ -1,6 +1,7 @@
 package com.runnect.runnect.data.dto.response
 
 
+import com.runnect.runnect.domain.entity.MyDrawCourse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -57,5 +58,17 @@ data class ResponseGetMyDrawDetail(
                 val name: String,
             )
         }
+    }
+}
+
+fun ResponseGetMyDrawDetail.toMyDrawCourse(): MyDrawCourse {
+    this.data.course.apply {
+        return MyDrawCourse(
+            courseId = id,
+            image = image,
+            city = this.departure.city,
+            region = this.departure.region,
+            title = title
+        )
     }
 }

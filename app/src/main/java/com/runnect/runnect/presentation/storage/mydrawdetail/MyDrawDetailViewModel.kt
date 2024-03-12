@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.toMyDrawCourse
+import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.domain.repository.CourseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,12 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MyDrawDetailViewModel @Inject constructor(private val courseRepository: CourseRepository) :
     ViewModel() {
-    val distance = MutableLiveData<Float>()
-    val image = MutableLiveData<Uri>()
     val myDrawToRunData = MutableLiveData<CourseData>()
-    val courseId = MutableLiveData<Int>()
     val getResult = MutableLiveData<ResponseGetMyDrawDetail>()
     val errorMessage = MutableLiveData<String>()
+    var myDrawCourse = MutableLiveData<MyDrawCourse>()
 
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
@@ -30,10 +30,19 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                 courseRepository.getMyDrawDetail(
                     courseId = courseId
                 )
-            }.onSuccess {
-                getResult.value = it.body()
-            }.onFailure {
-                errorMessage.value = it.message
+            }.onSuccess { response ->
+                val responseBody = response.body()
+                if (responseBody == null) {
+                    errorMessage.value = "get my draw course response is null"
+                    return@launch
+                }
+
+                responseBody.let {
+                    getResult.value = it
+                    myDrawCourse.value = it.toMyDrawCourse()
+                }
+            }.onFailure { t ->
+                errorMessage.value = t.message
             }
         }
     }

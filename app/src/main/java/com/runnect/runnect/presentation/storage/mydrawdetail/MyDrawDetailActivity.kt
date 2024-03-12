@@ -30,8 +30,7 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
-    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail),
-    CommonToolbarLayout {
+    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
     val viewModel: MyDrawDetailViewModel by viewModels()
     private val selectList = arrayListOf<Int>()
     private val touchList = arrayListOf<LatLng>()
@@ -63,19 +62,20 @@ class MyDrawDetailActivity :
 
     private fun addListener() {
         initBackButtonClickListener()
-        initDeleteButtonClickListener()
+        initMoreButtonClickListener()
         initDrawButtonClickListener()
     }
 
     private fun initBackButtonClickListener() {
-        binding.imgBtnBack.setOnClickListener {
+        binding.ivMyDrawBack.setOnClickListener {
             navigateToPreviousScreenWithAnimation()
         }
     }
 
-    private fun initDeleteButtonClickListener() {
-        binding.imgBtnDelete.setOnClickListener {
-            showDeleteConfirmDialog()
+    private fun initMoreButtonClickListener() {
+        binding.ivMyDrawMore.setOnClickListener {
+            // todo: 팝업 메뉴 띄우기
+            //showDeleteConfirmDialog()
         }
     }
 
@@ -188,31 +188,6 @@ class MyDrawDetailActivity :
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    override val toolbarBinding: LayoutCommonToolbarBinding
-        get() = binding.layoutCommonToolbar
-
-    override fun initToolBarLayout() {
-        addMenuTo(
-            CommonToolbarLayout.LEFT,
-            ToolbarMenu.Icon(
-                resourceId = R.drawable.all_back_arrow,
-                clickEvent = {
-                    // todo: 공유 링크 타고 들어왔을 때는
-                    //  뒤로가기 누르면 보관함 프래그먼트로 이동
-                    navigateToPreviousScreenWithAnimation()
-                }
-            ),
-            ToolbarMenu.Text(
-                resourceId =
-                /** 내가 그린 코스 제목 */
-                ,
-                padding = 0,
-                textSize = 18,
-                fontRes = R.font.pretendard_bold
-            )
-        )
     }
 
     companion object {
