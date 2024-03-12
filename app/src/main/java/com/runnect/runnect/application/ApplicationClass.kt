@@ -40,18 +40,20 @@ class ApplicationClass : Application() {
         const val API_MODE = "API_MODE"
 
         fun getBaseUrl(): String {
-            return when {
-                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_PROD_URL
-                !::appContext.isInitialized -> BuildConfig.RUNNECT_PROD_URL
-                else -> {
-                    val mode = ApiMode.getCurrentApiMode(appContext)
-                    when (mode) {
-                        ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
-                        ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL
-                        else -> BuildConfig.RUNNECT_NODE_URL
-                    }
-                }
-            }
+            return BuildConfig.RUNNECT_PROD_URL
+
+//            return when {
+//                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_PROD_URL
+//                !::appContext.isInitialized -> BuildConfig.RUNNECT_PROD_URL
+//                else -> {
+//                    val mode = ApiMode.getCurrentApiMode(appContext)
+//                    when (mode) {
+//                        ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
+//                        ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL
+//                        else -> BuildConfig.RUNNECT_NODE_URL
+//                    }
+//                }
+//            }
         }
     }
 }
