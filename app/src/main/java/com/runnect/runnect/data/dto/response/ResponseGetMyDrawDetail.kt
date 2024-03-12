@@ -33,6 +33,8 @@ data class ResponseGetMyDrawDetail(
         data class Course(
             @SerialName("id")
             val id: Int,
+            @SerialName("isNowUser")
+            val isNowUser: Boolean,
             @SerialName("createdAt")
             val createdAt: String,
             @SerialName("path")
@@ -58,17 +60,5 @@ data class ResponseGetMyDrawDetail(
                 val name: String,
             )
         }
-    }
-}
-
-fun ResponseGetMyDrawDetail.toMyDrawCourse(): MyDrawCourse {
-    this.data.course.apply {
-        return MyDrawCourse(
-            courseId = id,
-            image = image,
-            city = this.departure.city,
-            region = this.departure.region,
-            title = title
-        )
     }
 }
