@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
+import com.runnect.runnect.data.ResultCallAdapter
 import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.source.remote.*
@@ -66,6 +67,7 @@ object RetrofitModule {
         kotlinx.coroutines.internal.synchronized(this) {
             val baseUrl = ApplicationClass.getBaseUrl()
             val retrofit = Retrofit.Builder().baseUrl(baseUrl).client(client)
+                .addCallAdapterFactory(ResultCallAdapter.Factory())
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
             return retrofit ?: throw RuntimeException("Retrofit creation failed.")

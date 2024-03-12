@@ -57,6 +57,7 @@ class TokenAuthenticator(val context: Context) : Authenticator {
             return true
         }.onFailure {
             Timber.tag("test").d("callRefresh-onFailure")
+
             if (it.message == "Unauthorized") {
                 Timber.tag("test").d("callRefresh-onFailure-inner-if")
                 PreferenceManager.clear(context)

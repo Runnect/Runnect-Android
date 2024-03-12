@@ -15,9 +15,7 @@ enum class ApiMode {
         }
 
         fun getCurrentApiMode(context: Context): ApiMode {
-            return asValue(
-                PreferenceManager.getString(context, ApplicationClass.API_MODE) ?: ""
-            )
+            return JAVA
         }
     }
 }
