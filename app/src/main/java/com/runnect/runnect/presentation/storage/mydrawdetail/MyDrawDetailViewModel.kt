@@ -22,7 +22,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
     val myDrawToRunData = MutableLiveData<CourseData>()
     val getResult = MutableLiveData<ResponseGetMyDrawDetail>()
     val errorMessage = MutableLiveData<String>()
-    var myDrawCourse = MutableLiveData<MyDrawCourse>()
 
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
@@ -39,7 +38,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
 
                 responseBody.let {
                     getResult.value = it
-                    myDrawCourse.value = it.toMyDrawCourse()
                 }
             }.onFailure { t ->
                 errorMessage.value = t.message

@@ -136,23 +136,25 @@ class MyDrawDetailActivity :
 
     private fun observeMyDrawCourseGetResult() {
         viewModel.getResult.observe(this) { response ->
-            setImage(response) //이거 그냥 BindingAdapter로 빼도 되는데 지금 xml에서 뷰모델이 아닌 dto를 바로 구독하고 있어서 이러는 것 같음
+            setTitle(response)
+            setImage(response)
             setDepartureLatLng(response)
             setTouchList(response)
             setPutExtraValue(response)
         }
     }
 
+    private fun setTitle(src: ResponseGetMyDrawDetail) {
+        binding.tvMyDrawTitle.text = src.data.course.title
+    }
+
     private fun setImage(src: ResponseGetMyDrawDetail) {
         with(binding) {
-            Glide
-                .with(ivMyDrawDetail.context)
+            Glide.with(ivMyDrawDetail.context)
                 .load(src.data.course.image.toUri())
                 .centerCrop()
                 .into(ivMyDrawDetail)
-
             tvCourseDistanceRecord.text = src.data.course.distance.toString()
-
         }
     }
 
