@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.mydrawdetail
+package com.runnect.runnect.presentation.storage.mydrawdetail
 
 import android.content.ContentValues
 import android.net.Uri

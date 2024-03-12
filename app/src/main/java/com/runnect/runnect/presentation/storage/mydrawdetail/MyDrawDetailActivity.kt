@@ -1,4 +1,4 @@
-package com.runnect.runnect.presentation.mydrawdetail
+package com.runnect.runnect.presentation.storage.mydrawdetail
 
 import android.content.ContentValues
 import android.content.Intent
@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
 import timber.log.Timber
 
-// todo: 이 액티비티는 storage 패키지 아래에 위치시키는 게 어떨까요?? @우남
 @AndroidEntryPoint
 class MyDrawDetailActivity :
     BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {

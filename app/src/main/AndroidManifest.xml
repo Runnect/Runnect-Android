@@ -62,7 +62,7 @@
             android:name=".presentation.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.mydrawdetail.MyDrawDetailActivity"
+            android:name=".presentation.storage.mydrawdetail.MyDrawDetailActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.splash.SplashActivity"
