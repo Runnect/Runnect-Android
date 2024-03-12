@@ -9,6 +9,7 @@
         tools:context=".presentation.MyDrawDetailActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_my_draw_top_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -66,12 +67,12 @@
 
         <ImageView
             android:id="@+id/iv_my_draw_detail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/cl_my_draw_top_bar" />
 
         <View
             android:id="@+id/frame_course_distance"
