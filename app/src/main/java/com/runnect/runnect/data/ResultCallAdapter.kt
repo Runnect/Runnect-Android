@@ -12,7 +12,7 @@ class ResultCallAdapter<R: Any>(private val responseType: Type) : CallAdapter<R,
     }
 
     override fun adapt(call: Call<R>): Call<Result<R>> {
-        TODO("Not yet implemented")
+        return ResultCall(call)
     }
 
     class Factory : CallAdapter.Factory() {
