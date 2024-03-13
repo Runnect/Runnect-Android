@@ -20,25 +20,25 @@ Runnect는 Run과 Connect의 합성어로 “능동적인 러닝 문화”와 �
 
 달리기 전, 오늘 뛰게 될 코스를 직접 그려보세요. 내가 나아갈 길을 개척하는 능동적인 러너로 거듭날 수 있습니다.
 
-<img width="700" src="https://github.com/Runnect/Runnect-Android/assets/68090939/8ab5b2f9-246c-4aeb-90c8-6027ddd902da"/> 
+<img width="720" src="https://github.com/Runnect/Runnect-Android/assets/68090939/8ab5b2f9-246c-4aeb-90c8-6027ddd902da"/> 
 
 ### 코스 아카이빙 
 
 내가 여태까지 그린 코스를 다시 확인하고, 스크랩 했던 공유 코스를 관리할 수 있어요. 마이페이지에서 나의 러닝 기록도 확인할 수 있어요. 
 
-<img width="700" src="https://github.com/Runnect/Runnect-Android/assets/68090939/33d01e6e-e748-4396-990a-e0feb23a3eb6"/> 
+<img width="720" src="https://github.com/Runnect/Runnect-Android/assets/68090939/33d01e6e-e748-4396-990a-e0feb23a3eb6"/> 
 
 ### 코스 발견  
 
 다른 러너는 어떤 코스로 달리고 있을까요? 오늘은 새롭게 발견한 코스를 스크랩하여 달려 보세요.
 
-<img width="700" src="https://github.com/Runnect/Runnect-Android/assets/68090939/8f7c15ef-958f-401b-920c-cd750f4339c4"/>
+<img width="720" src="https://github.com/Runnect/Runnect-Android/assets/68090939/8f7c15ef-958f-401b-920c-cd750f4339c4"/>
 
 ### 코스 공유 
 
 코스를 보다 빠르고 간편하게 공유하세요! 
 
-<img width="700" src="https://github.com/Runnect/Runnect-Android/assets/68090939/c05cabf1-7883-4aff-af0f-a296ceb00c80"/>
+<img width="720" src="https://github.com/Runnect/Runnect-Android/assets/68090939/c05cabf1-7883-4aff-af0f-a296ceb00c80"/>
 
 ## 🛠 Tech Stack
 
