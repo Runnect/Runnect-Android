@@ -1,5 +1,6 @@
 package com.runnect.runnect.di
 
+import com.google.android.gms.auth.api.Auth
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
@@ -16,6 +17,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -34,14 +36,20 @@ object RetrofitModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class Tmap
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Auth
+
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        logger: HttpLoggingInterceptor,
-        appInterceptor: AppInterceptor,
-        tokenAuthenticator: TokenAuthenticator
-    ): OkHttpClient = OkHttpClient.Builder().addInterceptor(logger).addInterceptor(appInterceptor)
-        .authenticator(tokenAuthenticator).build()
+        logger : HttpLoggingInterceptor,
+        @Auth authInterceptor: Interceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(logger)
+        .addInterceptor(authInterceptor)
+        .build()
+
 
     @Provides
     @Singleton
@@ -51,12 +59,9 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideAppInterceptor(): AppInterceptor = AppInterceptor()
+    @Auth
+    fun provideAuthInterceptor(interceptor: AuthInterceptor): Interceptor = interceptor
 
-    @Provides
-    @Singleton
-    fun provideTokenAuthenticator(): TokenAuthenticator =
-        TokenAuthenticator(ApplicationClass.appContext)
 
     @OptIn(ExperimentalSerializationApi::class, InternalCoroutinesApi::class)
     @Provides
