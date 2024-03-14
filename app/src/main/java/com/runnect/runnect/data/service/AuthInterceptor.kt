@@ -20,7 +20,7 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
     // access Header 에 보내고 이때 401(토큰 만료) 뜨면 액세스 재발급 요청
     // 재발급 성공 : 저장
-    // 재발급 실패 : 재 로그인 토스트 메시지 띄우고 preference 초기화 한 후 로그인 화면 이동
+    // 재발급 실패 : 재 로그인 토스트 메시지 띄우고 preference 빈 값 넣고 로그인 화면 이동
     override fun intercept(chain: Interceptor.Chain): Response {
         runBlocking { Timber.e("AccessToken : ${getAccessToken()}, RefreshToken : ${getRefreshToken()}") }
         val originalRequest = chain.request()
@@ -136,8 +136,6 @@ class AuthInterceptor @Inject constructor(
 
         const val TOKEN_KEY_ACCESS = "access"
         const val TOKEN_KEY_REFRESH = "refresh"
-        const val HEADER_TOKEN_INFO_ACCESS = "accessToken"
-        const val HEADER_TOKEN_INFO_REFRESH = "refreshToken"
     }
 
 }
