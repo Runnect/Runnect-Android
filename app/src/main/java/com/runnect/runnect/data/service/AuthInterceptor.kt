@@ -60,14 +60,14 @@ class AuthInterceptor @Inject constructor(
         return PreferenceManager.getString(
             ApplicationClass.appContext,
             TOKEN_KEY_ACCESS
-        )!!
+        ) ?: ""
     }
 
     private fun getRefreshToken(): String {
         return PreferenceManager.getString(
             ApplicationClass.appContext,
             TOKEN_KEY_REFRESH
-        )!!
+        ) ?: ""
     }
 
     private fun saveToken(accessToken: String, refreshToken: String) {
