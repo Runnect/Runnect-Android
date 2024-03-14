@@ -69,6 +69,11 @@ class AuthInterceptor @Inject constructor(
         )!!
     }
 
+    private fun saveToken(accessToken: String, refreshToken: String) {
+        PreferenceManager.setString(ApplicationClass.appContext, TOKEN_KEY_ACCESS, accessToken)
+        PreferenceManager.setString(ApplicationClass.appContext, TOKEN_KEY_REFRESH, refreshToken)
+    }
+
     private fun handleTokenExpired(
         chain: Interceptor.Chain,
         originalRequest: Request,
@@ -104,6 +109,7 @@ class AuthInterceptor @Inject constructor(
             )
             responseToken.data?.data?.let {
                 Timber.e("New Refresh Token Success: ${it.refreshToken}")
+                saveToken(it.accessToken, it.refreshToken)
             }
         }
 
