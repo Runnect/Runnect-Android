@@ -3,9 +3,11 @@ package com.runnect.runnect.presentation.login
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.runnect.runnect.R
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityLoginBinding
@@ -31,10 +33,23 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
     override fun onStart() {
         super.onStart()
         val accessToken = PreferenceManager.getString(applicationContext, TOKEN_KEY_ACCESS)
-        if (accessToken != "none" && accessToken != "visitor") {
-            Timber.d("자동로그인 완료")
-            moveToMain()
-            Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
+        if (accessToken != null) {
+            // 빈 문자열 : 토큰 만료되어 재로그인
+            // none : 탈퇴, 로그아웃
+            // visitor : 방문자모드
+            // 나머지 : 바로 자동로그인 되므로 메인으로 이동
+            if(accessToken.isBlank()){
+                Toast.makeText(
+                    this,
+                    getString(R.string.alert_need_to_re_sign),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            else if (accessToken != "none" && accessToken != "visitor" ) {
+                Timber.d("자동로그인 완료")
+                moveToMain()
+                Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
