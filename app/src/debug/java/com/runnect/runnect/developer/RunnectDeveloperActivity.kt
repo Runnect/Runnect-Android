@@ -17,7 +17,6 @@ import com.runnect.runnect.R
 import com.runnect.runnect.application.ApiMode
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
-import com.runnect.runnect.data.service.TokenAuthenticator
 import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import kotlinx.coroutines.Dispatchers
@@ -44,8 +43,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun initUserInfo() {
             val ctx: Context = context ?: return
-            val accessToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_ACCESS) ?: ""
-            val refreshToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_REFRESH) ?: ""
+            val accessToken = PreferenceManager.getString(ctx, TOKEN_KEY_ACCESS) ?: ""
+            val refreshToken = PreferenceManager.getString(ctx, TOKEN_KEY_REFRESH) ?: ""
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
             setPreferenceSummary("dev_pref_key_refresh_token", refreshToken)
@@ -167,6 +166,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         companion object {
             private const val CLIPBOARD_LABEL = "keyword"
+            const val TOKEN_KEY_ACCESS = "access"
+            const val TOKEN_KEY_REFRESH = "refresh"
         }
     }
 }
