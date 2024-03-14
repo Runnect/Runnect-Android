@@ -1,6 +1,6 @@
  # 🏃🏼‍♀️ Runnect-Android 🏃🏻‍♂️
  
-<img width="650" src="https://github.com/Runnect/Runnect-Android/assets/68090939/6618f96b-f258-4c7c-a53e-90a3708da2dc"/>
+<img width="800" src="https://github.com/Runnect/Runnect-Android/assets/68090939/d1d3d952-5fd7-4991-9f5b-eed648128930"/>
 
 ## 💁🏻‍♀️ Introduction
 
