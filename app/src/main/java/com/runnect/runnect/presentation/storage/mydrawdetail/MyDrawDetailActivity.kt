@@ -16,6 +16,7 @@ import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
@@ -215,6 +216,14 @@ class MyDrawDetailActivity :
             )
         )
 
+        if (viewModel.isNowUser) {
+            addShareEditDeleteMenu()
+        } else {
+            addReportMenu()
+        }
+    }
+
+    private fun addShareEditDeleteMenu() {
         addMenuTo(
             CommonToolbarLayout.RIGHT,
             ToolbarMenu.Icon(
@@ -245,23 +254,8 @@ class MyDrawDetailActivity :
         )
     }
 
-    // todo: 코스 제목 수정하기
-    private fun showTitleEditBottomSheet() {}
-
-    private fun showEditDeletePopupMenu(anchorView: View) {
-        val popupItems = listOf(
-            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
-            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
-        )
-
-        RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
-            when (pos) {
-                0 -> showTitleEditBottomSheet()
-                1 -> showCourseDeleteDialog()
-            }
-        }.apply {
-            showCustomPosition(anchorView)
-        }
+    private fun showTitleEditBottomSheet() {
+        // todo: 코스 제목 수정하기
     }
 
     private fun showCourseDeleteDialog() {
@@ -277,19 +271,24 @@ class MyDrawDetailActivity :
         dialog.show(supportFragmentManager, TAG_MY_DRAW_COURSE_DELETE_DIALOG)
     }
 
-    private fun showReportPopupMenu(anchorView: View) {
-        val popupItems = listOf(
-            PopupItem(
-                R.drawable.ic_detail_more_report,
-                getString(R.string.popup_menu_item_report)
+    private fun addReportMenu() {
+        addMenuTo(
+            CommonToolbarLayout.RIGHT,
+            ToolbarMenu.Popup(
+                resourceId = R.drawable.showmorebtn,
+                popupItems = listOf(
+                    PopupItem(
+                        R.drawable.ic_detail_more_report,
+                        getString(R.string.popup_menu_item_report)
+                    )
+                ),
+                menuItemClickListener = { _, _, pos ->
+                    when (pos) {
+                        0 -> showWebBrowser(REPORT_URL)
+                    }
+                }
             )
         )
-
-        RunnectPopupMenu(anchorView.context, popupItems) { _, _, _ ->
-            showWebBrowser(REPORT_URL)
-        }.apply {
-            showCustomPosition(anchorView)
-        }
     }
 
     private fun registerBackPressedCallback() {
