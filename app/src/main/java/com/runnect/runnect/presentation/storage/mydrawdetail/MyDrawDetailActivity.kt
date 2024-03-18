@@ -51,7 +51,6 @@ class MyDrawDetailActivity :
 
         initToolBarLayout()
         getMyDrawDetail()
-
         addListener()
         addObserver()
         registerBackPressedCallback()
@@ -123,13 +122,17 @@ class MyDrawDetailActivity :
     }
 
     private fun showLoadingProgressBar() {
-        binding.pbMyDrawDetail.isVisible = true
-        binding.ivMyDrawDetail.isVisible = false
+        with(binding){
+            pbMyDrawDetail.isVisible = true
+            ivMyDrawDetail.isVisible = false
+        }
     }
 
     private fun dismissLoadingProgressBar() {
-        binding.pbMyDrawDetail.isVisible = false
-        binding.ivMyDrawDetail.isVisible = true
+        with(binding){
+            pbMyDrawDetail.isVisible = false
+            ivMyDrawDetail.isVisible = true
+        }
     }
 
     private fun initMyDrawCourseDetail(course: MyDrawCourseDetail) {
@@ -203,6 +206,11 @@ class MyDrawDetailActivity :
         get() = binding.layoutCommonToolbar
 
     override fun initToolBarLayout() {
+        addLeftMenu()
+        addRightMenu()
+    }
+
+    private fun addLeftMenu() {
         addMenuTo(
             CommonToolbarLayout.LEFT,
             ToolbarMenu.Icon(
@@ -218,15 +226,10 @@ class MyDrawDetailActivity :
                 fontRes = R.font.pretendard_bold
             )
         )
-
-        if (viewModel.isNowUser) {
-            addShareEditDeleteMenu()
-        } else {
-            addReportMenu()
-        }
     }
 
-    private fun addShareEditDeleteMenu() {
+    // todo: 딥링크에서 진입한 경우 -> 신고하기 메뉴로 변경
+    private fun addRightMenu() {
         addMenuTo(
             CommonToolbarLayout.RIGHT,
             ToolbarMenu.Icon(
