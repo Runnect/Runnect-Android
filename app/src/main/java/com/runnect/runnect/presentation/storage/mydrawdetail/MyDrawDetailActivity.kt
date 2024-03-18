@@ -30,7 +30,6 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
@@ -168,7 +167,7 @@ class MyDrawDetailActivity :
             departure = course.departureName,
             distance = course.distance,
             image = course.imgUrl,
-            dataFrom = EXTRA_MY_DRAW_COURSE_DETAIL
+            dataFrom = EXTRA_MY_DRAW_TO_RUN
         )
     }
 
@@ -177,7 +176,7 @@ class MyDrawDetailActivity :
             when (state) {
                 is UiStateV2.Success -> {
                     Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
-                        putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDeleteMyDrawDetail")
+                        putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, EXTRA_DELETE_MY_DRAW_COURSE)
                     }.apply {
                         startActivity(this)
                     }
@@ -187,7 +186,7 @@ class MyDrawDetailActivity :
                 is UiStateV2.Failure -> {
                     showSnackbar(
                         anchorView = binding.root,
-                        message = ""
+                        message = state.msg
                     )
                 }
 
@@ -246,6 +245,7 @@ class MyDrawDetailActivity :
         )
     }
 
+    // todo: 코스 제목 수정하기
     private fun showTitleEditBottomSheet() {}
 
     private fun showEditDeletePopupMenu(anchorView: View) {
@@ -306,7 +306,8 @@ class MyDrawDetailActivity :
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         private const val TAG_MY_DRAW_COURSE_DELETE_DIALOG = "MY_DRAW_COURSE_DELETE_DIALOG"
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        private const val EXTRA_MY_DRAW_COURSE_DETAIL = "fromMyDrawDetail"
+        private const val EXTRA_MY_DRAW_TO_RUN = "fromMyDrawDetail"
+        private const val EXTRA_DELETE_MY_DRAW_COURSE = "fromDeleteMyDrawDetail"
         private const val EXTRA_COURSE_DATA = "CourseData"
     }
 }
