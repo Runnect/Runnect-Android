@@ -209,7 +209,7 @@ class MyDrawDetailActivity :
     }
 
     private fun setupCourseDeleteStateObserver() {
-        viewModel.myDrawCourseDeleteState.observe(this) { state ->
+        viewModel.courseDeleteState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
                     Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
