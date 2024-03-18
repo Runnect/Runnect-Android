@@ -1,19 +1,18 @@
 package com.runnect.runnect.presentation.storage.mydrawdetail
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
+import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiStateV2
@@ -21,21 +20,23 @@ import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
+import com.runnect.runnect.util.custom.toolbar.CommonToolbarLayout
+import com.runnect.runnect.util.custom.toolbar.ToolbarMenu
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
-    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail) {
+    BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail),
+    CommonToolbarLayout {
     val viewModel: MyDrawDetailViewModel by viewModels()
-    private val selectList = arrayListOf<Int>()
-    private val touchList = arrayListOf<LatLng>()
     private lateinit var departureLatLng: LatLng
+    private val touchList = arrayListOf<LatLng>()
+    private val selectList = arrayListOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,16 +48,29 @@ class MyDrawDetailActivity :
         registerBackPressedCallback()
     }
 
+    override val toolbarBinding: LayoutCommonToolbarBinding
+        get() = binding.layoutCommonToolbar
+
+    override fun initToolBarLayout() {
+        addMenuTo(
+            CommonToolbarLayout.LEFT,
+            ToolbarMenu.Icon(
+                resourceId = R.drawable.all_back_arrow,
+                clickEvent = {
+                    navigateToPreviousScreenWithAnimation()
+                }
+            ),
+            ToolbarMenu.Text(
+                titleText = viewModel.myDrawCourseDetail.value?.title,
+                padding = 0,
+                textSize = 15,
+                fontRes = R.font.pretendard_medium
+            )
+        )
+    }
+
     private fun getMyDrawDetail() {
         val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
-        if (courseId == 0) {
-            showSnackbar(
-                anchorView = binding.root,
-                message = "fail get my draw course detail"
-            )
-            return
-        }
-
         selectList.add(courseId)
         viewModel.getMyDrawDetail(courseId)
     }
@@ -64,23 +78,29 @@ class MyDrawDetailActivity :
     private fun addListener() {
         initBackButtonClickListener()
         initMoreButtonClickListener()
-        initDrawButtonClickListener()
+        initRunningButtonClickListener()
+    }
+
+    fun addObserver() {
+        setupCourseGetStateObserver()
+        setupCourseDeleteStateObserver()
     }
 
     private fun initBackButtonClickListener() {
-        binding.ivMyDrawBack.setOnClickListener {
-            navigateToPreviousScreenWithAnimation()
-        }
+//        binding.ivMyDrawBack.setOnClickListener {
+//            navigateToPreviousScreenWithAnimation()
+//        }
     }
 
     private fun initMoreButtonClickListener() {
-        binding.ivMyDrawMore.setOnClickListener { view ->
-            if (viewModel.isNowUser) {
-                showEditDeletePopupMenu(view)
-            } else {
-                showReportPopupMenu(view)
-            }
-        }
+//        binding.ivMyDrawMore.setOnClickListener { view ->
+//            val isNowUser = viewModel.myDrawCourseDetail.value?.isNowUser
+//            if (isNowUser == true) {
+//                showEditDeletePopupMenu(view)
+//            } else {
+//                showReportPopupMenu(view)
+//            }
+//        }
     }
 
     private fun showEditDeletePopupMenu(anchorView: View) {
@@ -100,7 +120,7 @@ class MyDrawDetailActivity :
     }
 
     private fun showTitleEditBottomSheet() {
-        TODO("Not yet implemented")
+
     }
 
     private fun showCourseDeleteDialog() {
@@ -131,7 +151,7 @@ class MyDrawDetailActivity :
         }
     }
 
-    private fun initDrawButtonClickListener() {
+    private fun initRunningButtonClickListener() {
         binding.btnMyDrawDetailRun.setOnClickListener {
             this.let {
                 PermissionUtil.requestLocationPermission(
@@ -144,67 +164,77 @@ class MyDrawDetailActivity :
         }
     }
 
+    private fun navigateToCountDown() {
+        startActivity(Intent(this, CountDownActivity::class.java).apply {
+            putExtra(EXTRA_COURSE_DATA, viewModel.extraDataForRunning.value)
+        })
+    }
+
     private fun showPermissionDeniedToast() {
         showToast(getString(R.string.location_permission_denied))
     }
 
-    private fun navigateToCountDown() {
-        startActivity(Intent(this, CountDownActivity::class.java).apply {
-            putExtra(EXTRA_COURSE_DATA, viewModel.myDrawToRunData.value)
-        })
-    }
-
-    fun addObserver() {
-        setupCourseGetStateObserver()
-        setupCourseDeleteStateObserver()
-    }
-
     private fun setupCourseGetStateObserver() {
-        viewModel.getResult.observe(this) { response ->
-            setTitle(response)
-            setImage(response)
-            setDepartureLatLng(response)
-            setTouchList(response)
-            setPutExtraValue(response)
+        viewModel.courseGetState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val course = state.data
+                    initMyDrawCourseDetail(course)
+                    initExtraDataForRunning(course)
+                }
+
+                is UiStateV2.Failure -> {
+                    showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg
+                    )
+                }
+
+                else -> {}
+            }
         }
     }
 
-    private fun setTitle(src: ResponseGetMyDrawDetail) {
-        binding.tvMyDrawTitle.text = src.data.course.title
+    private fun initMyDrawCourseDetail(course: MyDrawCourseDetail) {
+        setImage(course)
+        setDistance(course)
+        setDepartureLatLng(course)
+        setTouchList(course)
     }
 
-    private fun setImage(src: ResponseGetMyDrawDetail) {
+    private fun setImage(course: MyDrawCourseDetail) {
         with(binding) {
             Glide.with(ivMyDrawDetail.context)
-                .load(src.data.course.image.toUri())
+                .load(course.imgUrl)
                 .centerCrop()
                 .into(ivMyDrawDetail)
-            tvCourseDistanceRecord.text = src.data.course.distance.toString()
         }
     }
 
-    private fun setDepartureLatLng(src: ResponseGetMyDrawDetail) {
-        departureLatLng =
-            LatLng(src.data.course.path[0][0], src.data.course.path[0][1])
-        Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
+    private fun setDistance(course: MyDrawCourseDetail) {
+        binding.tvCourseDistanceRecord.text = course.distance.toString()
     }
 
-    private fun setTouchList(src: ResponseGetMyDrawDetail) {
-        for (i in 1 until src.data.course.path.size) {
-            touchList.add(LatLng(src.data.course.path[i][0], src.data.course.path[i][1]))
+    private fun setDepartureLatLng(course: MyDrawCourseDetail) {
+        departureLatLng = LatLng(course.path[0][0], course.path[0][1])
+    }
+
+    private fun setTouchList(course: MyDrawCourseDetail) {
+        for (i in 1 until course.path.size) {
+            touchList.add(LatLng(course.path[i][0], course.path[i][1]))
         }
     }
 
-    private fun setPutExtraValue(src: ResponseGetMyDrawDetail) {
-        viewModel.myDrawToRunData.value = CourseData(
-            courseId = src.data.course.id,
+    private fun initExtraDataForRunning(course: MyDrawCourseDetail) {
+        viewModel.extraDataForRunning.value = CourseData(
+            courseId = course.courseId,
             publicCourseId = null,
             touchList = touchList,
             startLatLng = departureLatLng,
-            departure = src.data.course.departure.name,
-            distance = src.data.course.distance,
-            image = src.data.course.image,
-            dataFrom = "fromMyDrawDetail"
+            departure = course.departureName,
+            distance = course.distance,
+            image = course.imgUrl,
+            dataFrom = EXTRA_MY_DRAW_COURSE_DETAIL
         )
     }
 
@@ -245,8 +275,9 @@ class MyDrawDetailActivity :
         private const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         private const val TAG_MY_DRAW_COURSE_DELETE_DIALOG = "MY_DRAW_COURSE_DELETE_DIALOG"
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        const val EXTRA_COURSE_DATA = "CourseData"
-        const val EXTRA_COURSE_ID = "courseId"
+        private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
+        private const val EXTRA_MY_DRAW_COURSE_DETAIL = "fromMyDrawDetail"
+        private const val EXTRA_COURSE_DATA = "CourseData"
+        private const val EXTRA_COURSE_ID = "courseId"
     }
 }

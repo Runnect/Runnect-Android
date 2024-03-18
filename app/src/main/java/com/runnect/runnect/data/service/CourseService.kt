@@ -83,7 +83,7 @@ interface CourseService {
     @GET("/api/course/detail/{courseId}")
     suspend fun getMyDrawDetail(
         @Path("courseId") courseId: Int,
-    ): Response<ResponseGetMyDrawDetail>
+    ): BaseResponse<ResponseGetMyDrawDetail>
 
     //기록 업로드
     @POST("/api/record")

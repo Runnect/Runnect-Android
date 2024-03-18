@@ -16,6 +16,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -37,7 +38,7 @@ interface CourseRepository {
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse>
 
-    suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail>
+    suspend fun getMyDrawDetail(courseId: Int): Result<MyDrawCourseDetail?>
 
     suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory>
 

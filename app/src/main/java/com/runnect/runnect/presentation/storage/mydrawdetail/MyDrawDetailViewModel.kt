@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,34 +17,36 @@ import javax.inject.Inject
 @HiltViewModel
 class MyDrawDetailViewModel @Inject constructor(private val courseRepository: CourseRepository) :
     ViewModel() {
-    val myDrawToRunData = MutableLiveData<CourseData>()
-    val getResult = MutableLiveData<ResponseGetMyDrawDetail>()
-    var isNowUser: Boolean = true
+    private val _courseGetState = MutableLiveData<UiStateV2<MyDrawCourseDetail>>()
+    val courseGetState: LiveData<UiStateV2<MyDrawCourseDetail>>
+        get() = _courseGetState
+
     private val _courseDeleteState = MutableLiveData<UiStateV2<Unit>>()
     val courseDeleteState: LiveData<UiStateV2<Unit>>
         get() = _courseDeleteState
 
+    private val _myDrawCourseDetail = MutableLiveData<MyDrawCourseDetail>()
+    val myDrawCourseDetail get() = _myDrawCourseDetail
+
+    val extraDataForRunning = MutableLiveData<CourseData>()
+
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
-            runCatching {
-                courseRepository.getMyDrawDetail(
-                    courseId = courseId
-                )
-            }.onSuccess { response ->
-                val responseBody = response.body()
-                if (responseBody == null) {
-                    Timber.e("get my draw course response is null")
+            courseRepository.getMyDrawDetail(
+                courseId = courseId
+            ).onSuccess { response ->
+                if (response == null) {
+                    _courseGetState.value = UiStateV2.Failure("MyDrawCourseDetail is null")
                     return@launch
                 }
 
-                responseBody.let {
-                    Timber.d("$responseBody")
-                    getResult.value = it
-                    isNowUser = it.data.course.isNowUser
-                }
+                Timber.d("SUCCESS GET MY DRAW COURSE")
+                _courseGetState.value = UiStateV2.Success(response)
 
+                response.let { _myDrawCourseDetail.value = it }
             }.onFailure { t ->
-                Timber.e("${t.message}")
+                Timber.e("FAIL GET MY DRAW COURSE")
+                _courseGetState.value = UiStateV2.Failure(t.message.toString())
             }
         }
     }
