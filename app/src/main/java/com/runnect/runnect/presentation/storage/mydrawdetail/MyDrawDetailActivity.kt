@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
@@ -177,13 +178,19 @@ class MyDrawDetailActivity :
     private fun setupCourseGetStateObserver() {
         viewModel.courseGetState.observe(this) { state ->
             when (state) {
+                is UiStateV2.Loading -> {
+                    showLoadingProgressBar()
+                }
+
                 is UiStateV2.Success -> {
                     val course = state.data
                     initMyDrawCourseDetail(course)
                     initExtraDataForRunning(course)
+                    dismissLoadingProgressBar()
                 }
 
                 is UiStateV2.Failure -> {
+                    dismissLoadingProgressBar()
                     showSnackbar(
                         anchorView = binding.root,
                         message = state.msg
@@ -193,6 +200,16 @@ class MyDrawDetailActivity :
                 else -> {}
             }
         }
+    }
+
+    private fun showLoadingProgressBar() {
+        binding.pbMyDrawDetail.isVisible = true
+        binding.ivMyDrawDetail.isVisible = false
+    }
+
+    private fun dismissLoadingProgressBar() {
+        binding.pbMyDrawDetail.isVisible = false
+        binding.ivMyDrawDetail.isVisible = true
     }
 
     private fun initMyDrawCourseDetail(course: MyDrawCourseDetail) {
