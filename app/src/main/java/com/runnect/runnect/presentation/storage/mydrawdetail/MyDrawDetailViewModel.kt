@@ -26,8 +26,12 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
         get() = _courseDeleteState
 
     val extraDataForRunning = MutableLiveData<CourseData>()
-    private var _isNowUser = false
+
+    private var _isNowUser = true
     val isNowUser get() = _isNowUser
+
+    private var _courseTitle = ""
+    val courseTitle get() = _courseTitle
 
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
@@ -41,7 +45,9 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
 
                 Timber.d("SUCCESS GET MY DRAW COURSE")
                 _courseGetState.value = UiStateV2.Success(response)
+
                 _isNowUser = response.isNowUser
+                _courseTitle = response.title
             }.onFailure { t ->
                 Timber.e("FAIL GET MY DRAW COURSE")
                 _courseGetState.value = UiStateV2.Failure(t.message.toString())
@@ -65,5 +71,9 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                 _courseDeleteState.value = UiStateV2.Failure(t.message.toString())
             }
         }
+    }
+
+    fun updateCourseTitle(title: String) {
+        _courseTitle = title
     }
 }

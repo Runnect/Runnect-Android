@@ -2,30 +2,33 @@ package com.runnect.runnect.presentation.storage.mydrawdetail
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.core.view.get
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
+import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
-import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toolbar.CommonToolbarLayout
 import com.runnect.runnect.util.custom.toolbar.ToolbarMenu
 import com.runnect.runnect.util.extension.PermissionUtil
+import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
@@ -246,7 +249,7 @@ class MyDrawDetailActivity :
                 ),
                 menuItemClickListener = { _, _, pos ->
                     when (pos) {
-                        0 -> showTitleEditBottomSheet()
+                        0 -> createTitleEditBottomSheet().show()
                         1 -> showCourseDeleteDialog()
                     }
                 }
@@ -254,8 +257,33 @@ class MyDrawDetailActivity :
         )
     }
 
-    private fun showTitleEditBottomSheet() {
-        // todo: 코스 제목 수정하기
+    private fun createTitleEditBottomSheet(): BottomSheetDialog {
+        val bottomSheetBinding = BottomsheetRequireCourseNameBinding.inflate(layoutInflater)
+        val bottomSheetView = bottomSheetBinding.root
+        val etCourseTitle = bottomSheetBinding.etCourseName
+        val btnComplete = bottomSheetBinding.btnCreateCourse
+
+        etCourseTitle.addTextChangedListener { title ->
+            val isValidTitle = !title.isNullOrEmpty()
+            with(btnComplete) {
+                setBackgroundResource(if (isValidTitle) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
+                isEnabled = isValidTitle
+            }
+            viewModel.updateCourseTitle(if (isValidTitle) title.toString() else "")
+        }
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        btnComplete.setOnClickListener {
+            val textMenu = toolbarBinding.llLeftMenu[1] as? TextView
+            textMenu?.text = viewModel.courseTitle
+
+            hideKeyboard(etCourseTitle)
+            bottomSheetDialog.dismiss()
+        }
+
+        return bottomSheetDialog
     }
 
     private fun showCourseDeleteDialog() {
