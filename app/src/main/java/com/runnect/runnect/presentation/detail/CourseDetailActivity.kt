@@ -22,6 +22,7 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.navigator.base.Extras
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
@@ -98,7 +99,7 @@ class CourseDetailActivity :
         intent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)?.let {
             rootScreen = it
         }
-        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, -1)
+        publicCourseId = intent.getIntExtra(Extras.PUBLIC_COURSE_ID,-1)
         Timber.tag("intent-publicCourseId").d("$publicCourseId")
     }
 
@@ -167,7 +168,11 @@ class CourseDetailActivity :
         intent?.let { newIntent ->
             newIntent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)
                 ?.let { rootScreen = it }
-            publicCourseId = newIntent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, -1)
+
+            publicCourseId = newIntent.getIntExtra(
+                Extras.PUBLIC_COURSE_ID,
+                -1
+            )
             getCourseDetail()
         }
     }
@@ -620,7 +625,6 @@ class CourseDetailActivity :
         private const val RES_STAMP_TYPE = "drawable"
 
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
-        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_COURSE_DATA = "CourseData"
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
