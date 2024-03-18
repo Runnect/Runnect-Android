@@ -59,15 +59,17 @@ class StorageMyDrawAdapter(
 
     inner class ItemViewHolder(val binding: ItemStorageMyDrawBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(courseList: MyDrawCourse) {
+        fun bind(course: MyDrawCourse) {
             with(binding) {
                 selectedBoxes?.add(ivCheckbox)
-
-                storageItem = courseList
+                storageItem = course
 
                 ivMyPageUploadCourseSelectBackground.setOnClickListener {
-                    val isEditMode = onMyDrawItemClick.selectItem(courseList.courseId!!)
-                    Timber.d("isEditMode값 : $isEditMode")
+                    val isEditMode = onMyDrawItemClick.selectItem(
+                        id = course.courseId ?: 0,
+                        title = course.title
+                    )
+
                     if (isEditMode) {
                         if (it.isSelected) {
                             ivCheckbox.isSelected = false

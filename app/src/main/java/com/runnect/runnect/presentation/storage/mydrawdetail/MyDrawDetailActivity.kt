@@ -17,6 +17,7 @@ import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
@@ -29,6 +30,7 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
@@ -38,118 +40,33 @@ class MyDrawDetailActivity :
     private lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
     private val selectList = arrayListOf<Int>()
+    private val courseTitle by lazy { intent.getStringExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.lifecycleOwner = this
 
+        initToolBarLayout()
         getMyDrawDetail()
+
         addListener()
         addObserver()
         registerBackPressedCallback()
     }
 
-    override val toolbarBinding: LayoutCommonToolbarBinding
-        get() = binding.layoutCommonToolbar
-
-    override fun initToolBarLayout() {
-        addMenuTo(
-            CommonToolbarLayout.LEFT,
-            ToolbarMenu.Icon(
-                resourceId = R.drawable.all_back_arrow,
-                clickEvent = {
-                    navigateToPreviousScreenWithAnimation()
-                }
-            ),
-            ToolbarMenu.Text(
-                titleText = viewModel.myDrawCourseDetail.value?.title,
-                padding = 0,
-                textSize = 15,
-                fontRes = R.font.pretendard_medium
-            )
-        )
-    }
-
     private fun getMyDrawDetail() {
-        val courseId = intent.getIntExtra(EXTRA_COURSE_ID, 0)
+        val courseId = intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0)
         selectList.add(courseId)
         viewModel.getMyDrawDetail(courseId)
     }
 
     private fun addListener() {
-        initBackButtonClickListener()
-        initMoreButtonClickListener()
         initRunningButtonClickListener()
     }
 
     fun addObserver() {
         setupCourseGetStateObserver()
         setupCourseDeleteStateObserver()
-    }
-
-    private fun initBackButtonClickListener() {
-//        binding.ivMyDrawBack.setOnClickListener {
-//            navigateToPreviousScreenWithAnimation()
-//        }
-    }
-
-    private fun initMoreButtonClickListener() {
-//        binding.ivMyDrawMore.setOnClickListener { view ->
-//            val isNowUser = viewModel.myDrawCourseDetail.value?.isNowUser
-//            if (isNowUser == true) {
-//                showEditDeletePopupMenu(view)
-//            } else {
-//                showReportPopupMenu(view)
-//            }
-//        }
-    }
-
-    private fun showEditDeletePopupMenu(anchorView: View) {
-        val popupItems = listOf(
-            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
-            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
-        )
-
-        RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
-            when (pos) {
-                0 -> showTitleEditBottomSheet()
-                1 -> showCourseDeleteDialog()
-            }
-        }.apply {
-            showCustomPosition(anchorView)
-        }
-    }
-
-    private fun showTitleEditBottomSheet() {
-
-    }
-
-    private fun showCourseDeleteDialog() {
-        val dialog = CommonDialogFragment.newInstance(
-            CommonDialogText(
-                getString(R.string.dialog_my_upload_course_detail_delete_desc),
-                getString(R.string.dialog_course_detail_delete_no),
-                getString(R.string.dialog_course_detail_delete_yes)
-            ),
-            onNegativeButtonClicked = {},
-            onPositiveButtonClicked = { viewModel.deleteMyDrawCourse(selectList) }
-        )
-        dialog.show(supportFragmentManager, TAG_MY_DRAW_COURSE_DELETE_DIALOG)
-    }
-
-    private fun showReportPopupMenu(anchorView: View) {
-        val popupItems = listOf(
-            PopupItem(
-                R.drawable.ic_detail_more_report,
-                getString(R.string.popup_menu_item_report)
-            )
-        )
-
-        RunnectPopupMenu(anchorView.context, popupItems) { _, _, _ ->
-            showWebBrowser(REPORT_URL)
-        }.apply {
-            showCustomPosition(anchorView)
-        }
     }
 
     private fun initRunningButtonClickListener() {
@@ -279,6 +196,102 @@ class MyDrawDetailActivity :
         }
     }
 
+    override val toolbarBinding: LayoutCommonToolbarBinding
+        get() = binding.layoutCommonToolbar
+
+    override fun initToolBarLayout() {
+        addMenuTo(
+            CommonToolbarLayout.LEFT,
+            ToolbarMenu.Icon(
+                resourceId = R.drawable.all_back_arrow,
+                clickEvent = {
+                    navigateToPreviousScreenWithAnimation()
+                }
+            ),
+            ToolbarMenu.Text(
+                titleText = courseTitle,
+                padding = 0,
+                textSize = 18,
+                fontRes = R.font.pretendard_bold
+            )
+        )
+
+        addMenuTo(
+            CommonToolbarLayout.RIGHT,
+            ToolbarMenu.Icon(
+                resourceId = R.drawable.ic_share,
+                clickEvent = {
+                    // todo: 카톡으로 공유하기
+                }
+            ),
+            ToolbarMenu.Popup(
+                resourceId = R.drawable.showmorebtn,
+                popupItems = listOf(
+                    PopupItem(
+                        R.drawable.ic_detail_more_edit,
+                        getString(R.string.popup_menu_item_edit)
+                    ),
+                    PopupItem(
+                        R.drawable.ic_detail_more_delete,
+                        getString(R.string.popup_menu_item_delete)
+                    )
+                ),
+                menuItemClickListener = { _, _, pos ->
+                    when (pos) {
+                        0 -> showTitleEditBottomSheet()
+                        1 -> showCourseDeleteDialog()
+                    }
+                }
+            )
+        )
+    }
+
+    private fun showTitleEditBottomSheet() {}
+
+    private fun showEditDeletePopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(R.drawable.ic_detail_more_edit, getString(R.string.popup_menu_item_edit)),
+            PopupItem(R.drawable.ic_detail_more_delete, getString(R.string.popup_menu_item_delete))
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, pos ->
+            when (pos) {
+                0 -> showTitleEditBottomSheet()
+                1 -> showCourseDeleteDialog()
+            }
+        }.apply {
+            showCustomPosition(anchorView)
+        }
+    }
+
+    private fun showCourseDeleteDialog() {
+        val dialog = CommonDialogFragment.newInstance(
+            CommonDialogText(
+                getString(R.string.dialog_my_upload_course_detail_delete_desc),
+                getString(R.string.dialog_course_detail_delete_no),
+                getString(R.string.dialog_course_detail_delete_yes)
+            ),
+            onNegativeButtonClicked = {},
+            onPositiveButtonClicked = { viewModel.deleteMyDrawCourse(selectList) }
+        )
+        dialog.show(supportFragmentManager, TAG_MY_DRAW_COURSE_DELETE_DIALOG)
+    }
+
+    private fun showReportPopupMenu(anchorView: View) {
+        val popupItems = listOf(
+            PopupItem(
+                R.drawable.ic_detail_more_report,
+                getString(R.string.popup_menu_item_report)
+            )
+        )
+
+        RunnectPopupMenu(anchorView.context, popupItems) { _, _, _ ->
+            showWebBrowser(REPORT_URL)
+        }.apply {
+            showCustomPosition(anchorView)
+        }
+    }
+
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -295,6 +308,5 @@ class MyDrawDetailActivity :
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         private const val EXTRA_MY_DRAW_COURSE_DETAIL = "fromMyDrawDetail"
         private const val EXTRA_COURSE_DATA = "CourseData"
-        private const val EXTRA_COURSE_ID = "courseId"
     }
 }

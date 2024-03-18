@@ -25,9 +25,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
     val courseDeleteState: LiveData<UiStateV2<Unit>>
         get() = _courseDeleteState
 
-    private val _myDrawCourseDetail = MutableLiveData<MyDrawCourseDetail>()
-    val myDrawCourseDetail get() = _myDrawCourseDetail
-
     val extraDataForRunning = MutableLiveData<CourseData>()
 
     fun getMyDrawDetail(courseId: Int) {
@@ -42,8 +39,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
 
                 Timber.d("SUCCESS GET MY DRAW COURSE")
                 _courseGetState.value = UiStateV2.Success(response)
-
-                response.let { _myDrawCourseDetail.value = it }
             }.onFailure { t ->
                 Timber.e("FAIL GET MY DRAW COURSE")
                 _courseGetState.value = UiStateV2.Failure(t.message.toString())

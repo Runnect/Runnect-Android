@@ -26,6 +26,7 @@ import com.runnect.runnect.util.analytics.EventName.EVENT_MY_STORAGE_TRY_REMOVE
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.setFragmentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
@@ -332,17 +333,14 @@ class StorageMyDrawFragment :
         btnDeleteCourseMain.isEnabled = isEnabled
     }
 
-    override fun selectItem(id: Int): Boolean {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : $id")
-
+    override fun selectItem(id: Int, title: String): Boolean {
         return if (!isSelectAvailable) {
-            val intent = Intent(activity, MyDrawDetailActivity::class.java)
-            intent.putExtra(EXTRA_COURSE_ID, id)
-            startActivity(intent)
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
+            Intent(context, MyDrawDetailActivity::class.java).apply {
+                putExtra(EXTRA_COURSE_ID, id)
+                putExtra(EXTRA_COURSE_TITLE, title)
+                startActivity(this)
+            }
+            activity?.applyScreenEnterAnimation()
             false
         } else {
             viewModel.modifyItemsToDelete(id)
@@ -356,6 +354,7 @@ class StorageMyDrawFragment :
 
     companion object {
         const val EXTRA_COURSE_ID = "courseId"
+        const val EXTRA_COURSE_TITLE = "courseTitle"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
         const val EDIT_MODE = "선택"
     }
