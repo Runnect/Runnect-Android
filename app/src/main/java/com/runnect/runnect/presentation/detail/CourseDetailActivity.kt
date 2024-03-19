@@ -108,7 +108,9 @@ class CourseDetailActivity :
                 val deepLink: Uri? = pendingDynamicLinkData?.link
                 if (deepLink != null) {
                     isFromDeepLink = true
-                    publicCourseId = deepLink.getQueryParameter(RunnectDynamicLink.KEY_PUBLIC_COURSE_ID)?.toInt() ?: -1
+                    publicCourseId =
+                        deepLink.getQueryParameter(RunnectDynamicLink.KEY_PUBLIC_COURSE_ID)?.toInt()
+                            ?: -1
                     if (publicCourseId != -1) {
                         Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
                         completion(true)
@@ -234,13 +236,16 @@ class CourseDetailActivity :
     }
 
     private fun sendFirebaseDynamicLink(title: String, desc: String, image: String) {
-        val link = "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PUBLIC_COURSE_ID}=$publicCourseId"
+        val link =
+            "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PUBLIC_COURSE_ID}=$publicCourseId"
 
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse(link))
             .setDomainUriPrefix(RunnectDynamicLink.BASE_URL)
             .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-            .setIosParameters(DynamicLink.IosParameters.Builder(RunnectDynamicLink.IOS_BUNDLE_ID).build())
+            .setIosParameters(
+                DynamicLink.IosParameters.Builder(RunnectDynamicLink.IOS_BUNDLE_ID).build()
+            )
             .setSocialMetaTagParameters(
                 DynamicLink.SocialMetaTagParameters.Builder()
                     .setTitle(title)
