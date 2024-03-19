@@ -70,6 +70,7 @@ class MyDrawDetailActivity :
         }
     }
 
+    // todo: 링크를 클릭했을 때 매번 코스 발견 상세 페이지로 넘어가는 이슈 (내가 그린 코스 상세 페이지여야 하는데)
     private fun updateCourseIdFromDynamicLink(onResult: (Boolean) -> Unit) {
         FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
             .addOnSuccessListener(this) { pendingData ->
@@ -77,7 +78,6 @@ class MyDrawDetailActivity :
                 if (linkUri != null) {
                     isFromDynamicLink = true
                     courseId = linkUri.getQueryParameter(RunnectDynamicLink.KEY_PRIVATE_COURSE_ID)?.toInt() ?: -1
-
                     if (courseId != -1) {
                         onResult(true)
                         return@addOnSuccessListener
@@ -303,8 +303,6 @@ class MyDrawDetailActivity :
         if (isFromDynamicLink) {
             if (myDrawCourseDetail.isNowUser) {
                 addShareEditDeleteMenu()
-            } else {
-                addReportMenu()
             }
             return
         }
@@ -367,6 +365,7 @@ class MyDrawDetailActivity :
             )
             .buildShortDynamicLink()
             .addOnSuccessListener { result ->
+                Timber.d("shortLink: ${result.shortLink}")
                 shareDynamicLink(result.shortLink.toString())
             }
             .addOnFailureListener { t ->
