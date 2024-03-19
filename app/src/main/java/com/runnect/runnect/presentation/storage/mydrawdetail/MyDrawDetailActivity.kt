@@ -142,7 +142,6 @@ class MyDrawDetailActivity :
 
                 is UiStateV2.Success -> {
                     myDrawCourseDetail = state.data
-
                     initToolBarLayout()
                     initMyDrawCourseDetail(myDrawCourseDetail)
                     initExtraDataForRunning(myDrawCourseDetail)
@@ -389,6 +388,7 @@ class MyDrawDetailActivity :
         val etCourseTitle = bottomSheetBinding.etCourseName
         val btnComplete = bottomSheetBinding.btnCreateCourse
 
+        etCourseTitle.setText(myDrawCourseDetail.title)
         etCourseTitle.addTextChangedListener { title ->
             val isValidTitle = !title.isNullOrBlank()
             with(btnComplete) {
