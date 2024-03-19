@@ -285,9 +285,14 @@ class MyDrawDetailActivity :
     }
 
     private fun addRightMenu() {
-        if (!isFromDynamicLink) {
-            addShareEditDeleteMenu()
+        if (isFromDynamicLink) {
+            if (myDrawCourseDetail.isNowUser) {
+                addShareEditDeleteMenu()
+            }
+            return
         }
+
+        addShareEditDeleteMenu()
     }
 
     private fun addShareEditDeleteMenu() {
