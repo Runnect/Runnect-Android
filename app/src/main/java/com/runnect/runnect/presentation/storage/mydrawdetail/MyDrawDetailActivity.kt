@@ -249,6 +249,7 @@ class MyDrawDetailActivity :
                 is UiStateV2.Success -> {
                     val textMenu = toolbarBinding.llLeftMenu[1] as? TextView
                     textMenu?.text = state.data.title
+                    showToast(getString(R.string.my_draw_detail_update_title_success_msg))
                 }
 
                 is UiStateV2.Failure -> {
