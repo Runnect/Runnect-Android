@@ -190,14 +190,14 @@ class CourseDetailActivity :
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    private inline fun <reified E : Activity> setActivityResult() {
+    private inline fun <reified T : Activity> setActivityResult() {
         val updatedCourse = EditableDiscoverCourse(
             title = viewModel.title,
             scrap = binding.ivCourseDetailScrap.isSelected,
             isDeleted = viewModel.courseDeleteState.value is UiStateV2.Success
         )
 
-        Intent(this@CourseDetailActivity, E::class.java).apply {
+        Intent(this@CourseDetailActivity, T::class.java).apply {
             putExtra(EXTRA_EDITABLE_DISCOVER_COURSE, updatedCourse)
             setResult(RESULT_OK, this)
         }

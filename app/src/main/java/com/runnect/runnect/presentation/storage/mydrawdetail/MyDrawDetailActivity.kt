@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.storage.mydrawdetail
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -8,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
@@ -17,9 +19,12 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
+import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.discover.DiscoverFragment
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
@@ -34,6 +39,7 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
@@ -43,6 +49,7 @@ class MyDrawDetailActivity :
     private lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
     private val selectList = arrayListOf<Int>()
+    private val courseId by lazy { intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0) }
     private val courseTitle by lazy { intent.getStringExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +64,6 @@ class MyDrawDetailActivity :
     }
 
     private fun getMyDrawDetail() {
-        val courseId = intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0)
         selectList.add(courseId)
         viewModel.getMyDrawDetail(courseId)
     }
@@ -69,6 +75,7 @@ class MyDrawDetailActivity :
     fun addObserver() {
         setupCourseGetStateObserver()
         setupCourseDeleteStateObserver()
+        setupCoursePatchStateObserver()
     }
 
     private fun initRunningButtonClickListener() {
@@ -122,14 +129,14 @@ class MyDrawDetailActivity :
     }
 
     private fun showLoadingProgressBar() {
-        with(binding){
+        with(binding) {
             pbMyDrawDetail.isVisible = true
             ivMyDrawDetail.isVisible = false
         }
     }
 
     private fun dismissLoadingProgressBar() {
-        with(binding){
+        with(binding) {
             pbMyDrawDetail.isVisible = false
             ivMyDrawDetail.isVisible = true
         }
@@ -188,6 +195,26 @@ class MyDrawDetailActivity :
                         startActivity(this)
                     }
                     navigateToPreviousScreenWithAnimation()
+                }
+
+                is UiStateV2.Failure -> {
+                    showSnackbar(
+                        anchorView = binding.root,
+                        message = state.msg
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun setupCoursePatchStateObserver() {
+        viewModel.coursePatchState.observe(this) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val textMenu = toolbarBinding.llLeftMenu[1] as? TextView
+                    textMenu?.text = state.data.title
                 }
 
                 is UiStateV2.Failure -> {
@@ -267,7 +294,7 @@ class MyDrawDetailActivity :
         val btnComplete = bottomSheetBinding.btnCreateCourse
 
         etCourseTitle.addTextChangedListener { title ->
-            val isValidTitle = !title.isNullOrEmpty()
+            val isValidTitle = !title.isNullOrBlank()
             with(btnComplete) {
                 setBackgroundResource(if (isValidTitle) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)
                 isEnabled = isValidTitle
@@ -279,9 +306,7 @@ class MyDrawDetailActivity :
         bottomSheetDialog.setContentView(bottomSheetView)
 
         btnComplete.setOnClickListener {
-            val textMenu = toolbarBinding.llLeftMenu[1] as? TextView
-            textMenu?.text = viewModel.courseTitle
-
+            viewModel.patchCourseTitle(courseId)
             hideKeyboard(etCourseTitle)
             bottomSheetDialog.dismiss()
         }

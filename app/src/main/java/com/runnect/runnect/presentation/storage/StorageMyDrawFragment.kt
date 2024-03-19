@@ -20,6 +20,7 @@ import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.storage.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_MY_STORAGE_TRY_REMOVE
@@ -28,6 +29,7 @@ import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.setFragmentDialog
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
 import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
@@ -38,35 +40,42 @@ class StorageMyDrawFragment :
     BindingFragment<FragmentStorageMyDrawBinding>(R.layout.fragment_storage_my_draw),
     OnMyDrawItemClick, ItemCount {
     val viewModel: StorageViewModel by viewModels()
-
-    lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
-
-
-    private val mainActivity: MainActivity by lazy {
-        activity as MainActivity
-    } // 이 변수가 최초 할당 이후 계속 MainActivity를 참조하니까 사용을 안 하는 순간에는 null을 할당해줌으로써 메모리에서 내려줘야 함.
-
-    lateinit var btnDeleteCourseMain: AppCompatButton
-    lateinit var bottomNavMain: BottomNavigationView
-
+    private lateinit var storageMyDrawAdapter: StorageMyDrawAdapter
+    private lateinit var btnDeleteCourseMain: AppCompatButton
+    private lateinit var bottomNavMain: BottomNavigationView
     private lateinit var animDown: Animation
     private lateinit var animUp: Animation
+    private var availableEdit = false
+    private var isSelectAvailable = false
 
-    var availableEdit = false
-    var isSelectAvailable = false
-
+    // 이 변수가 최초 할당 이후 계속 MainActivity 참조 하니까
+    // 사용 안하는 순간에는 null 할당하여 참조 해제시켜줘야 함.
+    private val mainActivity: MainActivity by lazy {
+        activity as MainActivity
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = viewLifecycleOwner
 
         initLayout()
-        binding.lifecycleOwner = requireActivity()
         initAdapter()
-        editCourse()
         getCourse()
-        requireCourse()
+        addListener()
         addObserver()
         pullToRefresh()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (viewModel.clickedCourseId != -1) {
+            viewModel.getMyDrawDetail()
+        }
+    }
+
+    private fun getCourse() {
+        viewModel.getMyDrawList()
     }
 
     private fun pullToRefresh() {
@@ -75,7 +84,6 @@ class StorageMyDrawFragment :
             binding.refreshLayout.isRefreshing = false
         }
     }
-
 
     private fun initLayout() {
         binding.recyclerViewStorageMyDraw
@@ -97,73 +105,33 @@ class StorageMyDrawFragment :
         binding.recyclerViewStorageMyDraw.adapter = storageMyDrawAdapter
     }
 
-
-    fun hideBottomNav() {
-        animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
-
-        bottomNavMain =
-            mainActivity.getBottomNavMain() as BottomNavigationView
-
-        bottomNavMain.startAnimation(animDown)
-        bottomNavMain.isVisible = false
+    private fun addListener() {
+        initCourseDrawButtonClickListener()
+        initCourseEditButtonClickListener()
     }
 
-    fun showBottomNav() {
-        bottomNavMain =
-            mainActivity.getBottomNavMain() as BottomNavigationView
-        bottomNavMain.isVisible = true
+    private fun addObserver() {
+        observeItemSize()
+        observeStorageState()
+        manageSaveDeleteBtnCondition()
+        observeCourseDeleteState()
+        observeCourseDetailGetState()
     }
 
-    private fun hideDeleteCourseBtn() {
-        animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
-
-        btnDeleteCourseMain =
-            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-
-        btnDeleteCourseMain.isVisible = false
-        btnDeleteCourseMain.isEnabled = false
-    }
-
-    private fun showDeleteCourseBtn() {
-        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-
-        btnDeleteCourseMain =
-            mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-
-        btnDeleteCourseMain.isVisible = true
-        btnDeleteCourseMain.isEnabled = true
-
-        btnDeleteCourseMain.setOnClickListener {
-            deletingDialog()
+    private fun initCourseDrawButtonClickListener() {
+        binding.btnStorageNoCourse.setOnClickListener {
+            val intent = Intent(activity, SearchActivity::class.java)
+            intent.putExtra(EXTRA_ROOT_SCREEN, "storageNoScrap")
+            startActivity(intent)
+            requireActivity().overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
     }
-
-    private fun deletingDialog() {
-        val (dialog, dialogLayout) = setFragmentDialog(
-            layoutInflater = layoutInflater,
-            resId = R.layout.custom_dialog_delete,
-            cancel = true
-        )
-
-        with(dialogLayout) {
-            this.btn_delete_yes.setOnClickListener {
-                deleteCourse()
-                dialog.dismiss()
-                availableEdit = false
-                isSelectAvailable = false
-                hideDeleteCourseBtn()
-                showBottomNav()
-            }
-            this.btn_delete_no.setOnClickListener {
-                dialog.dismiss()
-            }
-        }
-        dialog.show()
-    }
-
 
     @SuppressLint("SetTextI18n")
-    private fun editCourse() {
+    private fun initCourseEditButtonClickListener() {
         binding.btnEditCourse.setOnClickListener {
             if (!availableEdit) {
                 enterEditMode()
@@ -173,14 +141,13 @@ class StorageMyDrawFragment :
         }
     }
 
-
     private fun enterEditMode() {
         availableEdit = true
         if (::storageMyDrawAdapter.isInitialized) storageMyDrawAdapter.handleCheckBoxVisibility(
             true
         )
         hideBottomNav()
-        showDeleteCourseBtn()
+        initCourseDeleteButtonClickListener()
         binding.tvTotalCourseCount.text = "코스 선택"
         binding.btnEditCourse.text = "취소"
         isSelectAvailable = true
@@ -205,52 +172,61 @@ class StorageMyDrawFragment :
         showBottomNav()
     }
 
-    private fun observeDeleteState() {
-        viewModel.myDrawCourseDeleteState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> handleSuccessfulUploadDeletion()
-                UiState.Failure -> handleUnsuccessfulUploadCall()
-                else -> binding.indeterminateBar.isVisible = false
-            }
+    private fun showBottomNav() {
+        bottomNavMain = mainActivity.getBottomNavMain() as BottomNavigationView
+        bottomNavMain.isVisible = true
+    }
+
+    private fun hideBottomNav() {
+        animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
+        bottomNavMain = mainActivity.getBottomNavMain() as BottomNavigationView
+        bottomNavMain.startAnimation(animDown)
+        bottomNavMain.isVisible = false
+    }
+
+    private fun initCourseDeleteButtonClickListener() {
+        animUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+        btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+        btnDeleteCourseMain.isVisible = true
+        btnDeleteCourseMain.isEnabled = true
+
+        btnDeleteCourseMain.setOnClickListener {
+            showCourseDeleteConfirmDialog()
         }
     }
 
-    private fun handleSuccessfulUploadDeletion() {
-        Analytics.logClickedItemEvent(EVENT_MY_STORAGE_TRY_REMOVE)
-        binding.indeterminateBar.isVisible = false
-        storageMyDrawAdapter.removeItems(viewModel.itemsToDelete)
-        storageMyDrawAdapter.clearSelection()
-        viewModel.clearItemsToDelete()
+    private fun showCourseDeleteConfirmDialog() {
+        val (dialog, dialogLayout) = setFragmentDialog(
+            layoutInflater = layoutInflater,
+            resId = R.layout.custom_dialog_delete,
+            cancel = true
+        )
+        with(dialogLayout) {
+            this.btn_delete_yes.setOnClickListener {
+                deleteCourse()
+                dialog.dismiss()
+                availableEdit = false
+                isSelectAvailable = false
+                hideDeleteCourseBtn()
+                showBottomNav()
+            }
+            this.btn_delete_no.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
     }
 
-    private fun handleUnsuccessfulUploadCall() {
-        binding.indeterminateBar.isVisible = false
-        Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
-    }
-
-    fun deleteCourse() {
+    private fun deleteCourse() {
         viewModel.deleteMyDrawCourse()
         binding.btnEditCourse.text = EDIT_MODE
     }
 
-    private fun showLoadingBar() {
-        binding.indeterminateBar.isVisible = true
-    }
-
-    private fun hideLoadingBar() {
-        binding.indeterminateBar.isVisible = false
-    }
-
-    private fun updateAdapterData() {
-        storageMyDrawAdapter.submitList(viewModel.myDrawCourses)
-    }
-
-    private fun addObserver() {
-        observeItemSize()
-        observeStorageState()
-        manageSaveDeleteBtnCondition()
-        observeDeleteState()
+    private fun hideDeleteCourseBtn() {
+        animDown = AnimationUtils.loadAnimation(requireActivity(), R.anim.slide_out_down)
+        btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
+        btnDeleteCourseMain.isVisible = false
+        btnDeleteCourseMain.isEnabled = false
     }
 
     @SuppressLint("SetTextI18n")
@@ -281,6 +257,18 @@ class StorageMyDrawFragment :
         }
     }
 
+    private fun showLoadingBar() {
+        binding.indeterminateBar.isVisible = true
+    }
+
+    private fun hideLoadingBar() {
+        binding.indeterminateBar.isVisible = false
+    }
+
+    private fun updateAdapterData() {
+        storageMyDrawAdapter.submitList(viewModel.myDrawCourses)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun showMyDrawResult() {
         val isEmpty = viewModel.myDrawCourses.isEmpty()
@@ -299,42 +287,68 @@ class StorageMyDrawFragment :
         }
     }
 
-    private fun requireCourse() {
-        binding.btnStorageNoCourse.setOnClickListener {
-            val intent = Intent(activity, SearchActivity::class.java)
-            intent.putExtra(EXTRA_ROOT_SCREEN, "storageNoScrap")
-            startActivity(intent)
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
-        }
-    }
-
-    private fun getCourse() {
-        viewModel.getMyDrawList()
-    }
-
     private fun manageSaveDeleteBtnCondition() {
         viewModel.itemsToDeleteLiveData.observe(viewLifecycleOwner) { selectedItems ->
             val count = selectedItems.size
             val deleteBtnText = if (count > 0) "삭제하기($count)" else "삭제하기"
             val deleteBtnColor = if (count > 0) R.color.M1 else R.color.G3
-
             updateDeleteButton(deleteBtnText, deleteBtnColor, count > 0)
         }
     }
 
     private fun updateDeleteButton(text: String, colorResId: Int, isEnabled: Boolean) {
         btnDeleteCourseMain = mainActivity.getBtnDeleteCourseMain() as AppCompatButton
-
         btnDeleteCourseMain.text = text
         btnDeleteCourseMain.setBackgroundColor(ContextCompat.getColor(requireContext(), colorResId))
         btnDeleteCourseMain.isEnabled = isEnabled
     }
 
+    private fun observeCourseDeleteState() {
+        viewModel.myDrawCourseDeleteState.observe(viewLifecycleOwner) {
+            when (it) {
+                UiState.Loading -> binding.indeterminateBar.isVisible = true
+                UiState.Success -> handleSuccessfulUploadDeletion()
+                UiState.Failure -> handleUnsuccessfulUploadCall()
+                else -> binding.indeterminateBar.isVisible = false
+            }
+        }
+    }
+
+    private fun handleSuccessfulUploadDeletion() {
+        Analytics.logClickedItemEvent(EVENT_MY_STORAGE_TRY_REMOVE)
+        binding.indeterminateBar.isVisible = false
+        storageMyDrawAdapter.removeItems(viewModel.itemsToDelete)
+        storageMyDrawAdapter.clearSelection()
+        viewModel.clearItemsToDelete()
+    }
+
+    private fun handleUnsuccessfulUploadCall() {
+        binding.indeterminateBar.isVisible = false
+        Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+    }
+
+    private fun observeCourseDetailGetState() {
+        viewModel.courseDetailGetState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiStateV2.Success -> {
+                    val response = state.data
+                    if (::storageMyDrawAdapter.isInitialized) {
+                        storageMyDrawAdapter.updateCourseTitle(response.courseId, response.title)
+                    }
+                }
+
+                is UiStateV2.Failure -> {
+                    context?.showSnackbar(anchorView = binding.root, message = state.msg)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     override fun selectItem(id: Int, title: String): Boolean {
         return if (!isSelectAvailable) {
+            viewModel.saveClickedCourseId(id)
             Intent(context, MyDrawDetailActivity::class.java).apply {
                 putExtra(EXTRA_COURSE_ID, id)
                 putExtra(EXTRA_COURSE_TITLE, title)
