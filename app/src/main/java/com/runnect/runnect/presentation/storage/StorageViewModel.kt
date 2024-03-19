@@ -45,10 +45,6 @@ class StorageViewModel @Inject constructor(
     val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
-    private val _courseDetailGetState = MutableLiveData<UiStateV2<MyDrawCourseDetail>>()
-    val courseDetailGetState: LiveData<UiStateV2<MyDrawCourseDetail>>
-        get() = _courseDetailGetState
-
     val errorMessage = MutableLiveData<String>()
     val itemSize = MutableLiveData<Int>()
     val myDrawSize = MutableLiveData<Int>()
@@ -137,25 +133,6 @@ class StorageViewModel @Inject constructor(
                 .onFailure { t ->
                     Timber.e("${t.message}")
                     _courseScrapState.value = UiStateV2.Failure(t.message.toString())
-                }
-        }
-    }
-
-    fun getMyDrawDetail() {
-        viewModelScope.launch {
-            courseRepository.getMyDrawDetail(clickedCourseId)
-                .onSuccess { response ->
-                    if (response == null) {
-                        _courseDetailGetState.value = UiStateV2.Failure("MY DRAW COURSE DETAIL IS NULL")
-                        return@launch
-                    }
-
-                    Timber.d("SUCCESS GET MY DRAW COURSE DETAIL")
-                    _courseDetailGetState.value = UiStateV2.Success(response)
-                }
-                .onFailure { t ->
-                    Timber.e("FAIL GET MY DRAW COURSE DETAIL")
-                    _courseDetailGetState.value = UiStateV2.Failure(t.message.toString())
                 }
         }
     }

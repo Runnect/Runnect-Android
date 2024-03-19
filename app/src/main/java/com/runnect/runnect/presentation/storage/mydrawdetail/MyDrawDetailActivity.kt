@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.naver.maps.geometry.LatLng
@@ -19,12 +18,9 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityMyDrawDetailBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
-import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
-import com.runnect.runnect.presentation.discover.DiscoverFragment
-import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
@@ -39,7 +35,6 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
@@ -243,6 +238,7 @@ class MyDrawDetailActivity :
             ToolbarMenu.Icon(
                 resourceId = R.drawable.all_back_arrow,
                 clickEvent = {
+                    setActivityResult<MainActivity>()
                     navigateToPreviousScreenWithAnimation()
                 }
             ),
@@ -263,6 +259,7 @@ class MyDrawDetailActivity :
                 resourceId = R.drawable.ic_share,
                 clickEvent = {
                     // todo: 카톡으로 공유하기
+
                 }
             ),
             ToolbarMenu.Popup(
@@ -350,10 +347,18 @@ class MyDrawDetailActivity :
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                setActivityResult<MainActivity>()
                 navigateToPreviousScreenWithAnimation()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private inline fun <reified T : Activity> setActivityResult() {
+        Intent(this, T::class.java).apply {
+            putExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE, viewModel.courseTitle)
+            setResult(RESULT_OK, this)
+        }
     }
 
     companion object {

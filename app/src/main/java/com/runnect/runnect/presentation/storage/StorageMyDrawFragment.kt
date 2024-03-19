@@ -1,12 +1,14 @@
 package com.runnect.runnect.presentation.storage
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -17,6 +19,8 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentStorageMyDrawBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.discover.DiscoverFragment
+import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.storage.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -28,6 +32,7 @@ import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.setFragmentDialog
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +59,18 @@ class StorageMyDrawFragment :
         activity as MainActivity
     }
 
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val title = result.data?.getStringExtra(EXTRA_COURSE_TITLE)
+                    ?: return@registerForActivityResult
+
+                if (::storageMyDrawAdapter.isInitialized) {
+                    storageMyDrawAdapter.updateCourseTitle(viewModel.clickedCourseId, title)
+                }
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -64,14 +81,6 @@ class StorageMyDrawFragment :
         addListener()
         addObserver()
         pullToRefresh()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (viewModel.clickedCourseId != -1) {
-            viewModel.getMyDrawDetail()
-        }
     }
 
     private fun getCourse() {
@@ -115,7 +124,6 @@ class StorageMyDrawFragment :
         observeStorageState()
         manageSaveDeleteBtnCondition()
         observeCourseDeleteState()
-        observeCourseDetailGetState()
     }
 
     private fun initCourseDrawButtonClickListener() {
@@ -327,32 +335,13 @@ class StorageMyDrawFragment :
         Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
     }
 
-    private fun observeCourseDetailGetState() {
-        viewModel.courseDetailGetState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStateV2.Success -> {
-                    val response = state.data
-                    if (::storageMyDrawAdapter.isInitialized) {
-                        storageMyDrawAdapter.updateCourseTitle(response.courseId, response.title)
-                    }
-                }
-
-                is UiStateV2.Failure -> {
-                    context?.showSnackbar(anchorView = binding.root, message = state.msg)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
     override fun selectItem(id: Int, title: String): Boolean {
         return if (!isSelectAvailable) {
             viewModel.saveClickedCourseId(id)
             Intent(context, MyDrawDetailActivity::class.java).apply {
                 putExtra(EXTRA_COURSE_ID, id)
                 putExtra(EXTRA_COURSE_TITLE, title)
-                startActivity(this)
+                resultLauncher.launch(this)
             }
             activity?.applyScreenEnterAnimation()
             false
