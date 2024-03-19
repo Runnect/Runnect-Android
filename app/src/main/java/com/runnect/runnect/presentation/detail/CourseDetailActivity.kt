@@ -44,6 +44,7 @@ import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
@@ -233,13 +234,13 @@ class CourseDetailActivity :
     }
 
     private fun sendFirebaseDynamicLink(title: String, desc: String, image: String) {
-        val link = "https://rnnt.page.link/?courseId=$publicCourseId"
+        val link = "${RunnectDynamicLink.BASE_URL}/?courseId=$publicCourseId"
 
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse(link))
-            .setDomainUriPrefix("https://rnnt.page.link")
+            .setDomainUriPrefix(RunnectDynamicLink.BASE_URL)
             .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-            .setIosParameters(DynamicLink.IosParameters.Builder("com.runnect.Runnect-iOS").build())
+            .setIosParameters(DynamicLink.IosParameters.Builder(RunnectDynamicLink.IOS_BUNDLE_ID).build())
             .setSocialMetaTagParameters(
                 DynamicLink.SocialMetaTagParameters.Builder()
                     .setTitle(title)
@@ -259,10 +260,10 @@ class CourseDetailActivity :
 
     private fun shareLink(url: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
+            type = RunnectDynamicLink.SEND_INTENT_MIME_TYPE
             putExtra(Intent.EXTRA_TEXT, url)
         }
-        startActivity(Intent.createChooser(intent, "Share Link"))
+        startActivity(Intent.createChooser(intent, RunnectDynamicLink.INTENT_CHOOSER_TITLE))
     }
 
     private fun initShowMoreButtonClickListener() {
