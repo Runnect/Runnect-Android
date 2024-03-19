@@ -108,9 +108,8 @@ class CourseDetailActivity :
                 val deepLink: Uri? = pendingDynamicLinkData?.link
                 if (deepLink != null) {
                     isFromDeepLink = true
-                    publicCourseId =
-                        deepLink.getQueryParameter(RunnectDynamicLink.KEY_PUBLIC_COURSE_ID)?.toInt()
-                            ?: -1
+                    publicCourseId = deepLink.getQueryParameter(RunnectDynamicLink.KEY_PUBLIC_COURSE_ID)?.toInt() ?: -1
+
                     if (publicCourseId != -1) {
                         Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
                         completion(true)

@@ -33,9 +33,8 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
 
     val extraDataForRunning = MutableLiveData<CourseData>()
 
-    private val _myDrawCourseDetail = MutableLiveData<MyDrawCourseDetail?>()
-    val myDrawCourseDetail: LiveData<MyDrawCourseDetail?>
-        get() = _myDrawCourseDetail
+    private var _courseTitle = ""
+    val courseTitle get() = _courseTitle
 
     fun getMyDrawDetail(courseId: Int) {
         viewModelScope.launch {
@@ -49,7 +48,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
 
                 Timber.d("SUCCESS GET MY DRAW COURSE")
                 _courseGetState.value = UiStateV2.Success(response)
-                _myDrawCourseDetail.value = response
+                _courseTitle = response.title
             }.onFailure { t ->
                 Timber.e("FAIL GET MY DRAW COURSE")
                 _courseGetState.value = UiStateV2.Failure(t.message.toString())
@@ -77,8 +76,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
 
     fun patchCourseTitle(courseId: Int) {
         viewModelScope.launch {
-            val course = myDrawCourseDetail.value ?: return@launch
-            courseRepository.patchMyDrawCourseTitle(courseId, RequestPatchMyDrawCourseTitle(course.title))
+            courseRepository.patchMyDrawCourseTitle(courseId, RequestPatchMyDrawCourseTitle(courseTitle))
                 .onSuccess { response ->
                     if(response == null){
                         _coursePatchState.value = UiStateV2.Failure("PATCH MY DRAW COURSE RESPONSE IS NULL")
@@ -96,6 +94,6 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
     }
 
     fun updateCourseTitle(title: String) {
-        myDrawCourseDetail.value?.title = title
+        _courseTitle = title
     }
 }

@@ -47,38 +47,52 @@ class MyDrawDetailActivity :
     BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail),
     CommonToolbarLayout {
     val viewModel: MyDrawDetailViewModel by viewModels()
+    private lateinit var myDrawCourseDetail: MyDrawCourseDetail
     private lateinit var departureLatLng: LatLng
     private val touchList = arrayListOf<LatLng>()
     private val selectList = arrayListOf<Int>()
-    private val courseId by lazy { intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0) }
-    private val courseTitle by lazy { intent.getStringExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE) }
-    private var courseIdFromDynamicLink = -1
+    private var courseId = -1
+    private var isFromDynamicLink = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.lifecycleOwner = this
 
-        checkDynamicLink()
-        initToolBarLayout()
-        getMyDrawDetail()
-        addListener()
-        addObserver()
-        registerBackPressedCallback()
+        updateCourseIdFromDynamicLink { isFromDynamicLink ->
+            if (!isFromDynamicLink) {
+                initCourseIdFromExtra()
+            }
+
+            getMyDrawDetail()
+            addListener()
+            addObserver()
+            registerBackPressedCallback()
+        }
     }
 
-    private fun checkDynamicLink() {
+    private fun updateCourseIdFromDynamicLink(onResult: (Boolean) -> Unit) {
         FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
             .addOnSuccessListener(this) { pendingData ->
-                val deepLinkUri = pendingData?.link
-                if (deepLinkUri != null) {
-                    courseIdFromDynamicLink =
-                        deepLinkUri.getQueryParameter(RunnectDynamicLink.KEY_PRIVATE_COURSE_ID)
-                            ?.toInt() ?: -1
+                val linkUri = pendingData?.link
+                if (linkUri != null) {
+                    isFromDynamicLink = true
+                    courseId = linkUri.getQueryParameter(RunnectDynamicLink.KEY_PRIVATE_COURSE_ID)?.toInt() ?: -1
+
+                    if (courseId != -1) {
+                        onResult(true)
+                        return@addOnSuccessListener
+                    }
                 }
+                onResult(false)
             }
             .addOnFailureListener(this) { t ->
                 Timber.e("getDynamicLink fail: ${t.message}")
+                onResult(false)
             }
+    }
+
+    private fun initCourseIdFromExtra() {
+        courseId = intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0)
     }
 
     private fun getMyDrawDetail() {
@@ -127,9 +141,11 @@ class MyDrawDetailActivity :
                 }
 
                 is UiStateV2.Success -> {
-                    val course = state.data
-                    initMyDrawCourseDetail(course)
-                    initExtraDataForRunning(course)
+                    myDrawCourseDetail = state.data
+
+                    initToolBarLayout()
+                    initMyDrawCourseDetail(myDrawCourseDetail)
+                    initExtraDataForRunning(myDrawCourseDetail)
                     dismissLoadingProgressBar()
                 }
 
@@ -261,12 +277,11 @@ class MyDrawDetailActivity :
             ToolbarMenu.Icon(
                 resourceId = R.drawable.all_back_arrow,
                 clickEvent = {
-                    setActivityResult<MainActivity>()
-                    navigateToPreviousScreenWithAnimation()
+                    initBackButtonClickListener()
                 }
             ),
             ToolbarMenu.Text(
-                titleText = courseTitle,
+                titleText = myDrawCourseDetail.title,
                 padding = 0,
                 textSize = 18,
                 fontRes = R.font.pretendard_bold
@@ -274,18 +289,36 @@ class MyDrawDetailActivity :
         )
     }
 
-    // todo: 딥링크에서 진입한 경우 -> 신고하기 메뉴로 변경
+    private fun initBackButtonClickListener() {
+        if (isFromDynamicLink) {
+            navigateToMainScreen()
+            return
+        }
+
+        setActivityResult<MainActivity>()
+        navigateToPreviousScreenWithAnimation()
+    }
+
     private fun addRightMenu() {
+        if (isFromDynamicLink) {
+            if (myDrawCourseDetail.isNowUser) {
+                addShareEditDeleteMenu()
+            } else {
+                addReportMenu()
+            }
+            return
+        }
+
+        addShareEditDeleteMenu()
+    }
+
+    private fun addShareEditDeleteMenu() {
         addMenuTo(
             CommonToolbarLayout.RIGHT,
             ToolbarMenu.Icon(
                 resourceId = R.drawable.ic_share,
                 clickEvent = {
-                    val course = viewModel.myDrawCourseDetail.value ?: return@Icon
-                    createDynamicLink(
-                        title = course.title,
-                        imgUrl = course.imgUrl
-                    )
+                    initShareButtonClickListener()
                 }
             ),
             ToolbarMenu.Popup(
@@ -310,8 +343,15 @@ class MyDrawDetailActivity :
         )
     }
 
+    private fun initShareButtonClickListener() {
+        createDynamicLink(
+            title = viewModel.courseTitle,
+            imgUrl = myDrawCourseDetail.imgUrl
+        )
+    }
+
     private fun createDynamicLink(title: String, imgUrl: String) {
-        val link = "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PRIVATE_COURSE_ID}=${courseIdFromDynamicLink}"
+        val link = "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PRIVATE_COURSE_ID}=${courseId}"
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse(link))
             .setDomainUriPrefix(RunnectDynamicLink.BASE_URL)
@@ -406,13 +446,7 @@ class MyDrawDetailActivity :
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (courseIdFromDynamicLink != -1) {
-                    navigateToMainScreen()
-                    return
-                }
-
-                setActivityResult<MainActivity>()
-                navigateToPreviousScreenWithAnimation()
+                initBackButtonClickListener()
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
@@ -431,9 +465,8 @@ class MyDrawDetailActivity :
     }
 
     private inline fun <reified T : Activity> setActivityResult() {
-        val course = viewModel.myDrawCourseDetail.value ?: return
         Intent(this, T::class.java).apply {
-            putExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE, course.title)
+            putExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE, viewModel.courseTitle)
             setResult(RESULT_OK, this)
         }
     }
