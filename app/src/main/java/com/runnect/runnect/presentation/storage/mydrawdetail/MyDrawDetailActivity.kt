@@ -24,6 +24,7 @@ import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.scheme.SchemeActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
@@ -58,41 +59,26 @@ class MyDrawDetailActivity :
         super.onCreate(savedInstanceState)
         binding.lifecycleOwner = this
 
-        updateCourseIdFromDynamicLink { isFromDynamicLink ->
-            if (!isFromDynamicLink) {
-                initCourseIdFromExtra()
-            }
+        initCourseIdExtra()
+        getMyDrawDetail()
+        addListener()
+        addObserver()
+        registerBackPressedCallback()
+    }
 
-            getMyDrawDetail()
-            addListener()
-            addObserver()
-            registerBackPressedCallback()
+    private fun initCourseIdExtra() {
+        val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
+        if (idFromLink != -1) {
+            isFromDynamicLink = true
+            this.courseId = idFromLink
+            return
         }
-    }
 
-    // todo: 링크를 클릭했을 때 매번 코스 발견 상세 페이지로 넘어가는 이슈 (내가 그린 코스 상세 페이지여야 하는데)
-    private fun updateCourseIdFromDynamicLink(onResult: (Boolean) -> Unit) {
-        FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
-            .addOnSuccessListener(this) { pendingData ->
-                val linkUri = pendingData?.link
-                if (linkUri != null) {
-                    isFromDynamicLink = true
-                    courseId = linkUri.getQueryParameter(RunnectDynamicLink.KEY_PRIVATE_COURSE_ID)?.toInt() ?: -1
-                    if (courseId != -1) {
-                        onResult(true)
-                        return@addOnSuccessListener
-                    }
-                }
-                onResult(false)
-            }
-            .addOnFailureListener(this) { t ->
-                Timber.e("getDynamicLink fail: ${t.message}")
-                onResult(false)
-            }
-    }
-
-    private fun initCourseIdFromExtra() {
-        courseId = intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0)
+        val idFromRootScreen = intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, -1)
+        if (idFromRootScreen != -1) {
+            this.courseId = idFromRootScreen
+            return
+        }
     }
 
     private fun getMyDrawDetail() {
@@ -374,12 +360,11 @@ class MyDrawDetailActivity :
     }
 
     private fun shareDynamicLink(shortLink: String) {
-        Intent().apply {
-            action = Intent.ACTION_SEND
+        val intent = Intent(Intent.ACTION_SEND).apply {
             type = RunnectDynamicLink.SEND_INTENT_MIME_TYPE
             putExtra(Intent.EXTRA_TEXT, shortLink)
-            startActivity(Intent.createChooser(this, RunnectDynamicLink.INTENT_CHOOSER_TITLE))
         }
+        startActivity(Intent.createChooser(intent, RunnectDynamicLink.INTENT_CHOOSER_TITLE))
     }
 
     private fun createTitleEditBottomSheet(): BottomSheetDialog {

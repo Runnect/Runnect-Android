@@ -33,6 +33,7 @@ import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.profile.ProfileActivity
+import com.runnect.runnect.presentation.scheme.SchemeActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SHARE
@@ -80,16 +81,13 @@ class CourseDetailActivity :
         binding.lifecycleOwner = this
         Analytics.logClickedItemEvent(VIEW_COURSE_DETAIL)
 
-        updatePublicCourseIdFromDynamicLink { linkHandled ->
-            if (!linkHandled) {
-                initIntentExtraData()
-            }
+        updatePublicCourseIdFromDynamicLink()
+        initIntentExtraData()
 
-            getCourseDetail()
-            addListener()
-            addObserver()
-            registerBackPressedCallback()
-        }
+        getCourseDetail()
+        addListener()
+        addObserver()
+        registerBackPressedCallback()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -102,29 +100,17 @@ class CourseDetailActivity :
         }
     }
 
-    private fun updatePublicCourseIdFromDynamicLink(completion: (Boolean) -> Unit) {
-        FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
-            .addOnSuccessListener(this) { pendingDynamicLinkData ->
-                val deepLink: Uri? = pendingDynamicLinkData?.link
-                if (deepLink != null) {
-                    isFromDeepLink = true
-                    publicCourseId = deepLink.getQueryParameter(RunnectDynamicLink.KEY_PUBLIC_COURSE_ID)?.toInt() ?: -1
-
-                    if (publicCourseId != -1) {
-                        Timber.tag("deeplink-publicCourseId").d("$publicCourseId")
-                        completion(true)
-                        return@addOnSuccessListener
-                    }
-                }
-                completion(false)
-            }
-            .addOnFailureListener(this) { e ->
-                Timber.e("getDynamicLink:onFailure", e)
-                completion(false)
-            }
+    private fun updatePublicCourseIdFromDynamicLink() {
+        val courseId = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
+        if (courseId != -1) {
+            isFromDeepLink = true
+            publicCourseId = courseId
+        }
     }
 
     private fun initIntentExtraData() {
+        if (isFromDeepLink) return
+
         publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, -1)
         Timber.tag("intent-publicCourseId").d("$publicCourseId")
 
