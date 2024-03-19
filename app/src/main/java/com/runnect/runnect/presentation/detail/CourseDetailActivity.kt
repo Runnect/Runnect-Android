@@ -30,7 +30,6 @@ import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.MY_PAGE_UP
 import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTRA_EDITABLE_DISCOVER_COURSE
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
-import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.scheme.SchemeActivity
@@ -204,7 +203,9 @@ class CourseDetailActivity :
 
     private fun initUserInfoClickListener() {
         binding.constCourseDetailUserInfo.setOnClickListener {
-            navigateToUserProfile()
+            if (courseDetail.userId != -1) {
+                navigateToUserProfile()
+            }
         }
     }
 

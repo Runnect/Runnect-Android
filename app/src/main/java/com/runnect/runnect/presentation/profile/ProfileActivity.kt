@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.profile
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
@@ -12,6 +13,7 @@ import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.VIEW_USER_PROFILE
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
+import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,16 +22,19 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var adapter: ProfileCourseAdapter
     private var userId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         Analytics.logClickedItemEvent(VIEW_USER_PROFILE)
+
         initAdapter()
         addListener()
         addObserver()
         getIntentExtra()
         getUserProfile()
+        registerBackPressedCallback()
     }
 
     private fun getIntentExtra() {
@@ -66,7 +71,7 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
 
     private fun initBackButtonClickListener() {
         binding.ivProfileBack.setOnClickListener {
-            finish()
+            navigateToPreviousScreenWithAnimation()
         }
     }
 
@@ -136,6 +141,15 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     private fun deactivateLoadingProgressBar() {
         binding.clProfile.isVisible = true
         binding.pbProfileIntermediate.isVisible = false
+    }
+
+    private fun registerBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateToPreviousScreenWithAnimation()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     companion object {
