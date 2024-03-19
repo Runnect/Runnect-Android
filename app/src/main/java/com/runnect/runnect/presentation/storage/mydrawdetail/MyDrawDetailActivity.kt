@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.storage.mydrawdetail
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -11,6 +12,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -28,13 +31,16 @@ import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.toolbar.CommonToolbarLayout
 import com.runnect.runnect.util.custom.toolbar.ToolbarMenu
+import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink
 import com.runnect.runnect.util.extension.PermissionUtil
+import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
@@ -46,16 +52,33 @@ class MyDrawDetailActivity :
     private val selectList = arrayListOf<Int>()
     private val courseId by lazy { intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, 0) }
     private val courseTitle by lazy { intent.getStringExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE) }
+    private var courseIdFromDynamicLink = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.lifecycleOwner = this
 
+        checkDynamicLink()
         initToolBarLayout()
         getMyDrawDetail()
         addListener()
         addObserver()
         registerBackPressedCallback()
+    }
+
+    private fun checkDynamicLink() {
+        FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingData ->
+                val deepLinkUri = pendingData?.link
+                if (deepLinkUri != null) {
+                    courseIdFromDynamicLink =
+                        deepLinkUri.getQueryParameter(RunnectDynamicLink.KEY_PRIVATE_COURSE_ID)
+                            ?.toInt() ?: -1
+                }
+            }
+            .addOnFailureListener(this) { t ->
+                Timber.e("getDynamicLink fail: ${t.message}")
+            }
     }
 
     private fun getMyDrawDetail() {
@@ -176,7 +199,7 @@ class MyDrawDetailActivity :
             departure = course.departureName,
             distance = course.distance,
             image = course.imgUrl,
-            dataFrom = EXTRA_MY_DRAW_TO_RUN
+            dataFrom = EXTRA_FROM_MY_DRAW_DETAIL
         )
     }
 
@@ -258,8 +281,11 @@ class MyDrawDetailActivity :
             ToolbarMenu.Icon(
                 resourceId = R.drawable.ic_share,
                 clickEvent = {
-                    // todo: 카톡으로 공유하기
-
+                    val course = viewModel.myDrawCourseDetail.value ?: return@Icon
+                    createDynamicLink(
+                        title = course.title,
+                        imgUrl = course.imgUrl
+                    )
                 }
             ),
             ToolbarMenu.Popup(
@@ -282,6 +308,39 @@ class MyDrawDetailActivity :
                 }
             )
         )
+    }
+
+    private fun createDynamicLink(title: String, imgUrl: String) {
+        val link = "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PRIVATE_COURSE_ID}=${courseIdFromDynamicLink}"
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLink(Uri.parse(link))
+            .setDomainUriPrefix(RunnectDynamicLink.BASE_URL)
+            .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+            .setIosParameters(
+                DynamicLink.IosParameters.Builder(RunnectDynamicLink.IOS_BUNDLE_ID).build()
+            )
+            .setSocialMetaTagParameters(
+                DynamicLink.SocialMetaTagParameters.Builder()
+                    .setTitle(title)
+                    .setImageUrl(Uri.parse(imgUrl))
+                    .build()
+            )
+            .buildShortDynamicLink()
+            .addOnSuccessListener { result ->
+                shareDynamicLink(result.shortLink.toString())
+            }
+            .addOnFailureListener { t ->
+                Timber.e("sendDynamicLink fail: ${t.message}")
+            }
+    }
+
+    private fun shareDynamicLink(shortLink: String) {
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            type = RunnectDynamicLink.SEND_INTENT_MIME_TYPE
+            putExtra(Intent.EXTRA_TEXT, shortLink)
+            startActivity(Intent.createChooser(this, RunnectDynamicLink.INTENT_CHOOSER_TITLE))
+        }
     }
 
     private fun createTitleEditBottomSheet(): BottomSheetDialog {
@@ -347,6 +406,11 @@ class MyDrawDetailActivity :
     private fun registerBackPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                if (courseIdFromDynamicLink != -1) {
+                    navigateToMainScreen()
+                    return
+                }
+
                 setActivityResult<MainActivity>()
                 navigateToPreviousScreenWithAnimation()
             }
@@ -354,9 +418,22 @@ class MyDrawDetailActivity :
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
+    private fun navigateToMainScreen() {
+        Intent(this, MainActivity::class.java).apply {
+            putExtra(
+                EXTRA_FRAGMENT_REPLACEMENT_DIRECTION,
+                EXTRA_FROM_MY_DRAW_DETAIL
+            )
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(this)
+        }
+        applyScreenExitAnimation()
+    }
+
     private inline fun <reified T : Activity> setActivityResult() {
+        val course = viewModel.myDrawCourseDetail.value ?: return
         Intent(this, T::class.java).apply {
-            putExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE, viewModel.courseTitle)
+            putExtra(StorageMyDrawFragment.EXTRA_COURSE_TITLE, course.title)
             setResult(RESULT_OK, this)
         }
     }
@@ -366,7 +443,7 @@ class MyDrawDetailActivity :
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         private const val TAG_MY_DRAW_COURSE_DELETE_DIALOG = "MY_DRAW_COURSE_DELETE_DIALOG"
         private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        private const val EXTRA_MY_DRAW_TO_RUN = "fromMyDrawDetail"
+        private const val EXTRA_FROM_MY_DRAW_DETAIL = "fromMyDrawDetail"
         private const val EXTRA_DELETE_MY_DRAW_COURSE = "fromDeleteMyDrawDetail"
         private const val EXTRA_COURSE_DATA = "CourseData"
     }

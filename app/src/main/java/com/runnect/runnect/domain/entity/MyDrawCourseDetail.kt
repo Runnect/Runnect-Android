@@ -1,7 +1,7 @@
 package com.runnect.runnect.domain.entity
 
 data class MyDrawCourseDetail(
-    val title: String,
+    var title: String,
     val imgUrl: String,
     val isNowUser: Boolean,
     val distance: Float,
