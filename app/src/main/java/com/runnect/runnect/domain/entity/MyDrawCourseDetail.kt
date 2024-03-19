@@ -7,5 +7,5 @@ data class MyDrawCourseDetail(
     val distance: Float,
     val courseId: Int,
     val path: List<List<Double>>,
-    val departureName: String,
+    val departureName: String?,
 )

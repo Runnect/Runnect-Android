@@ -45,7 +45,7 @@ data class ResponseGetMyDrawDetail(
             @SerialName("town")
             val town: String,
             @SerialName("name")
-            val name: String,
+            val name: String?,
         )
     }
 
