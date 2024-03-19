@@ -135,7 +135,6 @@ class CourseDetailActivity :
     }
 
     private fun addObserver() {
-        setupFromDeepLinkObserver()
         setupCourseGetStateObserver()
         setupCoursePatchStateObserver()
         setupCourseDeleteStateObserver()
@@ -425,17 +424,6 @@ class CourseDetailActivity :
         }
         applyScreenEnterAnimation()
         Analytics.logClickedItemEvent(EVENT_CLICK_USER_PROFILE)
-    }
-
-    private fun setupFromDeepLinkObserver() {
-        viewModel.isDeepLinkLogin.observe(this) {
-            // 딥링크로 진입했는데 로그인이 안 되어있는 경우
-            if (viewModel.isDeepLinkLogin.value == false) {
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                viewModel.isDeepLinkLogin.value = true
-            }
-        }
     }
 
     private fun setupCourseGetStateObserver() {
