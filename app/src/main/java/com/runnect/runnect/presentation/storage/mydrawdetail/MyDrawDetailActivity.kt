@@ -285,14 +285,9 @@ class MyDrawDetailActivity :
     }
 
     private fun addRightMenu() {
-        if (isFromDynamicLink) {
-            if (myDrawCourseDetail.isNowUser) {
-                addShareEditDeleteMenu()
-            }
-            return
+        if (!isFromDynamicLink) {
+            addShareEditDeleteMenu()
         }
-
-        addShareEditDeleteMenu()
     }
 
     private fun addShareEditDeleteMenu() {
@@ -405,26 +400,6 @@ class MyDrawDetailActivity :
             onPositiveButtonClicked = { viewModel.deleteMyDrawCourse(selectList) }
         )
         dialog.show(supportFragmentManager, TAG_MY_DRAW_COURSE_DELETE_DIALOG)
-    }
-
-    private fun addReportMenu() {
-        addMenuTo(
-            CommonToolbarLayout.RIGHT,
-            ToolbarMenu.Popup(
-                resourceId = R.drawable.showmorebtn,
-                popupItems = listOf(
-                    PopupItem(
-                        R.drawable.ic_detail_more_report,
-                        getString(R.string.popup_menu_item_report)
-                    )
-                ),
-                menuItemClickListener = { _, _, pos ->
-                    when (pos) {
-                        0 -> showWebBrowser(REPORT_URL)
-                    }
-                }
-            )
-        )
     }
 
     private fun registerBackPressedCallback() {

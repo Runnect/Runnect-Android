@@ -50,7 +50,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                 _courseGetState.value = UiStateV2.Success(response)
                 _courseTitle = response.title
             }.onFailure { t ->
-                Timber.e("FAIL GET MY DRAW COURSE")
+                Timber.e("FAIL GET MY DRAW COURSE: ${t.message}")
                 _courseGetState.value = UiStateV2.Failure(t.message.toString())
             }
         }
@@ -68,7 +68,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                 Timber.d("SUCCESS DELETE MY DRAW COURSE: ${response.body()}")
                 _courseDeleteState.value = UiStateV2.Success(Unit)
             }.onFailure { t ->
-                Timber.e("FAIL DELETE MY DRAW COURSE")
+                Timber.e("FAIL DELETE MY DRAW COURSE: ${t.message}")
                 _courseDeleteState.value = UiStateV2.Failure(t.message.toString())
             }
         }
@@ -87,7 +87,7 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
                     _coursePatchState.value = UiStateV2.Success(response)
                 }
                 .onFailure { t ->
-                    Timber.e("FAIL PATCH MY DRAW COURSE TITLE")
+                    Timber.e("FAIL PATCH MY DRAW COURSE TITLE: ${t.message}")
                     _coursePatchState.value = UiStateV2.Failure(t.message.toString())
                 }
         }
