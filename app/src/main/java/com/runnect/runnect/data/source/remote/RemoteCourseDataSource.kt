@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.source.remote
 
+import com.runnect.runnect.data.dto.request.RequestPatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
@@ -51,6 +52,11 @@ class RemoteCourseDataSource @Inject constructor(
         courseService.deleteMyDrawCourse(deleteCourseList)
 
     suspend fun getMyDrawDetail(courseId: Int) = courseService.getMyDrawDetail(courseId)
+
+    suspend fun patchMyDrawCourseTitle(
+        courseId: Int,
+        requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
+    ) = courseService.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle)
 
     suspend fun postRecord(request: RequestPostRunningHistory) = courseService.postRecord(request)
 

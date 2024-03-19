@@ -1,11 +1,13 @@
 package com.runnect.runnect.domain.repository
 
+import com.runnect.runnect.data.dto.request.RequestPatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
@@ -16,6 +18,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import okhttp3.MultipartBody
@@ -39,6 +42,11 @@ interface CourseRepository {
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse>
 
     suspend fun getMyDrawDetail(courseId: Int): Result<MyDrawCourseDetail?>
+
+    suspend fun patchMyDrawCourseTitle(
+        courseId: Int,
+        requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
+    ): Result<EditableMyDrawCourseDetail?>
 
     suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory>
 

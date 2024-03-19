@@ -339,7 +339,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         val btnCreateCourse = bottomSheetBinding.btnCreateCourse
 
         etCourseName.addTextChangedListener {
-            val isCourseNameValid = !it.isNullOrEmpty()
+            val isCourseNameValid = !it.isNullOrBlank()
 
             with(btnCreateCourse) {
                 setBackgroundResource(if (isCourseNameValid) R.drawable.radius_10_m1_button else R.drawable.radius_10_g3_button)

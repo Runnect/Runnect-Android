@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.service
 
+import com.runnect.runnect.data.dto.request.RequestPatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
@@ -13,6 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
+import com.runnect.runnect.data.dto.response.ResponsePatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
@@ -64,34 +66,39 @@ interface CourseService {
         @Body requestPatchPublicCourse: RequestPatchPublicCourse
     ): BaseResponse<ResponsePatchPublicCourse>
 
-    // {id}와 같이 동적인 경로 변수가 없다면 @Path 생략 가능
-    //내가 그린 코스 수정
     @PUT("/api/course")
     suspend fun deleteMyDrawCourse(
         @Body deleteCourseList: RequestPutMyDrawCourse
     ): Response<ResponsePutMyDrawCourse>
 
-    //보관함 내가 그린 코스 가져오기
+    // 보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
     suspend fun getDrawCourseList(): BaseResponse<ResponseGetMyDrawCourse>
 
-    //보관함 스크랩 코스 가져오기
+    // 보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
     suspend fun getScrapCourseList(): BaseResponse<ResponseGetMyScrapCourse>
 
-    //내가 그린 코스 Detail 가져오기
+    // 내가 그린 코스 Detail 가져오기
     @GET("/api/course/detail/{courseId}")
     suspend fun getMyDrawDetail(
         @Path("courseId") courseId: Int,
     ): BaseResponse<ResponseGetMyDrawDetail>
 
-    //기록 업로드
+    // 내가 그린 코스 제목 수정
+    @PATCH("/api/course/{courseId}")
+    suspend fun patchMyDrawCourseTitle(
+        @Path("courseId") courseId: Int,
+        @Body requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
+    ): BaseResponse<ResponsePatchMyDrawCourseTitle>
+
+    // 기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
         @Body request: RequestPostRunningHistory
     ): Response<ResponsePostMyHistory>
 
-    //코스 업로드
+    // 코스 업로드
     @Multipart
     @POST("/api/course")
     suspend fun uploadCourse(
