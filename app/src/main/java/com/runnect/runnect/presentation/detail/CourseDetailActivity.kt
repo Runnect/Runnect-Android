@@ -57,7 +57,6 @@ import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.mode.ScreenMode.EditMode
 import com.runnect.runnect.util.mode.ScreenMode.ReadOnlyMode
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class CourseDetailActivity :
@@ -81,9 +80,8 @@ class CourseDetailActivity :
         binding.lifecycleOwner = this
         Analytics.logClickedItemEvent(VIEW_COURSE_DETAIL)
 
-        updatePublicCourseIdFromDynamicLink()
-        initIntentExtraData()
-
+        initCourseIdExtra()
+        initRootScreenExtra()
         getCourseDetail()
         addListener()
         addObserver()
@@ -100,20 +98,22 @@ class CourseDetailActivity :
         }
     }
 
-    private fun updatePublicCourseIdFromDynamicLink() {
-        val courseId = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
-        if (courseId != -1) {
+    private fun initCourseIdExtra() {
+        val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
+        if (idFromLink != -1) {
             isFromDeepLink = true
-            publicCourseId = courseId
+            publicCourseId = idFromLink
+            return
+        }
+
+        val idFromRootScreen = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, -1)
+        if (idFromRootScreen != -1) {
+            publicCourseId = idFromRootScreen
+            return
         }
     }
 
-    private fun initIntentExtraData() {
-        if (isFromDeepLink) return
-
-        publicCourseId = intent.getIntExtra(EXTRA_PUBLIC_COURSE_ID, -1)
-        Timber.tag("intent-publicCourseId").d("$publicCourseId")
-
+    private fun initRootScreenExtra() {
         intent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)?.let {
             rootScreen = it
         }
@@ -381,7 +381,6 @@ class CourseDetailActivity :
     private fun navigateToPreviousScreen() {
         if (isFromDeepLink) {
             navigateToMainScreen()
-            isFromDeepLink = false
             return
         }
 

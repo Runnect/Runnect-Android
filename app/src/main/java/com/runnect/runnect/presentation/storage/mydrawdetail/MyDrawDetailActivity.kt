@@ -70,13 +70,13 @@ class MyDrawDetailActivity :
         val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
         if (idFromLink != -1) {
             isFromDynamicLink = true
-            this.courseId = idFromLink
+            courseId = idFromLink
             return
         }
 
         val idFromRootScreen = intent.getIntExtra(StorageMyDrawFragment.EXTRA_COURSE_ID, -1)
         if (idFromRootScreen != -1) {
-            this.courseId = idFromRootScreen
+            courseId = idFromRootScreen
             return
         }
     }
@@ -280,7 +280,6 @@ class MyDrawDetailActivity :
             navigateToMainScreen()
             return
         }
-
         setActivityResult<MainActivity>()
         navigateToPreviousScreenWithAnimation()
     }
