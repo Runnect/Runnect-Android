@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.source.remote
 
+import com.runnect.runnect.data.ApiResult
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
@@ -12,15 +13,18 @@ import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import com.runnect.runnect.data.service.CourseService
+import com.runnect.runnect.data.service.CourseV2Service
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
 class RemoteCourseDataSource @Inject constructor(
+    private var courseV2Service: CourseV2Service,
     private val courseService: CourseService
 ) {
-    suspend fun getMarathonCourse(): BaseResponse<ResponseGetDiscoverMarathon> =
-        courseService.getMarathonCourse()
+    fun getMarathonCourse(): Flow<ApiResult<ResponseGetDiscoverMarathon>> =
+        courseV2Service.getMarathonCourse()
 
     suspend fun getRecommendCourse(
         pageNo: String,

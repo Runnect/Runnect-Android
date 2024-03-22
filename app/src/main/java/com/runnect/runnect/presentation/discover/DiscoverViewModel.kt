@@ -6,13 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.domain.common.onFailure
+import com.runnect.runnect.domain.common.onSuccess
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -98,22 +103,16 @@ class DiscoverViewModel @Inject constructor(
 
     private fun getMarathonCourses() {
         viewModelScope.launch {
-            _marathonCourseGetState.value = UiStateV2.Loading
-
             courseRepository.getMarathonCourse()
-                .onSuccess { courses ->
-                    if (courses == null) {
-                        _marathonCourseGetState.value =
-                            UiStateV2.Failure("MARATHON COURSE DATA IS NULL")
-                        return@launch
+                .flowOn(Dispatchers.IO)
+                .onStart {
+                    _marathonCourseGetState.value = UiStateV2.Loading
+                }.collect { result ->
+                    result.onSuccess {
+                        _marathonCourseGetState.value = UiStateV2.Success(it)
+                    }.onFailure {
+                        _marathonCourseGetState.value = UiStateV2.Failure(it.toLog())
                     }
-
-                    _marathonCourseGetState.value = UiStateV2.Success(courses)
-                    Timber.d("MARATHON COURSE GET SUCCESS")
-                }
-                .onFailure { exception ->
-                    _marathonCourseGetState.value = UiStateV2.Failure(exception.message.toString())
-                    Timber.e("MARATHON COURSE GET FAIL")
                 }
         }
     }

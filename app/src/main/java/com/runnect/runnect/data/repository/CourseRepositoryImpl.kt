@@ -12,13 +12,16 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.data.mapToResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
+import com.runnect.runnect.domain.common.Result
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.CourseRepository
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -26,14 +29,17 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
-    override suspend fun getMarathonCourse(): Result<List<MarathonCourse>?> = runCatching {
-        remoteCourseDataSource.getMarathonCourse().data?.toMarathonCourses()
+
+    override suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>> {
+        return remoteCourseDataSource.getMarathonCourse().mapToResult {
+            it.toMarathonCourses()
+        }
     }
 
     override suspend fun getRecommendCourse(
         pageNo: String,
         sort: String
-    ): Result<RecommendCoursePagingData?> = runCatching {
+    ): kotlin.Result<RecommendCoursePagingData?> = runCatching {
         val response = remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
             sort = sort
@@ -44,12 +50,12 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         }
     }
 
-    override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?> =
+    override suspend fun getCourseSearch(keyword: String): kotlin.Result<List<DiscoverSearchCourse>?> =
         runCatching {
             remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverSearchCourses()
         }
 
-    override suspend fun getMyCourseLoad(): Result<List<DiscoverUploadCourse>?> =
+    override suspend fun getMyCourseLoad(): kotlin.Result<List<DiscoverUploadCourse>?> =
         runCatching {
             remoteCourseDataSource.getMyCourseLoad().data?.toUploadCourses()
         }
@@ -82,14 +88,14 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun getCourseDetail(
         publicCourseId: Int
-    ): Result<CourseDetail?> = runCatching {
+    ): kotlin.Result<CourseDetail?> = runCatching {
         remoteCourseDataSource.getCourseDetail(publicCourseId = publicCourseId).data?.toCourseDetail()
     }
 
     override suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
-    ): Result<EditableCourseDetail?> = runCatching {
+    ): kotlin.Result<EditableCourseDetail?> = runCatching {
         remoteCourseDataSource.patchPublicCourse(
             publicCourseId = publicCourseId,
             requestPatchPublicCourse = requestPatchPublicCourse
@@ -98,7 +104,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
-    ): Result<ResponsePostScrap?> = runCatching {
+    ): kotlin.Result<ResponsePostScrap?> = runCatching {
         remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).data
     }
 }
