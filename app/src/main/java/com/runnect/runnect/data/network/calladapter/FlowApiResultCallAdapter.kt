@@ -1,7 +1,7 @@
-package com.runnect.runnect.data.calladapter.flow
+package com.runnect.runnect.data.network.calladapter
 
 import com.google.gson.Gson
-import com.runnect.runnect.data.ApiResult
+import com.runnect.runnect.data.network.ApiResult
 import com.runnect.runnect.data.dto.response.base.ErrorResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

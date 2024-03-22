@@ -1,6 +1,6 @@
 package com.runnect.runnect.data.source.remote
 
-import com.runnect.runnect.data.ApiResult
+import com.runnect.runnect.data.network.ApiResult
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse

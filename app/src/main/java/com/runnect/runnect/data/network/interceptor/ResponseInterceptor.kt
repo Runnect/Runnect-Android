@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.interceptor
+package com.runnect.runnect.data.network.interceptor
 
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
@@ -12,7 +12,7 @@ import timber.log.Timber
 
 /**
  * BaseResponse에서 data만 추출 (불필요한 래핑 제거)
- * 서버에서 내려준 형식이 아니라면 응답 그대로 반환
+ * - 서버에서 내려준 형식이 아니라면 응답 그대로 반환
  */
 class ResponseInterceptor : Interceptor {
 

@@ -1,6 +1,6 @@
-package com.runnect.runnect.data.calladapter.flow
+package com.runnect.runnect.data.network.calladapter
 
-import com.runnect.runnect.data.ApiResult
+import com.runnect.runnect.data.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
