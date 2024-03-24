@@ -47,7 +47,7 @@ class AuthInterceptor @Inject constructor(
     private fun Request.newAuthTokenBuilder() =
         runBlocking(Dispatchers.IO) {
             val accessToken = getAccessToken()
-            val refreshToken = getRefreshToken()
+            val refreshToken = getNewToken()
             newBuilder().apply {
                 addHeader(ACCESS_TOKEN, accessToken)
                 addHeader(REFRESH_TOKEN, refreshToken)
@@ -62,7 +62,7 @@ class AuthInterceptor @Inject constructor(
         ) ?: ""
     }
 
-    private fun getRefreshToken(): String {
+    private fun getNewToken(): String {
         return PreferenceManager.getString(
             ApplicationClass.appContext,
             TOKEN_KEY_REFRESH
@@ -79,7 +79,7 @@ class AuthInterceptor @Inject constructor(
         originalRequest: Request,
         headerRequest: Request
     ): Response {
-        val refreshTokenResponse = getRefreshToken(originalRequest, chain)
+        val refreshTokenResponse = getNewToken(originalRequest, chain)
         return if (refreshTokenResponse.isSuccessful) {
             handleGetRefreshTokenSuccess(refreshTokenResponse, originalRequest, chain)
         } else {
@@ -87,9 +87,9 @@ class AuthInterceptor @Inject constructor(
         }
     }
 
-    private fun getRefreshToken(originalRequest: Request, chain: Interceptor.Chain): Response {
+    private fun getNewToken(originalRequest: Request, chain: Interceptor.Chain): Response {
         val baseUrl = ApplicationClass.getBaseUrl()
-        val refreshToken = getRefreshToken()
+        val refreshToken = getNewToken()
         val refreshTokenRequest = originalRequest.newBuilder().post("".toRequestBody())
             .url("$baseUrl/api/auth/getNewToken")
             .addHeader(REFRESH_TOKEN, refreshToken)

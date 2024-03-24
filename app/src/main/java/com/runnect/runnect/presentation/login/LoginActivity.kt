@@ -19,6 +19,7 @@ import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOOGLE_LOGIN
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_KAKAO_LOGIN
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
+import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -39,16 +40,12 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
             // visitor : 방문자모드
             // 나머지 : 바로 자동로그인 되므로 메인으로 이동
             if(accessToken.isBlank()){
-                Toast.makeText(
-                    this,
-                    getString(R.string.alert_need_to_re_sign),
-                    Toast.LENGTH_LONG
-                ).show()
+                showToast(getString(R.string.alert_need_to_re_sign))
             }
             else if (accessToken != "none" && accessToken != "visitor" ) {
                 Timber.d("자동로그인 완료")
                 moveToMain()
-                Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
+                showToast(MESSAGE_LOGIN_SUCCESS)
             }
         }
     }
