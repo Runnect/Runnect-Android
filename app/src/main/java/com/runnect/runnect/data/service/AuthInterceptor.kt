@@ -8,6 +8,7 @@ import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
 import com.runnect.runnect.util.preference.AuthUtil.getNewToken
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
 import com.runnect.runnect.util.preference.StatusType.LoginStatus
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
@@ -20,7 +21,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val json: Json
 ) : Interceptor {
     // access Header 에 보내고 이때 401(토큰 만료) 뜨면 액세스 재발급 요청
