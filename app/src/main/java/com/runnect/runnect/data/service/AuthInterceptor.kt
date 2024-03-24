@@ -22,7 +22,6 @@ class AuthInterceptor @Inject constructor(
     // 재발급 성공 : 저장
     // 재발급 실패 : 재 로그인 토스트 메시지 띄우고 preference 빈 값 넣고 로그인 화면 이동
     override fun intercept(chain: Interceptor.Chain): Response {
-        runBlocking { Timber.e("AccessToken : ${getAccessToken()}, RefreshToken : ${getRefreshToken()}") }
         val originalRequest = chain.request()
 
         val headerRequest = originalRequest.newAuthTokenBuilder()
@@ -30,19 +29,19 @@ class AuthInterceptor @Inject constructor(
 
         val response = headerRequest.let { chain.proceed(it) }
 
-        when (response.code) {
-            CODE_TOKEN_EXPIRED -> {
-                try {
-                    Timber.e("Access Token Expired: getNewAccessToken")
-                    response.close()
-                    return handleTokenExpired(chain, originalRequest, headerRequest)
-                } catch (t: Throwable) {
-                    Timber.e("Exception: ${t.message}")
-                    saveToken(accessToken = "", refreshToken = "")
-                }
+        return if (response.code == CODE_TOKEN_EXPIRED) {
+            try {
+                Timber.e("Access Token Expired: getNewAccessToken")
+                response.close()
+                handleTokenExpired(chain, originalRequest, headerRequest)
+            } catch (t: Throwable) {
+                Timber.e("Exception: ${t.message}")
+                saveToken(accessToken = "", refreshToken = "")
+                response
             }
+        } else {
+            response
         }
-        return response
     }
 
     private fun Request.newAuthTokenBuilder() =
