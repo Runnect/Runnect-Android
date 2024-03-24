@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.login
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -14,17 +13,16 @@ import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
-import com.runnect.runnect.util.analytics.EventName
-import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOOGLE_LOGIN
-import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_KAKAO_LOGIN
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
 import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.preference.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
+class LoginActivity :
+    BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
     lateinit var socialLogin: SocialLogin
     lateinit var googleLogin: GoogleLogin
     lateinit var kakaoLogin: KakaoLogin
@@ -34,21 +32,22 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
     override fun onStart() {
         super.onStart()
         val accessToken = PreferenceManager.getString(applicationContext, TOKEN_KEY_ACCESS)
-        if (accessToken != null) {
-            // 빈 문자열 : 토큰 만료되어 재로그인
-            // none : 탈퇴, 로그아웃
-            // visitor : 방문자모드
-            // 나머지 : 바로 자동로그인 되므로 메인으로 이동
-            if(accessToken.isBlank()){
+
+        when (LoginStatus.getLoginStatus(accessToken)) {
+            LoginStatus.EXPIRED -> {
                 showToast(getString(R.string.alert_need_to_re_sign))
             }
-            else if (accessToken != "none" && accessToken != "visitor" ) {
+
+            LoginStatus.LOGGED_IN -> {
                 Timber.d("자동로그인 완료")
                 moveToMain()
                 showToast(MESSAGE_LOGIN_SUCCESS)
             }
+
+            else -> {}
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,17 +80,18 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
                 PreferenceManager.setString(
                     context = applicationContext,
                     key = TOKEN_KEY_ACCESS,
-                    value = "visitor"
+                    value = LoginStatus.VISITOR.value
                 )
                 PreferenceManager.setString(
                     context = applicationContext,
                     key = TOKEN_KEY_REFRESH,
-                    value = "visitor"
+                    value = LoginStatus.VISITOR.value
                 )
                 moveToMain()
             }
         }
     }
+
 
     private fun addObserver() {
         viewModel.loginState.observe(this) { state ->
@@ -103,6 +103,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(com.runnect.runnect.
                         "Signup" -> handleSuccessfulSignup()
                     }
                 }
+
                 else -> binding.indeterminateBar.isVisible = false
             }
         }

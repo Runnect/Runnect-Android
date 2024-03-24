@@ -4,6 +4,7 @@ import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.dto.response.ResponseGetRefreshToken
 import com.runnect.runnect.data.dto.response.base.BaseResponse
+import com.runnect.runnect.util.preference.LoginStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
@@ -36,7 +37,10 @@ class AuthInterceptor @Inject constructor(
                 handleTokenExpired(chain, originalRequest, headerRequest)
             } catch (t: Throwable) {
                 Timber.e("Exception: ${t.message}")
-                saveToken(accessToken = "", refreshToken = "")
+                saveToken(
+                    accessToken = LoginStatus.EXPIRED.value,
+                    refreshToken = LoginStatus.EXPIRED.value
+                )
                 response
             }
         } else {
@@ -123,7 +127,7 @@ class AuthInterceptor @Inject constructor(
         chain: Interceptor.Chain
     ): Response {
         Timber.e("New Refresh Token Failure: ${refreshTokenResponse.code}")
-        saveToken("", "")
+        saveToken(accessToken = LoginStatus.EXPIRED.value, refreshToken = LoginStatus.EXPIRED.value)
         return chain.proceed(headerRequest)
     }
 

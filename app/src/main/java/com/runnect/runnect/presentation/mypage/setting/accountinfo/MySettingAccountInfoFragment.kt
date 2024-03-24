@@ -25,6 +25,7 @@ import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SUCCESS_WITHDRAW
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.preference.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
@@ -110,8 +111,8 @@ class MySettingAccountInfoFragment :
     }
 
     private fun moveToLogin() {
-        PreferenceManager.setString(requireContext(), TOKEN_KEY_ACCESS, "none")
-        PreferenceManager.setString(requireContext(), TOKEN_KEY_REFRESH, "none")
+        PreferenceManager.setString(requireContext(), TOKEN_KEY_ACCESS, LoginStatus.NONE.value)
+        PreferenceManager.setString(requireContext(), TOKEN_KEY_REFRESH, LoginStatus.NONE.value)
         val intent = Intent(requireActivity(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)

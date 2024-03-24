@@ -23,6 +23,7 @@ import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
+import com.runnect.runnect.util.preference.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -44,15 +45,18 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun checkVisitorMode() {
-        isVisitorMode =
-            PreferenceManager.getString(ApplicationClass.appContext, TOKEN_KEY_ACCESS) == "visitor"
+        val accessToken = PreferenceManager.getString(ApplicationClass.appContext, TOKEN_KEY_ACCESS)
+        val loginStatus = LoginStatus.getLoginStatus(accessToken)
+        isVisitorMode = loginStatus == LoginStatus.VISITOR
     }
 
     private fun checkIntentValue() {
         fragmentReplacementDirection = intent.getStringExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION)
 
         when (fragmentReplacementDirection) {
-            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage = true
+            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage =
+                true
+
             "fromMyScrap", "fromCourseDetail" -> isChangeToDiscover = true
         }
     }
@@ -85,10 +89,10 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     private fun logClickEvent(menuItemId: Int) {
         with(EventName) {
             when (menuItemId) {
-                R.id.menu_main_drawing -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DRAWING else EVENT_CLICK_NAV_COURSE_DRAWING
-                R.id.menu_main_storage -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_STORAGE else EVENT_CLICK_NAV_STORAGE
-                R.id.menu_main_discover -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DISCOVERY else EVENT_CLICK_NAV_COURSE_DISCOVERY
-                R.id.menu_main_my_page -> if(isVisitorMode) EVENT_CLICK_JOIN_IN_MY_PAGE else EVENT_CLICK_NAV_MY_PAGE
+                R.id.menu_main_drawing -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DRAWING else EVENT_CLICK_NAV_COURSE_DRAWING
+                R.id.menu_main_storage -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_STORAGE else EVENT_CLICK_NAV_STORAGE
+                R.id.menu_main_discover -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DISCOVERY else EVENT_CLICK_NAV_COURSE_DISCOVERY
+                R.id.menu_main_my_page -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_MY_PAGE else EVENT_CLICK_NAV_MY_PAGE
                 else -> ""
             }.let(Analytics::logClickedItemEvent)
         }
