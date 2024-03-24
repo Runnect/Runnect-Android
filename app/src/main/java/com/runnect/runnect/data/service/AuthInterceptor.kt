@@ -38,7 +38,7 @@ class AuthInterceptor @Inject constructor(
                     return handleTokenExpired(chain, originalRequest, headerRequest)
                 } catch (t: Throwable) {
                     Timber.e("Exception: ${t.message}")
-                    saveToken("", "")
+                    saveToken(accessToken = "", refreshToken = "")
                 }
             }
         }
