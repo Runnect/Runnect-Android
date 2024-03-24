@@ -17,9 +17,11 @@ import com.runnect.runnect.R
 import com.runnect.runnect.application.ApiMode
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
-import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
-import com.runnect.runnect.util.preference.LoginStatus
+import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
+import com.runnect.runnect.util.preference.AuthUtil.getNewToken
+import com.runnect.runnect.util.preference.AuthUtil.saveToken
+import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,8 +46,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun initUserInfo() {
             val ctx: Context = context ?: return
-            val accessToken = PreferenceManager.getString(ctx, TOKEN_KEY_ACCESS) ?: ""
-            val refreshToken = PreferenceManager.getString(ctx, TOKEN_KEY_REFRESH) ?: ""
+            val accessToken = ctx.getAccessToken()
+            val refreshToken = ctx.getNewToken()
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
             setPreferenceSummary("dev_pref_key_refresh_token", refreshToken)
@@ -70,18 +72,11 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
                     PreferenceManager.apply {
                         setString(ctx, ApplicationClass.API_MODE, selectItem)
-                        setString(
-                            ctx,
-                            MySettingAccountInfoFragment.TOKEN_KEY_ACCESS,
-                            LoginStatus.NONE.value
-                        )
-                        setString(
-                            ctx,
-                            MySettingAccountInfoFragment.TOKEN_KEY_REFRESH,
-                            LoginStatus.NONE.value
-                        )
                     }
-
+                    ctx.saveToken(
+                        accessToken = LoginStatus.NONE.value,
+                        refreshToken = LoginStatus.NONE.value
+                    )
                     destroyApp(ctx)
                     true
                 }
@@ -184,8 +179,6 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         companion object {
             private const val CLIPBOARD_LABEL = "keyword"
-            const val TOKEN_KEY_ACCESS = "access"
-            const val TOKEN_KEY_REFRESH = "refresh"
         }
     }
 }

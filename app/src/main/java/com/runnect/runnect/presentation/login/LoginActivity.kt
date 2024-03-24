@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -16,22 +15,24 @@ import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
 import com.runnect.runnect.util.extension.showToast
-import com.runnect.runnect.util.preference.LoginStatus
+import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
+import com.runnect.runnect.util.preference.AuthUtil.saveToken
+import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginActivity :
-    BindingActivity<ActivityLoginBinding>(com.runnect.runnect.R.layout.activity_login) {
-    lateinit var socialLogin: SocialLogin
-    lateinit var googleLogin: GoogleLogin
-    lateinit var kakaoLogin: KakaoLogin
+    BindingActivity<ActivityLoginBinding>(R.layout.activity_login) {
+    private lateinit var socialLogin: SocialLogin
+    private lateinit var googleLogin: GoogleLogin
+    private lateinit var kakaoLogin: KakaoLogin
     private val viewModel: LoginViewModel by viewModels()
 
     //자동 로그인
     override fun onStart() {
         super.onStart()
-        val accessToken = PreferenceManager.getString(applicationContext, TOKEN_KEY_ACCESS)
+        val accessToken = applicationContext.getAccessToken()
 
         when (LoginStatus.getLoginStatus(accessToken)) {
             LoginStatus.EXPIRED -> {
@@ -77,15 +78,9 @@ class LoginActivity :
             }
             btnVisitorMode.setOnClickListener {
                 Analytics.logClickedItemEvent(EVENT_CLICK_VISITOR)
-                PreferenceManager.setString(
-                    context = applicationContext,
-                    key = TOKEN_KEY_ACCESS,
-                    value = LoginStatus.VISITOR.value
-                )
-                PreferenceManager.setString(
-                    context = applicationContext,
-                    key = TOKEN_KEY_REFRESH,
-                    value = LoginStatus.VISITOR.value
+                applicationContext.saveToken(
+                    accessToken = LoginStatus.VISITOR.value,
+                    refreshToken = LoginStatus.VISITOR.value
                 )
                 moveToMain()
             }
@@ -134,16 +129,12 @@ class LoginActivity :
 
 
     private fun saveSignTokenInfo() {
-        PreferenceManager.setString(
-            context = applicationContext,
-            key = TOKEN_KEY_ACCESS,
-            value = viewModel.loginResult.value?.accessToken
-        )
-        PreferenceManager.setString(
-            context = applicationContext,
-            key = TOKEN_KEY_REFRESH,
-            value = viewModel.loginResult.value?.refreshToken
-        )
+        viewModel.loginResult.value?.let { loginResult ->
+            applicationContext.saveToken(
+                accessToken = loginResult.accessToken,
+                refreshToken = loginResult.refreshToken
+            )
+        }
         Timber.d("ACCESS TOKEN: ${viewModel.loginResult.value?.accessToken}")
         Timber.d("REFRESH TOKEN: ${viewModel.loginResult.value?.refreshToken}")
     }
@@ -166,9 +157,6 @@ class LoginActivity :
     companion object {
         const val GOOGLE_SIGN = "GOOGLE"
         const val KAKAO_SIGN = "KAKAO"
-
-        const val TOKEN_KEY_ACCESS = "access"
-        const val TOKEN_KEY_REFRESH = "refresh"
 
         const val EXTRA_ACCESS_TOKEN = "access"
         const val EXTRA_REFRESH_TOKEN = "refresh"

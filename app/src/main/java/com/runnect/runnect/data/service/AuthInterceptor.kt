@@ -1,10 +1,13 @@
 package com.runnect.runnect.data.service
 
+import android.content.Context
 import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.dto.response.ResponseGetRefreshToken
 import com.runnect.runnect.data.dto.response.base.BaseResponse
-import com.runnect.runnect.util.preference.LoginStatus
+import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
+import com.runnect.runnect.util.preference.AuthUtil.getNewToken
+import com.runnect.runnect.util.preference.AuthUtil.saveToken
+import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
@@ -17,6 +20,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
+    private val context: Context,
     private val json: Json
 ) : Interceptor {
     // access Header 에 보내고 이때 401(토큰 만료) 뜨면 액세스 재발급 요청
@@ -37,7 +41,7 @@ class AuthInterceptor @Inject constructor(
                 handleTokenExpired(chain, originalRequest, headerRequest)
             } catch (t: Throwable) {
                 Timber.e("Exception: ${t.message}")
-                saveToken(
+                context.saveToken(
                     accessToken = LoginStatus.EXPIRED.value,
                     refreshToken = LoginStatus.EXPIRED.value
                 )
@@ -50,33 +54,14 @@ class AuthInterceptor @Inject constructor(
 
     private fun Request.newAuthTokenBuilder() =
         runBlocking(Dispatchers.IO) {
-            val accessToken = getAccessToken()
-            val refreshToken = getNewToken()
+            val accessToken = context.getAccessToken()
+            val refreshToken = context.getNewToken()
             newBuilder().apply {
                 addHeader(ACCESS_TOKEN, accessToken)
                 addHeader(REFRESH_TOKEN, refreshToken)
             }
         }
 
-
-    private fun getAccessToken(): String {
-        return PreferenceManager.getString(
-            ApplicationClass.appContext,
-            TOKEN_KEY_ACCESS
-        ) ?: ""
-    }
-
-    private fun getNewToken(): String {
-        return PreferenceManager.getString(
-            ApplicationClass.appContext,
-            TOKEN_KEY_REFRESH
-        ) ?: ""
-    }
-
-    private fun saveToken(accessToken: String, refreshToken: String) {
-        PreferenceManager.setString(ApplicationClass.appContext, TOKEN_KEY_ACCESS, accessToken)
-        PreferenceManager.setString(ApplicationClass.appContext, TOKEN_KEY_REFRESH, refreshToken)
-    }
 
     private fun handleTokenExpired(
         chain: Interceptor.Chain,
@@ -87,13 +72,13 @@ class AuthInterceptor @Inject constructor(
         return if (refreshTokenResponse.isSuccessful) {
             handleGetRefreshTokenSuccess(refreshTokenResponse, originalRequest, chain)
         } else {
-            handleGetRefreshTokenFailure(refreshTokenResponse, headerRequest, chain)
+            handleGetNewTokenFailure(refreshTokenResponse, headerRequest, chain)
         }
     }
 
     private fun getNewToken(originalRequest: Request, chain: Interceptor.Chain): Response {
         val baseUrl = ApplicationClass.getBaseUrl()
-        val refreshToken = getNewToken()
+        val refreshToken = context.getNewToken()
         val refreshTokenRequest = originalRequest.newBuilder().post("".toRequestBody())
             .url("$baseUrl/api/auth/getNewToken")
             .addHeader(REFRESH_TOKEN, refreshToken)
@@ -113,7 +98,7 @@ class AuthInterceptor @Inject constructor(
             )
             responseToken.data?.data?.let {
                 Timber.e("New Refresh Token Success: ${it.refreshToken}")
-                saveToken(it.accessToken, it.refreshToken)
+                context.saveToken(it.accessToken, it.refreshToken)
             }
         }
 
@@ -121,13 +106,16 @@ class AuthInterceptor @Inject constructor(
         return chain.proceed(newRequest)
     }
 
-    private fun handleGetRefreshTokenFailure(
+    private fun handleGetNewTokenFailure(
         refreshTokenResponse: Response,
         headerRequest: Request,
         chain: Interceptor.Chain
     ): Response {
         Timber.e("New Refresh Token Failure: ${refreshTokenResponse.code}")
-        saveToken(accessToken = LoginStatus.EXPIRED.value, refreshToken = LoginStatus.EXPIRED.value)
+        context.saveToken(
+            accessToken = LoginStatus.EXPIRED.value,
+            refreshToken = LoginStatus.EXPIRED.value
+        )
         return chain.proceed(headerRequest)
     }
 
@@ -136,9 +124,6 @@ class AuthInterceptor @Inject constructor(
         private const val ACCESS_TOKEN = "accessToken"
         private const val CODE_TOKEN_EXPIRED = 401
         private const val REFRESH_TOKEN = "refreshToken"
-
-        const val TOKEN_KEY_ACCESS = "access"
-        const val TOKEN_KEY_REFRESH = "refresh"
     }
 
 }

@@ -11,8 +11,6 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
 import com.runnect.runnect.R
-import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.coursemain.CourseMainFragment
@@ -23,7 +21,8 @@ import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
-import com.runnect.runnect.util.preference.LoginStatus
+import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
+import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -45,7 +44,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun checkVisitorMode() {
-        val accessToken = PreferenceManager.getString(ApplicationClass.appContext, TOKEN_KEY_ACCESS)
+        val accessToken = applicationContext.getAccessToken()
         val loginStatus = LoginStatus.getLoginStatus(accessToken)
         isVisitorMode = loginStatus == LoginStatus.VISITOR
     }
@@ -164,7 +163,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         const val DEFAULT_VERSION = "0.0.0"
 
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        const val TOKEN_KEY_ACCESS = "access"
 
         var isVisitorMode = false
         var discoverFragment: DiscoverFragment? = null
