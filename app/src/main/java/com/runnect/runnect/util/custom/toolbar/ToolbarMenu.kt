@@ -44,12 +44,8 @@ sealed class ToolbarMenu(
         override fun createMenu(
             context: Context
         ): View {
-            return if (titleText != null) {
-                createBaseTextView(context, titleText, padding, textSize.toFloat(), fontRes)
-            } else {
-                val titleText = context.getString(resourceId)
-                createBaseTextView(context, titleText, padding, textSize.toFloat(), fontRes)
-            }
+            val title = titleText ?: context.getString(resourceId)
+            return createBaseTextView(context, title, padding, textSize.toFloat(), fontRes)
         }
     }
 
