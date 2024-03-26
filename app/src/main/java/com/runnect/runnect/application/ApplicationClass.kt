@@ -45,6 +45,7 @@ class ApplicationClass : Application() {
                 !::appContext.isInitialized -> BuildConfig.RUNNECT_PROD_URL
                 else -> {
                     val mode = ApiMode.getCurrentApiMode(appContext)
+                    Timber.d("현재 서버: ${mode}")
                     when (mode) {
                         ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
                         ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL

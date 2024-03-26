@@ -35,6 +35,7 @@ sealed class ToolbarMenu(
 
     data class Text (
         @StringRes override val resourceId: Int = CommonToolbarLayout.MENU_ITEM_RESOURCE_NONE,
+        val titleText: String? = null,
         override val padding: Int = 0,
         val textSize: Int = CommonToolbarLayout.MENU_ITEM_TEXT_SIZE,
         @FontRes val fontRes: Int = CommonToolbarLayout.TOOLBAR_TITLE_FONT_RES
@@ -43,7 +44,8 @@ sealed class ToolbarMenu(
         override fun createMenu(
             context: Context
         ): View {
-            return createBaseTextView(context, resourceId, padding, textSize.toFloat(), fontRes)
+            val title = titleText ?: context.getString(resourceId)
+            return createBaseTextView(context, title, padding, textSize.toFloat(), fontRes)
         }
     }
 

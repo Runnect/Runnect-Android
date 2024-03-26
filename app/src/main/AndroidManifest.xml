@@ -58,21 +58,40 @@
                     android:scheme="@string/kakao_redirection_scheme" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="false" />
+
         <activity
-            android:name=".presentation.mydrawdetail.MyDrawDetailActivity"
-            android:exported="false" />
+            android:name=".presentation.storage.mydrawdetail.MyDrawDetailActivity"
+            android:exported="false"/>
+
+        <activity android:name=".presentation.scheme.SchemeActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="rnnt.page.link"
+                    android:scheme="https" />
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".presentation.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".presentation.endrun.EndRunActivity"
@@ -111,19 +130,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.detail.CourseDetailActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="rnnt.page.link"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-
+            android:exported="false"/>
         <activity
             android:name=".presentation.mypage.reward.MyRewardActivity"
             android:exported="false" />

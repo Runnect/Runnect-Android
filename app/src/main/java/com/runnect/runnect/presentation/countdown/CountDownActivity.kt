@@ -12,14 +12,14 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCountDownBinding
 import com.runnect.runnect.presentation.run.RunActivity
+import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
+import timber.log.Timber
 
 class CountDownActivity: BindingActivity<ActivityCountDownBinding>(R.layout.activity_count_down) {
-    lateinit var courseData: CourseData
+    private val courseData: CourseData? by lazy { intent.getCompatibleParcelableExtra(EXTRA_COURSE_DATA) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        courseData = intent.getParcelableExtra(EXTRA_COURSE_DATA)!!
 
         val intentToRun = Intent(this, RunActivity::class.java)
         val numList = arrayListOf(
@@ -50,19 +50,12 @@ class CountDownActivity: BindingActivity<ActivityCountDownBinding>(R.layout.acti
             override fun onAnimationEnd(animation: Animation) {
                 counter -= COUNT_DECREASE_UNIT
                 if (counter == COUNT_END) {
-                    intentToRun.apply {
-                        putExtra(
-                            EXTRA_COUNTDOWN_TO_RUN, CourseData(
-                                courseId = courseData.courseId,
-                                publicCourseId = courseData.publicCourseId,
-                                touchList = courseData.touchList,
-                                startLatLng = courseData.startLatLng,
-                                departure = courseData.departure,
-                                distance = courseData.distance,
-                                image = courseData.image,
-                                dataFrom = courseData.dataFrom
+                    courseData?.let { courseData ->
+                        intentToRun.apply {
+                            putExtra(
+                                EXTRA_COUNTDOWN_TO_RUN, courseData
                             )
-                        )
+                        }
                     }
                     startActivity(intentToRun)
                     finish()

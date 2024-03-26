@@ -174,4 +174,7 @@
     <string name="location_permission_content">코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.</string>
     <string name="location_permission_guide">권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]</string>
     <string name="common_permission_denied">권한이 거부되었습니다.</string>
+
+    <!-- my draw detail -->
+    <string name="my_draw_detail_update_title_success_msg">수정을 완료했어요</string>
 </resources>

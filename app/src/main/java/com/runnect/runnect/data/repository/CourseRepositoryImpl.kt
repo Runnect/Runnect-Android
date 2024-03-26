@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.repository
 
+import com.runnect.runnect.data.dto.request.RequestPatchMyDrawCourseTitle
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
@@ -62,8 +63,15 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
 
-    override suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail> {
-        return remoteCourseDataSource.getMyDrawDetail(courseId = courseId)
+    override suspend fun getMyDrawDetail(courseId: Int) = runCatching {
+        remoteCourseDataSource.getMyDrawDetail(courseId).data?.toMyDrawCourseDetail()
+    }
+
+    override suspend fun patchMyDrawCourseTitle(
+        courseId: Int,
+        requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
+    ) = runCatching {
+        remoteCourseDataSource.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle).data?.toEditableMyDrawCourseDetail()
     }
 
     override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory> {

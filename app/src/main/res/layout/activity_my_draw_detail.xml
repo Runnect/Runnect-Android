@@ -8,14 +8,33 @@
         android:layout_height="match_parent"
         tools:context=".presentation.MyDrawDetailActivity">
 
-        <ImageView
-            android:id="@+id/iv_my_draw_detail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <include
+            android:id="@+id/layout_common_toolbar"
+            layout="@layout/layout_common_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/pb_my_draw_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/G3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_my_draw_detail"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_common_toolbar" />
 
         <View
             android:id="@+id/frame_course_distance"
@@ -44,7 +63,6 @@
             app:layout_constraintTop_toTopOf="@id/frame_course_distance"
             tools:text="1.6" />
 
-
         <TextView
             android:id="@+id/tv_course_distance_km"
             android:layout_width="wrap_content"
@@ -57,30 +75,7 @@
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_course_distance_record"
             app:layout_constraintEnd_toEndOf="@id/frame_course_distance"
-
             app:layout_constraintStart_toEndOf="@id/tv_course_distance_record" />
-
-        <ImageButton
-            android:id="@+id/imgBtn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="17dp"
-            android:background="@color/transparent_00"
-            android:src="@drawable/backbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imgBtn_delete"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="10dp"
-            android:background="@color/transparent_00"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
-            app:layout_constraintTop_toTopOf="@id/imgBtn_back" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_my_draw_detail_run"

@@ -10,6 +10,7 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.entity.MyDrawCourse
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.StorageRepository
 import com.runnect.runnect.presentation.state.UiState
@@ -50,6 +51,9 @@ class StorageViewModel @Inject constructor(
 
     var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
     var itemsToDelete: MutableList<Int> = mutableListOf()
+
+    private var _clickedCourseId = -1
+    val clickedCourseId get() = _clickedCourseId
 
     fun getMyDrawList() {
         viewModelScope.launch {
@@ -145,5 +149,9 @@ class StorageViewModel @Inject constructor(
     fun clearItemsToDelete() {
         itemsToDelete.clear()
         itemsToDeleteLiveData.value = itemsToDelete
+    }
+
+    fun saveClickedCourseId(id: Int) {
+        _clickedCourseId = id
     }
 }
