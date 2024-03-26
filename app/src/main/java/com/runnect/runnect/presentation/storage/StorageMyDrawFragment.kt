@@ -90,8 +90,7 @@ class StorageMyDrawFragment :
     }
 
     private fun initLayout() {
-        binding.recyclerViewStorageMyDraw
-            .layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerViewStorageMyDraw.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerViewStorageMyDraw.addItemDecoration(
             GridSpacingItemDecoration(
                 context = requireContext(),
@@ -335,7 +334,6 @@ class StorageMyDrawFragment :
             viewModel.saveClickedCourseId(id)
             Intent(context, MyDrawDetailActivity::class.java).apply {
                 putExtra(EXTRA_COURSE_ID, id)
-                putExtra(EXTRA_COURSE_TITLE, title)
                 resultLauncher.launch(this)
             }
             activity?.applyScreenEnterAnimation()
