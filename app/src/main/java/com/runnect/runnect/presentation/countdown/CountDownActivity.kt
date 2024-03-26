@@ -50,19 +50,10 @@ class CountDownActivity: BindingActivity<ActivityCountDownBinding>(R.layout.acti
             override fun onAnimationEnd(animation: Animation) {
                 counter -= COUNT_DECREASE_UNIT
                 if (counter == COUNT_END) {
-                    courseData?.let {
+                    courseData?.let { courseData ->
                         intentToRun.apply {
                             putExtra(
-                                EXTRA_COUNTDOWN_TO_RUN, CourseData(
-                                    courseId = it.courseId,
-                                    publicCourseId = it.publicCourseId,
-                                    touchList = it.touchList,
-                                    startLatLng = it.startLatLng,
-                                    departure = it.departure,
-                                    distance = it.distance,
-                                    image = it.image,
-                                    dataFrom = it.dataFrom
-                                )
+                                EXTRA_COUNTDOWN_TO_RUN, courseData
                             )
                         }
                     }
