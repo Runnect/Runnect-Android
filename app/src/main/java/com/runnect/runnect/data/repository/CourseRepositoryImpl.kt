@@ -38,7 +38,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun getRecommendCourse(
         pageNo: String,
         sort: String
-    ): kotlin.Result<RecommendCoursePagingData?> = runCatching {
+    ): Result<RecommendCoursePagingData?> = runCatching {
         val response = remoteCourseDataSource.getRecommendCourse(
             pageNo = pageNo,
             sort = sort
@@ -49,12 +49,12 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         }
     }
 
-    override suspend fun getCourseSearch(keyword: String): kotlin.Result<List<DiscoverSearchCourse>?> =
+    override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?> =
         runCatching {
             remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverSearchCourses()
         }
 
-    override suspend fun getMyCourseLoad(): kotlin.Result<List<DiscoverUploadCourse>?> =
+    override suspend fun getMyCourseLoad(): Result<List<DiscoverUploadCourse>?> =
         runCatching {
             remoteCourseDataSource.getMyCourseLoad().data?.toUploadCourses()
         }
@@ -87,14 +87,14 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun getCourseDetail(
         publicCourseId: Int
-    ): kotlin.Result<CourseDetail?> = runCatching {
+    ): Result<CourseDetail?> = runCatching {
         remoteCourseDataSource.getCourseDetail(publicCourseId = publicCourseId).data?.toCourseDetail()
     }
 
     override suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
-    ): kotlin.Result<EditableCourseDetail?> = runCatching {
+    ): Result<EditableCourseDetail?> = runCatching {
         remoteCourseDataSource.patchPublicCourse(
             publicCourseId = publicCourseId,
             requestPatchPublicCourse = requestPatchPublicCourse
@@ -103,7 +103,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
-    ): kotlin.Result<ResponsePostScrap?> = runCatching {
+    ): Result<ResponsePostScrap?> = runCatching {
         remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).data
     }
 }

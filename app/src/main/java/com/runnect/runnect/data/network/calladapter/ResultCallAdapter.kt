@@ -10,7 +10,7 @@ class ResultCallAdapter<T>(
 
     override fun responseType() = responseType
 
-    // Retrofit의 Call을 Flow<>로 변환
+    // Retrofit의 Call을 Result<>로 변환
     override fun adapt(call: Call<T>): Call<Result<T>> {
         return ResultCall(call)
     }

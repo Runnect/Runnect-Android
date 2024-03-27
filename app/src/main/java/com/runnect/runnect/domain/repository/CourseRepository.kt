@@ -23,16 +23,16 @@ import okhttp3.RequestBody
 import retrofit2.Response
 
 interface CourseRepository {
-    suspend fun getMarathonCourse(): Flow<kotlin.Result<List<MarathonCourse>>>
+    suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>>
 
     suspend fun getRecommendCourse(
         pageNo: String,
         sort: String
-    ): kotlin.Result<RecommendCoursePagingData?>
+    ): Result<RecommendCoursePagingData?>
 
-    suspend fun getCourseSearch(keyword: String): kotlin.Result<List<DiscoverSearchCourse>?>
+    suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 
-    suspend fun getMyCourseLoad(): kotlin.Result<List<DiscoverUploadCourse>?>
+    suspend fun getMyCourseLoad(): Result<List<DiscoverUploadCourse>?>
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload
 
@@ -46,12 +46,12 @@ interface CourseRepository {
         image: MultipartBody.Part, data: RequestBody
     ): Response<ResponsePostMyDrawCourse>
 
-    suspend fun getCourseDetail(publicCourseId: Int): kotlin.Result<CourseDetail?>
+    suspend fun getCourseDetail(publicCourseId: Int): Result<CourseDetail?>
 
     suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
-    ): kotlin.Result<EditableCourseDetail?>
+    ): Result<EditableCourseDetail?>
 
-    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): kotlin.Result<ResponsePostScrap?>
+    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Result<ResponsePostScrap?>
 }
