@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.discover
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
@@ -15,9 +14,7 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -105,7 +102,6 @@ class DiscoverViewModel @Inject constructor(
     private fun getMarathonCourses() {
         launchWithHandler {
             courseRepository.getMarathonCourse()
-                .flowOn(Dispatchers.IO)
                 .onStart {
                     _marathonCourseGetState.value = UiStateV2.Loading
                 }.collect { result ->

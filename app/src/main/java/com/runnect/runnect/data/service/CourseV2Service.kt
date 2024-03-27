@@ -7,5 +7,5 @@ import retrofit2.http.GET
 
 interface CourseV2Service {
     @GET("/api/public-course/marathon")
-    fun getMarathonCourse(): Flow<ApiResult<ResponseGetDiscoverMarathon>>
+    suspend fun getMarathonCourse(): ApiResult<ResponseGetDiscoverMarathon>
 }
