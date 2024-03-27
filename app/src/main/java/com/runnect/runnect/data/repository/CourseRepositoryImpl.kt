@@ -12,7 +12,6 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
-import com.runnect.runnect.data.network.mapToResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.common.Result
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
@@ -31,7 +30,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     CourseRepository {
 
     override suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>> {
-        return remoteCourseDataSource.getMarathonCourse().mapToResult {
+        return remoteCourseDataSource.getMarathonCourse().mapToFlowResult {
             it.toMarathonCourses()
         }
     }
