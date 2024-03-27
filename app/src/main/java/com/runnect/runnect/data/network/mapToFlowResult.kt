@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.network
 
+import com.runnect.runnect.domain.common.RunnectException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -14,7 +15,7 @@ fun <R, D> Result<R>.mapToFlowResult(
         )
 
         else -> Result.failure(
-            this@mapToFlowResult.exceptionOrNull()!!
+            this@mapToFlowResult.exceptionOrNull() ?: RunnectException()
         )
     }
 
