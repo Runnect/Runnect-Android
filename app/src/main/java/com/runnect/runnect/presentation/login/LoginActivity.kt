@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.login
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -32,7 +33,7 @@ class LoginActivity :
     //자동 로그인
     override fun onStart() {
         super.onStart()
-        val accessToken = applicationContext.getAccessToken()
+        val accessToken = this.getAccessToken()
 
         when (LoginStatus.getLoginStatus(accessToken)) {
             LoginStatus.EXPIRED -> {
@@ -67,6 +68,7 @@ class LoginActivity :
     }
 
     private fun addListener() {
+        val ctx: Context = this
         with(binding) {
             cvGoogleLogin.setOnClickListener {
                 socialLogin = googleLogin
@@ -78,7 +80,7 @@ class LoginActivity :
             }
             btnVisitorMode.setOnClickListener {
                 Analytics.logClickedItemEvent(EVENT_CLICK_VISITOR)
-                applicationContext.saveToken(
+                ctx.saveToken(
                     accessToken = LoginStatus.VISITOR.value,
                     refreshToken = LoginStatus.VISITOR.value
                 )
@@ -130,7 +132,7 @@ class LoginActivity :
 
     private fun saveSignTokenInfo() {
         viewModel.loginResult.value?.let { loginResult ->
-            applicationContext.saveToken(
+            this.saveToken(
                 accessToken = loginResult.accessToken,
                 refreshToken = loginResult.refreshToken
             )

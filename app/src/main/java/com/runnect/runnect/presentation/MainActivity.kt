@@ -44,7 +44,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun checkVisitorMode() {
-        val accessToken = applicationContext.getAccessToken()
+        val accessToken = this.getAccessToken()
         val loginStatus = LoginStatus.getLoginStatus(accessToken)
         isVisitorMode = loginStatus == LoginStatus.VISITOR
     }

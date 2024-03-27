@@ -35,7 +35,7 @@ class GiveNicknameActivity :
     }
 
     private fun saveSignTokenInfo() {
-        applicationContext.saveToken(
+        this.saveToken(
             accessToken = intent.getStringExtra("access") ?: "",
             refreshToken = intent.getStringExtra("refresh") ?: ""
         )

@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.setting.accountinfo
 
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -111,7 +112,8 @@ class MySettingAccountInfoFragment :
     }
 
     private fun moveToLogin() {
-        requireActivity().applicationContext?.saveToken(
+        val ctx: Context = context ?: return
+        ctx.saveToken(
             accessToken = LoginStatus.NONE.value,
             refreshToken = LoginStatus.NONE.value
         )
