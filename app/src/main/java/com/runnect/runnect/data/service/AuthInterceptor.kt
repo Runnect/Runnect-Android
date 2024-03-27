@@ -9,8 +9,6 @@ import com.runnect.runnect.util.preference.AuthUtil.getNewToken
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
 import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -53,15 +51,14 @@ class AuthInterceptor @Inject constructor(
         }
     }
 
-    private fun Request.newAuthTokenBuilder() =
-        runBlocking(Dispatchers.IO) {
-            val accessToken = context.getAccessToken()
-            val refreshToken = context.getNewToken()
-            newBuilder().apply {
-                addHeader(ACCESS_TOKEN, accessToken)
-                addHeader(REFRESH_TOKEN, refreshToken)
-            }
+    private fun Request.newAuthTokenBuilder(): Request.Builder {
+        val accessToken = context.getAccessToken()
+        val refreshToken = context.getNewToken()
+        return newBuilder().apply {
+            addHeader(ACCESS_TOKEN, accessToken)
+            addHeader(REFRESH_TOKEN, refreshToken)
         }
+    }
 
 
     private fun handleTokenExpired(
