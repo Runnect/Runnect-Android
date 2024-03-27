@@ -52,10 +52,11 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverSearchCourses()
         }
 
-    override suspend fun getMyCourseLoad(): Result<List<DiscoverUploadCourse>?> =
-        runCatching {
-            remoteCourseDataSource.getMyCourseLoad().data?.toUploadCourses()
+    override suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>> {
+        return remoteCourseDataSource.getMyCourseLoad().mapToFlowResult {
+            it.toUploadCourses()
         }
+    }
 
     override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload {
         return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse)

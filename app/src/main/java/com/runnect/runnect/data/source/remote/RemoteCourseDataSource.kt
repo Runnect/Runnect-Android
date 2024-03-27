@@ -13,6 +13,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.service.CourseV2Service
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -38,7 +39,7 @@ class RemoteCourseDataSource @Inject constructor(
     suspend fun getCourseDetail(publicCourseId: Int): BaseResponse<ResponseGetCourseDetail> =
         courseService.getCourseDetail(publicCourseId)
 
-    suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()
+    suspend fun getMyCourseLoad() = courseV2Service.getMyCourseLoad()
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse) =
         courseService.postUploadMyCourse(requestPostPublicCourse)

@@ -2,6 +2,7 @@ package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
+import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -14,4 +15,7 @@ interface CourseV2Service {
         @Query("pageNo") pageNo: String,
         @Query("sort") sort: String
     ): Result<ResponseGetDiscoverRecommend>
+
+    @GET("/api/course/private/user")
+    suspend fun getMyCourseLoad(): Result<ResponseGetDiscoverUploadCourse>
 }

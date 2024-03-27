@@ -32,7 +32,7 @@ interface CourseRepository {
 
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 
-    suspend fun getMyCourseLoad(): Result<List<DiscoverUploadCourse>?>
+    suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>>
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload
 
