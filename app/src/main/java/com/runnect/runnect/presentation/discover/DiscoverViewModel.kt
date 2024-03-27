@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
-import com.runnect.runnect.domain.common.onFailure
-import com.runnect.runnect.domain.common.onSuccess
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
