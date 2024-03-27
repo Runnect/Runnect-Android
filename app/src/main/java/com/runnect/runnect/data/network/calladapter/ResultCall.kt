@@ -26,7 +26,7 @@ class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
                     } ?: Result.failure(
                         RunnectException(
                             code = response.code(),
-                            message = "Response body is null"
+                            message = ERROR_MSG_RESPONSE_IS_NULL
                         )
                     )
                 } else {
@@ -51,7 +51,7 @@ class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
         return runCatching {
             val errorBody = gson.fromJson(errorJson, ErrorResponse::class.java)
             val message = errorBody?.run {
-                message ?: error ?: "알 수 없는 에러가 발생하였습니다."
+                message ?: error ?: ERROR_MSG_COMMON
             }
 
             RunnectException(
@@ -61,7 +61,7 @@ class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
         }.getOrElse {
             RunnectException(
                 code = response.code(),
-                message = "알 수 없는 에러가 발생하였습니다."
+                message = ERROR_MSG_COMMON
             )
         }
     }
@@ -72,4 +72,9 @@ class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
     override fun isCanceled(): Boolean = call.isCanceled
     override fun request(): Request = call.request()
     override fun timeout(): Timeout = call.timeout()
+
+    companion object {
+        private const val ERROR_MSG_COMMON = "알 수 없는 에러가 발생하였습니다."
+        private const val ERROR_MSG_RESPONSE_IS_NULL = "데이터를 불러올 수 없습니다."
+    }
 }
