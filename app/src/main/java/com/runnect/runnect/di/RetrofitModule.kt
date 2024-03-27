@@ -3,7 +3,7 @@ package com.runnect.runnect.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.data.network.calladapter.FlowCallAdapterFactory
+import com.runnect.runnect.data.network.calladapter.ApiResultCallAdapterFactory
 import com.runnect.runnect.data.network.interceptor.ResponseInterceptor
 import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
@@ -125,7 +125,7 @@ object RetrofitModule {
             .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(FlowCallAdapterFactory.create())
+            .addCallAdapterFactory(ApiResultCallAdapterFactory.create())
             .build()
 
         return retrofit ?: throw RuntimeException("Retrofit creation failed.")
