@@ -2,45 +2,50 @@ package com.runnect.runnect.data.network.calladapter
 
 import com.google.gson.Gson
 import com.runnect.runnect.data.dto.response.base.ErrorResponse
-import com.runnect.runnect.data.network.ApiResult
+import com.runnect.runnect.domain.common.RunnectException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import okhttp3.Request
 import okio.Timeout
 
-class ApiResultCall<T>(private val call: Call<T>) : Call<ApiResult<T>> {
+class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
 
     private val gson = Gson()
 
-    override fun execute(): Response<ApiResult<T>> {
+    override fun execute(): Response<Result<T>> {
         throw UnsupportedOperationException("ResultCall doesn't support execute")
     }
 
-    override fun enqueue(callback: Callback<ApiResult<T>>) {
+    override fun enqueue(callback: Callback<Result<T>>) {
         call.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 val apiResult = if (response.isSuccessful) {
                     response.body()?.let {
-                        ApiResult.Success(it)
-                    } ?: ApiResult.Failure(code = response.code(), message = "Response body is null")
+                        Result.success(it)
+                    } ?: Result.failure(
+                        RunnectException(
+                            code = response.code(),
+                            message = "Response body is null"
+                        )
+                    )
                 } else {
-                    parseErrorResponse(response)
+                    Result.failure(parseErrorResponse(response))
                 }
 
                 callback.onResponse(
-                    this@ApiResultCall,
+                    this@ResultCall,
                     Response.success(apiResult)
                 )
             }
 
             override fun onFailure(call: Call<T>, t: Throwable) {
-                callback.onFailure(this@ApiResultCall, t)
+                callback.onFailure(this@ResultCall, t)
             }
         })
     }
 
-    private fun parseErrorResponse(response: Response<*>): ApiResult.Failure {
+    private fun parseErrorResponse(response: Response<*>): RunnectException {
         val errorJson = response.errorBody()?.string()
 
         return runCatching {
@@ -49,19 +54,19 @@ class ApiResultCall<T>(private val call: Call<T>) : Call<ApiResult<T>> {
                 message ?: error ?: "알 수 없는 에러가 발생하였습니다."
             }
 
-            ApiResult.Failure(
+            RunnectException(
                 code = errorBody.status,
                 message = message
             )
         }.getOrElse {
-            ApiResult.Failure(
+            RunnectException(
                 code = response.code(),
                 message = "알 수 없는 에러가 발생하였습니다."
             )
         }
     }
 
-    override fun clone(): Call<ApiResult<T>> = ApiResultCall(call.clone())
+    override fun clone(): Call<Result<T>> = ResultCall(call.clone())
     override fun isExecuted(): Boolean = call.isExecuted
     override fun cancel() = call.cancel()
     override fun isCanceled(): Boolean = call.isCanceled

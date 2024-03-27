@@ -11,7 +11,6 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
-import com.runnect.runnect.domain.common.Result
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
@@ -24,7 +23,7 @@ import okhttp3.RequestBody
 import retrofit2.Response
 
 interface CourseRepository {
-    suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>>
+    suspend fun getMarathonCourse(): Flow<kotlin.Result<List<MarathonCourse>>>
 
     suspend fun getRecommendCourse(
         pageNo: String,

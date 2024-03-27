@@ -1,6 +1,5 @@
 package com.runnect.runnect.data.source.remote
 
-import com.runnect.runnect.data.network.ApiResult
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
@@ -22,7 +21,7 @@ class RemoteCourseDataSource @Inject constructor(
     private var courseV2Service: CourseV2Service,
     private val courseService: CourseService
 ) {
-    suspend fun getMarathonCourse(): ApiResult<ResponseGetDiscoverMarathon> =
+    suspend fun getMarathonCourse(): Result<ResponseGetDiscoverMarathon> =
         courseV2Service.getMarathonCourse()
 
     suspend fun getRecommendCourse(
