@@ -12,6 +12,7 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ import javax.inject.Inject
 class DiscoverViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val bannerRepository: BannerRepository
-) : ViewModel() {
+) : BaseViewModel() {
     private val _bannerGetState = MutableLiveData<UiStateV2<List<DiscoverBanner>>>()
     val bannerGetState: LiveData<UiStateV2<List<DiscoverBanner>>>
         get() = _bannerGetState
@@ -102,7 +103,7 @@ class DiscoverViewModel @Inject constructor(
     }
 
     private fun getMarathonCourses() {
-        viewModelScope.launch {
+        launchWithHandler {
             courseRepository.getMarathonCourse()
                 .flowOn(Dispatchers.IO)
                 .onStart {
