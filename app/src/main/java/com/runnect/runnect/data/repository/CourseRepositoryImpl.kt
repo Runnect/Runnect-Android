@@ -47,9 +47,9 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         }
     }
 
-    override suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?> =
-        runCatching {
-            remoteCourseDataSource.getCourseSearch(keyword = keyword).data?.toDiscoverSearchCourses()
+    override suspend fun getCourseSearch(keyword: String): Flow<Result<List<DiscoverSearchCourse>>> =
+        remoteCourseDataSource.getCourseSearch(keyword = keyword).mapToFlowResult {
+            it.toDiscoverSearchCourses()
         }
 
     override suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>> {

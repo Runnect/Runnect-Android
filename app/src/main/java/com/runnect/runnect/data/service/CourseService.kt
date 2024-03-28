@@ -4,7 +4,6 @@ import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
-import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
@@ -19,11 +18,6 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface CourseService {
-
-    @GET("/api/public-course/search?")
-    suspend fun getCourseSearch(
-        @Query("keyword") keyword: String,
-    ): BaseResponse<ResponseGetDiscoverSearch>
 
     @GET("/api/public-course/detail/{publicCourseId}")
     suspend fun getCourseDetail(

@@ -30,7 +30,7 @@ interface CourseRepository {
         sort: String
     ): Flow<Result<RecommendCoursePagingData>>
 
-    suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
+    suspend fun getCourseSearch(keyword: String): Flow<Result<List<DiscoverSearchCourse>>>
 
     suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>>
 

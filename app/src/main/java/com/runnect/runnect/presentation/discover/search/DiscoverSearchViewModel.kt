@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.discover.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
@@ -12,7 +11,6 @@ import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,22 +33,22 @@ class DiscoverSearchViewModel @Inject constructor(
     }
 
     fun getCourseSearch(keyword: String) {
-        viewModelScope.launch {
-            _courseSearchState.value = UiStateV2.Loading
-
+        launchWithHandler {
             courseRepository.getCourseSearch(
                 keyword = keyword
-            ).onSuccess { response ->
-                if (response == null) return@launch
+            ).onStart {
+                _courseSearchState.value = UiStateV2.Loading
+            }.collect { result ->
+                result.onSuccess {
+                    if (it.isEmpty()) {
+                        _courseSearchState.value = UiStateV2.Empty
+                        return@onSuccess
+                    }
 
-                if (response.isEmpty()) {
-                    _courseSearchState.value = UiStateV2.Empty
-                    return@launch
+                    _courseSearchState.value = UiStateV2.Success(it)
+                }.onFailure {
+                    _courseSearchState.value = UiStateV2.Failure(it.toLog())
                 }
-
-                _courseSearchState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseSearchState.value = UiStateV2.Failure(exception.message.toString())
             }
         }
     }
