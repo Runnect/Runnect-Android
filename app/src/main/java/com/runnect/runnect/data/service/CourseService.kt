@@ -1,8 +1,6 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
-import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
@@ -11,10 +9,8 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
-import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
@@ -33,11 +29,6 @@ interface CourseService {
     suspend fun getCourseDetail(
         @Path("publicCourseId") publicCourseId: Int,
     ): BaseResponse<ResponseGetCourseDetail>
-
-    @POST("/api/public-course")
-    suspend fun postUploadMyCourse(
-        @Body requestPostPublicCourse: RequestPostPublicCourse,
-    ): ResponsePostDiscoverUpload
 
     @PATCH("/api/public-course/{publicCourseId}")
     suspend fun patchPublicCourse(

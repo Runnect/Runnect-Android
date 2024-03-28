@@ -1,9 +1,11 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,6 +24,11 @@ interface CourseV2Service {
 
     @GET("/api/course/private/user")
     suspend fun getMyCourseLoad(): Result<ResponseGetDiscoverUploadCourse>
+
+    @POST("/api/public-course")
+    suspend fun postUploadMyCourse(
+        @Body requestPostPublicCourse: RequestPostPublicCourse,
+    ): Result<ResponsePostDiscoverUpload>
 
     @POST("/api/scrap")
     suspend fun postCourseScrap(

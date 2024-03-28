@@ -3,20 +3,21 @@ package com.runnect.runnect.presentation.discover.upload
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.addSourceList
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class DiscoverUploadViewModel @Inject constructor(private val courseRepository: CourseRepository) :
-    ViewModel() {
+class DiscoverUploadViewModel @Inject constructor(
+    private val courseRepository: CourseRepository
+) : BaseViewModel() {
+
     var id = 0
     val title = MutableLiveData<String>()
     val desc = MutableLiveData<String>()
@@ -40,25 +41,27 @@ class DiscoverUploadViewModel @Inject constructor(private val courseRepository: 
     }
 
     fun postUploadMyCourse() {
-        viewModelScope.launch {
-            Timber.d("업로드 호출")
-            runCatching {
-                _courseUpLoadState.value = UiState.Loading
-                courseRepository.postUploadMyCourse(
-                    RequestPostPublicCourse(
-                        courseId = id,
-                        description = desc.value.toString(),
-                        title = title.value.toString()
-                    )
-                )
-            }.onSuccess {
-                Timber.d("업로드 성공")
-                _courseUpLoadState.value = UiState.Success
-            }.onFailure {
-                Timber.d("업로드 실패")
-                errorMessage.value = it.message
-                _courseUpLoadState.value = UiState.Failure
-            }
+        launchWithHandler {
+            val requestPostPublicCourse = RequestPostPublicCourse(
+                courseId = id,
+                description = desc.value.toString(),
+                title = title.value.toString()
+            )
+
+            courseRepository.postUploadMyCourse(requestPostPublicCourse)
+                .onStart {
+                    Timber.d("업로드 호출")
+                    _courseUpLoadState.value = UiState.Loading
+                }.collect { result ->
+                    result.onSuccess {
+                        Timber.d("업로드 성공")
+                        _courseUpLoadState.value = UiState.Success
+                    }.onFailure {
+                        Timber.d("업로드 실패")
+                        errorMessage.value = it.message
+                        _courseUpLoadState.value = UiState.Failure
+                    }
+                }
         }
     }
 }
