@@ -2,7 +2,6 @@ package com.runnect.runnect.domain.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.domain.entity.UserProfile
-import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
@@ -13,18 +12,19 @@ import com.runnect.runnect.data.dto.response.ResponseDeleteUser
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import com.runnect.runnect.domain.entity.User
+import com.runnect.runnect.domain.entity.UserUploadCourse
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     suspend fun getUserInfo(): Flow<Result<User>>
+
+    suspend fun getUserUploadCourse(): Flow<Result<List<UserUploadCourse>>>
 
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
 
     suspend fun getMyStamp(): MutableList<String>
 
     suspend fun getRecord(): MutableList<HistoryInfoDTO>
-
-    suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO>
 
     suspend fun getUserProfile(userId: Int): Result<UserProfile?>
 

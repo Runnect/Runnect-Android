@@ -24,13 +24,15 @@ class RemoteUserDataSource @Inject constructor(
     private val userService: UserService
 ) {
     suspend fun getUserInfo(): Result<ResponseGetUser> = userV2Service.getUserInfo()
+
+    suspend fun getUserUploadCourse(): Result<ResponseGetUserUploadCourse> =
+        userV2Service.getUserUploadCourse()
+
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         userService.updateNickName(requestPatchNickName)
 
     suspend fun getMyStamp(): ResponseGetMyStamp = userService.getMyStamp()
     suspend fun getRecord(): ResponseGetMyHistory = userService.getRecord()
-    suspend fun getUserUploadCourse(): ResponseGetUserUploadCourse =
-        userService.getUserUploadCourse()
 
     suspend fun getUserProfile(userId: Int): BaseResponse<ResponseGetUserProfile> =
         userService.getUserProfile(userId)

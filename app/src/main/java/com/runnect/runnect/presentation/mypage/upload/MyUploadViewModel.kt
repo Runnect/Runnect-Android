@@ -3,19 +3,22 @@ package com.runnect.runnect.presentation.mypage.upload
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyUploadViewModel @Inject constructor(private val userRepository: UserRepository) :
-    ViewModel() {
+class MyUploadViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : BaseViewModel() {
+
     private var _myUploadCourseState = MutableLiveData<UiState>()
     val myUploadCourseState: LiveData<UiState>
         get() = _myUploadCourseState
@@ -24,8 +27,8 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
     val myUploadDeleteState: LiveData<UiState>
         get() = _myUploadDeleteState
 
-    private var _myUploadCourses = mutableListOf<UserUploadCourseDTO>()
-    val myUploadCourses: List<UserUploadCourseDTO>
+    private var _myUploadCourses = mutableListOf<UserUploadCourse>()
+    val myUploadCourses: List<UserUploadCourse>
         get() = _myUploadCourses
 
     val errorMessage = MutableLiveData<String>()
@@ -64,21 +67,19 @@ class MyUploadViewModel @Inject constructor(private val userRepository: UserRepo
     }
 
     fun getUserUploadCourse() {
-        viewModelScope.launch {
-            runCatching {
-                _myUploadCourseState.value = UiState.Loading
-                userRepository.getUserUploadCourse()
-            }.onSuccess {
-                _myUploadCourses = it
-                if (_myUploadCourses.isEmpty()) {
-                    _myUploadCourseState.value = UiState.Empty
-                } else {
-                    _myUploadCourseState.value = UiState.Success
+        launchWithHandler {
+            userRepository.getUserUploadCourse()
+                .onStart {
+                    _myUploadCourseState.value = UiState.Loading
+                }.collect { result ->
+                    result.onSuccess {
+                        _myUploadCourses = it.toMutableList()
+                        _myUploadCourseState.value = if (it.isEmpty()) UiState.Empty else UiState.Success
+                    }.onFailure {
+                        errorMessage.value = it.message
+                        _myUploadCourseState.value = UiState.Failure
+                    }
                 }
-            }.onFailure {
-                errorMessage.value = it.message
-                _myUploadCourseState.value = UiState.Failure
-            }
         }
     }
 

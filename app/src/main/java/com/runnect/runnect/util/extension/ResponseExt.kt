@@ -16,12 +16,6 @@ fun Record.toData(): HistoryInfoDTO {
     )
 }
 
-fun PublicCourseUpload.toData(): UserUploadCourseDTO {
-    return UserUploadCourseDTO(
-        id = id, title = title, img = image, departure = departure.region + ' ' + departure.city
-    )
-}
-
 fun ResponsePostLogin.toData(): LoginDTO {
     with(this.data) {
         return LoginDTO(

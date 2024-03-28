@@ -23,10 +23,6 @@ interface UserService {
     suspend fun getRecord(
     ): ResponseGetMyHistory
 
-    @GET("api/public-course/user")
-    suspend fun getUserUploadCourse(
-    ): ResponseGetUserUploadCourse
-
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
         @Body requestDeleteUploadCourse: RequestDeleteUploadCourse

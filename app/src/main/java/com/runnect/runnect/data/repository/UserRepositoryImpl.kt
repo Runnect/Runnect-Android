@@ -2,7 +2,6 @@ package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.domain.entity.UserProfile
-import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
@@ -15,6 +14,7 @@ import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteUserDataSource
 import com.runnect.runnect.domain.entity.User
+import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.util.extension.toData
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +26,12 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
     override suspend fun getUserInfo(): Flow<Result<User>> = remoteUserDataSource.getUserInfo()
         .mapToFlowResult { it.toUser() }
 
+    override suspend fun getUserUploadCourse(): Flow<Result<List<UserUploadCourse>>> {
+        return remoteUserDataSource.getUserUploadCourse().mapToFlowResult {
+            it.toUserUploadCourse()
+        }
+    }
+
     override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         remoteUserDataSource.updateNickName(requestPatchNickName)
 
@@ -35,11 +41,6 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
 
     override suspend fun getRecord(): MutableList<HistoryInfoDTO> {
         return remoteUserDataSource.getRecord().data.records.map { it.toData() }.toMutableList()
-    }
-
-    override suspend fun getUserUploadCourse(): MutableList<UserUploadCourseDTO> {
-        return remoteUserDataSource.getUserUploadCourse().data.publicCourses.map { it.toData() }
-            .toMutableList()
     }
 
     override suspend fun getUserProfile(userId: Int): Result<UserProfile?> =
