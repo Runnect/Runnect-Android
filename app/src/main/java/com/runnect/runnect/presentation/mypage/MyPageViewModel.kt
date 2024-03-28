@@ -2,18 +2,19 @@ package com.runnect.runnect.presentation.mypage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.R
 import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageViewModel @Inject constructor(private val userRepository: UserRepository) :
-    ViewModel() {
+class MyPageViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : BaseViewModel() {
+
     val nickName: MutableLiveData<String> = MutableLiveData<String>()
     val stampId: MutableLiveData<String> = MutableLiveData<String>(STAMP_LOCK)
     val profileImgResId: MutableLiveData<Int> = MutableLiveData<Int>(R.drawable.user_profile_basic)
@@ -35,21 +36,26 @@ class MyPageViewModel @Inject constructor(private val userRepository: UserReposi
     }
 
     fun getUserInfo() {
-        viewModelScope.launch {
-            runCatching {
-                _userInfoState.value = UiState.Loading
-                userRepository.getUserInfo()
-            }.onSuccess {
-                level.value = it.data.user.level.toString()
-                nickName.value = it.data.user.nickname
-                stampId.value = it.data.user.latestStamp
-                levelPercent.value = it.data.user.levelPercent
-                email.value = it.data.user.email
-                _userInfoState.value = UiState.Success
-            }.onFailure {
-                errorMessage.value = it.message
-                _userInfoState.value = UiState.Failure
-            }
+        launchWithHandler {
+            userRepository.getUserInfo()
+                .onStart {
+                    _userInfoState.value = UiState.Loading
+                }.collect { result ->
+                    result.onSuccess { user ->
+                        user.let {
+                            level.value = it.level.toString()
+                            nickName.value = it.nickname
+                            stampId.value = it.latestStamp
+                            levelPercent.value = it.levelPercent
+                            email.value = it.email
+                        }
+
+                        _userInfoState.value = UiState.Success
+                    }.onFailure {
+                        errorMessage.value = it.message
+                        _userInfoState.value = UiState.Failure
+                    }
+                }
         }
     }
 

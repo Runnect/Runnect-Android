@@ -9,9 +9,6 @@ import com.runnect.runnect.data.dto.response.base.BaseResponse
 import retrofit2.http.*
 
 interface UserService {
-    @GET("api/user")
-    suspend fun getUserInfo(
-    ): ResponseGetUser
 
     @PATCH("api/user")
     suspend fun updateNickName(

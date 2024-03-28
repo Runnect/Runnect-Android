@@ -10,17 +10,22 @@ import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
-import com.runnect.runnect.data.dto.response.ResponseGetUser
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
+import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteUserDataSource
+import com.runnect.runnect.domain.entity.User
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.util.extension.toData
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: RemoteUserDataSource) :
     UserRepository {
-    override suspend fun getUserInfo(): ResponseGetUser = remoteUserDataSource.getUserInfo()
+
+    override suspend fun getUserInfo(): Flow<Result<User>> = remoteUserDataSource.getUserInfo()
+        .mapToFlowResult { it.toUser() }
+
     override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         remoteUserDataSource.updateNickName(requestPatchNickName)
 

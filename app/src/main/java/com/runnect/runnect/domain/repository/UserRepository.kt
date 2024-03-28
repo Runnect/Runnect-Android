@@ -10,12 +10,13 @@ import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
-import com.runnect.runnect.data.dto.response.ResponseGetUser
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
+import com.runnect.runnect.domain.entity.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun getUserInfo(): ResponseGetUser
+    suspend fun getUserInfo(): Flow<Result<User>>
 
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
 
