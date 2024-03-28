@@ -64,7 +64,7 @@ Runnect는 Run과 Connect의 합성어로 “능동적인 러닝 문화”와 �
 | [김우남](https://github.com/unam98) | [이하은](https://github.com/leeeha) | [백혜선](https://github.com/sxunea) | [김동현](https://github.com/Donghyeon0915) |
 | :---: | :---: | :---: | :---: |
 |<img width="150" src="https://github.com/Runnect/Runnect-Android/assets/68090939/e0fd9897-485e-41ad-b7ee-8be0573942ec">|<img width="150" src="https://github.com/Runnect/Runnect-Android/assets/68090939/9f7d8751-503c-4af6-a67c-b6e42b371e25">|<img width="150" src="https://github.com/team-winey/Winey-AOS/assets/68090939/7eb22b00-ef67-4ad0-9ae9-1bc5e579524b">|<img width="150" src="https://github.com/Runnect/Runnect-Android/assets/68090939/d9e40f14-5184-4739-82cd-0afce65553c7">|
-|코스 그리기, 보관함, 코스 공유|코스 발견, 코스 상세페이지, 러닝 기록|유저 프로필 조회, 위치 권한, 이벤트 태깅|보관함, 이벤트 태깅|
+|코스 그리기, 보관함, <br> 업로드 한 코스 공유|코스 발견, 코스 상세, <br> 그린 코스 공유, 러닝 기록|유저 프로필 조회, <br> 위치 권한 설정, <br> 이벤트 태깅|보관함, 이벤트 태깅|
 | 2022.12 ~ ing | 2023.09 ~ ing | 2023.11 ~ ing | 2023.11 ~ ing |
 
 ### Past 
