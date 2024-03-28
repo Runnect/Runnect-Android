@@ -2,21 +2,23 @@ package com.runnect.runnect.presentation.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
-import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -24,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CourseDetailViewModel @Inject constructor(
     private val courseRepository: CourseRepository, private val userRepository: UserRepository
-) : ViewModel() {
+) : BaseViewModel() {
     // 서버통신 코드
     private val _courseGetState = MutableLiveData<UiStateV2<CourseDetail?>>()
     val courseGetState: LiveData<UiStateV2<CourseDetail?>>
@@ -38,8 +40,8 @@ class CourseDetailViewModel @Inject constructor(
     val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourse?>>
         get() = _courseDeleteState
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
-    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<PostScrap>>()
+    val courseScrapState: LiveData<UiStateV2<PostScrap>>
         get() = _courseScrapState
 
     // 플래그 변수
@@ -133,18 +135,21 @@ class CourseDetailViewModel @Inject constructor(
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        viewModelScope.launch {
-            _courseScrapState.value = UiStateV2.Loading
+        launchWithHandler {
+            val requestPostCourseScrap = RequestPostCourseScrap(
+                publicCourseId = id, scrapTF = scrapTF.toString()
+            )
 
-            courseRepository.postCourseScrap(
-                RequestPostCourseScrap(
-                    publicCourseId = id, scrapTF = scrapTF.toString()
-                )
-            ).onSuccess { response ->
-                _courseScrapState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
-            }
+            courseRepository.postCourseScrap(requestPostCourseScrap)
+                .onStart {
+                    _courseScrapState.value = UiStateV2.Loading
+                }.collect { result ->
+                    result.onSuccess {
+                        _courseScrapState.value = UiStateV2.Success(it)
+                    }.onFailure {
+                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
+                    }
+                }
         }
     }
 

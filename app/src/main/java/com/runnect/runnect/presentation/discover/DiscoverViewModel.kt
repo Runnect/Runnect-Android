@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
-import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
@@ -44,8 +44,8 @@ class DiscoverViewModel @Inject constructor(
     val recommendCourseSortState: LiveData<UiStateV2<List<RecommendCourse>>>
         get() = _recommendCourseSortState
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
-    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<PostScrap>>()
+    val courseScrapState: LiveData<UiStateV2<PostScrap>>
         get() = _courseScrapState
 
     private var _clickedCourseId = -1
@@ -195,18 +195,21 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        viewModelScope.launch {
-            _courseScrapState.value = UiStateV2.Loading
+        launchWithHandler {
+            val requestPostCourseScrap = RequestPostCourseScrap(
+                publicCourseId = id, scrapTF = scrapTF.toString()
+            )
 
-            courseRepository.postCourseScrap(
-                RequestPostCourseScrap(
-                    publicCourseId = id, scrapTF = scrapTF.toString()
-                )
-            ).onSuccess { response ->
-                _courseScrapState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseScrapState.value = UiStateV2.Failure(exception.toLog())
-            }
+            courseRepository.postCourseScrap(requestPostCourseScrap)
+                .onStart {
+                    _courseScrapState.value = UiStateV2.Loading
+                }.collect { result ->
+                    result.onSuccess {
+                        _courseScrapState.value = UiStateV2.Success(it)
+                    }.onFailure {
+                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
+                    }
+                }
         }
     }
 

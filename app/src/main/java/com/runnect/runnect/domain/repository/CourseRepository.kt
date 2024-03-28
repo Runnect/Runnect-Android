@@ -9,13 +9,13 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
-import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
@@ -33,6 +33,8 @@ interface CourseRepository {
     suspend fun getCourseSearch(keyword: String): Result<List<DiscoverSearchCourse>?>
 
     suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>>
+
+    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<PostScrap>>
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload
 
@@ -52,6 +54,4 @@ interface CourseRepository {
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
     ): Result<EditableCourseDetail?>
-
-    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Result<ResponsePostScrap?>
 }

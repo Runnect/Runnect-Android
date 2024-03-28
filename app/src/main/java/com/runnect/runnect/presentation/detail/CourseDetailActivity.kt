@@ -557,7 +557,7 @@ class CourseDetailActivity :
         viewModel.courseScrapState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val response = state.data ?: return@observe
+                    val response = state.data
                     binding.tvCourseDetailScrapCount.text = response.scrapCount.toString()
                     binding.ivCourseDetailScrap.isSelected = response.scrapTF
                 }

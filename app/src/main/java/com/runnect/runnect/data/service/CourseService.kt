@@ -24,11 +24,6 @@ import retrofit2.http.*
 
 interface CourseService {
 
-    @POST("/api/scrap")
-    suspend fun postCourseScrap(
-        @Body requestPostCourseScrap: RequestPostCourseScrap,
-    ): BaseResponse<ResponsePostScrap>
-
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(
         @Query("keyword") keyword: String,

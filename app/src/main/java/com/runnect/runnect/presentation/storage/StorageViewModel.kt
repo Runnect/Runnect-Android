@@ -3,18 +3,20 @@ package com.runnect.runnect.presentation.storage
 import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.MyDrawCourse
+import com.runnect.runnect.domain.entity.MyScrapCourse
+import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.StorageRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,7 +25,7 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor(
     private val storageRepository: StorageRepository,
     private val courseRepository: CourseRepository
-) : ViewModel() {
+) : BaseViewModel() {
     private val _myDrawCourseGetState = MutableLiveData<UiState>(UiState.Empty)
     val myDrawCourseGetState: LiveData<UiState>
         get() = _myDrawCourseGetState
@@ -40,8 +42,8 @@ class StorageViewModel @Inject constructor(
     val myScrapCourseGetState: LiveData<UiStateV2<List<MyScrapCourse>>?>
         get() = _myScrapCourseGetState
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
-    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<PostScrap>>()
+    val courseScrapState: LiveData<UiStateV2<PostScrap>>
         get() = _courseScrapState
 
     val errorMessage = MutableLiveData<String>()
@@ -115,20 +117,21 @@ class StorageViewModel @Inject constructor(
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        viewModelScope.launch {
-            _courseScrapState.value = UiStateV2.Loading
-
-            courseRepository.postCourseScrap(
-                RequestPostCourseScrap(
-                    publicCourseId = id, scrapTF = scrapTF.toString()
-                )
+        launchWithHandler {
+            val requestPostCourseScrap = RequestPostCourseScrap(
+                publicCourseId = id, scrapTF = scrapTF.toString()
             )
-                .onSuccess { response ->
-                    _courseScrapState.value = UiStateV2.Success(response)
-                }
-                .onFailure { t ->
-                    Timber.e("${t.message}")
-                    _courseScrapState.value = UiStateV2.Failure(t.message.toString())
+
+            courseRepository.postCourseScrap(requestPostCourseScrap)
+                .onStart {
+                    _courseScrapState.value = UiStateV2.Loading
+                }.collect { result ->
+                    result.onSuccess {
+                        _courseScrapState.value = UiStateV2.Success(it)
+                    }.onFailure {
+                        Timber.e(it.toLog())
+                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
+                    }
                 }
         }
     }

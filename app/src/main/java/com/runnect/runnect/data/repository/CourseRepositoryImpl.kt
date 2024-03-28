@@ -18,6 +18,7 @@ import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.CourseRepository
 import kotlinx.coroutines.flow.Flow
@@ -55,6 +56,14 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>> {
         return remoteCourseDataSource.getMyCourseLoad().mapToFlowResult {
             it.toUploadCourses()
+        }
+    }
+
+    override suspend fun postCourseScrap(
+        requestPostCourseScrap: RequestPostCourseScrap
+    ): Flow<Result<PostScrap>> {
+        return remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).mapToFlowResult {
+            it.toPostScrap()
         }
     }
 
@@ -98,11 +107,5 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             publicCourseId = publicCourseId,
             requestPatchPublicCourse = requestPatchPublicCourse
         ).data?.toEditableCourseDetail()
-    }
-
-    override suspend fun postCourseScrap(
-        requestPostCourseScrap: RequestPostCourseScrap
-    ): Result<ResponsePostScrap?> = runCatching {
-        remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).data
     }
 }
