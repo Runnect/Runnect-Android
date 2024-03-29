@@ -39,8 +39,8 @@ class RemoteUserDataSource @Inject constructor(
 
     suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): BaseResponse<ResponseDeleteUploadCourse> =
-        userService.putDeleteUploadCourse(requestDeleteUploadCourse)
+    ): Result<ResponseDeleteUploadCourse> =
+        userV2Service.putDeleteUploadCourse(requestDeleteUploadCourse)
 
     suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): BaseResponse<ResponseDeleteHistory> =
         userService.putDeleteHistory(requestDeleteHistory)

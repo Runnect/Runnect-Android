@@ -121,15 +121,17 @@ class CourseDetailViewModel @Inject constructor(
     }
 
     fun deleteUploadCourse(id: Int) {
-        viewModelScope.launch {
-            _courseDeleteState.value = UiStateV2.Loading
-
+        launchWithHandler {
             userRepository.putDeleteUploadCourse(
                 RequestDeleteUploadCourse(publicCourseIdList = listOf(id))
-            ).onSuccess { response ->
-                _courseDeleteState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseDeleteState.value = UiStateV2.Failure(exception.message.toString())
+            ).onStart {
+                _courseDeleteState.value = UiStateV2.Loading
+            }.collect { result ->
+                result.onSuccess {
+                    _courseDeleteState.value = UiStateV2.Success(it)
+                }.onFailure {
+                    _courseDeleteState.value = UiStateV2.Failure(it.toLog())
+                }
             }
         }
     }

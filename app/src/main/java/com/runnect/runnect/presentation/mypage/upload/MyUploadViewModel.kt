@@ -3,15 +3,14 @@ package com.runnect.runnect.presentation.mypage.upload
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,24 +83,28 @@ class MyUploadViewModel @Inject constructor(
     }
 
     fun deleteUploadCourse() {
-        viewModelScope.launch {
-            runCatching {
-                _myUploadDeleteState.value = UiState.Loading
-                setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
-                userRepository.putDeleteUploadCourse(RequestDeleteUploadCourse(_itemsToDelete))
-            }.onSuccess {
-                _myUploadCourses =
-                    _myUploadCourses.filter { !itemsToDelete.contains(it.id) }.toMutableList()
-                _myUploadDeleteState.value = UiState.Success
-                //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
-                if (_myUploadCourses.isEmpty()) {
-                    _myUploadCourseState.value = UiState.Empty
-                    convertMode()
+        launchWithHandler {
+            val requestDeleteUploadCourse = RequestDeleteUploadCourse(_itemsToDelete)
+            userRepository.putDeleteUploadCourse(requestDeleteUploadCourse)
+                .onStart {
+                    _myUploadDeleteState.value = UiState.Loading
+                    setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
                 }
-            }.onFailure {
-                errorMessage.value = it.message
-                _myUploadDeleteState.value = UiState.Failure
-            }
+                .collect { result ->
+                    result.onSuccess {
+                        _myUploadCourses.removeAll { it.id in itemsToDelete }
+                        _myUploadDeleteState.value = UiState.Success
+
+                        //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
+                        if (_myUploadCourses.isEmpty()) {
+                            _myUploadCourseState.value = UiState.Empty
+                            convertMode()
+                        }
+                    }.onFailure {
+                        errorMessage.value = it.toLog()
+                        _myUploadDeleteState.value = UiState.Failure
+                    }
+                }
         }
     }
 

@@ -20,6 +20,10 @@ interface UserRepository {
 
     suspend fun getUserUploadCourse(): Flow<Result<List<UserUploadCourse>>>
 
+    suspend fun putDeleteUploadCourse(
+        requestDeleteUploadCourse: RequestDeleteUploadCourse
+    ): Flow<Result<ResponseDeleteUploadCourse>>
+
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
 
     suspend fun getMyStamp(): MutableList<String>
@@ -27,10 +31,6 @@ interface UserRepository {
     suspend fun getRecord(): MutableList<HistoryInfoDTO>
 
     suspend fun getUserProfile(userId: Int): Result<UserProfile?>
-
-    suspend fun putDeleteUploadCourse(
-        requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Result<ResponseDeleteUploadCourse?>
 
     suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistory?>
 
