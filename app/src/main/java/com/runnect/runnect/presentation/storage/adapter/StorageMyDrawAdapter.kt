@@ -89,8 +89,10 @@ class StorageMyDrawAdapter(
     fun updateCourseTitle(courseId: Int, updatedTitle: String) {
         currentList.forEachIndexed { index, course ->
             if (course.courseId == courseId) {
-                course.title = updatedTitle
-                notifyItemChanged(index)
+                val updatedCourse = course.copy(title = updatedTitle)
+                val newList = currentList.toMutableList()
+                newList[index] = updatedCourse
+                submitList(newList)
                 return@forEachIndexed
             }
         }

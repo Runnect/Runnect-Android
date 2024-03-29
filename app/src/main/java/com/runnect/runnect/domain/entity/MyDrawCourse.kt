@@ -9,5 +9,5 @@ data class MyDrawCourse(
     val image: String?,
     val city: String,
     val region: String,
-    var title: String
+    val title: String
 ) : Parcelable
