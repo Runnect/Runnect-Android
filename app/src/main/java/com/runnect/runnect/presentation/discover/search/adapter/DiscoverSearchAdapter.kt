@@ -62,9 +62,12 @@ class DiscoverSearchAdapter(
     fun updateSearchItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                course.scrap = updatedCourse.scrap
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(
+                    title = updatedCourse.title,
+                    scrap = updatedCourse.scrap
+                )
+                submitList(newList)
                 return@forEachIndexed
             }
         }
@@ -76,8 +79,9 @@ class DiscoverSearchAdapter(
     ) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.scrap = scrap
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(scrap = scrap)
+                submitList(newList)
                 return@forEachIndexed
             }
         }
