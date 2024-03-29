@@ -14,10 +14,6 @@ interface UserService {
         @Body requestPatchNickName: RequestPatchNickName,
     ): ResponsePatchUserNickName
 
-    @GET("api/stamp/user")
-    suspend fun getMyStamp(
-    ): ResponseGetMyStamp
-
     @GET("api/record/user")
     suspend fun getRecord(
     ): ResponseGetMyHistory

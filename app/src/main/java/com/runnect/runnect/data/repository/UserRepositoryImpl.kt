@@ -45,8 +45,10 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
     override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         remoteUserDataSource.updateNickName(requestPatchNickName)
 
-    override suspend fun getMyStamp(): MutableList<String> {
-        return remoteUserDataSource.getMyStamp().data.stamps.map { it.id }.toMutableList()
+    override suspend fun getMyStamp(): Flow<Result<List<String>>> {
+        return remoteUserDataSource.getMyStamp().mapToFlowResult {
+            it.toStampList()
+        }
     }
 
     override suspend fun getRecord(): MutableList<HistoryInfoDTO> {

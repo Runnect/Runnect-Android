@@ -3,6 +3,7 @@ package com.runnect.runnect.data.service.v2
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
+import com.runnect.runnect.data.dto.response.ResponseGetMyStamp
 import com.runnect.runnect.data.dto.response.ResponseGetUser
 import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
 import retrofit2.http.Body
@@ -17,6 +18,9 @@ interface UserV2Service {
 
     @GET("api/public-course/user")
     suspend fun getUserUploadCourse(): Result<ResponseGetUserUploadCourse>
+
+    @GET("api/stamp/user")
+    suspend fun getMyStamp(): Result<ResponseGetMyStamp>
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
