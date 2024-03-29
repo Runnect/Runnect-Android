@@ -3,6 +3,7 @@ package com.runnect.runnect.data.service.v2
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
+import com.runnect.runnect.data.dto.response.ResponseGetMyHistory
 import com.runnect.runnect.data.dto.response.ResponseGetMyStamp
 import com.runnect.runnect.data.dto.response.ResponseGetUser
 import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
@@ -18,6 +19,9 @@ interface UserV2Service {
 
     @GET("api/public-course/user")
     suspend fun getUserUploadCourse(): Result<ResponseGetUserUploadCourse>
+
+    @GET("api/record/user")
+    suspend fun getRecord(): Result<ResponseGetMyHistory>
 
     @GET("api/stamp/user")
     suspend fun getMyStamp(): Result<ResponseGetMyStamp>

@@ -14,10 +14,6 @@ interface UserService {
         @Body requestPatchNickName: RequestPatchNickName,
     ): ResponsePatchUserNickName
 
-    @GET("api/record/user")
-    suspend fun getRecord(
-    ): ResponseGetMyHistory
-
     @PUT("api/record")
     suspend fun putDeleteHistory(
         @Body requestDeleteHistory: RequestDeleteHistory

@@ -16,7 +16,6 @@ import com.runnect.runnect.data.source.remote.RemoteUserDataSource
 import com.runnect.runnect.domain.entity.User
 import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.domain.repository.UserRepository
-import com.runnect.runnect.util.extension.toData
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -45,14 +44,16 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
     override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         remoteUserDataSource.updateNickName(requestPatchNickName)
 
+    override suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>> {
+        return remoteUserDataSource.getRecord().mapToFlowResult {
+            it.toHistoryInfoList()
+        }
+    }
+
     override suspend fun getMyStamp(): Flow<Result<List<String>>> {
         return remoteUserDataSource.getMyStamp().mapToFlowResult {
             it.toStampList()
         }
-    }
-
-    override suspend fun getRecord(): MutableList<HistoryInfoDTO> {
-        return remoteUserDataSource.getRecord().data.records.map { it.toData() }.toMutableList()
     }
 
     override suspend fun getUserProfile(userId: Int): Result<UserProfile?> =

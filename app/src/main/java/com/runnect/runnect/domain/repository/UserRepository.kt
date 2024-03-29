@@ -26,11 +26,11 @@ interface UserRepository {
 
     suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>>
 
+    suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>>
+
     suspend fun getMyStamp(): Flow<Result<List<String>>>
 
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
-
-    suspend fun getRecord(): MutableList<HistoryInfoDTO>
 
     suspend fun getUserProfile(userId: Int): Result<UserProfile?>
 
