@@ -2,33 +2,36 @@ package com.runnect.runnect.presentation.mypage.setting.accountinfo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class MySettingAccountInfoViewModel @Inject constructor(private val userRepository: UserRepository) :
-    ViewModel() {
+class MySettingAccountInfoViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : BaseViewModel() {
+
     private val _withdrawalState = MutableLiveData<UiState>()
     val withdrawalState: LiveData<UiState>
         get() = _withdrawalState
+
     val errorMessage = MutableLiveData<String>()
 
-    fun deleteUser() {
-        viewModelScope.launch {
-            runCatching {
+    fun deleteUser() = launchWithHandler {
+        userRepository.deleteUser()
+            .onStart {
                 _withdrawalState.value = UiState.Loading
-                userRepository.deleteUser()
-            }.onSuccess {
-                _withdrawalState.value = UiState.Success
-            }.onFailure {
-                errorMessage.value = it.message
-                _withdrawalState.value = UiState.Failure
+            }.collect { result ->
+                result.onSuccess {
+                    _withdrawalState.value = UiState.Success
+                }.onFailure {
+                    errorMessage.value = it.toLog()
+                    _withdrawalState.value = UiState.Failure
+                }
             }
-        }
     }
 }

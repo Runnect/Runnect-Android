@@ -28,6 +28,8 @@ class RemoteUserDataSource @Inject constructor(
     suspend fun getUserUploadCourse(): Result<ResponseGetUserUploadCourse> =
         userV2Service.getUserUploadCourse()
 
+    suspend fun deleteUser(): Result<ResponseDeleteUser> = userV2Service.deleteUser()
+
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         userService.updateNickName(requestPatchNickName)
 
@@ -50,6 +52,4 @@ class RemoteUserDataSource @Inject constructor(
         requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): BaseResponse<ResponsePatchHistoryTitle> =
         userService.patchHistoryTitle(historyId, requestPatchHistoryTitle)
-
-    suspend fun deleteUser(): ResponseDeleteUser = userService.deleteUser()
 }

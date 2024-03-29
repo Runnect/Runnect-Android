@@ -38,6 +38,10 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
         return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse).mapToFlowResult { it }
     }
 
+    override suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>> {
+        return remoteUserDataSource.deleteUser().mapToFlowResult { it }
+    }
+
     override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         remoteUserDataSource.updateNickName(requestPatchNickName)
 
@@ -64,9 +68,5 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
         historyId: Int, requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): Result<ResponsePatchHistoryTitle?> = runCatching {
         remoteUserDataSource.patchHistoryTitle(historyId, requestPatchHistoryTitle).data
-    }
-
-    override suspend fun deleteUser(): ResponseDeleteUser {
-        return remoteUserDataSource.deleteUser()
     }
 }

@@ -164,7 +164,7 @@ class MySettingAccountInfoFragment :
         const val DESCRIPTION_LOGOUT = "로그아웃 하시겠어요?"
         const val DESCRIPTION_LOGOUT_YES = "네"
         const val DESCRIPTION_LOGOUT_NO = "아니오"
-        const val DESCRIPTION_WITHDRAWAL = "정말로 탈퇴하시겟어요?"
+        const val DESCRIPTION_WITHDRAWAL = "정말로 탈퇴하시겠어요?"
         const val DESCRIPTION_WITHDRAWAL_YES = "네"
         const val DESCRIPTION_WITHDRAWAL_NO = "아니오"
         const val TOKEN_KEY_ACCESS = "access"

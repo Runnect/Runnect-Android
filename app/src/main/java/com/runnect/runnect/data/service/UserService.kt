@@ -1,7 +1,6 @@
 package com.runnect.runnect.data.service
 
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
-import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
@@ -33,9 +32,6 @@ interface UserService {
         @Path("recordId") historyId: Int,
         @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): BaseResponse<ResponsePatchHistoryTitle>
-
-    @DELETE("api/user")
-    suspend fun deleteUser(): ResponseDeleteUser
 
     // 유저 프로필 조회
     @GET("/api/user/{profileUserId}")

@@ -24,6 +24,8 @@ interface UserRepository {
         requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): Flow<Result<ResponseDeleteUploadCourse>>
 
+    suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>>
+
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
 
     suspend fun getMyStamp(): MutableList<String>
@@ -38,6 +40,4 @@ interface UserRepository {
         historyId: Int,
         requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): Result<ResponsePatchHistoryTitle?>
-
-    suspend fun deleteUser(): ResponseDeleteUser
 }
