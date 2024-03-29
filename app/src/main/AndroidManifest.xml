@@ -17,10 +17,10 @@
 
     <application
         android:name=".application.ApplicationClass"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
-        android:fullBackupContent="@xml/backup_rules"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_runnect_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_runnect_launcher_round"
@@ -65,15 +65,18 @@
 
         <activity
             android:name=".presentation.storage.mydrawdetail.MyDrawDetailActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
-        <activity android:name=".presentation.scheme.SchemeActivity"
+        <activity
+            android:name=".presentation.scheme.SchemeActivity"
             android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="rnnt.page.link"
                     android:scheme="https" />
@@ -130,7 +133,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.detail.CourseDetailActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".presentation.mypage.reward.MyRewardActivity"
             android:exported="false" />
