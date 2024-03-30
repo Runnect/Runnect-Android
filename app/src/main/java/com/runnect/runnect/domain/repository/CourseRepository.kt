@@ -17,12 +17,13 @@ import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 
 interface CourseRepository {
-    suspend fun getMarathonCourse(): Result<List<MarathonCourse>?>
+    suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>>
 
     suspend fun getRecommendCourse(
         pageNo: String,
