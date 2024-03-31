@@ -1,13 +1,11 @@
 package com.runnect.runnect.presentation.draw
 
-import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
+import com.runnect.runnect.domain.entity.LocationData
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.ReverseGeocodingRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
@@ -16,8 +14,6 @@ import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -117,18 +113,17 @@ class DrawViewModel @Inject constructor(
     }
 
     fun getLocationInfoUsingLatLng(lat: Double, lon: Double) {
-        viewModelScope.launch {
-            runCatching {
-                reverseGeocodingRepository.getLocationInfoUsingLatLng(
-                    lat = lat, lon = lon
-                )
-            }.onSuccess {
-                Timber.tag(ContentValues.TAG).d("통신success")
-                reverseGeocodingResult.value = it
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("통신failure : ${it}")
-                errorMessage.value = it.message
-            }
+        launchWithHandler {
+            reverseGeocodingRepository.getLocationInfoUsingLatLng(
+                lat = lat, lon = lon
+            ).collectResult(
+                onSuccess = {
+                    reverseGeocodingResult.value = it
+                },
+                onFailure = {
+                    errorMessage.value = it.message
+                }
+            )
         }
     }
 }

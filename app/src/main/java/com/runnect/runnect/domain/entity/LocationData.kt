@@ -1,4 +1,4 @@
-package com.runnect.runnect.data.dto
+package com.runnect.runnect.domain.entity
 
 
 import android.os.Parcelable

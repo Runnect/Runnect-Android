@@ -1,6 +1,7 @@
-package com.runnect.runnect.data.dto.tmap.geocoding
+package com.runnect.runnect.data.dto.response
 
 
+import com.runnect.runnect.domain.entity.LocationData
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,7 +25,7 @@ data class ResponseReverseGeocodingDto(
         @SerialName("buildingIndex")
         val buildingIndex: String,
         @SerialName("buildingName")
-        val buildingName: String,
+        val buildingName: String?,
         @SerialName("bunji")
         val bunji: String,
         @SerialName("city_do")
@@ -32,7 +33,7 @@ data class ResponseReverseGeocodingDto(
         @SerialName("eup_myun")
         val eupMyun: String,
         @SerialName("fullAddress")
-        val fullAddress: String,
+        val fullAddress: String?,
         @SerialName("gu_gun")
         val guGun: String,
         @SerialName("legalDong")
@@ -91,4 +92,10 @@ data class ResponseReverseGeocodingDto(
             val lonEntr: String
         )
     }
+
+    fun toLocationData(): LocationData =
+        LocationData(
+            buildingName = addressInfo.buildingName ?: "buildingName fail",
+            fullAddress = addressInfo.fullAddress ?: "fullAddress fail"
+        )
 }
