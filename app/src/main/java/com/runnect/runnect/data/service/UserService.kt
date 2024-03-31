@@ -1,6 +1,5 @@
 package com.runnect.runnect.data.service
 
-import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
 import com.runnect.runnect.data.dto.response.base.BaseResponse
@@ -12,12 +11,6 @@ interface UserService {
     suspend fun updateNickName(
         @Body requestPatchNickName: RequestPatchNickName,
     ): ResponsePatchUserNickName
-
-    @PATCH("api/record/{recordId}")
-    suspend fun patchHistoryTitle(
-        @Path("recordId") historyId: Int,
-        @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): BaseResponse<ResponsePatchHistoryTitle>
 
     // 유저 프로필 조회
     @GET("/api/user/{profileUserId}")

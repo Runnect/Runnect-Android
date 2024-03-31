@@ -42,15 +42,15 @@ class RemoteUserDataSource @Inject constructor(
     suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistory> =
         userV2Service.putDeleteHistory(requestDeleteHistory)
 
+    suspend fun patchHistoryTitle(
+        historyId: Int,
+        requestPatchHistoryTitle: RequestPatchHistoryTitle
+    ): Result<ResponsePatchHistoryTitle> =
+        userV2Service.patchHistoryTitle(historyId, requestPatchHistoryTitle)
+
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
         userService.updateNickName(requestPatchNickName)
 
     suspend fun getUserProfile(userId: Int): BaseResponse<ResponseGetUserProfile> =
         userService.getUserProfile(userId)
-
-    suspend fun patchHistoryTitle(
-        historyId: Int,
-        requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): BaseResponse<ResponsePatchHistoryTitle> =
-        userService.patchHistoryTitle(historyId, requestPatchHistoryTitle)
 }

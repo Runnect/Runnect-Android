@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.mypage.history.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
@@ -16,7 +15,6 @@ import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -82,18 +80,19 @@ class MyHistoryDetailViewModel @Inject constructor(
         }
     }
 
-    fun patchHistoryTitle() {
-        viewModelScope.launch {
+    fun patchHistoryTitle() = launchWithHandler {
+        userRepository.patchHistoryTitle(
+            historyId = historyId,
+            requestPatchHistoryTitle = RequestPatchHistoryTitle(title)
+        ).onStart {
             _titlePatchState.value = UiStateV2.Loading
-
-            userRepository.patchHistoryTitle(
-                historyId = historyId,
-                requestPatchHistoryTitle = RequestPatchHistoryTitle(title)
-            ).onSuccess { response ->
-                _titlePatchState.value = UiStateV2.Success(response)
-            }.onFailure { t ->
-                _titlePatchState.value = UiStateV2.Failure(t.message.toString())
+        }.collectResult(
+            onSuccess = {
+                _titlePatchState.value = UiStateV2.Success(it)
+            },
+            onFailure = {
+                _titlePatchState.value = UiStateV2.Failure(it.toLog())
             }
-        }
+        )
     }
 }

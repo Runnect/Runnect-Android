@@ -32,12 +32,12 @@ interface UserRepository {
 
     suspend fun getMyStamp(): Flow<Result<List<String>>>
 
-    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
-
-    suspend fun getUserProfile(userId: Int): Result<UserProfile?>
-
     suspend fun patchHistoryTitle(
         historyId: Int,
         requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): Result<ResponsePatchHistoryTitle?>
+    ): Flow<Result<ResponsePatchHistoryTitle>>
+
+    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
+
+    suspend fun getUserProfile(userId: Int): Result<UserProfile?>
 }
