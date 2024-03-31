@@ -70,11 +70,11 @@ interface CourseService {
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")
-    suspend fun getDrawCourseList(): BaseResponse<ResponseGetMyDrawCourse>
+    suspend fun getDrawCourseList(): Result<ResponseGetMyDrawCourse>
 
     //보관함 스크랩 코스 가져오기
     @GET("/api/scrap/user")
-    suspend fun getScrapCourseList(): BaseResponse<ResponseGetMyScrapCourse>
+    suspend fun getScrapCourseList(): Result<ResponseGetMyScrapCourse>
 
     //내가 그린 코스 Detail 가져오기
     @GET("/api/course/detail/{courseId}")
