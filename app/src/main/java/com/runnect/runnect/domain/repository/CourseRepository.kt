@@ -32,6 +32,8 @@ interface CourseRepository {
 
     suspend fun getCourseSearch(keyword: String): Flow<Result<List<DiscoverSearchCourse>>>
 
+    suspend fun getCourseDetail(publicCourseId: Int): Flow<Result<CourseDetail>>
+
     suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>>
 
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<PostScrap>>
@@ -47,8 +49,6 @@ interface CourseRepository {
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
     ): Response<ResponsePostMyDrawCourse>
-
-    suspend fun getCourseDetail(publicCourseId: Int): Result<CourseDetail?>
 
     suspend fun patchPublicCourse(
         publicCourseId: Int,

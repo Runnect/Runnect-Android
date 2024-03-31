@@ -8,6 +8,7 @@ import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.domain.common.getCode
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
@@ -16,11 +17,11 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,26 +81,22 @@ class CourseDetailViewModel @Inject constructor(
         _currentScreenMode = mode
     }
 
-    fun getCourseDetail(courseId: Int) {
-        viewModelScope.launch {
-            _courseGetState.value = UiStateV2.Loading
+    fun getCourseDetail(courseId: Int) = launchWithHandler {
+        courseRepository.getCourseDetail(
+            publicCourseId = courseId
+        ).collectResult(
+            onSuccess = {
+                _courseGetState.value = UiStateV2.Success(it)
+            },
+            onFailure = {
+                _courseGetState.value = UiStateV2.Failure(it.toLog())
 
-            courseRepository.getCourseDetail(
-                publicCourseId = courseId
-            ).onSuccess { response ->
-                _courseGetState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseGetState.value = UiStateV2.Failure(exception.message.toString())
-
-                if (exception is HttpException) {
-                    // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
-                    if (exception.code() == CODE_AUTHORIZATION_ERROR) {
-                        isDeepLinkLogin.value = false
-                    }
-                    return@launch
+                // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
+                if(it.getCode() == CODE_AUTHORIZATION_ERROR) {
+                    isDeepLinkLogin.value = false
                 }
             }
-        }
+        )
     }
 
     fun patchPublicCourse(id: Int) {
