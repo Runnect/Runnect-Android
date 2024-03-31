@@ -24,6 +24,8 @@ interface UserRepository {
         requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): Flow<Result<ResponseDeleteUploadCourse>>
 
+    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Flow<Result<ResponseDeleteHistory>>
+
     suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>>
 
     suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>>
@@ -33,8 +35,6 @@ interface UserRepository {
     suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName
 
     suspend fun getUserProfile(userId: Int): Result<UserProfile?>
-
-    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistory?>
 
     suspend fun patchHistoryTitle(
         historyId: Int,

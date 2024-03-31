@@ -1,6 +1,8 @@
 package com.runnect.runnect.data.service.v2
 
+import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
 import com.runnect.runnect.data.dto.response.ResponseGetMyHistory
@@ -30,6 +32,11 @@ interface UserV2Service {
     suspend fun putDeleteUploadCourse(
         @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
     ): Result<ResponseDeleteUploadCourse>
+
+    @PUT("api/record")
+    suspend fun putDeleteHistory(
+        @Body requestDeleteHistory: RequestDeleteHistory
+    ): Result<ResponseDeleteHistory>
 
     @DELETE("api/user")
     suspend fun deleteUser(): Result<ResponseDeleteUser>

@@ -1,6 +1,5 @@
 package com.runnect.runnect.data.service
 
-import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.*
@@ -13,11 +12,6 @@ interface UserService {
     suspend fun updateNickName(
         @Body requestPatchNickName: RequestPatchNickName,
     ): ResponsePatchUserNickName
-
-    @PUT("api/record")
-    suspend fun putDeleteHistory(
-        @Body requestDeleteHistory: RequestDeleteHistory
-    ): BaseResponse<ResponseDeleteHistory>
 
     @PATCH("api/record/{recordId}")
     suspend fun patchHistoryTitle(
