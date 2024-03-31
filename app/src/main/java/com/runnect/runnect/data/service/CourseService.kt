@@ -94,5 +94,5 @@ interface CourseService {
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
         @Part("data") data: RequestBody,
-    ): Response<ResponsePostMyDrawCourse>
+    ): Result<ResponsePostMyDrawCourse>
 }

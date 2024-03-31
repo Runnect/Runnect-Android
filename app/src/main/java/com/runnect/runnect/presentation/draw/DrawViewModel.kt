@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.draw
 import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.LocationData
 import com.runnect.runnect.data.dto.SearchResultEntity
@@ -11,9 +10,12 @@ import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.ReverseGeocodingRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,7 +24,7 @@ import javax.inject.Inject
 class DrawViewModel @Inject constructor(
     val courseRepository: CourseRepository,
     val reverseGeocodingRepository: ReverseGeocodingRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     private var _drawState = MutableLiveData<UiState>(UiState.Empty)
     val drawState: LiveData<UiState>
@@ -82,40 +84,36 @@ class DrawViewModel @Inject constructor(
         return (rad * 180 / Math.PI)
     }
 
-
     fun uploadCourse() {
-        viewModelScope.launch {
-            runCatching {
+        launchWithHandler {
+            courseRepository.uploadCourse(
+                image = _image.value!!.toFormData(),
+                data = CourseCreateRequestDto(
+                    path = path.value ?: listOf(
+                        UploadLatLng(
+                            37.52901832956373,
+                            126.9136196847032
+                        )
+                    ),
+                    title = courseTitle,
+                    distance = distanceSum.value!!,
+                    departureAddress = departureAddress.value!!,
+                    departureName = departureName.value!!
+                ).toRequestBody()
+            ).onStart {
                 _drawState.value = UiState.Loading
-                courseRepository.uploadCourse(
-                    image = _image.value!!.toFormData(),
-                    data = CourseCreateRequestDto(
-                        path = path.value ?: listOf(
-                            UploadLatLng(
-                                37.52901832956373,
-                                126.9136196847032
-                            )
-                        ),
-                        title = courseTitle,
-                        distance = distanceSum.value!!,
-                        departureAddress = departureAddress.value!!,
-                        departureName = departureName.value!!
-                    ).toRequestBody()
-                )
-            }.onSuccess {
-                if (it.body() == null) {
+            }.collectResult(
+                onSuccess = {
+                    uploadResult.value = it
+                    _drawState.value = UiState.Success
+                },
+                onFailure = {
+                    errorMessage.value = it.message
                     _drawState.value = UiState.Failure
-                    return@onSuccess //추가 조치 필요
                 }
-                Timber.tag(ContentValues.TAG).d("통신success")
-                uploadResult.value = it.body()
-                _drawState.value = UiState.Success
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("통신failure : ${it}")
-                errorMessage.value = it.message
-                _drawState.value = UiState.Failure
-            }
+            )
         }
+
     }
 
     fun getLocationInfoUsingLatLng(lat: Double, lon: Double) {

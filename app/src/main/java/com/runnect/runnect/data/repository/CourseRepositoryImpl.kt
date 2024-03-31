@@ -1,21 +1,21 @@
 package com.runnect.runnect.data.repository
 
-import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
-import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
+import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
@@ -78,11 +78,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
         data: RequestBody
-    ): Response<ResponsePostMyDrawCourse> {
-        return remoteCourseDataSource.uploadCourse(
-            image = image,
-            data = data
-        )
+    ): Flow<Result<ResponsePostMyDrawCourse>> {
+        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult { it }
     }
 
     override suspend fun getCourseDetail(
