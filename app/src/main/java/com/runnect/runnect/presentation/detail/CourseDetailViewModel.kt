@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
@@ -21,7 +20,6 @@ import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -92,29 +90,30 @@ class CourseDetailViewModel @Inject constructor(
                 _courseGetState.value = UiStateV2.Failure(it.toLog())
 
                 // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
-                if(it.getCode() == CODE_AUTHORIZATION_ERROR) {
+                if (it.getCode() == CODE_AUTHORIZATION_ERROR) {
                     isDeepLinkLogin.value = false
                 }
             }
         )
     }
 
-    fun patchPublicCourse(id: Int) {
-        viewModelScope.launch {
-            _coursePatchState.value = UiStateV2.Loading
+    fun patchPublicCourse(id: Int) = launchWithHandler {
+        val requestDto = RequestPatchPublicCourse(
+            title = title,
+            description = description
+        )
 
-            val requestDto = RequestPatchPublicCourse(
-                title = title,
-                description = description
-            )
-
-            courseRepository.patchPublicCourse(id, requestDto)
-                .onSuccess { response ->
-                    _coursePatchState.value = UiStateV2.Success(response)
-                }.onFailure { exception ->
-                    _coursePatchState.value = UiStateV2.Failure(exception.message.toString())
+        courseRepository.patchPublicCourse(id, requestDto)
+            .onStart {
+                _coursePatchState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _coursePatchState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _coursePatchState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
     fun deleteUploadCourse(id: Int) {

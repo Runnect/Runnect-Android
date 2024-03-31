@@ -40,6 +40,11 @@ interface CourseRepository {
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<ResponsePostDiscoverUpload>>
 
+    suspend fun patchPublicCourse(
+        publicCourseId: Int,
+        requestPatchPublicCourse: RequestPatchPublicCourse
+    ): Flow<Result<EditableCourseDetail>>
+
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse>
 
     suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail>
@@ -49,9 +54,4 @@ interface CourseRepository {
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
     ): Response<ResponsePostMyDrawCourse>
-
-    suspend fun patchPublicCourse(
-        publicCourseId: Int,
-        requestPatchPublicCourse: RequestPatchPublicCourse
-    ): Result<EditableCourseDetail?>
 }

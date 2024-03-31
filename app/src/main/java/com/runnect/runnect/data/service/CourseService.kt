@@ -1,12 +1,10 @@
 package com.runnect.runnect.data.service
 
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
-import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
@@ -17,12 +15,6 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface CourseService {
-
-    @PATCH("/api/public-course/{publicCourseId}")
-    suspend fun patchPublicCourse(
-        @Path("publicCourseId") publicCourseId: Int,
-        @Body requestPatchPublicCourse: RequestPatchPublicCourse
-    ): BaseResponse<ResponsePatchPublicCourse>
 
     // {id}와 같이 동적인 경로 변수가 없다면 @Path 생략 가능
     //내가 그린 코스 수정

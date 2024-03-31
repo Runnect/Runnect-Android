@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.service
 
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
@@ -7,10 +8,12 @@ import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
+import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -48,4 +51,10 @@ interface CourseV2Service {
     suspend fun postCourseScrap(
         @Body requestPostCourseScrap: RequestPostCourseScrap,
     ): Result<ResponsePostScrap>
+
+    @PATCH("/api/public-course/{publicCourseId}")
+    suspend fun patchPublicCourse(
+        @Path("publicCourseId") publicCourseId: Int,
+        @Body requestPatchPublicCourse: RequestPatchPublicCourse
+    ): Result<ResponsePatchPublicCourse>
 }

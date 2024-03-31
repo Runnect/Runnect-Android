@@ -75,6 +75,17 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse).mapToFlowResult { it }
     }
 
+    override suspend fun patchPublicCourse(
+        publicCourseId: Int,
+        requestPatchPublicCourse: RequestPatchPublicCourse
+    ): Flow<Result<EditableCourseDetail>> =
+        remoteCourseDataSource.patchPublicCourse(
+            publicCourseId = publicCourseId,
+            requestPatchPublicCourse = requestPatchPublicCourse
+        ).mapToFlowResult {
+            it.toEditableCourseDetail()
+        }
+
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
         return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
     }
@@ -95,15 +106,5 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             image = image,
             data = data
         )
-    }
-
-    override suspend fun patchPublicCourse(
-        publicCourseId: Int,
-        requestPatchPublicCourse: RequestPatchPublicCourse
-    ): Result<EditableCourseDetail?> = runCatching {
-        remoteCourseDataSource.patchPublicCourse(
-            publicCourseId = publicCourseId,
-            requestPatchPublicCourse = requestPatchPublicCourse
-        ).data?.toEditableCourseDetail()
     }
 }

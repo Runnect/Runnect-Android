@@ -10,7 +10,6 @@ import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
-import com.runnect.runnect.data.dto.response.base.BaseResponse
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.service.CourseV2Service
 import okhttp3.MultipartBody
@@ -46,8 +45,8 @@ class RemoteCourseDataSource @Inject constructor(
     suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
-    ): BaseResponse<ResponsePatchPublicCourse> =
-        courseService.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
+    ): Result<ResponsePatchPublicCourse> =
+        courseV2Service.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) =
         courseService.deleteMyDrawCourse(deleteCourseList)
