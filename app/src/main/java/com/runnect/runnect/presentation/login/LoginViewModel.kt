@@ -2,20 +2,21 @@ package com.runnect.runnect.presentation.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.data.dto.request.RequestPostLogin
 import com.runnect.runnect.data.dto.LoginDTO
+import com.runnect.runnect.data.dto.request.RequestPostLogin
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.repository.LoginRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) :
-    ViewModel() {
-
+class LoginViewModel @Inject constructor(
+    private val loginRepository: LoginRepository
+) : BaseViewModel() {
 
     val loginResult = MutableLiveData<LoginDTO>()
     val errorMessage = MutableLiveData<String>()
@@ -24,25 +25,25 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
     val loginState: LiveData<UiState>
         get() = _loginState
 
+    fun postLogin(request: RequestPostLogin, logEvent: (() -> Unit)? = null) = launchWithHandler {
+        val requestPostLogin = RequestPostLogin(
+            token = request.token,
+            provider = request.provider
+        )
 
-    fun postLogin(request: RequestPostLogin, logEvent: (() -> Unit)? = null) {
-        viewModelScope.launch {
-            runCatching {
+        loginRepository.postLogin(requestPostLogin)
+            .onStart {
                 _loginState.value = UiState.Loading
-                loginRepository.postLogin(
-                    RequestPostLogin(
-                        token = request.token, provider = request.provider
-                    )
-                )
-            }.onSuccess {
-                loginResult.value = it
-                _loginState.value = UiState.Success
-                logEvent?.invoke()
-            }.onFailure {
-                errorMessage.value = it.message
-                _loginState.value = UiState.Failure
-            }
-        }
+            }.collectResult(
+                onSuccess = {
+                    loginResult.value = it
+                    _loginState.value = UiState.Success
+                    logEvent?.invoke()
+                },
+                onFailure = {
+                    errorMessage.value = it.toLog()
+                    _loginState.value = UiState.Failure
+                }
+            )
     }
-
 }
