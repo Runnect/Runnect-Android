@@ -48,8 +48,10 @@ class RemoteUserDataSource @Inject constructor(
     ): Result<ResponsePatchHistoryTitle> =
         userV2Service.patchHistoryTitle(historyId, requestPatchHistoryTitle)
 
-    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
-        userService.updateNickName(requestPatchNickName)
+    suspend fun updateNickName(
+        requestPatchNickName: RequestPatchNickName
+    ): Result<ResponsePatchUserNickName> =
+        userV2Service.updateNickName(requestPatchNickName)
 
     suspend fun getUserProfile(userId: Int): BaseResponse<ResponseGetUserProfile> =
         userService.getUserProfile(userId)

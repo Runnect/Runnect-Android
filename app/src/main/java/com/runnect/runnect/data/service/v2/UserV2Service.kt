@@ -3,6 +3,7 @@ package com.runnect.runnect.data.service.v2
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
+import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseDeleteUser
@@ -11,6 +12,7 @@ import com.runnect.runnect.data.dto.response.ResponseGetMyStamp
 import com.runnect.runnect.data.dto.response.ResponseGetUser
 import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
+import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -47,6 +49,11 @@ interface UserV2Service {
         @Path("recordId") historyId: Int,
         @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
     ): Result<ResponsePatchHistoryTitle>
+
+    @PATCH("api/user")
+    suspend fun updateNickName(
+        @Body requestPatchNickName: RequestPatchNickName,
+    ): Result<ResponsePatchUserNickName>
 
     @DELETE("api/user")
     suspend fun deleteUser(): Result<ResponseDeleteUser>

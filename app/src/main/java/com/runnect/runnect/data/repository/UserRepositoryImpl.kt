@@ -52,8 +52,10 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
         return remoteUserDataSource.deleteUser().mapToFlowResult { it }
     }
 
-    override suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
-        remoteUserDataSource.updateNickName(requestPatchNickName)
+    override suspend fun updateNickName(
+        requestPatchNickName: RequestPatchNickName
+    ): Flow<Result<ResponsePatchUserNickName>> =
+        remoteUserDataSource.updateNickName(requestPatchNickName).mapToFlowResult { it }
 
     override suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>> {
         return remoteUserDataSource.getRecord().mapToFlowResult {
