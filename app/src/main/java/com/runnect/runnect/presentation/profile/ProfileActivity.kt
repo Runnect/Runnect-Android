@@ -4,22 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.runnect.runnect.navigator.feature.detail.CourseDetailNavigator
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityProfileBinding
-import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.navigator.base.Extras
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.VIEW_USER_PROFILE
-import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activity_profile) {
+
+    @Inject
+    lateinit var detailNavigator: CourseDetailNavigator
+
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var adapter: ProfileCourseAdapter
     private var userId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
@@ -56,12 +62,13 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
     }
 
     private fun navigateToCourseDetail(courseId: Int) {
-        Intent(this@ProfileActivity, CourseDetailActivity::class.java).apply {
-            putExtra(EXTRA_PUBLIC_COURSE_ID, courseId)
-            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-            startActivity(this)
-        }
-        applyScreenEnterAnimation()
+        detailNavigator.navigateFrom(
+            this,
+            intentBuilder = {
+                putExtra(Extras.PUBLIC_COURSE_ID, courseId)
+                addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            },
+        )
     }
 
     private fun initBackButtonClickListener() {
@@ -140,6 +147,5 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
 
     companion object {
         private const val EXTRA_COURSE_USER_ID = "courseUserId"
-        private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
     }
 }
