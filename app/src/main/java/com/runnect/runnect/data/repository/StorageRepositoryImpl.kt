@@ -4,10 +4,11 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.toMyDrawCourse
+import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource
 import com.runnect.runnect.domain.entity.MyDrawCourse
 import com.runnect.runnect.domain.repository.StorageRepository
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSource: RemoteStorageDataSource) :
@@ -16,8 +17,8 @@ class StorageRepositoryImpl @Inject constructor(private val remoteStorageDataSou
         remoteStorageDataSource.getMyDrawCourse().data?.toMyDrawCourse()
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
-        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
+        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
     }
 
     override suspend fun getMyScrapCourse(): Result<List<MyScrapCourse>?> =

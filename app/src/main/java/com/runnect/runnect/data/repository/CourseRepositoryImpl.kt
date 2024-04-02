@@ -63,6 +63,10 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         }
     }
 
+    override suspend fun getMyDrawDetail(courseId: Int): Flow<Result<ResponseGetMyDrawDetail>> {
+        return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult { it }
+    }
+
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
     ): Flow<Result<PostScrap>> {
@@ -86,12 +90,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             it.toEditableCourseDetail()
         }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
-        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
-    }
-
-    override suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail> {
-        return remoteCourseDataSource.getMyDrawDetail(courseId = courseId)
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
     }
 
     override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory> {

@@ -15,6 +15,7 @@ import com.runnect.runnect.domain.repository.StorageRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -70,26 +71,24 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    fun deleteMyDrawCourse() {
-        viewModelScope.launch {
-            runCatching {
-                _myDrawCourseDeleteState.value = UiState.Loading
-                storageRepository.deleteMyDrawCourse(
-                    RequestPutMyDrawCourse(
-                        courseIdList = itemsToDelete
-                    )
-                )
-            }.onSuccess {
-                Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
-                _myDrawCourses =
-                    _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
+    fun deleteMyDrawCourse() = launchWithHandler {
+        storageRepository.deleteMyDrawCourse(
+            RequestPutMyDrawCourse(
+                courseIdList = itemsToDelete
+            )
+        ).onStart {
+            _myDrawCourseDeleteState.value = UiState.Loading
+        }.collectResult(
+            onSuccess = {
+                _myDrawCourses = _myDrawCourses.filter {
+                    !itemsToDelete.contains(it.courseId)
+                }.toMutableList()
                 _myDrawCourseDeleteState.value = UiState.Success
-
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("실패했고 문제는 다음과 같습니다 $it")
+            },
+            onFailure = {
                 _myDrawCourseDeleteState.value = UiState.Failure
             }
-        }
+        )
     }
 
     fun getMyScrapCourses() {

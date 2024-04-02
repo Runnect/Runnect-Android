@@ -3,18 +3,22 @@ package com.runnect.runnect.data.service
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -42,6 +46,12 @@ interface CourseV2Service {
     @GET("/api/course/private/user")
     suspend fun getMyCourseLoad(): Result<ResponseGetDiscoverUploadCourse>
 
+    //내가 그린 코스 Detail 가져오기
+    @GET("/api/course/detail/{courseId}")
+    suspend fun getMyDrawDetail(
+        @Path("courseId") courseId: Int,
+    ): Result<ResponseGetMyDrawDetail>
+
     @POST("/api/public-course")
     suspend fun postUploadMyCourse(
         @Body requestPostPublicCourse: RequestPostPublicCourse,
@@ -57,4 +67,10 @@ interface CourseV2Service {
         @Path("publicCourseId") publicCourseId: Int,
         @Body requestPatchPublicCourse: RequestPatchPublicCourse
     ): Result<ResponsePatchPublicCourse>
+
+    //내가 그린 코스 삭제
+    @PUT("/api/course")
+    suspend fun deleteMyDrawCourse(
+        @Body deleteCourseList: RequestPutMyDrawCourse
+    ): Result<ResponsePutMyDrawCourse>
 }

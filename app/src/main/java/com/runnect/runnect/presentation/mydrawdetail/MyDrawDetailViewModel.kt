@@ -1,22 +1,21 @@
 package com.runnect.runnect.presentation.mydrawdetail
 
-import android.content.ContentValues
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MyDrawDetailViewModel @Inject constructor(private val courseRepository: CourseRepository) :
-    ViewModel() {
+class MyDrawDetailViewModel @Inject constructor(
+    private val courseRepository: CourseRepository
+) : BaseViewModel() {
 
     val distance = MutableLiveData<Float>()
     val image = MutableLiveData<Uri>()
@@ -25,34 +24,21 @@ class MyDrawDetailViewModel @Inject constructor(private val courseRepository: Co
     val getResult = MutableLiveData<ResponseGetMyDrawDetail>()
     val errorMessage = MutableLiveData<String>()
 
-    fun getMyDrawDetail(courseId: Int) {
-        viewModelScope.launch {
-            runCatching {
-                courseRepository.getMyDrawDetail(
-                    courseId = courseId
-                )
-            }.onSuccess {
-                getResult.value = it.body()
-            }.onFailure {
-                errorMessage.value = it.message
-            }
-        }
+    fun getMyDrawDetail(courseId: Int) = launchWithHandler {
+        courseRepository.getMyDrawDetail(courseId)
+            .collectResult(
+                onSuccess = {
+                    getResult.value = it
+                },
+                onFailure = {
+                    errorMessage.value = it.toLog()
+                }
+            )
     }
 
-    fun deleteMyDrawCourse(deleteList: MutableList<Int>) {
-        viewModelScope.launch {
-            runCatching {
-                courseRepository.deleteMyDrawCourse(
-                    RequestPutMyDrawCourse(
-                        courseIdList = deleteList
-                    )
-                )
-
-            }.onSuccess {
-                Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("실패했고 문제는 다음과 같습니다 $it")
-            }
-        }
+    fun deleteMyDrawCourse(deleteList: MutableList<Int>) = launchWithHandler {
+        courseRepository.deleteMyDrawCourse(
+            RequestPutMyDrawCourse(deleteList)
+        )
     }
 }

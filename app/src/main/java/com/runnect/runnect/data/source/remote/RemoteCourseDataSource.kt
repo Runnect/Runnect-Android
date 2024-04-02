@@ -49,9 +49,9 @@ class RemoteCourseDataSource @Inject constructor(
         courseV2Service.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) =
-        courseService.deleteMyDrawCourse(deleteCourseList)
+        courseV2Service.deleteMyDrawCourse(deleteCourseList)
 
-    suspend fun getMyDrawDetail(courseId: Int) = courseService.getMyDrawDetail(courseId)
+    suspend fun getMyDrawDetail(courseId: Int) = courseV2Service.getMyDrawDetail(courseId)
 
     suspend fun postRecord(request: RequestPostRunningHistory) = courseService.postRecord(request)
 
