@@ -71,8 +71,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.getMyDrawDetail(courseId = courseId)
     }
 
-    override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory> {
-        return remoteCourseDataSource.postRecord(request = request)
+    override suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>> {
+        return remoteCourseDataSource.postRecord(request = request).mapToFlowResult { it }
     }
 
     override suspend fun uploadCourse(

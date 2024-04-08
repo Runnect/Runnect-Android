@@ -40,7 +40,7 @@ interface CourseRepository {
 
     suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail>
 
-    suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory>
+    suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>>
 
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody

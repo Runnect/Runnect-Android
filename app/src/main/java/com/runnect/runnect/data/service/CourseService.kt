@@ -86,7 +86,7 @@ interface CourseService {
     @POST("/api/record")
     suspend fun postRecord(
         @Body request: RequestPostRunningHistory
-    ): Response<ResponsePostMyHistory>
+    ): Result<ResponsePostMyHistory>
 
     //코스 업로드
     @Multipart
