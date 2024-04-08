@@ -35,7 +35,7 @@ interface CourseService {
     @POST("/api/scrap")
     suspend fun postCourseScrap(
         @Body requestPostCourseScrap: RequestPostCourseScrap,
-    ): BaseResponse<ResponsePostScrap>
+    ): Result<ResponsePostScrap>
 
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(
@@ -66,7 +66,7 @@ interface CourseService {
     @PUT("/api/course")
     suspend fun deleteMyDrawCourse(
         @Body deleteCourseList: RequestPutMyDrawCourse
-    ): Response<ResponsePutMyDrawCourse>
+    ): Result<ResponsePutMyDrawCourse>
 
     //보관함 내가 그린 코스 가져오기
     @GET("/api/course/user")

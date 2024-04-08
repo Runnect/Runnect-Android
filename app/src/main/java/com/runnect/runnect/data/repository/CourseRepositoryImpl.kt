@@ -63,8 +63,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse)
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> {
-        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList)
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
     }
 
     override suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail> {
@@ -79,7 +79,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         image: MultipartBody.Part,
         data: RequestBody
     ): Flow<Result<ResponsePostMyDrawCourse>> {
-        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult { it }
+        return remoteCourseDataSource.uploadCourse(image = image, data = data)
+            .mapToFlowResult { it }
     }
 
     override suspend fun getCourseDetail(
@@ -100,7 +101,7 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
 
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
-    ): Result<ResponsePostScrap?> = runCatching {
-        remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).data
-    }
+    ): Flow<Result<ResponsePostScrap?>> =
+        remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap)
+            .mapToFlowResult { it }
 }

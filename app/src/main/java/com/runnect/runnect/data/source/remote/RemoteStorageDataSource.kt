@@ -13,7 +13,7 @@ class RemoteStorageDataSource @Inject constructor(private val courseService: Cou
     suspend fun getMyDrawCourse(): Result<ResponseGetMyDrawCourse> =
         courseService.getDrawCourseList()
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse> =
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Result<ResponsePutMyDrawCourse> =
         courseService.deleteMyDrawCourse(deleteCourseList)
 
     suspend fun getMyScrapCourse(): Result<ResponseGetMyScrapCourse> =

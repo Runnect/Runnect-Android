@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.domain.common.toLog
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
@@ -167,7 +169,8 @@ class DiscoverViewModel @Inject constructor(
                         pageNo = currentPageNumber + 1
                     )
 
-                    _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
+                    _recommendCourseNextPageState.value =
+                        UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 }
                 .onFailure { exception ->
@@ -209,18 +212,21 @@ class DiscoverViewModel @Inject constructor(
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        viewModelScope.launch {
-            _courseScrapState.value = UiStateV2.Loading
-
+        launchWithHandler {
             courseRepository.postCourseScrap(
                 RequestPostCourseScrap(
                     publicCourseId = id, scrapTF = scrapTF.toString()
                 )
-            ).onSuccess { response ->
-                _courseScrapState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
-            }
+            ).onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _courseScrapState.value = UiStateV2.Failure(it.message.toString())
+                }
+            )
         }
     }
 

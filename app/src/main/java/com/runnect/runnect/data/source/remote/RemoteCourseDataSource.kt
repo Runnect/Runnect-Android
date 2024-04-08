@@ -30,7 +30,7 @@ class RemoteCourseDataSource @Inject constructor(
     ): BaseResponse<ResponseGetDiscoverRecommend> =
         courseService.getRecommendCourse(pageNo = pageNo, sort = sort)
 
-    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): BaseResponse<ResponsePostScrap> =
+    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Result<ResponsePostScrap> =
         courseService.postCourseScrap(requestPostCourseScrap)
 
     suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)

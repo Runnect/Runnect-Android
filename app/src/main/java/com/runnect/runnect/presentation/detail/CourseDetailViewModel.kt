@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
@@ -14,9 +13,12 @@ import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -24,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CourseDetailViewModel @Inject constructor(
     private val courseRepository: CourseRepository, private val userRepository: UserRepository
-) : ViewModel() {
+) : BaseViewModel() {
     // 서버통신 코드
     private val _courseGetState = MutableLiveData<UiStateV2<CourseDetail?>>()
     val courseGetState: LiveData<UiStateV2<CourseDetail?>>
@@ -133,18 +135,21 @@ class CourseDetailViewModel @Inject constructor(
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        viewModelScope.launch {
-            _courseScrapState.value = UiStateV2.Loading
-
+        launchWithHandler {
             courseRepository.postCourseScrap(
                 RequestPostCourseScrap(
                     publicCourseId = id, scrapTF = scrapTF.toString()
                 )
-            ).onSuccess { response ->
-                _courseScrapState.value = UiStateV2.Success(response)
-            }.onFailure { exception ->
-                _courseScrapState.value = UiStateV2.Failure(exception.message.toString())
-            }
+            ).onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _courseScrapState.value = UiStateV2.Failure(it.message.toString())
+                }
+            )
         }
     }
 

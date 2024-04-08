@@ -9,6 +9,6 @@ import retrofit2.Response
 
 interface StorageRepository {
     suspend fun getMyDrawCourse(): Flow<Result<List<MyDrawCourse>>>
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) : Response<ResponsePutMyDrawCourse>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) : Flow<Result<ResponsePutMyDrawCourse>>
     suspend fun getMyScrapCourse(): Flow<Result<List<MyScrapCourse>>>
 }

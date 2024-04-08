@@ -36,7 +36,7 @@ interface CourseRepository {
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): ResponsePostDiscoverUpload
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Response<ResponsePutMyDrawCourse>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>>
 
     suspend fun getMyDrawDetail(courseId: Int): Response<ResponseGetMyDrawDetail>
 
@@ -53,5 +53,5 @@ interface CourseRepository {
         requestPatchPublicCourse: RequestPatchPublicCourse
     ): Result<EditableCourseDetail?>
 
-    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Result<ResponsePostScrap?>
+    suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<ResponsePostScrap?>>
 }
