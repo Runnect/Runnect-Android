@@ -116,39 +116,37 @@ class CourseDetailViewModel @Inject constructor(
             )
     }
 
-    fun deleteUploadCourse(id: Int) {
-        launchWithHandler {
-            userRepository.putDeleteUploadCourse(
-                RequestDeleteUploadCourse(publicCourseIdList = listOf(id))
-            ).onStart {
-                _courseDeleteState.value = UiStateV2.Loading
-            }.collect { result ->
-                result.onSuccess {
-                    _courseDeleteState.value = UiStateV2.Success(it)
-                }.onFailure {
-                    _courseDeleteState.value = UiStateV2.Failure(it.toLog())
-                }
+    fun deleteUploadCourse(id: Int) = launchWithHandler {
+        userRepository.putDeleteUploadCourse(
+            RequestDeleteUploadCourse(publicCourseIdList = listOf(id))
+        ).onStart {
+            _courseDeleteState.value = UiStateV2.Loading
+        }.collectResult(
+            onSuccess = {
+                _courseDeleteState.value = UiStateV2.Success(it)
+            },
+            onFailure = {
+                _courseDeleteState.value = UiStateV2.Failure(it.toLog())
             }
-        }
+        )
     }
 
-    fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        launchWithHandler {
-            val requestPostCourseScrap = RequestPostCourseScrap(
-                publicCourseId = id, scrapTF = scrapTF.toString()
-            )
+    fun postCourseScrap(id: Int, scrapTF: Boolean) = launchWithHandler {
+        val requestPostCourseScrap = RequestPostCourseScrap(
+            publicCourseId = id, scrapTF = scrapTF.toString()
+        )
 
-            courseRepository.postCourseScrap(requestPostCourseScrap)
-                .onStart {
-                    _courseScrapState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        _courseScrapState.value = UiStateV2.Success(it)
-                    }.onFailure {
-                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
-                    }
+        courseRepository.postCourseScrap(requestPostCourseScrap)
+            .onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _courseScrapState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
     companion object {

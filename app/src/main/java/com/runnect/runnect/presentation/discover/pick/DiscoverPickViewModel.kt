@@ -7,6 +7,7 @@ import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
@@ -31,24 +32,23 @@ class DiscoverPickViewModel @Inject constructor(
         getMyCourseLoad()
     }
 
-    private fun getMyCourseLoad() {
-        launchWithHandler {
-            _courseGetState.value = UiStateV2.Loading
+    private fun getMyCourseLoad() = launchWithHandler {
+        _courseGetState.value = UiStateV2.Loading
 
-            courseRepository.getMyCourseLoad()
-                .onStart {
-                    _courseGetState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess { response ->
-                        Timber.d("DISCOVER UPLOAD COURSE GET SUCCESS")
-                        _courseGetState.value = if (response.isEmpty()) UiStateV2.Empty else UiStateV2.Success(response)
-                    }.onFailure { t ->
-                        Timber.e("DISCOVER UPLOAD COURSE GET FAIL")
-                        Timber.e("${t.message}")
-                        _courseGetState.value = UiStateV2.Failure(t.toLog())
-                    }
+        courseRepository.getMyCourseLoad()
+            .onStart {
+                _courseGetState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    Timber.d("DISCOVER UPLOAD COURSE GET SUCCESS")
+                    _courseGetState.value = if (it.isEmpty()) UiStateV2.Empty else UiStateV2.Success(it)
+                },
+                onFailure = {
+                    Timber.e("DISCOVER UPLOAD COURSE GET FAIL")
+                    Timber.e(it.toLog())
+                    _courseGetState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
     fun updateCourseSelectState(isSelected: Boolean) {

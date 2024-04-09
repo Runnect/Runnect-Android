@@ -71,15 +71,16 @@ class MyHistoryViewModel @Inject constructor(
             .onStart {
                 _historyItems.clear()
                 _historyState.value = UiState.Loading
-            }.collect { result ->
-                result.onSuccess {
+            }.collectResult(
+                onSuccess = {
                     _historyItems = it.toMutableList()
                     _historyState.value = if (it.isEmpty()) UiState.Empty else UiState.Success
-                }.onFailure {
+                },
+                onFailure = {
                     errorMessage.value = it.toLog()
                     _historyState.value = UiState.Failure
                 }
-            }
+            )
     }
 
     fun deleteHistory() = launchWithHandler {

@@ -115,24 +115,23 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        launchWithHandler {
-            val requestPostCourseScrap = RequestPostCourseScrap(
-                publicCourseId = id, scrapTF = scrapTF.toString()
-            )
+    fun postCourseScrap(id: Int, scrapTF: Boolean) = launchWithHandler {
+        val requestPostCourseScrap = RequestPostCourseScrap(
+            publicCourseId = id, scrapTF = scrapTF.toString()
+        )
 
-            courseRepository.postCourseScrap(requestPostCourseScrap)
-                .onStart {
-                    _courseScrapState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        _courseScrapState.value = UiStateV2.Success(it)
-                    }.onFailure {
-                        Timber.e(it.toLog())
-                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
-                    }
+        courseRepository.postCourseScrap(requestPostCourseScrap)
+            .onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    Timber.e(it.toLog())
+                    _courseScrapState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
     fun modifyItemsToDelete(id: Int) {

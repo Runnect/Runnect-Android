@@ -26,6 +26,7 @@ class GiveNickNameViewModel @Inject constructor(
 
     fun updateNickName() = launchWithHandler {
         val requestPatchNickName = RequestPatchNickName(nickName.value.toString())
+
         userRepository.updateNickName(requestPatchNickName)
             .onStart {
                 _uiState.value = UiState.Loading

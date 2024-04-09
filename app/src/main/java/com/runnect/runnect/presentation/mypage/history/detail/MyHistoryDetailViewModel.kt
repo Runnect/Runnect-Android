@@ -62,22 +62,20 @@ class MyHistoryDetailViewModel @Inject constructor(
         _currentScreenMode = mode
     }
 
-    fun deleteHistory() {
-        launchWithHandler {
-            val requestDeleteHistory = RequestDeleteHistory(listOf(historyId))
+    fun deleteHistory() = launchWithHandler {
+        val requestDeleteHistory = RequestDeleteHistory(listOf(historyId))
 
-            userRepository.putDeleteHistory(requestDeleteHistory)
-                .onStart {
-                    _historyDeleteState.value = UiStateV2.Loading
-                }.collectResult(
-                    onSuccess = {
-                        _historyDeleteState.value = UiStateV2.Success(it)
-                    },
-                    onFailure = {
-                        _historyDeleteState.value = UiStateV2.Failure(it.toLog())
-                    }
-                )
-        }
+        userRepository.putDeleteHistory(requestDeleteHistory)
+            .onStart {
+                _historyDeleteState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _historyDeleteState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _historyDeleteState.value = UiStateV2.Failure(it.toLog())
+                }
+            )
     }
 
     fun patchHistoryTitle() = launchWithHandler {

@@ -11,6 +11,7 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -53,24 +54,25 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun postCourseScrap(courseId: Int, scrapTF: Boolean) {
-        launchWithHandler {
-            val requestPostCourseScrap = RequestPostCourseScrap(
-                publicCourseId = courseId, scrapTF = scrapTF.toString()
-            )
-            courseRepository.postCourseScrap(requestPostCourseScrap)
-                .onStart {
-                    _courseScrapState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        Timber.d("POST COURSE SCRAP SUCCESS")
-                        _courseScrapState.value = UiStateV2.Success(it)
-                    }.onFailure {
-                        Timber.e("POST COURSE SCRAP FAILURE")
-                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
-                    }
+    fun postCourseScrap(courseId: Int, scrapTF: Boolean) = launchWithHandler {
+        val requestPostCourseScrap = RequestPostCourseScrap(
+            publicCourseId = courseId,
+            scrapTF = scrapTF.toString()
+        )
+
+        courseRepository.postCourseScrap(requestPostCourseScrap)
+            .onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    Timber.d("POST COURSE SCRAP SUCCESS")
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    Timber.e("POST COURSE SCRAP FAILURE")
+                    _courseScrapState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 }
 

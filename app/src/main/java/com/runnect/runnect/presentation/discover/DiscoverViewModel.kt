@@ -12,6 +12,7 @@ import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
@@ -98,44 +99,41 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun getMarathonCourses() {
-        launchWithHandler {
-            courseRepository.getMarathonCourse()
-                .onStart {
-                    _marathonCourseGetState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        _marathonCourseGetState.value = UiStateV2.Success(it)
-                    }.onFailure {
-                        _marathonCourseGetState.value = UiStateV2.Failure(it.toLog())
-                    }
+    private fun getMarathonCourses() = launchWithHandler {
+        courseRepository.getMarathonCourse()
+            .onStart {
+                _marathonCourseGetState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _marathonCourseGetState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _marathonCourseGetState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
-    private fun getRecommendCourses() {
-        launchWithHandler {
-            courseRepository.getRecommendCourse(
-                pageNo = FIRST_PAGE_NUM.toString(),
-                sort = currentSortCriteria
-            ).onStart {
-                _recommendCourseGetState.value = UiStateV2.Loading
-            }.collect { result ->
-                result.onSuccess { pagingData ->
-                    updateRecommendCoursePagingData(
-                        isEnd = pagingData.isEnd,
-                        pageNo = FIRST_PAGE_NUM
-                    )
+    private fun getRecommendCourses() = launchWithHandler {
+        courseRepository.getRecommendCourse(
+            pageNo = FIRST_PAGE_NUM.toString(),
+            sort = currentSortCriteria
+        ).onStart {
+            _recommendCourseGetState.value = UiStateV2.Loading
+        }.collectResult(
+            onSuccess = { pagingData ->
+                updateRecommendCoursePagingData(
+                    isEnd = pagingData.isEnd,
+                    pageNo = FIRST_PAGE_NUM
+                )
 
-                    _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
-                    Timber.d("RECOMMEND COURSE GET SUCCESS")
-                }.onFailure { exception ->
-                    _recommendCourseGetState.value = UiStateV2.Failure(exception.toLog())
-                    Timber.e("RECOMMEND COURSE GET FAIL")
-                }
+                _recommendCourseGetState.value = UiStateV2.Success(pagingData.recommendCourses)
+                Timber.d("RECOMMEND COURSE GET SUCCESS")
+            },
+            onFailure = {
+                _recommendCourseGetState.value = UiStateV2.Failure(it.toLog())
+                Timber.e("RECOMMEND COURSE GET FAIL")
             }
-
-        }
+        )
     }
 
     fun isNextPageLoading() = recommendCourseNextPageState.value is UiStateV2.Loading
@@ -150,8 +148,8 @@ class DiscoverViewModel @Inject constructor(
                 sort = currentSortCriteria
             ).onStart {
                 _recommendCourseNextPageState.value = UiStateV2.Loading
-            }.collect { result ->
-                result.onSuccess { pagingData ->
+            }.collectResult(
+                onSuccess = { pagingData ->
                     updateRecommendCoursePagingData(
                         isEnd = pagingData.isEnd,
                         pageNo = currentPageNumber + 1
@@ -159,12 +157,12 @@ class DiscoverViewModel @Inject constructor(
 
                     _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
-                }.onFailure { exception ->
-                    _recommendCourseNextPageState.value =
-                        UiStateV2.Failure(exception.toLog())
+                },
+                onFailure = {
+                    _recommendCourseNextPageState.value = UiStateV2.Failure(it.toLog())
                     Timber.e("RECOMMEND COURSE NEXT PAGE GET FAIL")
                 }
-            }
+            )
         }
     }
 
@@ -177,8 +175,8 @@ class DiscoverViewModel @Inject constructor(
                 sort = currentSortCriteria
             ).onStart {
                 _recommendCourseSortState.value = UiStateV2.Loading
-            }.collect { result ->
-                result.onSuccess { pagingData ->
+            }.collectResult(
+                onSuccess = { pagingData ->
                     updateRecommendCoursePagingData(
                         isEnd = pagingData.isEnd,
                         pageNo = FIRST_PAGE_NUM
@@ -186,31 +184,31 @@ class DiscoverViewModel @Inject constructor(
 
                     _recommendCourseSortState.value = UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE SORT SUCCESS")
-                }.onFailure { exception ->
-                    _recommendCourseSortState.value = UiStateV2.Failure(exception.toLog())
+                },
+                onFailure = {
+                    _recommendCourseSortState.value = UiStateV2.Failure(it.toLog())
                     Timber.e("RECOMMEND COURSE SORT FAIL")
                 }
-            }
+            )
         }
     }
 
-    fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        launchWithHandler {
-            val requestPostCourseScrap = RequestPostCourseScrap(
-                publicCourseId = id, scrapTF = scrapTF.toString()
-            )
+    fun postCourseScrap(id: Int, scrapTF: Boolean) = launchWithHandler {
+        val requestPostCourseScrap = RequestPostCourseScrap(
+            publicCourseId = id, scrapTF = scrapTF.toString()
+        )
 
-            courseRepository.postCourseScrap(requestPostCourseScrap)
-                .onStart {
-                    _courseScrapState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        _courseScrapState.value = UiStateV2.Success(it)
-                    }.onFailure {
-                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
-                    }
+        courseRepository.postCourseScrap(requestPostCourseScrap)
+            .onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _courseScrapState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
     companion object {

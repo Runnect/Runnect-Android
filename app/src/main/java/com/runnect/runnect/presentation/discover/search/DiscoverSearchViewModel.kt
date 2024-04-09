@@ -9,6 +9,7 @@ import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
@@ -32,42 +33,41 @@ class DiscoverSearchViewModel @Inject constructor(
         _clickedCourseId = id
     }
 
-    fun getCourseSearch(keyword: String) {
-        launchWithHandler {
-            courseRepository.getCourseSearch(
-                keyword = keyword
-            ).onStart {
-                _courseSearchState.value = UiStateV2.Loading
-            }.collect { result ->
-                result.onSuccess {
-                    if (it.isEmpty()) {
-                        _courseSearchState.value = UiStateV2.Empty
-                        return@onSuccess
-                    }
-
-                    _courseSearchState.value = UiStateV2.Success(it)
-                }.onFailure {
-                    _courseSearchState.value = UiStateV2.Failure(it.toLog())
+    fun getCourseSearch(keyword: String) = launchWithHandler {
+        courseRepository.getCourseSearch(
+            keyword = keyword
+        ).onStart {
+            _courseSearchState.value = UiStateV2.Loading
+        }.collectResult(
+            onSuccess = {
+                if (it.isEmpty()) {
+                    _courseSearchState.value = UiStateV2.Empty
+                    return@collectResult
                 }
+
+                _courseSearchState.value = UiStateV2.Success(it)
+            },
+            onFailure = {
+                _courseSearchState.value = UiStateV2.Failure(it.toLog())
             }
-        }
+        )
     }
 
-    fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        launchWithHandler {
-            val requestPostCourseScrap = RequestPostCourseScrap(
-                publicCourseId = id, scrapTF = scrapTF.toString()
-            )
-            courseRepository.postCourseScrap(requestPostCourseScrap)
-                .onStart {
-                    _courseScrapState.value = UiStateV2.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        _courseScrapState.value = UiStateV2.Success(it)
-                    }.onFailure {
-                        _courseScrapState.value = UiStateV2.Failure(it.toLog())
-                    }
+    fun postCourseScrap(id: Int, scrapTF: Boolean) = launchWithHandler {
+        val requestPostCourseScrap = RequestPostCourseScrap(
+            publicCourseId = id, scrapTF = scrapTF.toString()
+        )
+
+        courseRepository.postCourseScrap(requestPostCourseScrap)
+            .onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _courseScrapState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 }

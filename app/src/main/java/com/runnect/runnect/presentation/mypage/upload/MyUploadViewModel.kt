@@ -9,6 +9,7 @@ import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
@@ -65,47 +66,45 @@ class MyUploadViewModel @Inject constructor(
         _selectedItemsCount.value = count
     }
 
-    fun getUserUploadCourse() {
-        launchWithHandler {
-            userRepository.getUserUploadCourse()
-                .onStart {
-                    _myUploadCourseState.value = UiState.Loading
-                }.collect { result ->
-                    result.onSuccess {
-                        _myUploadCourses = it.toMutableList()
-                        _myUploadCourseState.value = if (it.isEmpty()) UiState.Empty else UiState.Success
-                    }.onFailure {
-                        errorMessage.value = it.message
-                        _myUploadCourseState.value = UiState.Failure
-                    }
+    fun getUserUploadCourse() = launchWithHandler {
+        userRepository.getUserUploadCourse()
+            .onStart {
+                _myUploadCourseState.value = UiState.Loading
+            }.collectResult(
+                onSuccess = {
+                    _myUploadCourses = it.toMutableList()
+                    _myUploadCourseState.value = if (it.isEmpty()) UiState.Empty else UiState.Success
+                },
+                onFailure = {
+                    errorMessage.value = it.toLog()
+                    _myUploadCourseState.value = UiState.Failure
                 }
-        }
+            )
     }
 
-    fun deleteUploadCourse() {
-        launchWithHandler {
-            val requestDeleteUploadCourse = RequestDeleteUploadCourse(_itemsToDelete)
-            userRepository.putDeleteUploadCourse(requestDeleteUploadCourse)
-                .onStart {
-                    _myUploadDeleteState.value = UiState.Loading
-                    setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
-                }
-                .collect { result ->
-                    result.onSuccess {
-                        _myUploadCourses.removeAll { it.id in itemsToDelete }
-                        _myUploadDeleteState.value = UiState.Success
+    fun deleteUploadCourse() = launchWithHandler {
+        val requestDeleteUploadCourse = RequestDeleteUploadCourse(_itemsToDelete)
 
-                        //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
-                        if (_myUploadCourses.isEmpty()) {
-                            _myUploadCourseState.value = UiState.Empty
-                            convertMode()
-                        }
-                    }.onFailure {
-                        errorMessage.value = it.toLog()
-                        _myUploadDeleteState.value = UiState.Failure
+        userRepository.putDeleteUploadCourse(requestDeleteUploadCourse)
+            .onStart {
+                _myUploadDeleteState.value = UiState.Loading
+                setSelectedItemsCount(DEFAULT_SELECTED_COUNT)
+            }.collectResult(
+                onSuccess = {
+                    _myUploadCourses.removeAll { it.id in itemsToDelete }
+                    _myUploadDeleteState.value = UiState.Success
+
+                    //모든 기록 삭제 시, 편집 모드 -> 읽기 모드
+                    if (_myUploadCourses.isEmpty()) {
+                        _myUploadCourseState.value = UiState.Empty
+                        convertMode()
                     }
+                },
+                onFailure = {
+                    errorMessage.value = it.toLog()
+                    _myUploadDeleteState.value = UiState.Failure
                 }
-        }
+            )
     }
 
 

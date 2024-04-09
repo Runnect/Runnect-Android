@@ -6,6 +6,7 @@ import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
@@ -25,13 +26,14 @@ class MySettingAccountInfoViewModel @Inject constructor(
         userRepository.deleteUser()
             .onStart {
                 _withdrawalState.value = UiState.Loading
-            }.collect { result ->
-                result.onSuccess {
+            }.collectResult(
+                onSuccess = {
                     _withdrawalState.value = UiState.Success
-                }.onFailure {
+                },
+                onFailure = {
                     errorMessage.value = it.toLog()
                     _withdrawalState.value = UiState.Failure
                 }
-            }
+            )
     }
 }
