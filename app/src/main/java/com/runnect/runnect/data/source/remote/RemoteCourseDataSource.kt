@@ -10,7 +10,6 @@ import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
-import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.service.CourseV2Service
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 class RemoteCourseDataSource @Inject constructor(
     private var courseV2Service: CourseV2Service,
-    private val courseService: CourseService
 ) {
     suspend fun getMarathonCourse(): Result<ResponseGetDiscoverMarathon> =
         courseV2Service.getMarathonCourse()
@@ -53,8 +51,8 @@ class RemoteCourseDataSource @Inject constructor(
 
     suspend fun getMyDrawDetail(courseId: Int) = courseV2Service.getMyDrawDetail(courseId)
 
-    suspend fun postRecord(request: RequestPostRunningHistory) = courseService.postRecord(request)
+    suspend fun postRecord(request: RequestPostRunningHistory) = courseV2Service.postRecord(request)
 
     suspend fun uploadCourse(image: MultipartBody.Part, data: RequestBody) =
-        courseService.uploadCourse(image, data)
+        courseV2Service.uploadCourse(image, data)
 }

@@ -1,9 +1,7 @@
 package com.runnect.runnect.presentation.storage
 
-import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.domain.common.toLog
@@ -18,7 +16,6 @@ import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -54,21 +51,19 @@ class StorageViewModel @Inject constructor(
     var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
     var itemsToDelete: MutableList<Int> = mutableListOf()
 
-    fun getMyDrawList() {
-        viewModelScope.launch {
-            runCatching {
-                _myDrawCourseGetState.value = UiState.Loading
-                storageRepository.getMyDrawCourse()
-            }.onSuccess {
-                _myDrawCourses = (it.getOrNull() ?: emptyList()).toMutableList()
-                Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
+    fun getMyDrawList() = launchWithHandler {
+        storageRepository.getMyDrawCourse().onStart {
+            _myDrawCourseGetState.value = UiState.Loading
+        }.collectResult(
+            onSuccess = {
+                _myDrawCourses = it.toMutableList()
                 _myDrawCourseGetState.value = UiState.Success
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("onFailure 메세지 : $it")
+            },
+            onFailure = {
                 errorMessage.value = it.message
                 _myDrawCourseGetState.value = UiState.Failure
             }
-        }
+        )
     }
 
     fun deleteMyDrawCourse() = launchWithHandler {
@@ -91,28 +86,19 @@ class StorageViewModel @Inject constructor(
         )
     }
 
-    fun getMyScrapCourses() {
-        viewModelScope.launch {
+    fun getMyScrapCourses() = launchWithHandler {
+        storageRepository.getMyScrapCourse().onStart {
             _myScrapCourseGetState.value = UiStateV2.Loading
-
-            storageRepository.getMyScrapCourse()
-                .onSuccess { response ->
-                    if (response == null) {
-                        _myScrapCourseGetState.value =
-                            UiStateV2.Failure("MY SCRAP COURSE DATA IS NULL")
-                        return@launch
-                    }
-
-                    Timber.d("MY SCRAP COURSE GET SUCCESS")
-                    _myScrapCourseGetState.value = UiStateV2.Success(response)
-                    itemSize.value = response.size
-                }
-                .onFailure { t ->
-                    Timber.e("MY SCRAP COURSE GET FAIL")
-                    Timber.e("${t.message}")
-                    _myScrapCourseGetState.value = UiStateV2.Failure(t.message.toString())
-                }
-        }
+        }.collectResult(
+            onSuccess = {
+                _myScrapCourseGetState.value = UiStateV2.Success(it)
+                itemSize.value = it.size
+            },
+            onFailure = {
+                Timber.e("${it.message}")
+                _myScrapCourseGetState.value = UiStateV2.Failure(it.message.toString())
+            }
+        )
     }
 
     fun postCourseScrap(id: Int, scrapTF: Boolean) = launchWithHandler {

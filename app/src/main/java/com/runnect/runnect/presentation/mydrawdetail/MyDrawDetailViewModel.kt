@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.mydrawdetail
 
+import android.content.ContentValues
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.runnect.runnect.data.dto.CourseData
@@ -10,6 +11,7 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +40,16 @@ class MyDrawDetailViewModel @Inject constructor(
 
     fun deleteMyDrawCourse(deleteList: MutableList<Int>) = launchWithHandler {
         courseRepository.deleteMyDrawCourse(
-            RequestPutMyDrawCourse(deleteList)
+            RequestPutMyDrawCourse(
+                courseIdList = deleteList
+            )
+        ).collectResult(
+            onSuccess = {
+                Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
+            },
+            onFailure = {
+                Timber.tag(ContentValues.TAG).d("실패했고 문제는 다음과 같습니다 $it")
+            }
         )
     }
 }

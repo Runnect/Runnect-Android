@@ -20,7 +20,6 @@ import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 
 interface CourseRepository {
     suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>>
@@ -38,6 +37,8 @@ interface CourseRepository {
 
     suspend fun getMyDrawDetail(courseId: Int): Flow<Result<ResponseGetMyDrawDetail>>
 
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>>
+
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<PostScrap>>
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<ResponsePostDiscoverUpload>>
@@ -47,11 +48,9 @@ interface CourseRepository {
         requestPatchPublicCourse: RequestPatchPublicCourse
     ): Flow<Result<EditableCourseDetail>>
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>>
-
-    suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory>
+    suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>>
 
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
-    ): Response<ResponsePostMyDrawCourse>
+    ): Flow<Result<ResponsePostMyDrawCourse>>
 }

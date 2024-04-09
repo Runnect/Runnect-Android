@@ -1,20 +1,20 @@
 package com.runnect.runnect.data.repository
 
-import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
-import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
+import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.PostScrap
@@ -23,7 +23,6 @@ import com.runnect.runnect.domain.repository.CourseRepository
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
@@ -67,6 +66,10 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult { it }
     }
 
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
+    }
+
     override suspend fun postCourseScrap(
         requestPostCourseScrap: RequestPostCourseScrap
     ): Flow<Result<PostScrap>> {
@@ -90,21 +93,14 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
             it.toEditableCourseDetail()
         }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
-        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
-    }
-
-    override suspend fun postRecord(request: RequestPostRunningHistory): Response<ResponsePostMyHistory> {
-        return remoteCourseDataSource.postRecord(request = request)
+    override suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>> {
+        return remoteCourseDataSource.postRecord(request = request).mapToFlowResult { it }
     }
 
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
         data: RequestBody
-    ): Response<ResponsePostMyDrawCourse> {
-        return remoteCourseDataSource.uploadCourse(
-            image = image,
-            data = data
-        )
+    ): Flow<Result<ResponsePostMyDrawCourse>> {
+        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult { it }
     }
 }

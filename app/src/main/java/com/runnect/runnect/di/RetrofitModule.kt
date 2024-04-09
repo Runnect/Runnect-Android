@@ -135,10 +135,13 @@ object RetrofitModule {
     @Provides
     @Singleton
     @Tmap
-    fun provideTmapRetrofit(json: Json, @HttpClient client: OkHttpClient): Retrofit {
+    fun provideTmapRetrofit(json: Json, @HttpClientV2 client: OkHttpClient): Retrofit {
         kotlinx.coroutines.internal.synchronized(this) {
-            val retrofit = Retrofit.Builder().baseUrl(BuildConfig.TMAP_BASE_URL).client(client)
-                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BuildConfig.TMAP_BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(ResultCallAdapterFactory.create())
                 .build()
             return retrofit ?: throw RuntimeException("Retrofit creation failed.")
         }

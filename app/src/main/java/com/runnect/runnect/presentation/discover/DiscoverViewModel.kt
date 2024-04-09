@@ -5,9 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.common.toLog
-import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.domain.entity.PostScrap
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.RecommendCourse
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
@@ -155,7 +156,8 @@ class DiscoverViewModel @Inject constructor(
                         pageNo = currentPageNumber + 1
                     )
 
-                    _recommendCourseNextPageState.value = UiStateV2.Success(pagingData.recommendCourses)
+                    _recommendCourseNextPageState.value =
+                        UiStateV2.Success(pagingData.recommendCourses)
                     Timber.d("RECOMMEND COURSE NEXT PAGE GET SUCCESS")
                 },
                 onFailure = {
