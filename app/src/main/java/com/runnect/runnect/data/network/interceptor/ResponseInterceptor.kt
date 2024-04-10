@@ -1,6 +1,8 @@
 package com.runnect.runnect.data.network.interceptor
 
 import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
 import com.runnect.runnect.data.dto.response.base.BaseResponse
@@ -42,6 +44,11 @@ class ResponseInterceptor : Interceptor {
 
     private fun jsonToBaseResponse(body: String): String? {
         return try {
+            val jsonElement: JsonElement = gson.fromJson(body, JsonElement::class.java)
+            if (!isBaseResponse(jsonElement.asJsonObject)) {
+                return null
+            }
+
             val baseResponse = gson.fromJson(body, BaseResponse::class.java)
             gson.toJson(baseResponse.data)
         } catch (e: JsonSyntaxException) {
@@ -51,5 +58,10 @@ class ResponseInterceptor : Interceptor {
         } catch (e: Exception) {
             null // 기타 예외 발생 시 원래 형식을 반환
         }
+    }
+
+    private fun isBaseResponse(jsonObject: JsonObject): Boolean {
+        val requiredFields = listOf("status", "success", "message", "data")
+        return requiredFields.all { jsonObject.has(it) }
     }
 }

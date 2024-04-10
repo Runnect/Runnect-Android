@@ -5,7 +5,7 @@ import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.service.v2.LoginV2Service
-import com.runnect.runnect.data.service.v2.UserV2Service
+import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
 import dagger.Module
@@ -23,7 +23,7 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providePUserV2Service(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
-        retrofitV2.create(UserV2Service::class.java)
+        retrofitV2.create(UserService::class.java)
 
     @Singleton
     @Provides
