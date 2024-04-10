@@ -10,6 +10,7 @@ import com.runnect.runnect.data.dto.response.ResponseDeleteUser
 import com.runnect.runnect.data.dto.response.ResponseGetMyHistory
 import com.runnect.runnect.data.dto.response.ResponseGetMyStamp
 import com.runnect.runnect.data.dto.response.ResponseGetUser
+import com.runnect.runnect.data.dto.response.ResponseGetUserProfile
 import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
@@ -33,6 +34,12 @@ interface UserV2Service {
 
     @GET("api/stamp/user")
     suspend fun getMyStamp(): Result<ResponseGetMyStamp>
+
+    // 유저 프로필 조회
+    @GET("/api/user/{profileUserId}")
+    suspend fun getUserProfile(
+        @Path("profileUserId") userId: Int,
+    ): Result<ResponseGetUserProfile>
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(

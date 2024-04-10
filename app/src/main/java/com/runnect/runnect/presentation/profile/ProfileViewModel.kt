@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.PostScrap
@@ -14,7 +13,6 @@ import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,25 +31,18 @@ class ProfileViewModel @Inject constructor(
         get() = _userProfileState
 
 
-    fun getUserProfile(userId: Int) {
-        viewModelScope.launch {
-            _userProfileState.value = UiStateV2.Loading
-
-            userRepository.getUserProfile(userId = userId)
-                .onSuccess { profileData ->
-                    if (profileData == null) {
-                        _userProfileState.value = UiStateV2.Failure("PROFILE DATA IS NULL")
-                        Timber.d("PROFILE DATA IS NULL")
-                        return@launch
-                    }
-                    _userProfileState.value = UiStateV2.Success(profileData)
-                    Timber.d("GET PROFILE DATA SUCCESS")
+    fun getUserProfile(userId: Int) = launchWithHandler {
+        userRepository.getUserProfile(userId)
+            .onStart {
+                _userProfileState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _userProfileState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _userProfileState.value = UiStateV2.Failure(it.toLog())
                 }
-                .onFailure { error ->
-                    _userProfileState.value = UiStateV2.Failure(error.message.toString())
-                    Timber.e("GET PROFILE DATA FAILURE")
-                }
-        }
+            )
     }
 
     fun postCourseScrap(courseId: Int, scrapTF: Boolean) = launchWithHandler {

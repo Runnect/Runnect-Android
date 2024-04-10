@@ -69,8 +69,8 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
         }
     }
 
-    override suspend fun getUserProfile(userId: Int): Result<UserProfile?> =
-        runCatching {
-            remoteUserDataSource.getUserProfile(userId).data?.toUserProfile()
+    override suspend fun getUserProfile(userId: Int): Flow<Result<UserProfile>> =
+        remoteUserDataSource.getUserProfile(userId).mapToFlowResult {
+            it.toUserProfile()
         }
 }

@@ -14,14 +14,11 @@ import com.runnect.runnect.data.dto.response.ResponseGetUserProfile
 import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
-import com.runnect.runnect.data.dto.response.base.BaseResponse
-import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.service.v2.UserV2Service
 import javax.inject.Inject
 
 class RemoteUserDataSource @Inject constructor(
     private val userV2Service: UserV2Service,
-    private val userService: UserService
 ) {
     suspend fun getUserInfo(): Result<ResponseGetUser> = userV2Service.getUserInfo()
 
@@ -53,6 +50,6 @@ class RemoteUserDataSource @Inject constructor(
     ): Result<ResponsePatchUserNickName> =
         userV2Service.updateNickName(requestPatchNickName)
 
-    suspend fun getUserProfile(userId: Int): BaseResponse<ResponseGetUserProfile> =
-        userService.getUserProfile(userId)
+    suspend fun getUserProfile(userId: Int): Result<ResponseGetUserProfile> =
+        userV2Service.getUserProfile(userId)
 }

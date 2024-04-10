@@ -41,5 +41,5 @@ interface UserRepository {
         requestPatchNickName: RequestPatchNickName
     ): Flow<Result<ResponsePatchUserNickName>>
 
-    suspend fun getUserProfile(userId: Int): Result<UserProfile?>
+    suspend fun getUserProfile(userId: Int): Flow<Result<UserProfile>>
 }

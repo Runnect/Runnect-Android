@@ -38,11 +38,6 @@ object ServiceModule {
     /** -------- v1 -------- */
     @Singleton
     @Provides
-    fun providePUserService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
-        runnectRetrofit.create(UserService::class.java)
-
-    @Singleton
-    @Provides
     fun provideLoginService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
         runnectRetrofit.create(LoginService::class.java)
 
