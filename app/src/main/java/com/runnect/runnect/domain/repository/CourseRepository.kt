@@ -6,10 +6,6 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
-import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse

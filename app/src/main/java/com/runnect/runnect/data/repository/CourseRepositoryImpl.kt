@@ -6,10 +6,6 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
-import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.CourseDetail
@@ -25,8 +21,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
-    CourseRepository {
+class CourseRepositoryImpl @Inject constructor(
+    private val remoteCourseDataSource: RemoteCourseDataSource
+) : CourseRepository {
 
     override suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>> {
         return remoteCourseDataSource.getMarathonCourse().mapToFlowResult {

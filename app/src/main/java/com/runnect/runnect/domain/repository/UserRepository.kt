@@ -1,17 +1,12 @@
 package com.runnect.runnect.domain.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
-import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
-import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
-import com.runnect.runnect.data.dto.response.ResponseDeleteUser
-import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
-import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import com.runnect.runnect.domain.entity.User
+import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.domain.entity.UserUploadCourse
 import kotlinx.coroutines.flow.Flow
 
