@@ -18,8 +18,8 @@ class StorageRepositoryImpl @Inject constructor(
     override suspend fun getMyDrawCourse(): Flow<Result<List<MyDrawCourse>>> =
         remoteStorageDataSource.getMyDrawCourse().mapToFlowResult { it.toMyDrawCourse() }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
-        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>> {
+        return remoteStorageDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult {}
     }
 
     override suspend fun getMyScrapCourse(): Flow<Result<List<MyScrapCourse>>> =
