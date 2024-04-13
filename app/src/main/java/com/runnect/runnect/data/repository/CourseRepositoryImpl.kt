@@ -100,7 +100,9 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
         data: RequestBody
-    ): Flow<Result<ResponsePostMyDrawCourse>> {
-        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult { it }
+    ): Flow<Result<Int>> {
+        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult {
+            it.id
+        }
     }
 }

@@ -52,5 +52,5 @@ interface CourseRepository {
 
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
-    ): Flow<Result<ResponsePostMyDrawCourse>>
+    ): Flow<Result<Int>>
 }
