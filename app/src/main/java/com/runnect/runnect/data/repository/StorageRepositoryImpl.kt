@@ -1,7 +1,6 @@
 package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.toMyDrawCourse
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteStorageDataSource

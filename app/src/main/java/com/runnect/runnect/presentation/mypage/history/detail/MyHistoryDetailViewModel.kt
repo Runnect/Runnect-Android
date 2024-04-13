@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
-import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.domain.common.toLog
-import com.runnect.runnect.domain.entity.CourseTitle
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
