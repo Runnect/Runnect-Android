@@ -50,8 +50,8 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
             it.record.title
         }
 
-    override suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>> {
-        return remoteUserDataSource.deleteUser().mapToFlowResult { it }
+    override suspend fun deleteUser(): Flow<Result<Unit>> {
+        return remoteUserDataSource.deleteUser().mapToFlowResult {}
     }
 
     override suspend fun updateNickName(

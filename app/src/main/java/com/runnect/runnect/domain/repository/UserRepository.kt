@@ -26,7 +26,7 @@ interface UserRepository {
 
     suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Flow<Result<Unit>>
 
-    suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>>
+    suspend fun deleteUser(): Flow<Result<Unit>>
 
     suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>>
 
