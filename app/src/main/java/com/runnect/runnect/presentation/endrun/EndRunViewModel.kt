@@ -25,7 +25,6 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
     val courseId = MutableLiveData<Int>()
     val publicCourseId = MutableLiveData<Int?>()
     val editTextValue = MutableLiveData<String>()
-    val uploadResult = MutableLiveData<ResponsePostMyHistory>()
     val errorMessage = MutableLiveData<String>()
     val currentTime = MutableLiveData<String>()
     val dataFrom = MutableLiveData<String>()
@@ -49,7 +48,6 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
                 _endRunState.value = UiState.Loading
             }.collectResult(
                 onSuccess = {
-                    uploadResult.value = it
                     _endRunState.value = UiState.Success
                 },
                 onFailure = {

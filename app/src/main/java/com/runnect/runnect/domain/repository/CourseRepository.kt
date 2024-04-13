@@ -48,7 +48,7 @@ interface CourseRepository {
         requestPatchPublicCourse: RequestPatchPublicCourse
     ): Flow<Result<EditableCourseDetail>>
 
-    suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>>
+    suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<Unit>>
 
     suspend fun uploadCourse(
         image: MultipartBody.Part, data: RequestBody
