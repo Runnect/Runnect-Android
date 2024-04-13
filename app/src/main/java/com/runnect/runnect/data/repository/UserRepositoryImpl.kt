@@ -39,8 +39,8 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
 
     override suspend fun putDeleteHistory(
         requestDeleteHistory: RequestDeleteHistory
-    ): Flow<Result<ResponseDeleteHistory>> {
-        return remoteUserDataSource.putDeleteHistory(requestDeleteHistory).mapToFlowResult { it }
+    ): Flow<Result<Unit>> {
+        return remoteUserDataSource.putDeleteHistory(requestDeleteHistory).mapToFlowResult {}
     }
 
     override suspend fun patchHistoryTitle(
