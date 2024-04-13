@@ -4,7 +4,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.service.*
-import com.runnect.runnect.data.service.v2.LoginV2Service
+import com.runnect.runnect.data.service.LoginService
 import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
@@ -28,7 +28,7 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providePLoginV2Service(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
-        retrofitV2.create(LoginV2Service::class.java)
+        retrofitV2.create(LoginService::class.java)
 
     @Singleton
     @Provides
@@ -39,7 +39,7 @@ object ServiceModule {
     @Singleton
     @Provides
     fun provideLoginService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
-        runnectRetrofit.create(LoginService::class.java)
+        runnectRetrofit.create(TokenService::class.java)
 
     @Singleton
     @Provides

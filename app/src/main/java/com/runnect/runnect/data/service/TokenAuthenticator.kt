@@ -49,7 +49,7 @@ class TokenAuthenticator(val context: Context) : Authenticator {
 
     private suspend fun callRefreshTokenApi(): Boolean {
         runCatching {
-            createRefreshService()!!.create(LoginService::class.java).getNewToken()
+            createRefreshService()!!.create(TokenService::class.java).getNewToken()
         }.onSuccess {
             Timber.tag("test").d("callRefresh-onSuccess")
             PreferenceManager.setString(context, TOKEN_KEY_ACCESS, it.data.accessToken)
