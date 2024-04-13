@@ -19,27 +19,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ServiceModule {
 
-    /** -------- v2 -------- */
     @Singleton
     @Provides
-    fun providePUserV2Service(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
+    fun providePUserService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
         retrofitV2.create(UserService::class.java)
 
     @Singleton
     @Provides
-    fun providePLoginV2Service(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
+    fun providePLoginService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
         retrofitV2.create(LoginService::class.java)
 
     @Singleton
     @Provides
-    fun providePCourseV2Service(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
+    fun providePCourseService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
         retrofitV2.create(CourseService::class.java)
-
-    /** -------- v1 -------- */
-    @Singleton
-    @Provides
-    fun provideLoginService(@RetrofitModule.Runnect runnectRetrofit: Retrofit) =
-        runnectRetrofit.create(TokenService::class.java)
 
     @Singleton
     @Provides
