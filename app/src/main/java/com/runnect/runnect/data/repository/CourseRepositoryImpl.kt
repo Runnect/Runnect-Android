@@ -78,8 +78,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         }
     }
 
-    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<ResponsePostDiscoverUpload>> {
-        return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse).mapToFlowResult { it }
+    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<Unit>> {
+        return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse).mapToFlowResult {}
     }
 
     override suspend fun patchPublicCourse(
