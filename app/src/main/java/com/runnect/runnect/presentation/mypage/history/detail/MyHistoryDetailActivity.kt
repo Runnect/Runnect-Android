@@ -202,8 +202,7 @@ class MyHistoryDetailActivity :
                     dismissLoadingProgressBar()
                     enterReadMode()
 
-                    val response = state.data ?: return@observe
-                    val newTitle = response.record.title
+                    val newTitle = state.data
                     viewModel.updateHistoryTitle(newTitle)
 
                     showToast(getString(R.string.course_detail_title_edit_success_msg))
