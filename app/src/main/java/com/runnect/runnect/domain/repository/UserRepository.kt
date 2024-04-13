@@ -35,7 +35,7 @@ interface UserRepository {
     suspend fun patchHistoryTitle(
         historyId: Int,
         requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): Flow<Result<ResponsePatchHistoryTitle>>
+    ): Flow<Result<String>>
 
     suspend fun updateNickName(
         requestPatchNickName: RequestPatchNickName
