@@ -39,7 +39,7 @@ interface UserRepository {
 
     suspend fun updateNickName(
         requestPatchNickName: RequestPatchNickName
-    ): Flow<Result<ResponsePatchUserNickName>>
+    ): Flow<Result<Unit>>
 
     suspend fun getUserProfile(userId: Int): Flow<Result<UserProfile>>
 }
