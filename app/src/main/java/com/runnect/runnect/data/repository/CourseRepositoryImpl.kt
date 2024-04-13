@@ -66,8 +66,8 @@ class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSourc
         return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult { it }
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
-        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>> {
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult {}
     }
 
     override suspend fun postCourseScrap(

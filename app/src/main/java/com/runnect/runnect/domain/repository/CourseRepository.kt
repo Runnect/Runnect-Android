@@ -37,7 +37,7 @@ interface CourseRepository {
 
     suspend fun getMyDrawDetail(courseId: Int): Flow<Result<ResponseGetMyDrawDetail>>
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>>
 
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<PostScrap>>
 
