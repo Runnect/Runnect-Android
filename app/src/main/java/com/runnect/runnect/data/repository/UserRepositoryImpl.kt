@@ -33,8 +33,8 @@ class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: R
 
     override suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Flow<Result<ResponseDeleteUploadCourse>> {
-        return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse).mapToFlowResult { it }
+    ): Flow<Result<Unit>> {
+        return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse).mapToFlowResult {}
     }
 
     override suspend fun putDeleteHistory(

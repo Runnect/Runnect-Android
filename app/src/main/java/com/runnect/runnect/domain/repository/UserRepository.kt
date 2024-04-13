@@ -22,7 +22,7 @@ interface UserRepository {
 
     suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Flow<Result<ResponseDeleteUploadCourse>>
+    ): Flow<Result<Unit>>
 
     suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Flow<Result<ResponseDeleteHistory>>
 
