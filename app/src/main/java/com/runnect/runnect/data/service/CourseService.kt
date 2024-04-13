@@ -31,7 +31,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface CourseV2Service {
+interface CourseService {
 
     @GET("/api/public-course/search?")
     suspend fun getCourseSearch(

@@ -33,7 +33,7 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providePCourseV2Service(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
-        retrofitV2.create(CourseV2Service::class.java)
+        retrofitV2.create(CourseService::class.java)
 
     /** -------- v1 -------- */
     @Singleton

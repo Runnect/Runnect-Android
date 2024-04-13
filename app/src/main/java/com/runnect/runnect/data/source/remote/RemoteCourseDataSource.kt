@@ -10,49 +10,49 @@ import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
-import com.runnect.runnect.data.service.CourseV2Service
+import com.runnect.runnect.data.service.CourseService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
 class RemoteCourseDataSource @Inject constructor(
-    private var courseV2Service: CourseV2Service,
+    private var courseService: CourseService,
 ) {
     suspend fun getMarathonCourse(): Result<ResponseGetDiscoverMarathon> =
-        courseV2Service.getMarathonCourse()
+        courseService.getMarathonCourse()
 
     suspend fun getRecommendCourse(
         pageNo: String,
         sort: String
     ): Result<ResponseGetDiscoverRecommend> =
-        courseV2Service.getRecommendCourse(pageNo = pageNo, sort = sort)
+        courseService.getRecommendCourse(pageNo = pageNo, sort = sort)
 
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Result<ResponsePostScrap> =
-        courseV2Service.postCourseScrap(requestPostCourseScrap)
+        courseService.postCourseScrap(requestPostCourseScrap)
 
-    suspend fun getCourseSearch(keyword: String) = courseV2Service.getCourseSearch(keyword)
+    suspend fun getCourseSearch(keyword: String) = courseService.getCourseSearch(keyword)
 
     suspend fun getCourseDetail(publicCourseId: Int): Result<ResponseGetCourseDetail> =
-        courseV2Service.getCourseDetail(publicCourseId)
+        courseService.getCourseDetail(publicCourseId)
 
-    suspend fun getMyCourseLoad() = courseV2Service.getMyCourseLoad()
+    suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()
 
     suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse) =
-        courseV2Service.postUploadMyCourse(requestPostPublicCourse)
+        courseService.postUploadMyCourse(requestPostPublicCourse)
 
     suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
     ): Result<ResponsePatchPublicCourse> =
-        courseV2Service.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
+        courseService.patchPublicCourse(publicCourseId, requestPatchPublicCourse)
 
     suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) =
-        courseV2Service.deleteMyDrawCourse(deleteCourseList)
+        courseService.deleteMyDrawCourse(deleteCourseList)
 
-    suspend fun getMyDrawDetail(courseId: Int) = courseV2Service.getMyDrawDetail(courseId)
+    suspend fun getMyDrawDetail(courseId: Int) = courseService.getMyDrawDetail(courseId)
 
-    suspend fun postRecord(request: RequestPostRunningHistory) = courseV2Service.postRecord(request)
+    suspend fun postRecord(request: RequestPostRunningHistory) = courseService.postRecord(request)
 
     suspend fun uploadCourse(image: MultipartBody.Part, data: RequestBody) =
-        courseV2Service.uploadCourse(image, data)
+        courseService.uploadCourse(image, data)
 }
