@@ -1,14 +1,17 @@
-package com.runnect.runnect.developer
+package com.runnect.runnect.developer.presentation
 
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -18,16 +21,24 @@ import com.runnect.runnect.application.ApiMode
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.data.service.TokenAuthenticator
+import com.runnect.runnect.developer.enum.ServerStatus
+import com.runnect.runnect.developer.presentation.custom.ServerStatusPreference
 import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.extension.repeatOnStarted
+import com.runnect.runnect.util.extension.setStatusBarColor
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
+@AndroidEntryPoint
 class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_developer) {
 
     class RunnectDeveloperFragment : PreferenceFragmentCompat() {
+
+        private val viewModel: RunnectDeveloperViewModel by activityViewModels()
 
         private val clipboardManager: ClipboardManager? by lazy {
             context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
@@ -35,20 +46,60 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences_developer_menu, rootKey)
+            activity?.apply {
+                setStatusBarColor(window = window, true, R.color.white)
+            }
 
             initUserInfo()
             initApiMode()
             initDeviceInfo()
             initDisplayInfo()
+            initObserve()
+            requestApi()
+        }
+
+        private fun requestApi() {
+            with(viewModel) {
+                checkProdServerStatus()
+                checkTestServerStatus()
+            }
+        }
+
+        private fun initObserve() {
+            val prodPref = findPreference<ServerStatusPreference>("dev_pref_prod_server_status")
+            val testPref = findPreference<ServerStatusPreference>("dev_pref_test_server_status")
+
+            repeatOnStarted(
+                {
+                    viewModel.prodStatus.collect {
+                        prodPref?.setServerStatus(ServerStatus.getStatus(it))
+                    }
+                },
+                {
+                    viewModel.testStatus.collect {
+                        testPref?.setServerStatus(ServerStatus.getStatus(it))
+                    }
+                }
+            )
         }
 
         private fun initUserInfo() {
             val ctx: Context = context ?: return
             val accessToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_ACCESS) ?: ""
             val refreshToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_REFRESH) ?: ""
+            val combinedToken = "[Access Token]: $accessToken\n\n---\n\n[Refresh Token]: $refreshToken"
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
             setPreferenceSummary("dev_pref_key_refresh_token", refreshToken)
+            setPreferenceClickListener("dev_pref_key_share_tokens") {
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, combinedToken)
+                }.let {
+                    startActivity(Intent.createChooser(it, "Share tokens via:"))
+                }
+            }
         }
 
         private fun initApiMode() {
@@ -64,7 +115,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
                 title = currentApi.name
                 setValueIndex(selectIndex)
-                setOnPreferenceChangeListener { preference, newValue ->
+                setOnPreferenceChangeListener { _, newValue ->
                     val selectItem = newValue.toString()
                     this.title = selectItem
 
@@ -74,7 +125,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
                         setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_REFRESH, "none")
                     }
 
-                    destroyApp(ctx)
+                    restartApplication(ctx)
                     true
                 }
             }
@@ -142,6 +193,15 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             }
         }
 
+        private fun setPreferenceClickListener(key: String, onClick: () -> Unit) {
+            findPreference<Preference>(key)?.let { pref ->
+                pref.setOnPreferenceClickListener {
+                    onClick.invoke()
+                    true
+                }
+            }
+        }
+
         private fun copyToText(text: String): Boolean {
             val clipData = ClipData.newPlainText(CLIPBOARD_LABEL, text)
             clipboardManager?.setPrimaryClip(clipData)
@@ -155,13 +215,19 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             return true
         }
 
-        private fun destroyApp(context: Context) {
+        private fun restartApplication(context: Context) {
+            val packageManager: PackageManager = context.packageManager
+            val packageName = packageManager.getLaunchIntentForPackage(context.packageName)
+            val component = packageName?.component
+
             lifecycleScope.launch(Dispatchers.Main) {
                 RunnectToast.createToast(context, getString(R.string.dev_mode_require_restart)).show()
-                delay(3000)
+                delay(2000)
 
-                activity?.finishAffinity() //루트액티비티 종료
-                exitProcess(0)
+                Intent.makeRestartActivityTask(component).apply {
+                    startActivity(this)
+                    exitProcess(0)
+                }
             }
         }
 
