@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <View
+        android:id="@+id/viewIndicator"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/shape_server_status_indicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="서버 상태"
+        app:layout_constraintBottom_toBottomOf="@id/viewIndicator"
+        app:layout_constraintStart_toEndOf="@id/viewIndicator"
+        app:layout_constraintTop_toTopOf="@id/viewIndicator" />
+</androidx.constraintlayout.widget.ConstraintLayout>
