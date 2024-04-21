@@ -20,6 +20,11 @@
             android:key="dev_pref_key_refresh_token"
             android:title="리프레시 토큰"
             app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_key_share_tokens"
+            android:title="토큰 공유하기"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory
