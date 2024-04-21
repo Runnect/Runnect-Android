@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.data.network.calladapter.ResultCallAdapterFactory
+import com.runnect.runnect.data.network.calladapter.flow.FlowCallAdapterFactory
 import com.runnect.runnect.data.network.interceptor.ResponseInterceptor
 import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
@@ -35,6 +36,10 @@ object RetrofitModule {
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class RetrofitV2
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class RetrofitFlow
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
@@ -126,6 +131,24 @@ object RetrofitModule {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ResultCallAdapterFactory.create())
+            .build()
+
+        return retrofit ?: throw RuntimeException("Retrofit creation failed.")
+    }
+
+    @OptIn(ExperimentalSerializationApi::class, InternalCoroutinesApi::class)
+    @Provides
+    @Singleton
+    @RetrofitFlow
+    fun provideRunnectRetrofitFlow(
+        @HttpClientV2 client: OkHttpClient
+    ): Retrofit {
+        val baseUrl = ApplicationClass.getBaseUrl()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(FlowCallAdapterFactory.create())
             .build()
 
         return retrofit ?: throw RuntimeException("Retrofit creation failed.")

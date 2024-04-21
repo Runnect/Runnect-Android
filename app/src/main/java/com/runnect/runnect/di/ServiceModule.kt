@@ -7,6 +7,7 @@ import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.service.LoginService
 import com.runnect.runnect.data.service.UserService
 import com.runnect.runnect.data.source.remote.*
+import com.runnect.runnect.developer.data.service.ServerStatusService
 import com.runnect.runnect.domain.*
 import dagger.Module
 import dagger.Provides
@@ -33,6 +34,11 @@ object ServiceModule {
     @Provides
     fun providePCourseService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
         retrofitV2.create(CourseService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideSeverStatusService(@RetrofitModule.RetrofitFlow retrofitV2Flow: Retrofit) =
+        retrofitV2Flow.create(ServerStatusService::class.java)
 
     @Singleton
     @Provides
