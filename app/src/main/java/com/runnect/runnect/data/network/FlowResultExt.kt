@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 
 typealias FlowResult<T> = Flow<Result<T>>
 
-@Deprecated(message = "Use toDomainResult instead.")
+@Deprecated(message = "Use toEntityResult instead.")
 fun <R, D> Result<R>.mapToFlowResult(
     mapper: (R) -> D
 ): FlowResult<D> = flow {
@@ -26,7 +26,7 @@ fun <R, D> Result<R>.mapToFlowResult(
     emit(result)
 }
 
-fun <R, D> FlowResult<R>.toEntity(mapper: (R) -> D): FlowResult<D> {
+fun <R, D> FlowResult<R>.toEntityResult(mapper: (R) -> D): FlowResult<D> {
     fun <R, D> Result<R>.parseResult(mapper: (R) -> D): Result<D> = when {
         this.isSuccess -> Result.success(
             // CallAdapter에서 body가 null인 경우도 걸러주고 있으므로

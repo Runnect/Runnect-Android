@@ -1,8 +1,8 @@
 package com.runnect.runnect.developer.presentation
 
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.developer.domain.ServerStatusRepository
+import com.runnect.runnect.domain.common.getCode
 import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.util.extension.onEachResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +38,7 @@ class RunnectDeveloperViewModel @Inject constructor(
     }
 
     fun checkTestServerStatus() {
-        val testServerUrl = "${BuildConfig.RUNNECT_NODE_URL}/actuator/health"
+        val testServerUrl = "${BuildConfig.RUNNECT_DEV_URL}/actuator/health"
         checkServerStatus(testServerUrl, _testStatus)
     }
 
@@ -55,21 +54,20 @@ class RunnectDeveloperViewModel @Inject constructor(
                     state.tryEmit(ServerState.Running)
                 },
                 onFailure = {
-                    when (it.message) {
-                        "DOWN",
-                        "OUT_OF_SERVICE" -> ServerState.Degraded
-                        else -> ServerState.NotRunning
+                    when (it.getCode()) {
+                        503 -> ServerState.Degraded
+                        else -> ServerState.Unknown
                     }.let(state::tryEmit)
                 }
             ).catch {
-                state.tryEmit(ServerState.NotRunning)
+                state.tryEmit(ServerState.Unknown)
             }.collect()
     }
 
     sealed interface ServerState {
         object Running : ServerState
         object Degraded : ServerState
-        object NotRunning : ServerState
+        object Unknown : ServerState
         object Checking : ServerState
     }
 }

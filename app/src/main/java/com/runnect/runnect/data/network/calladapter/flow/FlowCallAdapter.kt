@@ -2,7 +2,6 @@ package com.runnect.runnect.data.network.calladapter.flow
 
 import com.google.gson.Gson
 import com.runnect.runnect.data.dto.response.base.ErrorResponse
-import com.runnect.runnect.developer.data.dto.ResponseServerStatus
 import com.runnect.runnect.domain.common.RunnectException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -69,28 +68,9 @@ class FlowCallAdapter<T>(
         val code = response.code()
         val errorBodyString = response.errorBody()?.string()
 
-        errorBodyString?.let { errorBody ->
-            // 서버 상태 응답 파싱 시도
-            parseServerErrorResponse(code, errorBody)?.let { return it }
-            // 일반 에러 응답 파싱 시도
-            parseBaseErrorResponse(code, errorBody)?.let { return it }
-        }
-
-        return RunnectException(code = code, message = ERROR_MSG_COMMON)
-    }
-
-    // 서버 상태 응답을 파싱하여 RunnectException 생성
-    private fun parseServerErrorResponse(code: Int, errorBody: String): RunnectException? {
-        return runCatching {
-            gson.fromJson(errorBody, ResponseServerStatus::class.java)
-        }.getOrNull()?.let { serverStatusResponse ->
-            val status = serverStatusResponse.status
-            if (status.toIntOrNull() != null) {
-                null
-            } else {
-                RunnectException(code, status)
-            }
-        }
+        return errorBodyString?.let { errorBody ->
+            parseBaseErrorResponse(code, errorBody)
+        } ?: RunnectException(code, ERROR_MSG_COMMON)
     }
 
     // 일반적인 에러 응답을 파싱하여 RunnectException 생성

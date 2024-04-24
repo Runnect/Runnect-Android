@@ -28,7 +28,7 @@ class FlowCallAdapterFactory private constructor() : CallAdapter.Factory() {
         }
 
         check(responseType is ParameterizedType) {
-            "ApiResult return type must be parameterized as ApiResult<Foo> or ApiResult<out Foo>"
+            "Result return type must be parameterized as Result<Foo> or Result<out Foo>"
         }
 
         return FlowCallAdapter<Any>(
