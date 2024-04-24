@@ -13,6 +13,7 @@ import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.*
@@ -20,6 +21,7 @@ import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.CourseRepository
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -27,8 +29,11 @@ import javax.inject.Inject
 
 class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
     CourseRepository {
-    override suspend fun getMarathonCourse(): Result<List<MarathonCourse>?> = runCatching {
-        remoteCourseDataSource.getMarathonCourse().data?.toMarathonCourses()
+
+    override suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>> {
+        return remoteCourseDataSource.getMarathonCourse().mapToFlowResult {
+            it.toMarathonCourses()
+        }
     }
 
     override suspend fun getRecommendCourse(

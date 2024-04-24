@@ -7,7 +7,6 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
-import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
@@ -28,8 +27,6 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface CourseService {
-    @GET("/api/public-course/marathon")
-    suspend fun getMarathonCourse(): BaseResponse<ResponseGetDiscoverMarathon>
 
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
