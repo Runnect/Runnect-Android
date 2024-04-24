@@ -17,9 +17,11 @@ import com.runnect.runnect.R
 import com.runnect.runnect.application.ApiMode
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
-import com.runnect.runnect.data.service.TokenAuthenticator
-import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
+import com.runnect.runnect.util.preference.AuthUtil.getNewToken
+import com.runnect.runnect.util.preference.AuthUtil.saveToken
+import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,15 +46,15 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun initUserInfo() {
             val ctx: Context = context ?: return
-            val accessToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_ACCESS) ?: ""
-            val refreshToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_REFRESH) ?: ""
+            val accessToken = ctx.getAccessToken()
+            val refreshToken = ctx.getNewToken()
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
             setPreferenceSummary("dev_pref_key_refresh_token", refreshToken)
         }
 
         private fun initApiMode() {
-            val ctx:Context = context ?: ApplicationClass.appContext
+            val ctx: Context = context ?: ApplicationClass.appContext
             val currentApi = ApiMode.getCurrentApiMode(ctx)
 
             findPreference<ListPreference>("dev_pref_key_api_mode")?.apply {
@@ -70,10 +72,11 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
                     PreferenceManager.apply {
                         setString(ctx, ApplicationClass.API_MODE, selectItem)
-                        setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_ACCESS, "none")
-                        setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_REFRESH, "none")
                     }
-
+                    ctx.saveToken(
+                        accessToken = LoginStatus.NONE.value,
+                        refreshToken = LoginStatus.NONE.value
+                    )
                     destroyApp(ctx)
                     true
                 }
@@ -93,9 +96,15 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             val naviBarHeight = getNaviBarHeight(windowManager)
 
             with(metrics) {
-                setPreferenceSummary("dev_pref_display_ratio", "$widthPixels x ${heightPixels + statusBarHeight + naviBarHeight}")
+                setPreferenceSummary(
+                    "dev_pref_display_ratio",
+                    "$widthPixels x ${heightPixels + statusBarHeight + naviBarHeight}"
+                )
                 setPreferenceSummary("dev_pref_display_density", "${densityDpi}dp")
-                setPreferenceSummary("dev_pref_display_resource_bucket", getDeviceResourseBucket(this))
+                setPreferenceSummary(
+                    "dev_pref_display_resource_bucket",
+                    getDeviceResourseBucket(this)
+                )
             }
         }
 
@@ -116,7 +125,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
         private fun getStatusBarHeight(windowManager: WindowManager): Int {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val windowMetrics = windowManager.currentWindowMetrics
-                val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.statusBars())
+                val insets =
+                    windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.statusBars())
                 insets.top
             } else {
                 0
@@ -126,7 +136,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
         private fun getNaviBarHeight(windowManager: WindowManager): Int {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val windowMetrics = windowManager.currentWindowMetrics
-                val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars())
+                val insets =
+                    windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars())
                 insets.bottom
             } else {
                 0
@@ -157,7 +168,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun destroyApp(context: Context) {
             lifecycleScope.launch(Dispatchers.Main) {
-                RunnectToast.createToast(context, getString(R.string.dev_mode_require_restart)).show()
+                RunnectToast.createToast(context, getString(R.string.dev_mode_require_restart))
+                    .show()
                 delay(3000)
 
                 activity?.finishAffinity() //루트액티비티 종료
