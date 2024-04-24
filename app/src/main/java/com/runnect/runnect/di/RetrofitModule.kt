@@ -6,8 +6,8 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.data.network.calladapter.ResultCallAdapterFactory
 import com.runnect.runnect.data.network.interceptor.ResponseInterceptor
-import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.repository.*
+import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
 import com.runnect.runnect.util.ApiLogger
@@ -54,17 +54,16 @@ object RetrofitModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class Auth
 
+
     @Provides
     @Singleton
     @HttpClient
     fun provideOkHttpClient(
         logger: HttpLoggingInterceptor,
-        appInterceptor: AppInterceptor,
-        tokenAuthenticator: TokenAuthenticator
+        @Auth authInterceptor: Interceptor
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(logger)
-        .addInterceptor(appInterceptor)
-        .authenticator(tokenAuthenticator)
+        .addInterceptor(authInterceptor)
         .build()
 
     @Provides
@@ -72,14 +71,12 @@ object RetrofitModule {
     @HttpClientV2
     fun provideOkHttpClientV2(
         logger: HttpLoggingInterceptor,
-        appInterceptor: AppInterceptor,
+        @Auth authInterceptor: Interceptor,
         responseInterceptor: ResponseInterceptor,
-        tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(logger)
-        .addInterceptor(appInterceptor)
+        .addInterceptor(authInterceptor)
         .addInterceptor(responseInterceptor)
-        .authenticator(tokenAuthenticator)
         .build()
 
     @Provides
@@ -93,16 +90,10 @@ object RetrofitModule {
     @Auth
     fun provideAuthInterceptor(interceptor: AuthInterceptor): Interceptor = interceptor
 
-    fun provideAppInterceptor(): AppInterceptor = AppInterceptor()
-
     @Provides
     @Singleton
     fun provideResponseInterceptor(): ResponseInterceptor = ResponseInterceptor()
 
-    @Provides
-    @Singleton
-    fun provideTokenAuthenticator(): TokenAuthenticator =
-        TokenAuthenticator(ApplicationClass.appContext)
 
     @OptIn(ExperimentalSerializationApi::class, InternalCoroutinesApi::class)
     @Provides
