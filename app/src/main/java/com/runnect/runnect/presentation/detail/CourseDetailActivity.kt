@@ -446,11 +446,14 @@ class CourseDetailActivity :
     }
 
     private fun setupFromDeepLinkObserver() {
-        viewModel.isDeepLinkLogin.observe(this) {
+        viewModel.isDeepLinkLogin.observe(this) { result ->
             // 딥링크로 진입했는데 로그인이 안 되어있는 경우
-            if (viewModel.isDeepLinkLogin.value == false) {
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+            if (!result) {
+                // CHECK 로그인 액티비티 이동시 Task 모두 제거하도록 수정 (확인 필요)
+                Intent(this, LoginActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }.let(::startActivity)
+
                 viewModel.isDeepLinkLogin.value = true
             }
         }
@@ -557,7 +560,7 @@ class CourseDetailActivity :
         viewModel.courseScrapState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val response = state.data ?: return@observe
+                    val response = state.data
                     binding.tvCourseDetailScrapCount.text = response.scrapCount.toString()
                     binding.ivCourseDetailScrap.isSelected = response.scrapTF
                 }

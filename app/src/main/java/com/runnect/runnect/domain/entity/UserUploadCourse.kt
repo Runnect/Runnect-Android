@@ -1,6 +1,6 @@
-package com.runnect.runnect.data.dto
+package com.runnect.runnect.domain.entity
 
-data class UserUploadCourseDTO(
+data class UserUploadCourse(
     val id:Int,
     val img:String,
     var title:String,

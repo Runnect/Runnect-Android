@@ -2,11 +2,9 @@ package com.runnect.runnect.presentation.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.data.dto.SearchResultEntity
-import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemSearchBinding
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnSearchItemClick

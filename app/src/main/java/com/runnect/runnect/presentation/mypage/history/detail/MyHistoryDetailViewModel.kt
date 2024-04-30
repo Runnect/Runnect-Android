@@ -2,23 +2,26 @@ package com.runnect.runnect.presentation.mypage.history.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.repository.UserRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.mode.ScreenMode
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class MyHistoryDetailViewModel @Inject constructor(private val userRepository: UserRepository) :
-    ViewModel() {
+class MyHistoryDetailViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : BaseViewModel() {
+
     private val _historyDeleteState =
         MutableLiveData<UiStateV2<ResponseDeleteHistory?>>()
     val historyDeleteState: LiveData<UiStateV2<ResponseDeleteHistory?>>
@@ -59,32 +62,35 @@ class MyHistoryDetailViewModel @Inject constructor(private val userRepository: U
         _currentScreenMode = mode
     }
 
-    fun deleteHistory() {
-        viewModelScope.launch {
-            _historyDeleteState.value = UiStateV2.Loading
+    fun deleteHistory() = launchWithHandler {
+        val requestDeleteHistory = RequestDeleteHistory(listOf(historyId))
 
-            val deleteItems = listOf(historyId)
-            userRepository.putDeleteHistory(RequestDeleteHistory(deleteItems))
-                .onSuccess { response ->
-                    _historyDeleteState.value = UiStateV2.Success(response)
-                }.onFailure { t ->
-                    _historyDeleteState.value = UiStateV2.Failure(t.message.toString())
+        userRepository.putDeleteHistory(requestDeleteHistory)
+            .onStart {
+                _historyDeleteState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _historyDeleteState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _historyDeleteState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
-    fun patchHistoryTitle() {
-        viewModelScope.launch {
+    fun patchHistoryTitle() = launchWithHandler {
+        userRepository.patchHistoryTitle(
+            historyId = historyId,
+            requestPatchHistoryTitle = RequestPatchHistoryTitle(title)
+        ).onStart {
             _titlePatchState.value = UiStateV2.Loading
-
-            userRepository.patchHistoryTitle(
-                historyId = historyId,
-                requestPatchHistoryTitle = RequestPatchHistoryTitle(title)
-            ).onSuccess { response ->
-                _titlePatchState.value = UiStateV2.Success(response)
-            }.onFailure { t ->
-                _titlePatchState.value = UiStateV2.Failure(t.message.toString())
+        }.collectResult(
+            onSuccess = {
+                _titlePatchState.value = UiStateV2.Success(it)
+            },
+            onFailure = {
+                _titlePatchState.value = UiStateV2.Failure(it.toLog())
             }
-        }
+        )
     }
 }

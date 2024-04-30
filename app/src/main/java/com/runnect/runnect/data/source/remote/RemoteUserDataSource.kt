@@ -14,36 +14,42 @@ import com.runnect.runnect.data.dto.response.ResponseGetUserProfile
 import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
 import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
-import com.runnect.runnect.data.dto.response.base.BaseResponse
 import com.runnect.runnect.data.service.UserService
 import javax.inject.Inject
 
-class RemoteUserDataSource @Inject constructor(private val userService: UserService) {
-    suspend fun getUserInfo(): ResponseGetUser = userService.getUserInfo()
-    suspend fun updateNickName(requestPatchNickName: RequestPatchNickName): ResponsePatchUserNickName =
-        userService.updateNickName(requestPatchNickName)
+class RemoteUserDataSource @Inject constructor(
+    private val userService: UserService,
+) {
+    suspend fun getUserInfo(): Result<ResponseGetUser> = userService.getUserInfo()
 
-    suspend fun getMyStamp(): ResponseGetMyStamp = userService.getMyStamp()
-    suspend fun getRecord(): ResponseGetMyHistory = userService.getRecord()
-    suspend fun getUserUploadCourse(): ResponseGetUserUploadCourse =
+    suspend fun getUserUploadCourse(): Result<ResponseGetUserUploadCourse> =
         userService.getUserUploadCourse()
 
-    suspend fun getUserProfile(userId: Int): BaseResponse<ResponseGetUserProfile> =
-        userService.getUserProfile(userId)
+    suspend fun deleteUser(): Result<ResponseDeleteUser> = userService.deleteUser()
+
+    suspend fun getRecord(): Result<ResponseGetMyHistory> = userService.getRecord()
+
+    suspend fun getMyStamp(): Result<ResponseGetMyStamp> = userService.getMyStamp()
 
     suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): BaseResponse<ResponseDeleteUploadCourse> =
+    ): Result<ResponseDeleteUploadCourse> =
         userService.putDeleteUploadCourse(requestDeleteUploadCourse)
 
-    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): BaseResponse<ResponseDeleteHistory> =
+    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Result<ResponseDeleteHistory> =
         userService.putDeleteHistory(requestDeleteHistory)
 
     suspend fun patchHistoryTitle(
         historyId: Int,
         requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): BaseResponse<ResponsePatchHistoryTitle> =
+    ): Result<ResponsePatchHistoryTitle> =
         userService.patchHistoryTitle(historyId, requestPatchHistoryTitle)
 
-    suspend fun deleteUser(): ResponseDeleteUser = userService.deleteUser()
+    suspend fun updateNickName(
+        requestPatchNickName: RequestPatchNickName
+    ): Result<ResponsePatchUserNickName> =
+        userService.updateNickName(requestPatchNickName)
+
+    suspend fun getUserProfile(userId: Int): Result<ResponseGetUserProfile> =
+        userService.getUserProfile(userId)
 }
