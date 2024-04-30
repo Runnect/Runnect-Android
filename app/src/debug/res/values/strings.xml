@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- developer mode -->
+    <string name="developer_server_status_checking_title">Checking...</string>
+    <string name="developer_server_status_running_title">Running</string>
+    <string name="developer_server_status_degraded_title">Degraded</string>
+    <string name="developer_server_status_error_title">Error</string>
+    <string name="developer_server_status_unknown_title">Unknown</string>
+    <string name="developer_server_status_checking_sub">서버 상태를 확인 중입니다.</string>
+    <string name="developer_server_status_running_sub">서버가 정상적으로 작동하고 있습니다.</string>
+    <string name="developer_server_status_degraded_sub">작동하고 있으나 일부 기능에 문제가 있습니다.</string>
+    <string name="developer_server_status_error_sub">작동 중이지 않거나 오류가 있습니다.</string>
+    <string name="developer_server_status_unknown_sub">서버 상태를 체크할 수 없습니다.</string>
+</resources>
