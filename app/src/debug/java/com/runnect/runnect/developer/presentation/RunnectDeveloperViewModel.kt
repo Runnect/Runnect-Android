@@ -39,7 +39,7 @@ class RunnectDeveloperViewModel @Inject constructor(
     }
 
     fun checkTestServerStatus() {
-        val testServerUrl = "${BuildConfig.RUNNECT_NODE_URL}/actuator/health"
+        val testServerUrl = "${BuildConfig.RUNNECT_DEV_URL}/actuator/health"
         checkServerStatus(testServerUrl, _testStatus)
     }
 
