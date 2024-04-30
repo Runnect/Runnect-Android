@@ -30,9 +30,9 @@ class ServerStatusPreference @JvmOverloads constructor(
         val background = indicator.background as? GradientDrawable
 
         holder.itemView.post {
-            background?.setColor(serverStatus.getColor(context))
-            statusText.text = serverStatus.statusText
-            summary = serverStatus.summary
+            background?.setColor(context.getColor(serverStatus.colorRes))
+            statusText.text = context.getString(serverStatus.statusRes)
+            summary = context.getString(serverStatus.summaryRes)
         }
     }
 

@@ -174,4 +174,17 @@
     <string name="location_permission_content">코스의 출발지 설정과 러닝 트래킹을 위해 현재 위치 정보를 사용하도록 허용합니다.</string>
     <string name="location_permission_guide">권한을 허용해주세요. [설정] > [앱 및 알림] > [고급] > [앱 권한]</string>
     <string name="common_permission_denied">권한이 거부되었습니다.</string>
+
+    <!-- developer mode -->
+    <string name="developer_server_status_checking_title">Checking...</string>
+    <string name="developer_server_status_running_title">Running</string>
+    <string name="developer_server_status_degraded_title">Degraded</string>
+    <string name="developer_server_status_error_title">Error</string>
+    <string name="developer_server_status_unknown_title">Unknown</string>
+    <string name="developer_server_status_checking_sub">서버 상태를 확인 중입니다.</string>
+    <string name="developer_server_status_running_sub">서버가 정상적으로 작동하고 있습니다.</string>
+    <string name="developer_server_status_degraded_sub">작동하고 있으나 일부 기능에 문제가 있습니다.</string>
+    <string name="developer_server_status_error_sub">작동 중이지 않거나 오류가 있습니다.</string>
+    <string name="developer_server_status_unknown_sub">서버 상태를 체크할 수 없습니다.</string>
+
 </resources>

@@ -1,26 +1,28 @@
 package com.runnect.runnect.developer.enum
 
-import android.content.Context
+import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
 import com.runnect.runnect.R
 import com.runnect.runnect.developer.presentation.RunnectDeveloperViewModel.ServerState
 
 enum class ServerStatus(
-    private val colorRes: Int,
-    val statusText: String,
-    val summary: String,
+    @ColorRes val colorRes: Int,
+    @StringRes val statusRes: Int,
+    @StringRes val summaryRes: Int,
 ) {
-    CHECKING(R.color.blue, "Checking...", "서버 상태를 확인 중입니다."),
-    RUNNING(R.color.green, "Running", "서버가 정상적으로 작동하고 있습니다."),
-    DEGRADED(R.color.orange, "Degraded", "작동하고 있으나 일부 기능에 문제가 있습니다."),
-    UNKNOWN(R.color.red, "Unknown", "작동 중이지 않거나 오류가 있습니다.");
 
-    fun getColor(context: Context): Int = context.getColor(colorRes)
+    CHECKING(R.color.blue, R.string.developer_server_status_checking_title, R.string.developer_server_status_checking_sub),
+    RUNNING(R.color.green, R.string.developer_server_status_running_title, R.string.developer_server_status_running_sub),
+    DEGRADED(R.color.orange, R.string.developer_server_status_degraded_title, R.string.developer_server_status_degraded_sub),
+    ERROR(R.color.red, R.string.developer_server_status_error_title, R.string.developer_server_status_error_sub),
+    UNKNOWN(R.color.grey, R.string.developer_server_status_unknown_title, R.string.developer_server_status_unknown_sub);
 
     companion object {
         fun getStatus(state: ServerState): ServerStatus {
             return when (state) {
                 ServerState.Running -> RUNNING
                 ServerState.Degraded -> DEGRADED
+                ServerState.Error -> ERROR
                 ServerState.Unknown -> UNKNOWN
                 ServerState.Checking -> CHECKING
             }

@@ -67,6 +67,7 @@ class RunnectDeveloperViewModel @Inject constructor(
     sealed interface ServerState {
         object Running : ServerState
         object Degraded : ServerState
+        object Error : ServerState
         object Unknown : ServerState
         object Checking : ServerState
     }
