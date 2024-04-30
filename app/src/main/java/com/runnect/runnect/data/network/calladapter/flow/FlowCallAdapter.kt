@@ -23,12 +23,15 @@ class FlowCallAdapter<T>(
 
     // Retrofit의 Call을 Result<>로 변환
     override fun adapt(call: Call<T>): Flow<Result<T>> = flow {
-        val apiResult = suspendCancellableCoroutine { continuation ->
+        emit(flowApiCall(call))
+    }
+
+    private suspend fun flowApiCall(call: Call<T>): Result<T> {
+        return suspendCancellableCoroutine { continuation ->
             runCatching {
                 call.enqueue(object : Callback<T> {
                     override fun onResponse(call: Call<T>, response: Response<T>) {
-                        val result = parseResponse(response)
-                        continuation.resume(result)
+                        continuation.resume(parseResponse(response))
                     }
 
                     override fun onFailure(call: Call<T>, t: Throwable) {
@@ -39,50 +42,35 @@ class FlowCallAdapter<T>(
                 continuation.resumeWithException(it)
             }
 
-            // Coroutine이 취소 되면 네트워크 요청도 취소
             continuation.invokeOnCancellation {
                 call.cancel()
             }
         }
-
-        emit(apiResult)
     }
 
     private fun parseResponse(response: Response<T>): Result<T> {
-        if (response.isSuccessful) {
-            return response.body()?.let {
-                Result.success(it)
-            } ?: Result.failure(
-                RunnectException(
-                    code = response.code(),
-                    message = ERROR_MSG_RESPONSE_IS_NULL
-                )
-            )
+        val nullBodyException by lazy {
+            RunnectException(response.code(), ERROR_MSG_RESPONSE_IS_NULL)
         }
 
-        return Result.failure(parseErrorResponse(response))
+        if (!response.isSuccessful) {
+            return Result.failure(parseErrorResponse(response))
+        }
+
+        return response.body()?.let {
+            Result.success(it)
+        } ?: Result.failure(nullBodyException)
     }
 
     // Response에서 오류를 파싱하여 RunnectException 객체를 생성
     private fun parseErrorResponse(response: Response<*>): RunnectException {
-        val code = response.code()
         val errorBodyString = response.errorBody()?.string()
-
-        return errorBodyString?.let { errorBody ->
-            parseBaseErrorResponse(code, errorBody)
-        } ?: RunnectException(code, ERROR_MSG_COMMON)
-    }
-
-    // 일반적인 에러 응답을 파싱하여 RunnectException 생성
-    private fun parseBaseErrorResponse(code: Int, errorBody: String): RunnectException? {
-        return runCatching {
-            gson.fromJson(errorBody, ErrorResponse::class.java)
-        }.getOrNull()?.let { errorResponse ->
-            RunnectException(
-                code = code,
-                message = errorResponse.message ?: errorResponse.error ?: ERROR_MSG_COMMON
-            )
+        val errorResponse = errorBodyString?.let {
+            gson.fromJson(it, ErrorResponse::class.java)
         }
+
+        val errorMessage = errorResponse?.message ?: errorResponse?.error ?: ERROR_MSG_COMMON
+        return RunnectException(response.code(), errorMessage)
     }
 
     companion object {
