@@ -10,20 +10,20 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 suspend fun <T> Flow<Result<T>>.collectResult(
-    onSuccess: (T) -> Unit,
-    onFailure: (Throwable) -> Unit
+    onSuccess: ((T) -> Unit)? = null,
+    onFailure: ((Throwable) -> Unit)? = null
 ) {
     collect { result ->
-        result.fold(onSuccess, onFailure)
+        result.fold(onSuccess ?: {}, onFailure ?: {})
     }
 }
 
 fun <T> Flow<Result<T>>.onEachResult(
-    onSuccess: (T) -> Unit,
-    onFailure: (Throwable) -> Unit
+    onSuccess: ((T) -> Unit)? = null,
+    onFailure: ((Throwable) -> Unit)? = null
 ): Flow<Result<T>> {
     return onEach { result ->
-        result.fold(onSuccess, onFailure)
+        result.fold(onSuccess ?: {}, onFailure ?: {})
     }
 }
 
