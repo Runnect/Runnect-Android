@@ -20,11 +20,13 @@ import com.runnect.runnect.R
 import com.runnect.runnect.application.ApiMode
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.application.PreferenceManager
-import com.runnect.runnect.data.service.TokenAuthenticator
 import com.runnect.runnect.developer.enum.ServerStatus
 import com.runnect.runnect.developer.presentation.custom.ServerStatusPreference
-import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import com.runnect.runnect.util.custom.toast.RunnectToast
+import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
+import com.runnect.runnect.util.preference.AuthUtil.getNewToken
+import com.runnect.runnect.util.preference.AuthUtil.saveToken
+import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import com.runnect.runnect.util.extension.repeatOnStarted
 import com.runnect.runnect.util.extension.setStatusBarColor
 import dagger.hilt.android.AndroidEntryPoint
@@ -85,8 +87,8 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
 
         private fun initUserInfo() {
             val ctx: Context = context ?: return
-            val accessToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_ACCESS) ?: ""
-            val refreshToken = PreferenceManager.getString(ctx, TokenAuthenticator.TOKEN_KEY_REFRESH) ?: ""
+            val accessToken = ctx.getAccessToken()
+            val refreshToken = ctx.getNewToken()
             val combinedToken = "[Access Token]: $accessToken\n\n---\n\n[Refresh Token]: $refreshToken"
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
@@ -103,7 +105,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
         }
 
         private fun initApiMode() {
-            val ctx:Context = context ?: ApplicationClass.appContext
+            val ctx: Context = context ?: ApplicationClass.appContext
             val currentApi = ApiMode.getCurrentApiMode(ctx)
 
             findPreference<ListPreference>("dev_pref_key_api_mode")?.apply {
@@ -119,13 +121,16 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
                     val selectItem = newValue.toString()
                     this.title = selectItem
 
-                    PreferenceManager.apply {
-                        setString(ctx, ApplicationClass.API_MODE, selectItem)
-                        setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_ACCESS, "none")
-                        setString(ctx, MySettingAccountInfoFragment.TOKEN_KEY_REFRESH, "none")
+                    with(ctx) {
+                        PreferenceManager.setString(this, ApplicationClass.API_MODE, selectItem)
+                        saveToken(
+                            accessToken = LoginStatus.NONE.value,
+                            refreshToken = LoginStatus.NONE.value
+                        )
+
+                        restartApplication(this)
                     }
 
-                    restartApplication(ctx)
                     true
                 }
             }

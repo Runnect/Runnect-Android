@@ -7,13 +7,13 @@ import android.view.MotionEvent
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.runnect.runnect.R
-import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityGiveNicknameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
+import com.runnect.runnect.util.preference.AuthUtil.saveToken
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,15 +35,9 @@ class GiveNicknameActivity :
     }
 
     private fun saveSignTokenInfo() {
-        PreferenceManager.setString(
-            applicationContext,
-            TOKEN_KEY_ACCESS,
-            intent.getStringExtra("access")
-        )
-        PreferenceManager.setString(
-            applicationContext,
-            TOKEN_KEY_REFRESH,
-            intent.getStringExtra("refresh")
+        this.saveToken(
+            accessToken = intent.getStringExtra("access") ?: "",
+            refreshToken = intent.getStringExtra("refresh") ?: ""
         )
     }
 
@@ -113,9 +107,5 @@ class GiveNicknameActivity :
         return super.dispatchTouchEvent(ev)
     }
 
-    companion object {
-        const val TOKEN_KEY_ACCESS = "access"
-        const val TOKEN_KEY_REFRESH = "refresh"
-    }
 }
 
