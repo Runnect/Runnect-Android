@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface StorageRepository {
     suspend fun getMyDrawCourse(): Flow<Result<List<MyDrawCourse>>>
     suspend fun getMyScrapCourse(): Flow<Result<List<MyScrapCourse>>>
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) : Flow<Result<ResponsePutMyDrawCourse>>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse) : Flow<Result<Unit>>
 }
