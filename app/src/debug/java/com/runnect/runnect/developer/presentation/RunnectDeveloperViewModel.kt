@@ -4,14 +4,15 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.developer.domain.ServerStatusRepository
 import com.runnect.runnect.domain.common.getCode
 import com.runnect.runnect.presentation.base.BaseViewModel
-import com.runnect.runnect.util.extension.onEachResult
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class RunnectDeveloperViewModel @Inject constructor(
     }
 
     fun checkTestServerStatus() {
-        val testServerUrl = "${BuildConfig.RUNNECT_DEV_URL}/actuator/health"
+        val testServerUrl = "${BuildConfig.RUNNECT_NODE_URL}/actuator/health"
         checkServerStatus(testServerUrl, _testStatus)
     }
 
@@ -47,21 +48,22 @@ class RunnectDeveloperViewModel @Inject constructor(
         state: MutableSharedFlow<ServerState>
     ) = launchWithHandler {
         serverStatusRepository.checkServerStatus(serverUrl)
+            .flowOn(Dispatchers.IO)
             .onStart {
                 state.emit(ServerState.Checking)
-            }.onEachResult(
+            }.catch {
+                state.tryEmit(ServerState.Unknown)
+            }.collectResult(
                 onSuccess = {
                     state.tryEmit(ServerState.Running)
                 },
                 onFailure = {
                     when (it.getCode()) {
                         503 -> ServerState.Degraded
-                        else -> ServerState.Unknown
+                        else -> ServerState.Error
                     }.let(state::tryEmit)
                 }
-            ).catch {
-                state.tryEmit(ServerState.Unknown)
-            }.collect()
+            )
     }
 
     sealed interface ServerState {
