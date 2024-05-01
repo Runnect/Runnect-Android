@@ -89,7 +89,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
             val ctx: Context = context ?: return
             val accessToken = ctx.getAccessToken()
             val refreshToken = ctx.getNewToken()
-            val combinedToken = "[Access Token]: $accessToken\n\n---\n\n[Refresh Token]: $refreshToken"
+            val combinedToken = "${ApiMode.getCurrentApiMode(ctx).name} 서버\n[Access Token]: $accessToken\n\n---\n\n[Refresh Token]: $refreshToken"
 
             setPreferenceSummary("dev_pref_key_access_token", accessToken)
             setPreferenceSummary("dev_pref_key_refresh_token", refreshToken)
