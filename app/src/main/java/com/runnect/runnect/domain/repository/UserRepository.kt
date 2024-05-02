@@ -1,12 +1,17 @@
 package com.runnect.runnect.domain.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
+import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseDeleteUser
+import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
+import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import com.runnect.runnect.domain.entity.User
-import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.domain.entity.UserUploadCourse
 import kotlinx.coroutines.flow.Flow
 
@@ -17,11 +22,11 @@ interface UserRepository {
 
     suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Flow<Result<Unit>>
+    ): Flow<Result<ResponseDeleteUploadCourse>>
 
-    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Flow<Result<Unit>>
+    suspend fun putDeleteHistory(requestDeleteHistory: RequestDeleteHistory): Flow<Result<ResponseDeleteHistory>>
 
-    suspend fun deleteUser(): Flow<Result<Unit>>
+    suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>>
 
     suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>>
 
@@ -30,11 +35,11 @@ interface UserRepository {
     suspend fun patchHistoryTitle(
         historyId: Int,
         requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): Flow<Result<String>>
+    ): Flow<Result<ResponsePatchHistoryTitle>>
 
     suspend fun updateNickName(
         requestPatchNickName: RequestPatchNickName
-    ): Flow<Result<Unit>>
+    ): Flow<Result<ResponsePatchUserNickName>>
 
     suspend fun getUserProfile(userId: Int): Flow<Result<UserProfile>>
 }

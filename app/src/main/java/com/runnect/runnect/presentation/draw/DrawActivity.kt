@@ -162,7 +162,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
         binding.tvGuide.isVisible = false
         viewModel.searchResult.value = searchResult
-        viewModel.departureName = searchResult.name
+        viewModel.departureName.value = searchResult.name
 
         setDepartureLatLng(
             latLng = LatLng(
@@ -515,11 +515,11 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 if (isCustomLocationMode) departureLatLng = customDepartureLatLng
 
                 val courseData = CourseData(
-                    courseId = viewModel.uploadCourseId,
+                    courseId = viewModel.uploadResult.value?.data?.id,
                     publicCourseId = null, //직접 생성하는 코스는 publicCourseId가 없지만 코스 발견 -> 러닝 등의 루트로 넘어올 시 기록 업로드에서 requestBody에 필요함
                     touchList = touchList,
                     startLatLng = departureLatLng,
-                    departure = viewModel.departureName,
+                    departure = viewModel.departureName.value,
                     distance = viewModel.distanceSum.value,
                     image = captureUri.toString(),
                     dataFrom = "fromDrawCourse"
@@ -791,18 +791,18 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         val uploadLatLngList: List<UploadLatLng> = distanceList.map { latLng ->
             UploadLatLng(latLng.latitude, latLng.longitude)
         }
-        viewModel.path = uploadLatLngList
+        viewModel.path.value = uploadLatLngList
 
         when {
             isSearchLocationMode -> {
-                viewModel.departureAddress = searchResult.fullAddress
-                viewModel.departureName = searchResult.name
+                viewModel.departureAddress.value = searchResult.fullAddress
+                viewModel.departureName.value = searchResult.name
             }
 
             isCurrentLocationMode || isCustomLocationMode -> {
-                viewModel.departureAddress =
-                    viewModel.reverseGeocodingResult.value?.fullAddress ?: ""
-                viewModel.departureName =
+                viewModel.departureAddress.value =
+                    viewModel.reverseGeocodingResult.value?.fullAddress
+                viewModel.departureName.value =
                     viewModel.reverseGeocodingResult.value?.buildingName ?: "내가 설정한 출발지"
             }
         }

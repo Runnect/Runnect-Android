@@ -6,6 +6,10 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
+import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
+import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
+import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.CourseDetail
@@ -21,9 +25,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-class CourseRepositoryImpl @Inject constructor(
-    private val remoteCourseDataSource: RemoteCourseDataSource
-) : CourseRepository {
+class CourseRepositoryImpl @Inject constructor(private val remoteCourseDataSource: RemoteCourseDataSource) :
+    CourseRepository {
 
     override suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>> {
         return remoteCourseDataSource.getMarathonCourse().mapToFlowResult {
@@ -63,8 +66,8 @@ class CourseRepositoryImpl @Inject constructor(
         return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult { it }
     }
 
-    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>> {
-        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult {}
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>> {
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult { it }
     }
 
     override suspend fun postCourseScrap(
@@ -75,8 +78,8 @@ class CourseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<Unit>> {
-        return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse).mapToFlowResult {}
+    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<ResponsePostDiscoverUpload>> {
+        return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse).mapToFlowResult { it }
     }
 
     override suspend fun patchPublicCourse(
@@ -90,16 +93,14 @@ class CourseRepositoryImpl @Inject constructor(
             it.toEditableCourseDetail()
         }
 
-    override suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<Unit>> {
-        return remoteCourseDataSource.postRecord(request = request).mapToFlowResult {}
+    override suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>> {
+        return remoteCourseDataSource.postRecord(request = request).mapToFlowResult { it }
     }
 
     override suspend fun uploadCourse(
         image: MultipartBody.Part,
         data: RequestBody
-    ): Flow<Result<Int>> {
-        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult {
-            it.id
-        }
+    ): Flow<Result<ResponsePostMyDrawCourse>> {
+        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult { it }
     }
 }

@@ -5,8 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponsePostMyDrawCourse(
-    @SerialName("id")
-    val id: Int,
-    @SerialName("createdAt")
-    val createdAt: String
-)
+    @SerialName("data")
+    val data: Data
+) {
+    @Serializable
+    data class Data(
+        @SerialName("id")
+        val id: Int,
+        @SerialName("createdAt")
+        val createdAt: String
+    )
+}

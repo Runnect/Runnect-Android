@@ -1,22 +1,26 @@
 package com.runnect.runnect.data.repository
 
 import com.runnect.runnect.data.dto.HistoryInfoDTO
+import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
+import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
+import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseDeleteUser
+import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
+import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteUserDataSource
 import com.runnect.runnect.domain.entity.User
-import com.runnect.runnect.domain.entity.UserProfile
 import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
-    private val remoteUserDataSource: RemoteUserDataSource
-) : UserRepository {
+class UserRepositoryImpl @Inject constructor(private val remoteUserDataSource: RemoteUserDataSource) :
+    UserRepository {
 
     override suspend fun getUserInfo(): Flow<Result<User>> = remoteUserDataSource.getUserInfo()
         .mapToFlowResult { it.toUser() }
@@ -29,31 +33,29 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun putDeleteUploadCourse(
         requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Flow<Result<Unit>> {
-        return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse).mapToFlowResult {}
+    ): Flow<Result<ResponseDeleteUploadCourse>> {
+        return remoteUserDataSource.putDeleteUploadCourse(requestDeleteUploadCourse).mapToFlowResult { it }
     }
 
     override suspend fun putDeleteHistory(
         requestDeleteHistory: RequestDeleteHistory
-    ): Flow<Result<Unit>> {
-        return remoteUserDataSource.putDeleteHistory(requestDeleteHistory).mapToFlowResult {}
+    ): Flow<Result<ResponseDeleteHistory>> {
+        return remoteUserDataSource.putDeleteHistory(requestDeleteHistory).mapToFlowResult { it }
     }
 
     override suspend fun patchHistoryTitle(
         historyId: Int, requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): Flow<Result<String>> =
-        remoteUserDataSource.patchHistoryTitle(historyId, requestPatchHistoryTitle).mapToFlowResult {
-            it.record.title
-        }
+    ): Flow<Result<ResponsePatchHistoryTitle>> =
+        remoteUserDataSource.patchHistoryTitle(historyId, requestPatchHistoryTitle).mapToFlowResult { it }
 
-    override suspend fun deleteUser(): Flow<Result<Unit>> {
-        return remoteUserDataSource.deleteUser().mapToFlowResult {}
+    override suspend fun deleteUser(): Flow<Result<ResponseDeleteUser>> {
+        return remoteUserDataSource.deleteUser().mapToFlowResult { it }
     }
 
     override suspend fun updateNickName(
         requestPatchNickName: RequestPatchNickName
-    ): Flow<Result<Unit>> =
-        remoteUserDataSource.updateNickName(requestPatchNickName).mapToFlowResult {}
+    ): Flow<Result<ResponsePatchUserNickName>> =
+        remoteUserDataSource.updateNickName(requestPatchNickName).mapToFlowResult { it }
 
     override suspend fun getRecord(): Flow<Result<List<HistoryInfoDTO>>> {
         return remoteUserDataSource.getRecord().mapToFlowResult {

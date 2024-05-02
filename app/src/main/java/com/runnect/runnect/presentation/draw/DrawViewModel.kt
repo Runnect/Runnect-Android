@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
+import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.LocationData
 import com.runnect.runnect.domain.repository.CourseRepository
@@ -14,7 +15,6 @@ import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.acos
 
@@ -30,20 +30,15 @@ class DrawViewModel @Inject constructor(
 
     val searchResult = MutableLiveData<SearchResultEntity>()
 
-    var path: List<UploadLatLng> = listOf(
-        UploadLatLng(
-            37.52901832956373,
-            126.9136196847032
-        )
-    )
+    val path = MutableLiveData<List<UploadLatLng>>()
     var distanceSum = MutableLiveData(0.0f)
+    val departureAddress = MutableLiveData<String>()
+    var courseTitle = ""
+    val departureName = MutableLiveData("내가 설정한 출발지")
     val isBtnAvailable = MutableLiveData(false)
+
     val reverseGeocodingResult = MutableLiveData<LocationData>()
 
-    var departureAddress: String = ""
-    var departureName: String = "내가 설정한 출발지"
-    var courseTitle: String = ""
-    var uploadCourseId: Int? = null
 
     private val _image = MutableLiveData<ContentUriRequestBody>()
     val image: LiveData<ContentUriRequestBody>
@@ -52,6 +47,9 @@ class DrawViewModel @Inject constructor(
     fun setRequestBody(requestBody: ContentUriRequestBody) {
         _image.value = requestBody
     }
+
+    val uploadResult = MutableLiveData<ResponsePostMyDrawCourse>()
+    val errorMessage = MutableLiveData<String>()
 
 
     fun distance(lat1: Double, lon1: Double, lat2: Double, lon2: Double, unit: String): Double {
@@ -89,22 +87,27 @@ class DrawViewModel @Inject constructor(
             courseRepository.uploadCourse(
                 image = _image.value!!.toFormData(),
                 data = CourseCreateRequestDto(
-                    path = path,
+                    path = path.value ?: listOf(
+                        UploadLatLng(
+                            37.52901832956373,
+                            126.9136196847032
+                        )
+                    ),
                     title = courseTitle,
                     distance = distanceSum.value!!,
-                    departureAddress = departureAddress,
-                    departureName = departureName
+                    departureAddress = departureAddress.value!!,
+                    departureName = departureName.value!!
                 ).toRequestBody()
             ).onStart {
                 _drawState.value = UiState.Loading
             }.collectResult(
                 onSuccess = {
-                    uploadCourseId = it
+                    uploadResult.value = it
                     _drawState.value = UiState.Success
                 },
                 onFailure = {
+                    errorMessage.value = it.message
                     _drawState.value = UiState.Failure
-                    Timber.e(it.toLog())
                 }
             )
         }
@@ -119,7 +122,7 @@ class DrawViewModel @Inject constructor(
                 reverseGeocodingResult.value = it
             },
             onFailure = {
-                Timber.e(it.toLog())
+                errorMessage.value = it.toLog()
             }
         )
     }
