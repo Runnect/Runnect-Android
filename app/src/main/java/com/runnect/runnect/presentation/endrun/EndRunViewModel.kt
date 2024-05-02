@@ -3,19 +3,19 @@ package com.runnect.runnect.presentation.endrun
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
 class EndRunViewModel @Inject constructor(private val courseRepository: CourseRepository) :
-    ViewModel() {
+    BaseViewModel() {
 
     val distanceSum = MutableLiveData<Double>()
     val captureUri = MutableLiveData<Uri>()
@@ -34,29 +34,29 @@ class EndRunViewModel @Inject constructor(private val courseRepository: CourseRe
     val endRunState: LiveData<UiState>
         get() = _endRunState
 
-
     fun postRecord(request: RequestPostRunningHistory) {
-        viewModelScope.launch {
-            runCatching {
-                _endRunState.value = UiState.Loading
-                courseRepository.postRecord(
-                    RequestPostRunningHistory(
-                        courseId = request.courseId,
-                        publicCourseId = request.publicCourseId,
-                        title = request.title,
-                        time = request.time,
-                        pace = request.pace
+        launchWithHandler {
+            courseRepository.postRecord(
+                RequestPostRunningHistory(
+                    courseId = request.courseId,
+                    publicCourseId = request.publicCourseId,
+                    title = request.title,
+                    time = request.time,
+                    pace = request.pace
 
-                    )
                 )
-            }.onSuccess {
-                uploadResult.value = it.body()
-                _endRunState.value = UiState.Success
-            }.onFailure {
-                errorMessage.value = it.message
-                _endRunState.value = UiState.Failure
-            }
+            ).onStart {
+                _endRunState.value = UiState.Loading
+            }.collectResult(
+                onSuccess = {
+                    uploadResult.value = it
+                    _endRunState.value = UiState.Success
+                },
+                onFailure = {
+                    errorMessage.value = it.message
+                    _endRunState.value = UiState.Failure
+                }
+            )
         }
     }
-
 }

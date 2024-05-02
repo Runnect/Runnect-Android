@@ -1,22 +1,21 @@
 package com.runnect.runnect.presentation.storage
 
-import android.content.ContentValues
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostScrap
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.MyDrawCourse
-import com.runnect.runnect.domain.entity.MyDrawCourseDetail
+import com.runnect.runnect.domain.entity.MyScrapCourse
+import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.StorageRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -24,7 +23,8 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor(
     private val storageRepository: StorageRepository,
     private val courseRepository: CourseRepository
-) : ViewModel() {
+) : BaseViewModel() {
+
     private val _myDrawCourseGetState = MutableLiveData<UiState>(UiState.Empty)
     val myDrawCourseGetState: LiveData<UiState>
         get() = _myDrawCourseGetState
@@ -41,8 +41,8 @@ class StorageViewModel @Inject constructor(
     val myScrapCourseGetState: LiveData<UiStateV2<List<MyScrapCourse>>?>
         get() = _myScrapCourseGetState
 
-    private val _courseScrapState = MutableLiveData<UiStateV2<ResponsePostScrap?>>()
-    val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
+    private val _courseScrapState = MutableLiveData<UiStateV2<PostScrap>>()
+    val courseScrapState: LiveData<UiStateV2<PostScrap>>
         get() = _courseScrapState
 
     val errorMessage = MutableLiveData<String>()
@@ -55,86 +55,73 @@ class StorageViewModel @Inject constructor(
     private var _clickedCourseId = -1
     val clickedCourseId get() = _clickedCourseId
 
-    fun getMyDrawList() {
-        viewModelScope.launch {
-            runCatching {
-                _myDrawCourseGetState.value = UiState.Loading
-                storageRepository.getMyDrawCourse()
-            }.onSuccess {
-                _myDrawCourses = (it.getOrNull() ?: emptyList()).toMutableList()
-                Timber.tag(ContentValues.TAG).d("데이터 수신 완료")
+    fun getMyDrawList() = launchWithHandler {
+        storageRepository.getMyDrawCourse().onStart {
+            _myDrawCourseGetState.value = UiState.Loading
+        }.collectResult(
+            onSuccess = {
+                _myDrawCourses = it.toMutableList()
                 _myDrawCourseGetState.value = UiState.Success
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("onFailure 메세지 : $it")
+            },
+            onFailure = {
                 errorMessage.value = it.message
                 _myDrawCourseGetState.value = UiState.Failure
             }
-        }
+        )
     }
 
-    fun deleteMyDrawCourse() {
-        viewModelScope.launch {
-            runCatching {
-                _myDrawCourseDeleteState.value = UiState.Loading
-                storageRepository.deleteMyDrawCourse(
-                    RequestPutMyDrawCourse(
-                        courseIdList = itemsToDelete
-                    )
-                )
-            }.onSuccess {
-                Timber.tag(ContentValues.TAG).d("삭제 성공입니다")
-                _myDrawCourses =
-                    _myDrawCourses.filter { !itemsToDelete.contains(it.courseId) }.toMutableList()
+    fun deleteMyDrawCourse() = launchWithHandler {
+        storageRepository.deleteMyDrawCourse(
+            RequestPutMyDrawCourse(
+                courseIdList = itemsToDelete
+            )
+        ).onStart {
+            _myDrawCourseDeleteState.value = UiState.Loading
+        }.collectResult(
+            onSuccess = {
+                _myDrawCourses = _myDrawCourses.filter {
+                    !itemsToDelete.contains(it.courseId)
+                }.toMutableList()
                 _myDrawCourseDeleteState.value = UiState.Success
-
-            }.onFailure {
-                Timber.tag(ContentValues.TAG).d("실패했고 문제는 다음과 같습니다 $it")
+            },
+            onFailure = {
                 _myDrawCourseDeleteState.value = UiState.Failure
             }
-        }
+        )
     }
 
-    fun getMyScrapCourses() {
-        viewModelScope.launch {
+    fun getMyScrapCourses() = launchWithHandler {
+        storageRepository.getMyScrapCourse().onStart {
             _myScrapCourseGetState.value = UiStateV2.Loading
-
-            storageRepository.getMyScrapCourse()
-                .onSuccess { response ->
-                    if (response == null) {
-                        _myScrapCourseGetState.value =
-                            UiStateV2.Failure("MY SCRAP COURSE DATA IS NULL")
-                        return@launch
-                    }
-
-                    Timber.d("MY SCRAP COURSE GET SUCCESS")
-                    _myScrapCourseGetState.value = UiStateV2.Success(response)
-                    itemSize.value = response.size
-                }
-                .onFailure { t ->
-                    Timber.e("MY SCRAP COURSE GET FAIL")
-                    Timber.e("${t.message}")
-                    _myScrapCourseGetState.value = UiStateV2.Failure(t.message.toString())
-                }
-        }
+        }.collectResult(
+            onSuccess = {
+                _myScrapCourseGetState.value = UiStateV2.Success(it)
+                itemSize.value = it.size
+            },
+            onFailure = {
+                Timber.e("${it.message}")
+                _myScrapCourseGetState.value = UiStateV2.Failure(it.message.toString())
+            }
+        )
     }
 
-    fun postCourseScrap(id: Int, scrapTF: Boolean) {
-        viewModelScope.launch {
-            _courseScrapState.value = UiStateV2.Loading
+    fun postCourseScrap(id: Int, scrapTF: Boolean) = launchWithHandler {
+        val requestPostCourseScrap = RequestPostCourseScrap(
+            publicCourseId = id, scrapTF = scrapTF.toString()
+        )
 
-            courseRepository.postCourseScrap(
-                RequestPostCourseScrap(
-                    publicCourseId = id, scrapTF = scrapTF.toString()
-                )
+        courseRepository.postCourseScrap(requestPostCourseScrap)
+            .onStart {
+                _courseScrapState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
+                    _courseScrapState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    Timber.e(it.toLog())
+                    _courseScrapState.value = UiStateV2.Failure(it.toLog())
+                }
             )
-                .onSuccess { response ->
-                    _courseScrapState.value = UiStateV2.Success(response)
-                }
-                .onFailure { t ->
-                    Timber.e("${t.message}")
-                    _courseScrapState.value = UiStateV2.Failure(t.message.toString())
-                }
-        }
     }
 
     fun modifyItemsToDelete(id: Int) {

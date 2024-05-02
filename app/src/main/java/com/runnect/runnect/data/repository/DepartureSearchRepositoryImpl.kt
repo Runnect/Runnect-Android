@@ -3,17 +3,20 @@ package com.runnect.runnect.data.repository
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.response.ResponseGetSearchTmap
+import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteDepartureSearchDataSource
 import com.runnect.runnect.domain.repository.DepartureSearchRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DepartureSearchRepositoryImpl @Inject constructor(private val departureSourceDataSource: RemoteDepartureSearchDataSource) :
     DepartureSearchRepository {
-    override suspend fun getSearchList(keyword: String): List<SearchResultEntity>? {
-        return changeData(
-            departureSourceDataSource.getSearchList(searchKeyword = keyword)
-                .body()?.searchPoiInfo?.pois ?: return null
-        )
+    override suspend fun getSearchList(keyword: String): Flow<Result<List<SearchResultEntity>>> {
+        return departureSourceDataSource
+            .getSearchList(searchKeyword = keyword)
+            .mapToFlowResult {
+                changeData(it.searchPoiInfo.pois)
+            }
     }
 
     private fun changeData(pois: ResponseGetSearchTmap.SearchPoiInfo.Pois): List<SearchResultEntity> {

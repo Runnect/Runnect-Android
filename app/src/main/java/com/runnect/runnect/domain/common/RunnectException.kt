@@ -9,6 +9,10 @@ class RunnectException(
     fun toLog() = "$message (${code})"
 }
 
+fun Throwable.getCode(): Int {
+    return if (this is RunnectException) code else -1
+}
+
 fun Throwable.toLog(): String {
     return if(this is RunnectException) {
         this.toLog()

@@ -7,29 +7,29 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResponseGetMyDrawCourse(
     @SerialName("courses")
-    val courses: List<Course>,
+    val courses: List<Course>?,
     @SerialName("user")
-    val user: User,
+    val user: User?,
 ) {
     @Serializable
     data class Course(
         @SerialName("createdAt")
-        val createdAt: String,
+        val createdAt: String?,
         @SerialName("departure")
-        val departure: Departure,
+        val departure: Departure?,
         @SerialName("id")
-        val id: Int,
+        val id: Int?,
         @SerialName("image")
-        val image: String,
+        val image: String?,
         @SerialName("title")
-        val title: String
+        val title: String?
     ) {
         @Serializable
         data class Departure(
             @SerialName("city")
-            val city: String,
+            val city: String?,
             @SerialName("region")
-            val region: String,
+            val region: String?,
         )
     }
 
@@ -41,13 +41,17 @@ data class ResponseGetMyDrawCourse(
 }
 
 fun ResponseGetMyDrawCourse.toMyDrawCourse(): List<MyDrawCourse> {
-    return this.courses.map {
-        MyDrawCourse(
-            courseId = it.id,
-            image = it.image,
-            city = it.departure.city,
-            region = it.departure.region,
-            title = it.title
-        )
+
+    return if (this.courses.isNullOrEmpty()) emptyList()
+    else {
+        this.courses.map {
+            MyDrawCourse(
+                courseId = it.id,
+                image = it.image,
+                city = it.departure?.city ?: "", //todo - 예외 처리 논의
+                region = it.departure?.region ?: "",
+                title = it.title ?: ""
+            )
+        }
     }
 }

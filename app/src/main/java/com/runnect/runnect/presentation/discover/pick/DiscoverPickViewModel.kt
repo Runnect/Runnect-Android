@@ -2,20 +2,21 @@ package com.runnect.runnect.presentation.discover.pick
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.repository.CourseRepository
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class DiscoverPickViewModel @Inject constructor(
     private val courseRepository: CourseRepository
-) : ViewModel() {
+) : BaseViewModel() {
     private val _courseGetState = MutableLiveData<UiStateV2<List<DiscoverUploadCourse>?>>()
     val courseGetState: LiveData<UiStateV2<List<DiscoverUploadCourse>?>>
         get() = _courseGetState
@@ -31,28 +32,23 @@ class DiscoverPickViewModel @Inject constructor(
         getMyCourseLoad()
     }
 
-    private fun getMyCourseLoad() {
-        viewModelScope.launch {
-            _courseGetState.value = UiStateV2.Loading
+    private fun getMyCourseLoad() = launchWithHandler {
+        _courseGetState.value = UiStateV2.Loading
 
-            courseRepository.getMyCourseLoad()
-                .onSuccess { response ->
-                    if (response == null) {
-                        _courseGetState.value =
-                            UiStateV2.Failure("DISCOVER UPLOAD COURSE DATA IS NULL")
-                        return@launch
-                    }
-
+        courseRepository.getMyCourseLoad()
+            .onStart {
+                _courseGetState.value = UiStateV2.Loading
+            }.collectResult(
+                onSuccess = {
                     Timber.d("DISCOVER UPLOAD COURSE GET SUCCESS")
-                    if (response.isEmpty()) _courseGetState.value = UiStateV2.Empty
-                    else _courseGetState.value = UiStateV2.Success(response)
-
-                }.onFailure { t ->
+                    _courseGetState.value = if (it.isEmpty()) UiStateV2.Empty else UiStateV2.Success(it)
+                },
+                onFailure = {
                     Timber.e("DISCOVER UPLOAD COURSE GET FAIL")
-                    Timber.e("${t.message}")
-                    _courseGetState.value = UiStateV2.Failure(t.message.toString())
+                    Timber.e(it.toLog())
+                    _courseGetState.value = UiStateV2.Failure(it.toLog())
                 }
-        }
+            )
     }
 
     fun updateCourseSelectState(isSelected: Boolean) {

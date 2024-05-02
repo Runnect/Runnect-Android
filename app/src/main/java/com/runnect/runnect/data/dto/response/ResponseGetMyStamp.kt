@@ -1,26 +1,21 @@
 package com.runnect.runnect.data.dto.response
+
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseGetMyStamp(
-    val `data`: StampData,
-    val message: String,
-    val status: Int,
-    val success: Boolean
-)
-
-@Serializable
-data class StampData(
+    val user: StampUser,
     val stamps: List<Stamp>,
-    val user: StampUser
-)
+) {
+    @Serializable
+    data class StampUser(
+        val id: Int
+    )
 
-@Serializable
-data class Stamp(
-    val id: String
-)
+    @Serializable
+    data class Stamp(
+        val id: String
+    )
 
-@Serializable
-data class StampUser(
-    val id: Int
-)
+    fun toStampList() = stamps.map { it.id }
+}
