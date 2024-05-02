@@ -83,9 +83,12 @@ class DiscoverRecommendAdapter(
     ) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                course.scrap = updatedCourse.scrap
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(
+                    title = updatedCourse.title,
+                    scrap = updatedCourse.scrap
+                )
+                submitList(newList)
                 return
             }
         }
@@ -97,36 +100,27 @@ class DiscoverRecommendAdapter(
     ) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.scrap = scrap
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(scrap = scrap)
+                submitList(newList)
                 return
             }
         }
     }
 
     fun addRecommendCourseNextPage(nextPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
-        Timber.d("before item count : $itemCount")
-
         val newList = currentList.toMutableList()
         newList.addAll(nextPageItems)
-
-        submitList(newList) {
-            Timber.d("after item count : $itemCount")
-        }
+        submitList(newList)
     }
 
     fun sortRecommendCourseFirstPage(firstPageItems: List<DiscoverMultiViewItem.RecommendCourse>) {
-        Timber.d("before item count : $itemCount")
-
         val newList = currentList.toMutableList()
         newList.apply {
             clear()
             addAll(firstPageItems)
         }
-
-        submitList(newList) {
-            Timber.d("after item count : $itemCount")
-        }
+        submitList(newList)
     }
 
     companion object {

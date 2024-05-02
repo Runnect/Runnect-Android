@@ -42,9 +42,6 @@ class CourseDetailViewModel @Inject constructor(
     val courseScrapState: LiveData<UiStateV2<ResponsePostScrap?>>
         get() = _courseScrapState
 
-    // 플래그 변수
-    var isDeepLinkLogin = MutableLiveData(true)
-
     // 사용자가 수정할 수 있는 부분 (제목, 내용)
     val _title = MutableLiveData<String>()
     val title: String get() = _title.value ?: ""
@@ -88,14 +85,6 @@ class CourseDetailViewModel @Inject constructor(
                 _courseGetState.value = UiStateV2.Success(response)
             }.onFailure { exception ->
                 _courseGetState.value = UiStateV2.Failure(exception.message.toString())
-
-                if (exception is HttpException) {
-                    // 딥링크로 접속했는데 로그인 되어 있지 않은 경우
-                    if (exception.code() == CODE_AUTHORIZATION_ERROR) {
-                        isDeepLinkLogin.value = false
-                    }
-                    return@launch
-                }
             }
         }
     }

@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -43,13 +42,12 @@ open class BaseToolbarMenu {
 
     protected fun createBaseTextView(
         context: Context,
-        @StringRes resourceId: Int,
+        titleText: String,
         padding: Int,
         textSize: Float,
         @FontRes fontRes: Int
     ): AppCompatTextView {
         val paddingPx = padding.dpToPx(context)
-        val titleText = context.getString(resourceId)
         val textColor = ContextCompat.getColor(context, R.color.G1)
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,

@@ -83,9 +83,12 @@ class DiscoverMarathonAdapter(
     ) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                course.scrap = updatedCourse.scrap
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(
+                    title = updatedCourse.title,
+                    scrap = updatedCourse.scrap
+                )
+                submitList(newList)
                 return
             }
         }
@@ -97,8 +100,9 @@ class DiscoverMarathonAdapter(
     ) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.scrap = scrap
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(scrap = scrap)
+                submitList(newList)
                 return
             }
         }
