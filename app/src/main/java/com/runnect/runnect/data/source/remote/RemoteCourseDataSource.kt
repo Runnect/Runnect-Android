@@ -9,6 +9,7 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
+import com.runnect.runnect.data.dto.response.ResponsePatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.service.CourseService
@@ -55,7 +56,7 @@ class RemoteCourseDataSource @Inject constructor(
     suspend fun patchMyDrawCourseTitle(
         courseId: Int,
         requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
-    ) = courseService.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle)
+    ): Result<ResponsePatchMyDrawCourseTitle> = courseService.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle)
 
     suspend fun postRecord(request: RequestPostRunningHistory) = courseService.postRecord(request)
 

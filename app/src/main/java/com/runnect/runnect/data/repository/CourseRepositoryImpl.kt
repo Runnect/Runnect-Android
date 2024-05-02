@@ -6,7 +6,6 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.CourseDetail
@@ -14,6 +13,8 @@ import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import com.runnect.runnect.domain.repository.CourseRepository
@@ -60,8 +61,10 @@ class CourseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyDrawDetail(courseId: Int): Flow<Result<ResponseGetMyDrawDetail>> {
-        return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult { it }
+    override suspend fun getMyDrawDetail(courseId: Int): Flow<Result<MyDrawCourseDetail>> {
+        return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult {
+            it.toMyDrawCourseDetail()
+        }
     }
 
     override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>> {
@@ -83,9 +86,10 @@ class CourseRepositoryImpl @Inject constructor(
     override suspend fun patchMyDrawCourseTitle(
         courseId: Int,
         requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
-    ) = runCatching {
-        remoteCourseDataSource.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle).data?.toEditableMyDrawCourseDetail()
-    }
+    ): Flow<Result<EditableMyDrawCourseDetail>> =
+        remoteCourseDataSource.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle).mapToFlowResult {
+            it.toEditableMyDrawCourseDetail()
+        }
 
     override suspend fun patchPublicCourse(
         publicCourseId: Int,

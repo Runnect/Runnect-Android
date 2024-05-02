@@ -417,17 +417,11 @@ class CourseDetailActivity :
         applyScreenExitAnimation()
     }
 
-    private fun setupFromDeepLinkObserver() {
-        viewModel.isDeepLinkLogin.observe(this) { result ->
-            // 딥링크로 진입했는데 로그인이 안 되어있는 경우
-            if (!result) {
-                // CHECK 로그인 액티비티 이동시 Task 모두 제거하도록 수정 (확인 필요)
-                Intent(this, LoginActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                }.let(::startActivity)
-
-                viewModel.isDeepLinkLogin.value = true
-            }
+    private fun navigateToUserProfile() {
+        Intent(this@CourseDetailActivity, ProfileActivity::class.java).apply {
+            putExtra(EXTRA_COURSE_USER_ID, courseDetail.userId)
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            startActivity(this)
         }
         applyScreenEnterAnimation()
         Analytics.logClickedItemEvent(EVENT_CLICK_USER_PROFILE)

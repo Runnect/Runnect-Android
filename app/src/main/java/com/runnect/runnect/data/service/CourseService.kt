@@ -107,7 +107,7 @@ interface CourseService {
     suspend fun patchMyDrawCourseTitle(
         @Path("courseId") courseId: Int,
         @Body requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
-    ): BaseResponse<ResponsePatchMyDrawCourseTitle>
+    ): Result<ResponsePatchMyDrawCourseTitle>
 
     // 내가 그린 코스 삭제
     @PUT("/api/course")

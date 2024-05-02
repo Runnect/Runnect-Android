@@ -6,13 +6,13 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ interface CourseRepository {
 
     suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>>
 
-    suspend fun getMyDrawDetail(courseId: Int): Flow<Result<ResponseGetMyDrawDetail>>
+    suspend fun getMyDrawDetail(courseId: Int): Flow<Result<MyDrawCourseDetail>>
 
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<PostScrap>>
 
@@ -49,7 +49,7 @@ interface CourseRepository {
     suspend fun patchMyDrawCourseTitle(
         courseId: Int,
         requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
-    ): Result<EditableMyDrawCourseDetail?>
+    ): Flow<Result<EditableMyDrawCourseDetail>>
 
     suspend fun patchPublicCourse(
         publicCourseId: Int,
