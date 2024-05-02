@@ -460,7 +460,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val response = state.data ?: return@observe
+                    val response = state.data
                     multiViewAdapter.updateCourseScrap(
                         publicCourseId = response.publicCourseId.toInt(),
                         scrap = response.scrapTF

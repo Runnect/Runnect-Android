@@ -72,6 +72,11 @@ class DiscoverMultiViewAdapter(
         val startPosition = getViewTypeStartPosition(viewType)
         if (startPosition >= 0) {
             notifyItemChanged(startPosition)
+        } else {
+            // Refresh 했을 때 코스 데이터를 비우는데
+            // 빈데이터는 initItemViewTypes에서 사라지게 되므로 notify가 되지 않음
+            // notify 되지 않은채로 데이터를 갱신하려고 하면 Inconsistency detected 예외 발생하여 추가
+            notifyDataSetChanged()
         }
     }
 

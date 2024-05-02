@@ -29,6 +29,7 @@ import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
 import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
@@ -280,6 +281,14 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
 
     private fun handleUnsuccessfulUploadCall() {
         binding.indeterminateBar.isVisible = false
+
+        // CHECK 에러시 동작 임의로 지정 (확인 필요)
+        binding.constMyPageUploadEditBar.isVisible = true
+        binding.svMyPageUpload.isVisible = true
+        viewModel.errorMessage.value?.let {
+            showSnackbar(binding.root, it)
+        }
+
         Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
     }
 

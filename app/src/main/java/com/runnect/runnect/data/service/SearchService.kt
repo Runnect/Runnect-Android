@@ -25,5 +25,5 @@ interface SearchService {
         @Query("reqCoordType") reqCoordType: String? = null,
         @Query("centerLon") centerLon: String? = null,
         @Query("centerLat") centerLat: String? = null,
-    ): Response<ResponseGetSearchTmap>
+    ): Result<ResponseGetSearchTmap>
 }
