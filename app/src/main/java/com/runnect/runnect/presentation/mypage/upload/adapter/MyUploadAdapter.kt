@@ -95,8 +95,9 @@ class MyUploadAdapter(
     fun updateMyUploadItem(publicCourseId: Int, updatedCourse: EditableDiscoverCourse) {
         currentList.forEachIndexed { index, course ->
             if (course.id == publicCourseId) {
-                course.title = updatedCourse.title
-                notifyItemChanged(index)
+                val newList = currentList.toMutableList()
+                newList[index] = course.copy(title = updatedCourse.title)
+                submitList(newList)
                 return@forEachIndexed
             }
         }

@@ -1,5 +1,6 @@
 package com.runnect.runnect.data.service
 
+import com.runnect.runnect.data.dto.request.RequestPatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
@@ -13,12 +14,14 @@ import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
+import com.runnect.runnect.data.dto.response.ResponsePatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
 import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
 import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
+import com.runnect.runnect.data.dto.response.base.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -79,29 +82,36 @@ interface CourseService {
         @Body requestPostCourseScrap: RequestPostCourseScrap,
     ): Result<ResponsePostScrap>
 
-    @PATCH("/api/public-course/{publicCourseId}")
-    suspend fun patchPublicCourse(
-        @Path("publicCourseId") publicCourseId: Int,
-        @Body requestPatchPublicCourse: RequestPatchPublicCourse
-    ): Result<ResponsePatchPublicCourse>
-
-    //내가 그린 코스 삭제
-    @PUT("/api/course")
-    suspend fun deleteMyDrawCourse(
-        @Body deleteCourseList: RequestPutMyDrawCourse
-    ): Result<ResponsePutMyDrawCourse>
-
-    //기록 업로드
+    // 기록 업로드
     @POST("/api/record")
     suspend fun postRecord(
         @Body request: RequestPostRunningHistory
     ): Result<ResponsePostMyHistory>
 
-    //코스 업로드
+    // 코스 업로드
     @Multipart
     @POST("/api/course")
     suspend fun uploadCourse(
         @Part image: MultipartBody.Part,
         @Part("data") data: RequestBody,
     ): Result<ResponsePostMyDrawCourse>
+
+    @PATCH("/api/public-course/{publicCourseId}")
+    suspend fun patchPublicCourse(
+        @Path("publicCourseId") publicCourseId: Int,
+        @Body requestPatchPublicCourse: RequestPatchPublicCourse
+    ): Result<ResponsePatchPublicCourse>
+
+    // 내가 그린 코스 제목 수정
+    @PATCH("/api/course/{courseId}")
+    suspend fun patchMyDrawCourseTitle(
+        @Path("courseId") courseId: Int,
+        @Body requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
+    ): Result<ResponsePatchMyDrawCourseTitle>
+
+    // 내가 그린 코스 삭제
+    @PUT("/api/course")
+    suspend fun deleteMyDrawCourse(
+        @Body deleteCourseList: RequestPutMyDrawCourse
+    ): Result<ResponsePutMyDrawCourse>
 }

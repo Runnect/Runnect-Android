@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
+import timber.log.Timber
 
 interface CommonToolbarLayout {
 
@@ -167,7 +168,6 @@ interface CommonToolbarLayout {
      */
     private fun addMenuView(context: Context?, parent: LinearLayout, toolbarMenu: ToolbarMenu) {
         context ?: return
-
         val menuView: View = toolbarMenu.createMenu(context)
         parent.addView(menuView)
     }

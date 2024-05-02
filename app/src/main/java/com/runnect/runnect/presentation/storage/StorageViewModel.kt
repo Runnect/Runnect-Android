@@ -24,6 +24,7 @@ class StorageViewModel @Inject constructor(
     private val storageRepository: StorageRepository,
     private val courseRepository: CourseRepository
 ) : BaseViewModel() {
+
     private val _myDrawCourseGetState = MutableLiveData<UiState>(UiState.Empty)
     val myDrawCourseGetState: LiveData<UiState>
         get() = _myDrawCourseGetState
@@ -50,6 +51,9 @@ class StorageViewModel @Inject constructor(
 
     var itemsToDeleteLiveData = MutableLiveData<List<Int>>()
     var itemsToDelete: MutableList<Int> = mutableListOf()
+
+    private var _clickedCourseId = -1
+    val clickedCourseId get() = _clickedCourseId
 
     fun getMyDrawList() = launchWithHandler {
         storageRepository.getMyDrawCourse().onStart {
@@ -132,5 +136,9 @@ class StorageViewModel @Inject constructor(
     fun clearItemsToDelete() {
         itemsToDelete.clear()
         itemsToDeleteLiveData.value = itemsToDelete
+    }
+
+    fun saveClickedCourseId(id: Int) {
+        _clickedCourseId = id
     }
 }

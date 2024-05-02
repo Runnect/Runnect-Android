@@ -1,14 +1,15 @@
 package com.runnect.runnect.data.dto.response
 
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseGetMyDrawDetail(
-    @SerialName("course")
-    val course: Course,
     @SerialName("user")
     val user: User,
+    @SerialName("course")
+    val course: Course
 ) {
     @Serializable
     data class User(
@@ -20,6 +21,8 @@ data class ResponseGetMyDrawDetail(
     data class Course(
         @SerialName("id")
         val id: Int,
+        @SerialName("isNowUser")
+        val isNowUser: Boolean,
         @SerialName("createdAt")
         val createdAt: String,
         @SerialName("path")
@@ -42,8 +45,17 @@ data class ResponseGetMyDrawDetail(
             @SerialName("town")
             val town: String,
             @SerialName("name")
-            val name: String,
+            val name: String?,
         )
     }
 
+    fun toMyDrawCourseDetail() = MyDrawCourseDetail(
+        title = course.title,
+        imgUrl = course.image,
+        isNowUser = course.isNowUser,
+        distance = course.distance,
+        courseId = course.id,
+        path = course.path,
+        departureName = course.departure.name
+    )
 }
