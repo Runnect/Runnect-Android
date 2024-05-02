@@ -15,7 +15,6 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
-import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
@@ -106,7 +105,6 @@ class LoginActivity :
             }
         }
         viewModel.errorMessage.observe(this) {
-            showSnackbar(binding.root, it)
             Timber.tag(ContentValues.TAG).d("로그인 통신 실패: $it")
         }
     }

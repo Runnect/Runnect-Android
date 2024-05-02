@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
+import com.runnect.runnect.data.dto.UserUploadCourseDTO
 import com.runnect.runnect.databinding.ItemMypageUploadBinding
-import com.runnect.runnect.domain.entity.UserUploadCourse
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import com.runnect.runnect.util.callback.listener.OnMyUploadItemClick
 
 class MyUploadAdapter(
     private val onMyUploadItemClick: OnMyUploadItemClick
-) : ListAdapter<UserUploadCourse, MyUploadAdapter.MyUploadViewHolder>(diffUtil) {
+) : ListAdapter<UserUploadCourseDTO, MyUploadAdapter.MyUploadViewHolder>(diffUtil) {
     private var selectedItems: MutableList<View>? = mutableListOf()
     private var selectedBoxes: MutableList<View>? = mutableListOf()
 
@@ -60,7 +60,7 @@ class MyUploadAdapter(
 
     inner class MyUploadViewHolder(private val binding: ItemMypageUploadBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(data: UserUploadCourse) {
+        fun onBind(data: UserUploadCourseDTO) {
             with(binding) {
                 selectedBoxes?.add(ivCheckbox)
 
@@ -103,7 +103,7 @@ class MyUploadAdapter(
     }
 
     companion object {
-        private val diffUtil = ItemDiffCallback<UserUploadCourse>(
+        private val diffUtil = ItemDiffCallback<UserUploadCourseDTO>(
             onItemsTheSame = { old, new -> old.id == new.id },
             onContentsTheSame = { old, new -> old == new }
         )

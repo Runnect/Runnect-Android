@@ -207,7 +207,7 @@ class DiscoverSearchActivity :
         viewModel.courseScrapState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    val response = state.data
+                    val response = state.data ?: return@observe
                     searchAdapter.updateCourseScrap(
                         publicCourseId = response.publicCourseId.toInt(),
                         scrap = response.scrapTF

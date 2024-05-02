@@ -132,11 +132,11 @@ class MyDrawDetailActivity :
         with(binding) {
             Glide
                 .with(ivMyDrawDetail.context)
-                .load(src.course.image.toUri())
+                .load(src.data.course.image.toUri())
                 .centerCrop()
                 .into(ivMyDrawDetail)
 
-            tvCourseDistanceRecord.text = src.course.distance.toString()
+            tvCourseDistanceRecord.text = src.data.course.distance.toString()
 
         }
     }
@@ -144,25 +144,25 @@ class MyDrawDetailActivity :
     //set이란 단어가 표현력이 떨어지는 것 같기도 하고. 그래서 일단 뭉탱이로 두는 것보단 쪼개는 게 나아서 쪼개놓음
     private fun setDepartureLatLng(src: ResponseGetMyDrawDetail) {
         departureLatLng =
-            LatLng(src.course.path[0][0], src.course.path[0][1])
+            LatLng(src.data.course.path[0][0], src.data.course.path[0][1])
         Timber.tag(ContentValues.TAG).d("departureLatLng 값 : $departureLatLng")
     }
 
     private fun setTouchList(src: ResponseGetMyDrawDetail) {
-        for (i in 1 until src.course.path.size) {
-            touchList.add(LatLng(src.course.path[i][0], src.course.path[i][1]))
+        for (i in 1 until src.data.course.path.size) {
+            touchList.add(LatLng(src.data.course.path[i][0], src.data.course.path[i][1]))
         }
     }
 
     private fun setPutExtraValue(src: ResponseGetMyDrawDetail) {
         viewModel.myDrawToRunData.value = CourseData(
-            courseId = src.course.id,
+            courseId = src.data.course.id,
             publicCourseId = null,
             touchList = touchList,
             startLatLng = departureLatLng,
-            departure = src.course.departure.name,
-            distance = src.course.distance,
-            image = src.course.image,
+            departure = src.data.course.departure.name,
+            distance = src.data.course.distance,
+            image = src.data.course.image,
             dataFrom = "fromMyDrawDetail"
         )
     }

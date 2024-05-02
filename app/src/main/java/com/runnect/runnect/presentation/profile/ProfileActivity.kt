@@ -108,11 +108,12 @@ class ProfileActivity : BindingActivity<ActivityProfileBinding>(R.layout.activit
                 }
 
                 is UiStateV2.Success -> {
-                    val postScrap = state.data
-                    adapter.updateCourseItem(
-                        courseId = postScrap.publicCourseId.toInt(),
-                        scrapTF = postScrap.scrapTF
-                    )
+                    state.data?.let { it ->
+                        adapter.updateCourseItem(
+                            courseId = it.publicCourseId.toInt(),
+                            scrapTF = it.scrapTF
+                        )
+                    }
                 }
 
                 is UiStateV2.Failure -> {

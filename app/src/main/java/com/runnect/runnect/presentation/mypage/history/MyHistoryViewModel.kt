@@ -2,22 +2,19 @@ package com.runnect.runnect.presentation.mypage.history
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.data.dto.request.RequestDeleteHistory
-import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.repository.UserRepository
-import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyHistoryViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : BaseViewModel() {
-
+class MyHistoryViewModel @Inject constructor(private val userRepository: UserRepository) :
+    ViewModel() {
     private var _historyState = MutableLiveData<UiState>()
     val historyState: LiveData<UiState>
         get() = _historyState
@@ -66,49 +63,51 @@ class MyHistoryViewModel @Inject constructor(
         _editMode.value = !_editMode.value!!
     }
 
-    fun getRecord() = launchWithHandler {
-        userRepository.getRecord()
-            .onStart {
-                _historyItems.clear()
+    fun getRecord() {
+        _historyState.value = UiState.Loading
+        _historyItems = mutableListOf()
+        viewModelScope.launch {
+            runCatching {
                 _historyState.value = UiState.Loading
-            }.collectResult(
-                onSuccess = {
-                    _historyItems = it.toMutableList()
-                    _historyState.value = if (it.isEmpty()) UiState.Empty else UiState.Success
-                },
-                onFailure = {
-                    errorMessage.value = it.toLog()
-                    _historyState.value = UiState.Failure
+                userRepository.getRecord()
+            }.onSuccess {
+                if (it.isEmpty()) {
+                    _historyState.value = UiState.Empty
+                } else {
+                    _historyItems = it
+                    _historyState.value = UiState.Success
                 }
-            )
+            }.onFailure {
+                errorMessage.value = it.message
+                _historyState.value = UiState.Failure
+            }
+        }
     }
 
-    fun deleteHistory() = launchWithHandler {
-        val requestDeleteHistory = RequestDeleteHistory(
-            recordIdList = _itemsToDelete
-        )
-
-        userRepository.putDeleteHistory(requestDeleteHistory)
-            .onStart {
+    fun deleteHistory() {
+        viewModelScope.launch {
+            runCatching {
                 _historyDeleteState.value = UiState.Loading
-            }.collectResult(
-                onSuccess = {
-                    _historyItems = _historyItems.filterNot { item ->
-                        itemsToDelete.contains(item.id)
-                    }.toMutableList()
-                    _historyDeleteState.value = UiState.Success
 
-                    //모든 기록 삭제 시, 편집 모드 취소
-                    if (_historyItems.isEmpty()) {
-                        _historyState.value = UiState.Empty
-                        convertMode()
-                    }
-                },
-                onFailure = {
-                    errorMessage.value = it.toLog()
-                    _historyDeleteState.value = UiState.Failure
+                userRepository.putDeleteHistory(
+                    RequestDeleteHistory(
+                        recordIdList = _itemsToDelete
+                    )
+                )
+            }.onSuccess {
+                _historyItems =
+                    _historyItems.filter { !itemsToDelete.contains(it.id) }.toMutableList()
+                _historyDeleteState.value = UiState.Success
+                //모든 기록 삭제 시, 편집 모드 취소
+                if (_historyItems.isEmpty()) {
+                    _historyState.value = UiState.Empty
+                    convertMode()
                 }
-            )
+            }.onFailure {
+                errorMessage.value = it.message
+                _historyDeleteState.value = UiState.Failure
+            }
+        }
     }
 
     companion object {

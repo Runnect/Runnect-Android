@@ -4,64 +4,54 @@ import com.runnect.runnect.data.dto.request.RequestDeleteHistory
 import com.runnect.runnect.data.dto.request.RequestDeleteUploadCourse
 import com.runnect.runnect.data.dto.request.RequestPatchHistoryTitle
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
-import com.runnect.runnect.data.dto.response.ResponseDeleteHistory
-import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
-import com.runnect.runnect.data.dto.response.ResponseDeleteUser
-import com.runnect.runnect.data.dto.response.ResponseGetMyHistory
-import com.runnect.runnect.data.dto.response.ResponseGetMyStamp
-import com.runnect.runnect.data.dto.response.ResponseGetUser
-import com.runnect.runnect.data.dto.response.ResponseGetUserProfile
-import com.runnect.runnect.data.dto.response.ResponseGetUserUploadCourse
-import com.runnect.runnect.data.dto.response.ResponsePatchHistoryTitle
-import com.runnect.runnect.data.dto.response.ResponsePatchUserNickName
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PATCH
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import com.runnect.runnect.data.dto.response.*
+import com.runnect.runnect.data.dto.response.base.BaseResponse
+import retrofit2.http.*
 
 interface UserService {
-
     @GET("api/user")
-    suspend fun getUserInfo(): Result<ResponseGetUser>
+    suspend fun getUserInfo(
+    ): ResponseGetUser
 
-    @GET("api/public-course/user")
-    suspend fun getUserUploadCourse(): Result<ResponseGetUserUploadCourse>
-
-    @GET("api/record/user")
-    suspend fun getRecord(): Result<ResponseGetMyHistory>
+    @PATCH("api/user")
+    suspend fun updateNickName(
+        @Body requestPatchNickName: RequestPatchNickName,
+    ): ResponsePatchUserNickName
 
     @GET("api/stamp/user")
-    suspend fun getMyStamp(): Result<ResponseGetMyStamp>
+    suspend fun getMyStamp(
+    ): ResponseGetMyStamp
 
-    // 유저 프로필 조회
-    @GET("/api/user/{profileUserId}")
-    suspend fun getUserProfile(
-        @Path("profileUserId") userId: Int,
-    ): Result<ResponseGetUserProfile>
+    @GET("api/record/user")
+    suspend fun getRecord(
+    ): ResponseGetMyHistory
+
+    @GET("api/public-course/user")
+    suspend fun getUserUploadCourse(
+    ): ResponseGetUserUploadCourse
 
     @PUT("api/public-course")
     suspend fun putDeleteUploadCourse(
         @Body requestDeleteUploadCourse: RequestDeleteUploadCourse
-    ): Result<ResponseDeleteUploadCourse>
+    ): BaseResponse<ResponseDeleteUploadCourse>
 
     @PUT("api/record")
     suspend fun putDeleteHistory(
         @Body requestDeleteHistory: RequestDeleteHistory
-    ): Result<ResponseDeleteHistory>
+    ): BaseResponse<ResponseDeleteHistory>
 
     @PATCH("api/record/{recordId}")
     suspend fun patchHistoryTitle(
         @Path("recordId") historyId: Int,
         @Body requestPatchHistoryTitle: RequestPatchHistoryTitle
-    ): Result<ResponsePatchHistoryTitle>
-
-    @PATCH("api/user")
-    suspend fun updateNickName(
-        @Body requestPatchNickName: RequestPatchNickName,
-    ): Result<ResponsePatchUserNickName>
+    ): BaseResponse<ResponsePatchHistoryTitle>
 
     @DELETE("api/user")
-    suspend fun deleteUser(): Result<ResponseDeleteUser>
+    suspend fun deleteUser(): ResponseDeleteUser
+
+    // 유저 프로필 조회
+    @GET("/api/user/{profileUserId}")
+    suspend fun getUserProfile(
+        @Path("profileUserId") userId: Int,
+    ): BaseResponse<ResponseGetUserProfile>
 }
