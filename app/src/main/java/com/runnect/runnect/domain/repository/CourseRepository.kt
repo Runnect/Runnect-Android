@@ -7,10 +7,6 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
-import com.runnect.runnect.data.dto.response.ResponsePostDiscoverUpload
-import com.runnect.runnect.data.dto.response.ResponsePostMyDrawCourse
-import com.runnect.runnect.data.dto.response.ResponsePostMyHistory
-import com.runnect.runnect.data.dto.response.ResponsePutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
@@ -24,6 +20,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface CourseRepository {
+
     suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>>
 
     suspend fun getRecommendCourse(
@@ -39,25 +36,25 @@ interface CourseRepository {
 
     suspend fun getMyDrawDetail(courseId: Int): Flow<Result<ResponseGetMyDrawDetail>>
 
-    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<ResponsePutMyDrawCourse>>
-
     suspend fun postCourseScrap(requestPostCourseScrap: RequestPostCourseScrap): Flow<Result<PostScrap>>
+
+    suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<Unit>>
+
+    suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<Unit>>
+
+    suspend fun uploadCourse(
+        image: MultipartBody.Part, data: RequestBody
+    ): Flow<Result<Int>>
 
     suspend fun patchMyDrawCourseTitle(
         courseId: Int,
         requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
     ): Result<EditableMyDrawCourseDetail?>
 
-    suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<ResponsePostDiscoverUpload>>
-
     suspend fun patchPublicCourse(
         publicCourseId: Int,
         requestPatchPublicCourse: RequestPatchPublicCourse
     ): Flow<Result<EditableCourseDetail>>
 
-    suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<ResponsePostMyHistory>>
-
-    suspend fun uploadCourse(
-        image: MultipartBody.Part, data: RequestBody
-    ): Flow<Result<ResponsePostMyDrawCourse>>
+    suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>>
 }

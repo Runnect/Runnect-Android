@@ -200,7 +200,6 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
 
     private fun notifyUploadFinish() {
         RunnectToast.createToast(this@EndRunActivity, "저장한 러닝 기록은 마이페이지에서 볼 수 있어요").show()
-        Timber.tag(ContentValues.TAG).d("서버 성공 : ${viewModel.uploadResult.value!!.message}")
     }
 
     private fun showErrorMessage() {

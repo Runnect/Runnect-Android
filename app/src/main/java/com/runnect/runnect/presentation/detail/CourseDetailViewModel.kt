@@ -34,8 +34,8 @@ class CourseDetailViewModel @Inject constructor(
     val coursePatchState: LiveData<UiStateV2<EditableCourseDetail?>>
         get() = _coursePatchState
 
-    private val _courseDeleteState = MutableLiveData<UiStateV2<ResponseDeleteUploadCourse?>>()
-    val courseDeleteState: LiveData<UiStateV2<ResponseDeleteUploadCourse?>>
+    private val _courseDeleteState = MutableLiveData<UiStateV2<Unit>>()
+    val courseDeleteState: LiveData<UiStateV2<Unit>>
         get() = _courseDeleteState
 
     private val _courseScrapState = MutableLiveData<UiStateV2<PostScrap>>()
