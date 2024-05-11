@@ -5,7 +5,7 @@ import com.runnect.runnect.developer.data.dto.ResponseServerStatus
 import com.runnect.runnect.developer.data.service.ServerStatusService
 import javax.inject.Inject
 
-class RemoteServerStatusDataSource @Inject constructor(
+class ServerStatusDataSource @Inject constructor(
     private val serverStatusService: ServerStatusService,
 ) {
 
