@@ -49,7 +49,7 @@ class RunnectDeveloperActivity : AppCompatActivity(R.layout.activity_runnect_dev
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences_developer_menu, rootKey)
             activity?.apply {
-                setStatusBarColor(window = window, true, R.color.white)
+                setStatusBarColor(window = window, isLightColor = true, colorResource = R.color.white)
             }
 
             initUserInfo()
