@@ -28,19 +28,15 @@ class FlowCallAdapter<T>(
 
     private suspend fun flowApiCall(call: Call<T>): Result<T> {
         return suspendCancellableCoroutine { continuation ->
-            runCatching {
-                call.enqueue(object : Callback<T> {
-                    override fun onResponse(call: Call<T>, response: Response<T>) {
-                        continuation.resume(parseResponse(response))
-                    }
+            call.enqueue(object : Callback<T> {
+                override fun onResponse(call: Call<T>, response: Response<T>) {
+                    continuation.resume(parseResponse(response))
+                }
 
-                    override fun onFailure(call: Call<T>, t: Throwable) {
-                        continuation.resumeWithException(t)
-                    }
-                })
-            }.onFailure {
-                continuation.resumeWithException(it)
-            }
+                override fun onFailure(call: Call<T>, t: Throwable) {
+                    continuation.resumeWithException(t)
+                }
+            })
 
             continuation.invokeOnCancellation {
                 call.cancel()
