@@ -2,9 +2,7 @@ package com.runnect.runnect.data.service
 
 import android.content.Context
 import com.runnect.runnect.application.ApplicationClass
-import com.runnect.runnect.data.dto.response.ResponseGetRefreshToken
 import com.runnect.runnect.data.dto.response.Token
-import com.runnect.runnect.data.dto.response.base.BaseResponse
 import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
 import com.runnect.runnect.util.preference.AuthUtil.getNewToken
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
@@ -92,10 +90,10 @@ class AuthInterceptor @Inject constructor(
         chain: Interceptor.Chain
     ): Response {
         refreshTokenResponse.use { response ->
-            val responseToken = json.decodeFromString<BaseResponse<ResponseGetRefreshToken>>(
+            val responseToken = json.decodeFromString<Token>(
                 response.body?.string().orEmpty()
             )
-            responseToken.data?.data?.let {
+            responseToken.let {
                 Timber.e("New Refresh Token Success: ${it.refreshToken}")
                 context.saveToken(it.accessToken, it.refreshToken)
             }
