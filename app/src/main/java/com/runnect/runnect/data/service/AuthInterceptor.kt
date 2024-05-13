@@ -3,6 +3,7 @@ package com.runnect.runnect.data.service
 import android.content.Context
 import com.runnect.runnect.application.ApplicationClass
 import com.runnect.runnect.data.dto.response.ResponseGetRefreshToken
+import com.runnect.runnect.data.dto.response.Token
 import com.runnect.runnect.data.dto.response.base.BaseResponse
 import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
 import com.runnect.runnect.util.preference.AuthUtil.getNewToken
@@ -13,7 +14,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import timber.log.Timber
 import javax.inject.Inject
@@ -76,12 +76,13 @@ class AuthInterceptor @Inject constructor(
 
     private fun getNewToken(originalRequest: Request, chain: Interceptor.Chain): Response {
         val baseUrl = ApplicationClass.getBaseUrl()
+        val accessToken = context.getAccessToken()
         val refreshToken = context.getNewToken()
-        val refreshTokenRequest = originalRequest.newBuilder().post("".toRequestBody())
+        val refreshTokenRequest = originalRequest.newBuilder().get()
             .url("$baseUrl/api/auth/getNewToken")
+            .addHeader(ACCESS_TOKEN, accessToken)
             .addHeader(REFRESH_TOKEN, refreshToken)
             .build()
-
         return chain.proceed(refreshTokenRequest)
     }
 
