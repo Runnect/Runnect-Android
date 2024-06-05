@@ -3,6 +3,8 @@ package com.runnect.runnect.di
 import com.runnect.runnect.data.repository.*
 import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.source.remote.*
+import com.runnect.runnect.developer.data.repository.ServerStatusRepositoryImpl
+import com.runnect.runnect.developer.domain.ServerStatusRepository
 import com.runnect.runnect.domain.*
 import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
@@ -48,4 +50,7 @@ interface RepositoryModule {
     @Binds
     fun bindBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository
 
+    @Singleton
+    @Binds
+    fun bindServerStatusRepository(serverStatusRepositoryImpl: ServerStatusRepositoryImpl): ServerStatusRepository
 }

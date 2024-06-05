@@ -21,10 +21,10 @@
         tools:targetApi="tiramisu">
 
         <activity
-            android:name=".developer.RunnectDeveloperActivity"
+            android:name=".developer.presentation.RunnectDeveloperActivity"
             android:exported="true"
-            android:label="개발자 모드"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            android:label="Runnect Developer Mode"
+            android:theme="@style/Theme.Material3.Light.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

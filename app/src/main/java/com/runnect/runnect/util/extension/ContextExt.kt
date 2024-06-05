@@ -7,9 +7,12 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.view.WindowInsetsController
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorRes
@@ -33,6 +36,9 @@ import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
 import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
+import timber.log.Timber
+import java.lang.IllegalArgumentException
+import java.lang.NullPointerException
 
 fun Context.setActivityDialog(
     layoutInflater: LayoutInflater,
@@ -189,3 +195,34 @@ fun Context.drawableOf(@DrawableRes resId: Int) = ContextCompat.getDrawable(this
 
 fun Context.fontOf(@FontRes resId: Int, @StyleRes style: Int): Typeface =
     Typeface.create(ResourcesCompat.getFont(this, resId), style)
+
+/**
+ * Status Bar 색상을 변경
+ * isLightColor : 변경할 status bar 색상이 밝은 색인지 (시계, 노티 아이콘 등 색상을 어둡게 변경하기 위해서)
+ * colorResource : 변경할 색상 리소스
+ */
+fun Context.setStatusBarColor(window: Window?, isLightColor: Boolean, colorResource: Int) {
+    runCatching {
+        window?.apply {
+            // 조건에 따른 시스템 UI 가시성 설정
+            if (isLightColor) {
+                val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                } else {
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insetsController?.setSystemBarsAppearance(flag, flag)
+                } else {
+                    decorView.systemUiVisibility = flag
+                }
+            }
+
+            // Status bar 색상 설정
+            statusBarColor = ContextCompat.getColor(context, colorResource)
+        }
+    }.onFailure { e ->
+        Timber.e("Failed to set status bar color: ${e.message}")
+    }
+}

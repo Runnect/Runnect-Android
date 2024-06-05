@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".developer.RunnectDeveloperActivity">
+    tools:context=".developer.presentation.RunnectDeveloperActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_dev"
-        android:name="com.runnect.runnect.developer.RunnectDeveloperActivity$RunnectDeveloperFragment"
+        android:name="com.runnect.runnect.developer.presentation.RunnectDeveloperActivity$RunnectDeveloperFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white" />

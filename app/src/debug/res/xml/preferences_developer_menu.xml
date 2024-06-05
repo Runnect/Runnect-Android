@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        android:title="Runnect Developer Mode"
+        app:icon="@mipmap/ic_runnect_launcher_foreground"
+        app:iconSpaceReserved="false" />
+
+    <PreferenceCategory
         android:title="사용자 정보"
         app:iconSpaceReserved="false">
 
@@ -14,6 +19,11 @@
         <Preference
             android:key="dev_pref_key_refresh_token"
             android:title="리프레시 토큰"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_key_share_tokens"
+            android:title="토큰 공유하기"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
@@ -29,6 +39,23 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="서버 상태"
+        app:iconSpaceReserved="false">
+
+        <com.runnect.runnect.developer.presentation.custom.ServerStatusPreference
+            android:key="dev_pref_prod_server_status"
+            android:title="Prod 서버 상태"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/pref_server_status_layout" />
+
+        <com.runnect.runnect.developer.presentation.custom.ServerStatusPreference
+            android:key="dev_pref_test_server_status"
+            android:title="Test 서버 상태"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/pref_server_status_layout" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="디바이스 정보"
         app:iconSpaceReserved="false">
 
@@ -39,7 +66,7 @@
         <Preference
             android:key="dev_pref_sdk_version"
             android:title="SDK 버전"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="dev_pref_model_name"
             android:title="모델 명"
