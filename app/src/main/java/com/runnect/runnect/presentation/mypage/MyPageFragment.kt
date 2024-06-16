@@ -34,7 +34,6 @@ import com.runnect.runnect.util.extension.getStampResId
 import com.runnect.runnect.util.extension.repeatOnStarted
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
@@ -154,7 +153,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
                 viewModel.userState.collect {
                     when (it) {
                         is MyPageViewModel.UserState.Loading -> handleLoading(true)
-                        is MyPageViewModel.UserState.Success -> handleSuccess()
+                        is MyPageViewModel.UserState.UserUpdated -> handleSuccess()
                         is MyPageViewModel.UserState.Failure -> handleFailure()
                     }
                 }
@@ -188,7 +187,7 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         viewModel.updateUser(
             userData.copy(profileImgResId = stampResId)
         )
-        binding. tvMyPageUserName.text = userData.nickName
+        binding.tvMyPageUserName.text = userData.nickName
     }
 
     private fun handleFailure() {
