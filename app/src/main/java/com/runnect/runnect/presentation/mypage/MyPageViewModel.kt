@@ -21,7 +21,7 @@ class MyPageViewModel @Inject constructor(
 
     sealed interface UserState {
         object Loading : UserState
-        data class Success(val user: UserDto) : UserState
+        object Success : UserState
         data class Failure(val message: String) : UserState
     }
 
@@ -33,7 +33,7 @@ class MyPageViewModel @Inject constructor(
 
 
     fun updateUser(user: UserDto) {
-        _userState.value = UserState.Success(user).also {
+        _userState.value = UserState.Success.also {
             _userData.value = user
         }
     }

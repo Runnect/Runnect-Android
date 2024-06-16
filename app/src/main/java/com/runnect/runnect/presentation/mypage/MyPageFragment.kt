@@ -152,17 +152,15 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         repeatOnStarted(
             {
                 viewModel.userState.collect {
-                    Timber.tag("스테이트").d(it.javaClass.simpleName)
                     when (it) {
                         is MyPageViewModel.UserState.Loading -> handleLoading(true)
-                        is MyPageViewModel.UserState.Success -> handleSuccess(it.user)
+                        is MyPageViewModel.UserState.Success -> handleSuccess()
                         is MyPageViewModel.UserState.Failure -> handleFailure()
                     }
                 }
             },
             {
                 viewModel.eventState.collect {
-                    Timber.tag("스테이트(이벤트)").d(it.javaClass.simpleName)
                     when (it) {
                         is BaseViewModel.EventState.ShowSnackBar -> {
                             context?.showSnackbar(binding.root, it.message)
@@ -185,12 +183,12 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         }
     }
 
-    private fun handleSuccess(user: UserDto) {
+    private fun handleSuccess() {
         handleLoading(false)
         viewModel.updateUser(
             userData.copy(profileImgResId = stampResId)
         )
-        binding. tvMyPageUserName.text = user.nickName
+        binding. tvMyPageUserName.text = userData.nickName
     }
 
     private fun handleFailure() {
