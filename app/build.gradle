@@ -44,6 +44,22 @@ android {
         buildConfigField "String", "KAKAO_CHANNEL_ID", properties["KAKAO_CHANNEL_ID"]
     }
 
+    signingConfigs {
+        release {
+            // local.properties에서 키 정보 불러오기
+            def localProperties = new Properties()
+            def localPropertiesFile = rootProject.file('local.properties')
+            if (localPropertiesFile.exists()) {
+                localProperties.load(new FileInputStream(localPropertiesFile))
+            }
+
+            keyAlias localProperties['KEY_ALIAS']
+            keyPassword localProperties['KEY_PASSWORD']
+            storeFile file('app/RunnectKeystore.jks')
+            storePassword localProperties['KEYSTORE_PASSWORD']
+        }
+    }
+
     buildFeatures {
         buildConfig = true
     }
@@ -52,6 +68,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 

@@ -6,6 +6,9 @@ build/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# Release Keystore
+RunnectKeystore.jks
+
 # google client id
 credentials.json
 
