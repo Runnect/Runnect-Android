@@ -117,5 +117,5 @@ jobs:
           packageName: com.runnect.runnect
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: production
-          status: inProgress
+          status: completed
           whatsNewDirectory: 'distribution/whatsnew'
