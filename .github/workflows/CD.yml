@@ -84,6 +84,21 @@ jobs:
           KAKAO_CHANNEL_ID: ${{ secrets.KAKAO_CHANNEL_ID }}
         run: echo "KAKAO_CHANNEL_ID=\"$KAKAO_CHANNEL_ID\"" >> local.properties
 
+      - name: Access KEY_ALIAS
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: echo "KEY_ALIAS=\"$KEY_ALIAS\"" >> local.properties
+
+      - name: Access KEY_PASSWORD
+        env:
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: echo "KEY_PASSWORD=\"$KEY_PASSWORD\"" >> local.properties
+
+      - name: Access STORE_PASSWORD
+        env:
+          STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: echo "STORE_PASSWORD=\"$KEYSTORE_PASSWORD\"" >> local.properties
+
       - name: Add kakao_strings.xml
         env:
           KAKAO_NATIVE_APP_KEY: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
@@ -97,7 +112,7 @@ jobs:
 
       - name: Decode And Save Keystore Base64
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/RunnectKeystore.jks
 
       - name: Change gradlew permissions
         run: chmod +x ./gradlew

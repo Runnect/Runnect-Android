@@ -55,7 +55,7 @@ android {
 
             keyAlias localProperties['KEY_ALIAS']
             keyPassword localProperties['KEY_PASSWORD']
-            storeFile file('app/RunnectKeystore.jks')
+            storeFile file('RunnectKeystore.jks') //app/ 경로 생략
             storePassword localProperties['KEYSTORE_PASSWORD']
         }
     }
