@@ -33,6 +33,7 @@ import timber.log.Timber
 class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.activity_my_history),
     OnMyHistoryItemClick {
     private val viewModel: MyHistoryViewModel by viewModels()
+    private lateinit var deleteDialogDeleteBinding: CustomDialogDeleteBinding
     private lateinit var adapter: MyHistoryAdapter
     private lateinit var dialog: AlertDialog
 
@@ -66,18 +67,18 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initDialog() {
-        val binding = CustomDialogDeleteBinding.inflate(layoutInflater)
+        deleteDialogDeleteBinding = CustomDialogDeleteBinding.inflate(layoutInflater)
         dialog = setCustomDialog(
-            binding = binding,
+            binding = deleteDialogDeleteBinding,
             description = DIALOG_DESC,
             yesBtnText = DELETE_BTN
         )
     }
 
-    private fun setDialogClickEvent(binding: CustomDialogDeleteBinding) {
-        dialog.setDialogButtonClickListener(binding) { which ->
+    private fun setDialogClickEvent() {
+        dialog.setDialogButtonClickListener(deleteDialogDeleteBinding) { which ->
             when (which) {
-                binding.btnDeleteYes -> viewModel.deleteHistory()
+                deleteDialogDeleteBinding.btnDeleteYes -> viewModel.deleteHistory()
             }
         }
     }
@@ -112,8 +113,7 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun handleDeleteButtonClicked(it: View) {
         if (it.isEnabled) {
-            val binding = CustomDialogDeleteBinding.inflate(LayoutInflater.from(it.context))
-            setDialogClickEvent(binding)
+            setDialogClickEvent()
             dialog.show()
         }
     }
