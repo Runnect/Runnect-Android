@@ -3,7 +3,7 @@ package com.runnect.runnect.data.dto
 
 import android.os.Parcelable
 import com.naver.maps.geometry.LatLng
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CourseData(
