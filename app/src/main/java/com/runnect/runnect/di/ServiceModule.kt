@@ -41,8 +41,4 @@ object ServiceModule {
     @Provides
     fun provideReverseGeocodingService(@RetrofitModule.Tmap tmapRetrofit: Retrofit) =
         tmapRetrofit.create(ReverseGeocodingService::class.java)
-
-    @Singleton
-    @Provides
-    fun provideBannerService() = Firebase.firestore
 }
