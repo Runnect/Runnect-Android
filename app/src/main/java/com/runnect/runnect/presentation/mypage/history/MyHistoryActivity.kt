@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -13,6 +14,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryBinding
+import com.runnect.runnect.databinding.CustomDialogDeleteBinding
 import com.runnect.runnect.presentation.mypage.history.adapter.MyHistoryAdapter
 import com.runnect.runnect.presentation.mypage.history.detail.MyHistoryDetailActivity
 import com.runnect.runnect.presentation.search.SearchActivity
@@ -25,7 +27,6 @@ import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
 import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -65,18 +66,18 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
     }
 
     private fun initDialog() {
+        val binding = CustomDialogDeleteBinding.inflate(layoutInflater)
         dialog = setCustomDialog(
-            layoutInflater = layoutInflater,
-            view = binding.root,
+            binding = binding,
             description = DIALOG_DESC,
             yesBtnText = DELETE_BTN
         )
     }
 
-    private fun setDialogClickEvent() {
-        dialog.setDialogButtonClickListener { which ->
+    private fun setDialogClickEvent(binding: CustomDialogDeleteBinding) {
+        dialog.setDialogButtonClickListener(binding) { which ->
             when (which) {
-                dialog.btn_delete_yes -> viewModel.deleteHistory()
+                binding.btnDeleteYes -> viewModel.deleteHistory()
             }
         }
     }
@@ -111,7 +112,8 @@ class MyHistoryActivity : BindingActivity<ActivityMyHistoryBinding>(R.layout.act
 
     private fun handleDeleteButtonClicked(it: View) {
         if (it.isEnabled) {
-            setDialogClickEvent()
+            val binding = CustomDialogDeleteBinding.inflate(LayoutInflater.from(it.context))
+            setDialogClickEvent(binding)
             dialog.show()
         }
     }

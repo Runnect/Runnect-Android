@@ -41,6 +41,7 @@ import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
+import com.runnect.runnect.databinding.CustomDialogMakeCourseBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.state.UiState
@@ -54,8 +55,6 @@ import com.runnect.runnect.util.extension.setActivityDialog
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_run
-import kotlinx.android.synthetic.main.custom_dialog_make_course.view.btn_storage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -502,15 +501,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
      * 코스 완성 시 뜨는 팝업 (보관함 가기 / 바로 달리기)
      */
     private fun notifyCreateFinish() { //todo dialogFragment로 리팩토링
+        val binding = CustomDialogMakeCourseBinding.inflate(layoutInflater)
         val (dialog, dialogLayout) = setActivityDialog(
             layoutInflater = layoutInflater,
-            view = binding.root,
-            resId = R.layout.custom_dialog_make_course,
+            binding = binding,
             cancel = false
         )
-
-        with(dialogLayout) {
-            this.btn_run.setOnClickListener {
+        with(binding) {
+            btnRun.setOnClickListener {
                 Analytics.logClickedItemEvent(EventName.EVENT_CLICK_RUN_AFTER_COURSE_COMPLETE)
                 if (isCustomLocationMode) departureLatLng = customDepartureLatLng
 
@@ -539,7 +537,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 dialog.dismiss()
             }
 
-            this.btn_storage.setOnClickListener {
+            btnStorage.setOnClickListener {
                 Analytics.logClickedItemEvent(EventName.EVENT_CLICK_STORED_AFTER_COURSE_COMPLETE)
                 val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
                     putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDrawCourse")

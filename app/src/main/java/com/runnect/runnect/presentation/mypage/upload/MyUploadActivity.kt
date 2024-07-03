@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyUploadBinding
+import com.runnect.runnect.databinding.CustomDialogDeleteBinding
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.DiscoverFragment
@@ -31,8 +32,6 @@ import com.runnect.runnect.util.extension.setCustomDialog
 import com.runnect.runnect.util.extension.setDialogButtonClickListener
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
-import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -41,6 +40,7 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
     private val viewModel: MyUploadViewModel by viewModels()
     private lateinit var uploadAdapter: MyUploadAdapter
     private lateinit var dialog: AlertDialog
+    private lateinit var dialogBinding: CustomDialogDeleteBinding
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -135,23 +135,25 @@ class MyUploadActivity : BindingActivity<ActivityMyUploadBinding>(R.layout.activ
         }
     }
 
+
     private fun initDialog() {
+        dialogBinding = CustomDialogDeleteBinding.inflate(layoutInflater)
         dialog = setCustomDialog(
-            layoutInflater, binding.root,
-            DESCRIPTION_DIALOG,
-            DELETE_BTN
+            binding = dialogBinding,
+            description = DESCRIPTION_DIALOG,
+            yesBtnText = DELETE_BTN
         )
     }
 
     private fun setDialogClickEvent() {
-        dialog.setDialogButtonClickListener { which ->
+        dialog.setDialogButtonClickListener(dialogBinding) { which ->
             when (which) {
-                dialog.btn_delete_yes -> {
+                dialogBinding.btnDeleteYes -> {
                     viewModel.deleteUploadCourse()
                     dialog.dismiss()
                 }
 
-                dialog.btn_delete_no -> {
+                dialogBinding.btnDeleteNo -> {
                     dialog.dismiss()
                 }
             }
