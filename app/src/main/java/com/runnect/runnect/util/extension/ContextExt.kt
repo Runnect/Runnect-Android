@@ -25,41 +25,32 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.SlideDistanceProvider.GravityFlag
 import com.runnect.runnect.R
-import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_no
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_no
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.btn_delete_yes
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.tv_dialog
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_delete_frame
-import kotlinx.android.synthetic.main.custom_dialog_edit_mode.layout_edit_frame
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.btn_delete_yes
+import com.runnect.runnect.databinding.CustomDialogDeleteBinding
+import com.runnect.runnect.databinding.CustomDialogEditModeBinding
 import timber.log.Timber
-import java.lang.IllegalArgumentException
-import java.lang.NullPointerException
 
 fun Context.setActivityDialog(
     layoutInflater: LayoutInflater,
-    view: View,
-    resId: Int,
+    binding: ViewBinding,
     cancel: Boolean
 ): Pair<AlertDialog, View> {
-    val dialogLayout = layoutInflater.inflate(resId, null)
-    val build = AlertDialog.Builder(view.context).apply {
-        setView(dialogLayout)
+    val build = AlertDialog.Builder(this).apply {
+        setView(binding.root)
     }
     val dialog = build.create()
     dialog.setCancelable(cancel) // 외부 영역 터치 금지
     dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    return Pair(dialog, dialogLayout)
+    return Pair(dialog, binding.root)
 }
 
 fun Fragment.setFragmentDialog(
-    layoutInflater: LayoutInflater,
     resId: Int,
-    cancel: Boolean,
+    cancel: Boolean
 ): Pair<AlertDialog, View> {
     val dialogLayout = layoutInflater.inflate(resId, null)
     val build = AlertDialog.Builder(requireContext()).apply {
@@ -71,21 +62,19 @@ fun Fragment.setFragmentDialog(
     return Pair(dialog, dialogLayout)
 }
 
+
 fun Context.setCustomDialog(
-    layoutInflater: LayoutInflater,
-    view: View,
+    binding: CustomDialogDeleteBinding,
     description: String,
     yesBtnText: String,
     noBtnText: String = "취소"
 ): AlertDialog {
-    val dialogLayout = layoutInflater.inflate(R.layout.custom_dialog_delete, null)
-    with(dialogLayout) {
-        tv_dialog.text = description
-        btn_delete_no.text = noBtnText
-        btn_delete_yes.text = yesBtnText
-    }
-    val build = AlertDialog.Builder(view.context).apply {
-        setView(dialogLayout)
+    binding.tvDialog.text = description
+    binding.btnDeleteNo.text = noBtnText
+    binding.btnDeleteYes.text = yesBtnText
+
+    val build = AlertDialog.Builder(this).apply {
+        setView(binding.root)
     }
     val dialog = build.create()
     dialog.setCancelable(false) //외부 영역 터치 금지
@@ -93,52 +82,53 @@ fun Context.setCustomDialog(
     return dialog
 }
 
-fun AlertDialog.setDialogButtonClickListener(listener: (which: AppCompatButton) -> Unit) {
+fun AlertDialog.setDialogButtonClickListener(
+    binding: CustomDialogDeleteBinding,
+    listener: (which: AppCompatButton) -> Unit
+) {
     this.setOnShowListener {
-        val yesButton = this.btn_delete_yes
-        val noButton = this.btn_delete_no
-        yesButton.setOnClickListener {
-            listener(yesButton)
+        binding.btnDeleteYes.setOnClickListener {
+            listener(binding.btnDeleteYes)
             this.dismiss()
         }
-        noButton.setOnClickListener {
-            listener(noButton)
+        binding.btnDeleteNo.setOnClickListener {
+            listener(binding.btnDeleteNo)
             this.dismiss()
         }
     }
 }
 
-fun Context.setEditBottomSheet(): BottomSheetDialog {
-    val bottomSheetDialog = BottomSheetDialog(
-        this, R.style.BottomSheetDialogTheme
-    )
-    val bottomSheetView = LayoutInflater.from(this).inflate(
-        R.layout.custom_dialog_edit_mode, null
-    )
-    bottomSheetDialog.setContentView(bottomSheetView)
+fun Context.setEditBottomSheet(binding: CustomDialogEditModeBinding): BottomSheetDialog {
+    val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
+    bottomSheetDialog.setContentView(binding.root)
     return bottomSheetDialog
 }
 
-fun BottomSheetDialog.setEditBottomSheetClickListener(listener: (which: LinearLayoutCompat) -> Unit) {
+
+fun BottomSheetDialog.setEditBottomSheetClickListener(
+    binding: CustomDialogEditModeBinding,
+    listener: (which: LinearLayoutCompat) -> Unit
+) {
     this.setOnShowListener {
-        val editButton = this.layout_edit_frame
-        val deleteButton = this.layout_delete_frame
-        editButton.setOnClickListener {
-            listener(editButton)
+        binding.layoutEditFrame.setOnClickListener {
+            listener(binding.layoutEditFrame)
             dismiss()
         }
-        deleteButton.setOnClickListener {
-            listener(deleteButton)
+        binding.layoutDeleteFrame.setOnClickListener {
+            listener(binding.layoutDeleteFrame)
             dismiss()
         }
     }
 }
 
-fun BottomSheetDialog.handleEditTextValue(){
+
+fun BottomSheetDialog.handleEditTextValue(binding: CustomDialogEditModeBinding) {
     this.setOnShowListener {
-        val editText = this.layout_edit_frame
+        val editText = binding.layoutEditFrame
+        // Handle the editText as needed
     }
 }
+
 
 fun Context.getStampResId(
     stampId: String?,
@@ -148,7 +138,7 @@ fun Context.getStampResId(
 ): Int {
     with(this) {
         var resName = ""
-        if(stampId == "CSPR0"){
+        if (stampId == "CSPR0") {
             resName = "${resNameParam}basic"
             return resources.getIdentifier(
                 resName,
@@ -179,7 +169,11 @@ fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showSnackbar(anchorView: View, message: String, @GravityFlag gravity: Int = Gravity.BOTTOM) {
+fun Context.showSnackbar(
+    anchorView: View,
+    message: String,
+    @GravityFlag gravity: Int = Gravity.BOTTOM
+) {
     val snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT)
     val layoutParams = snackbar.view.layoutParams as? CoordinatorLayout.LayoutParams
     layoutParams?.apply {
