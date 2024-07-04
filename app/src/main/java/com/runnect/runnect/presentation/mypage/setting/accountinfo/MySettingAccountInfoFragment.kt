@@ -13,6 +13,7 @@ import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
+import com.runnect.runnect.databinding.CustomDialogDeleteBinding
 import com.runnect.runnect.databinding.FragmentMySettingAccountInfoBinding
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
@@ -28,7 +29,6 @@ import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
 import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.btn_delete_yes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -49,9 +49,7 @@ class MySettingAccountInfoFragment :
         addListener()
         addObserver()
         initLogoutDialog()
-        setLogoutDialogClickEvent()
         initWithdrawalDialog()
-        setWithdrawalDialogClickEvent()
     }
 
     private fun initLayout() {
@@ -105,10 +103,14 @@ class MySettingAccountInfoFragment :
     }
 
     private fun initLogoutDialog() {
+        val binding = CustomDialogDeleteBinding.inflate(layoutInflater)
         logoutDialog = requireActivity().setCustomDialog(
-            layoutInflater, binding.root, DESCRIPTION_LOGOUT,
-            DESCRIPTION_LOGOUT_YES, DESCRIPTION_LOGOUT_NO
+            binding = binding,
+            description = DESCRIPTION_LOGOUT,
+            yesBtnText = DESCRIPTION_LOGOUT_YES,
+            noBtnText = DESCRIPTION_LOGOUT_NO
         )
+        setLogoutDialogClickEvent(binding)
     }
 
     private fun moveToLogin() {
@@ -123,10 +125,10 @@ class MySettingAccountInfoFragment :
         requireActivity().finish()
     }
 
-    private fun setLogoutDialogClickEvent() {
-        logoutDialog.setDialogButtonClickListener { which ->
+    private fun setLogoutDialogClickEvent(binding: CustomDialogDeleteBinding) {
+        logoutDialog.setDialogButtonClickListener(binding) { which ->
             when (which) {
-                logoutDialog.btn_delete_yes -> {
+                binding.btnDeleteYes -> {
                     Analytics.logClickedItemEvent(EVENT_VIEW_SUCCESS_LOGOUT)
                     moveToLogin()
                 }
@@ -135,16 +137,20 @@ class MySettingAccountInfoFragment :
     }
 
     private fun initWithdrawalDialog() {
+        val binding = CustomDialogDeleteBinding.inflate(layoutInflater)
         withdrawalDialog = requireActivity().setCustomDialog(
-            layoutInflater, binding.root, DESCRIPTION_WITHDRAWAL,
-            DESCRIPTION_WITHDRAWAL_YES, DESCRIPTION_WITHDRAWAL_NO
+            binding = binding,
+            description = DESCRIPTION_WITHDRAWAL,
+            yesBtnText = DESCRIPTION_WITHDRAWAL_YES,
+            noBtnText = DESCRIPTION_WITHDRAWAL_NO
         )
+        setWithdrawalDialogClickEvent(binding)
     }
 
-    private fun setWithdrawalDialogClickEvent() {
-        withdrawalDialog.setDialogButtonClickListener { which ->
+    private fun setWithdrawalDialogClickEvent(binding: CustomDialogDeleteBinding) {
+        withdrawalDialog.setDialogButtonClickListener(binding) { which ->
             when (which) {
-                withdrawalDialog.btn_delete_yes -> {
+                binding.btnDeleteYes -> {
                     viewModel.deleteUser()
                 }
             }

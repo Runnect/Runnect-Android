@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -31,8 +32,6 @@ import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.setFragmentDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.custom_dialog_delete.view.*
-import kotlinx.android.synthetic.main.fragment_storage_my_draw.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -199,25 +198,26 @@ class StorageMyDrawFragment :
 
     private fun showCourseDeleteConfirmDialog() {
         val (dialog, dialogLayout) = setFragmentDialog(
-            layoutInflater = layoutInflater,
             resId = R.layout.custom_dialog_delete,
             cancel = true
         )
-        with(dialogLayout) {
-            this.btn_delete_yes.setOnClickListener {
-                deleteCourse()
-                dialog.dismiss()
-                availableEdit = false
-                isSelectAvailable = false
-                hideDeleteCourseBtn()
-                showBottomNav()
-            }
-            this.btn_delete_no.setOnClickListener {
-                dialog.dismiss()
-            }
+
+        dialogLayout.findViewById<Button>(R.id.btn_delete_yes)?.setOnClickListener {
+            deleteCourse()
+            dialog.dismiss()
+            availableEdit = false
+            isSelectAvailable = false
+            hideDeleteCourseBtn()
+            showBottomNav()
         }
+
+        dialogLayout.findViewById<Button>(R.id.btn_delete_no)?.setOnClickListener {
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
+
 
     private fun deleteCourse() {
         viewModel.deleteMyDrawCourse()

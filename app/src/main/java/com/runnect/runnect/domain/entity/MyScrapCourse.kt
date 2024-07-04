@@ -2,7 +2,7 @@ package com.runnect.runnect.domain.entity
 
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MyScrapCourse(
