@@ -87,7 +87,7 @@ class CourseDetailActivity :
         registerBackPressedCallback()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent?.let { newIntent ->
             newIntent.getCompatibleSerializableExtra<CourseDetailRootScreen>(EXTRA_ROOT_SCREEN)
