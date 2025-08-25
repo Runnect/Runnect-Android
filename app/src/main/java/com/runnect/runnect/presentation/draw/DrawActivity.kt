@@ -704,13 +704,13 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     }
 
     private fun updateRouteMarkerData() {
-        touchList.removeLast()
+        touchList.removeAt(touchList.lastIndex)
         markerList.last().map = null
-        markerList.removeLast()
+        markerList.removeAt(markerList.lastIndex)
     }
 
     private fun updateRouteLineData() {
-        coords.removeLast()
+        coords.removeAt(coords.lastIndex)
         if (coords.size >= LEAST_CONDITION_CREATE_PATH) {
             path.coords = coords
             path.map = naverMap
@@ -721,8 +721,8 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
     private fun reCalculateDistance() {
         if (calcDistanceList.isNotEmpty() && sumList.isNotEmpty()) {
-            calcDistanceList.removeLast()
-            sumList.removeLast()
+            calcDistanceList.removeAt(calcDistanceList.lastIndex)
+            sumList.removeAt(sumList.lastIndex)
         }
     }
 
