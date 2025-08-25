@@ -22,12 +22,12 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 android {
     namespace 'com.runnect.runnect'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.runnect.runnect"
         minSdk 28
-        targetSdk 34
+        targetSdk 35
         versionCode 22
         versionName "2.0.1"
 

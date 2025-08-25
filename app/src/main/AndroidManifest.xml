@@ -2,13 +2,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    
+    <!-- 미디어 접근 권한 (API 레벨별 조건부) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    
+    <!-- Foreground Service 관련 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    
+    <!-- 알림 권한 (API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- 정확한 알람 권한 (API 31+에서만 필요) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    
+    <!-- 광고 ID 권한 (필요한 경우만) -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <!--queries에 카카오톡 패키지 추가-->
     <queries>
@@ -32,7 +46,8 @@
         <service
             android:name=".presentation.run.TimerService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
         <activity
             android:name=".presentation.login.GiveNicknameActivity"

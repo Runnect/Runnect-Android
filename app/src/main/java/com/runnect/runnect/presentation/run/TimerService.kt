@@ -14,6 +14,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.TimerData
+import com.runnect.runnect.util.ForegroundServiceUtil
+import com.runnect.runnect.util.IntentUtil
 import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
@@ -102,11 +104,12 @@ class TimerService : Service() {
         val notificationIntent = Intent(this@TimerService, RunActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-        val pendingIntent = PendingIntent.getActivity(
+        val pendingIntent = IntentUtil.createSafePendingIntent(
             this@TimerService,
             0,
             notificationIntent,
-            FLAG_IMMUTABLE
+            FLAG_IMMUTABLE,
+            false
         )
         notificationBuilder.setContentIntent(pendingIntent) // 알림 클릭 시 이동
 
@@ -127,7 +130,12 @@ class TimerService : Service() {
             notificationBuilder.build()
         ) // id : 정의해야하는 각 알림의 고유한 int값
         val notification = notificationBuilder.build()
-        startForeground(NOTI_ID, notification)
+        ForegroundServiceUtil.startForegroundSafely(
+            this,
+            NOTI_ID,
+            notification,
+            android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+        )
     }
 
     companion object {
