@@ -54,7 +54,7 @@ android {
 
             keyAlias localProperties['KEY_ALIAS']
             keyPassword localProperties['KEY_PASSWORD']
-            storeFile file('app/RunnectKeystore.jks') //app/ 경로 생략
+            storeFile file('RunnectKeystore.jks')
             storePassword localProperties['KEYSTORE_PASSWORD']
         }
     }
@@ -76,12 +76,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     buildFeatures {
@@ -135,7 +135,7 @@ dependencies {
     implementation("io.coil-kt:coil:2.2.2")
 
     //naver map
-    implementation 'com.naver.maps:map-sdk:3.16.1'
+    implementation 'com.naver.maps:map-sdk:3.22.1'
 //    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // Ted Permission - RxJava3

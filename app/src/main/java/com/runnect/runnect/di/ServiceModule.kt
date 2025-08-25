@@ -1,11 +1,13 @@
 package com.runnect.runnect.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.runnect.runnect.data.repository.*
-import com.runnect.runnect.data.service.*
-import com.runnect.runnect.data.source.remote.*
-import com.runnect.runnect.domain.*
+import com.runnect.runnect.data.service.CourseService
+import com.runnect.runnect.data.service.LoginService
+import com.runnect.runnect.data.service.ReverseGeocodingService
+import com.runnect.runnect.data.service.SearchService
+import com.runnect.runnect.data.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,4 +43,8 @@ object ServiceModule {
     @Provides
     fun provideReverseGeocodingService(@RetrofitModule.Tmap tmapRetrofit: Retrofit) =
         tmapRetrofit.create(ReverseGeocodingService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideFirebaseFirestore(): FirebaseFirestore = Firebase.firestore
 }
