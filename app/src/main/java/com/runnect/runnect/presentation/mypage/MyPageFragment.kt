@@ -1,7 +1,6 @@
 package com.runnect.runnect.presentation.mypage
 
 import android.app.Activity.RESULT_OK
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,64 +17,78 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
 import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.base.BaseViewModel
 import com.runnect.runnect.presentation.login.LoginActivity
+import com.runnect.runnect.presentation.mypage.dto.UserDto
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOAL_REWARD
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_RUNNING_RECORD
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOADED_COURSE
+import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.getStampResId
+import com.runnect.runnect.util.extension.repeatOnStarted
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
+
     private val viewModel: MyPageViewModel by activityViewModels()
+
+    private val userData: UserDto
+        get() = viewModel.userData.value
+
+    private val stampResId: Int
+        get() = activity?.run {
+            getStampResId(
+                stampId = userData.stampId,
+                resNameParam = RES_NAME,
+                resType = RES_STAMP_TYPE,
+                packageName = packageName
+            )
+        } ?: 0
+
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private var isVisitorMode: Boolean = MainActivity.isVisitorMode
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (isVisitorMode) {
             activateVisitorMode()
         } else {
             deactivateVisitorMode()
         }
-
     }
 
     private fun activateVisitorMode() {
         with(binding) {
-            ivVisitorMode.isVisible = true
-            tvVisitorMode.isVisible = true
-            btnVisitorMode.isVisible = true
-            constraintInside.isVisible = false
+            setVisitorMode(true)
 
             btnVisitorMode.setOnClickListener {
-                val intent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(intent)
-                requireActivity().finish()
+                activity?.let {
+                    Intent(it, LoginActivity::class.java).let(::startActivity)
+                    it.finish()
+                }
             }
         }
     }
 
     private fun deactivateVisitorMode() {
-        with(binding) {
-            ivVisitorMode.isVisible = false
-            tvVisitorMode.isVisible = false
-            btnVisitorMode.isVisible = false
-            constraintInside.isVisible = true
+        setVisitorMode(false)
+        addListener()
+        addObserver()
+        setResultEditNameLauncher()
 
-            binding.vm = viewModel
-            binding.lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
-            viewModel.getUserInfo()
-            addListener()
-            addObserver()
-            setResultEditNameLauncher()
+        viewModel.getUserInfo()
+        with(binding) {
+            vm = viewModel
+            lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
         }
     }
 
@@ -83,59 +96,51 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
         resultEditNameLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    val name =
-                        result.data?.getStringExtra(EXTRA_NICK_NAME) ?: viewModel.nickName.value
-                    viewModel.setNickName(name!!)
+                    val name = result.data?.getStringExtra(EXTRA_NICK_NAME) ?: ""
+                    viewModel.updateUser(
+                        userData.copy(nickName = name)
+                    )
                 }
             }
     }
 
     private fun addListener() {
         binding.ivMyPageEditFrame.setOnClickListener {
-            val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
-            intent.putExtra(EXTRA_NICK_NAME, "${viewModel.nickName.value}")
-            val stampResId = requireContext().getStampResId(
-                stampId = viewModel.stampId.value,
-                resNameParam = RES_NAME,
-                resType = RES_STAMP_TYPE,
-                packageName = requireContext().packageName
-            )
-            intent.putExtra(EXTRA_PROFILE, stampResId)
-            resultEditNameLauncher.launch(intent)
+            Intent(requireContext(), MyPageEditNameActivity::class.java).apply {
+                putExtra(EXTRA_NICK_NAME, userData.nickName)
+                putExtra(EXTRA_PROFILE, stampResId)
+            }.let(resultEditNameLauncher::launch)
         }
 
         binding.viewMyPageMainRewardFrame.setOnClickListener {
             Analytics.logClickedItemEvent(EVENT_CLICK_GOAL_REWARD)
-            startActivity(Intent(requireContext(), MyRewardActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
+            startActivityWithAnimation(MyRewardActivity::class.java)
         }
+
         binding.viewMyPageMainHistoryFrame.setOnClickListener {
             Analytics.logClickedItemEvent(EVENT_CLICK_RUNNING_RECORD)
-            startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
+            startActivityWithAnimation(MyHistoryActivity::class.java)
         }
 
         binding.viewMyPageMainUploadFrame.setOnClickListener {
             Analytics.logClickedItemEvent(EVENT_CLICK_UPLOADED_COURSE)
-            startActivity(Intent(requireContext(), MyUploadActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
+            startActivityWithAnimation(MyUploadActivity::class.java)
         }
+
         binding.viewMyPageMainSettingFrame.setOnClickListener {
             moveToSettingFragment()
         }
+
         binding.viewMyPageMainKakaoChannelInquiryFrame.setOnClickListener {
             inquiryKakao()
         }
     }
 
     private fun moveToSettingFragment() {
-        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, viewModel.email.value) }
+        val bundle = Bundle().apply {
+            putString(ACCOUNT_INFO_TAG, userData.email)
+        }
+
         requireActivity().supportFragmentManager.commit {
             this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace<MySettingFragment>(R.id.fl_main, args = bundle)
@@ -143,37 +148,65 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     }
 
     private fun addObserver() {
-        viewModel.nickName.observe(viewLifecycleOwner) { nickName ->
-            binding.tvMyPageUserName.text = nickName.toString()
-        }
-
-        viewModel.userInfoState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> {
-                    binding.indeterminateBar.isVisible = true
-                    binding.ivMyPageEditFrame.isClickable = false
-                    binding.viewMyPageMainSettingFrame.isClickable = false
+        repeatOnStarted(
+            {
+                viewModel.userState.collect {
+                    when (it) {
+                        is MyPageViewModel.UserState.Loading -> handleLoading(true)
+                        is MyPageViewModel.UserState.UserUpdated -> handleSuccess()
+                        is MyPageViewModel.UserState.Failure -> handleFailure()
+                    }
                 }
-
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    val stampResId = requireContext().getStampResId(
-                        viewModel.stampId.value,
-                        RES_NAME,
-                        RES_STAMP_TYPE,
-                        requireContext().packageName
-                    )
-                    viewModel.setProfileImg(stampResId)
-                    binding.ivMyPageEditFrame.isClickable = true
-                    binding.viewMyPageMainSettingFrame.isClickable = true
-                }
-
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
+            },
+            {
+                viewModel.eventState.collect {
+                    when (it) {
+                        is BaseViewModel.EventState.ShowSnackBar -> {
+                            context?.showSnackbar(binding.root, it.message)
+                        }
+                        is BaseViewModel.EventState.NetworkError -> {
+                            context?.showSnackbar(binding.root, it.message)
+                        }
+                        else -> Unit
+                    }
                 }
             }
+        )
+    }
+
+    private fun handleLoading(isLoading: Boolean) {
+        with(binding) {
+            indeterminateBar.isVisible = isLoading
+            ivMyPageEditFrame.isClickable = !isLoading
+            viewMyPageMainSettingFrame.isClickable = !isLoading
+        }
+    }
+
+    private fun handleSuccess() {
+        handleLoading(false)
+        viewModel.updateUser(
+            userData.copy(profileImgResId = stampResId)
+        )
+        binding.tvMyPageUserName.text = userData.nickName
+    }
+
+    private fun handleFailure() {
+        binding.indeterminateBar.isVisible = false
+    }
+
+    private fun setVisitorMode(isVisitor: Boolean) {
+        with(binding) {
+            ivVisitorMode.isVisible = isVisitor
+            tvVisitorMode.isVisible = isVisitor
+            btnVisitorMode.isVisible = isVisitor
+            constraintInside.isVisible = !isVisitor
+        }
+    }
+
+    private fun startActivityWithAnimation(activityClass: Class<*>) {
+        activity?.let {
+            Intent(it, activityClass).let(::startActivity)
+            it.applyScreenEnterAnimation()
         }
     }
 
