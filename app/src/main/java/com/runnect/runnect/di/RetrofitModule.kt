@@ -12,6 +12,7 @@ import com.runnect.runnect.data.service.*
 import com.runnect.runnect.data.source.remote.*
 import com.runnect.runnect.domain.*
 import com.runnect.runnect.util.ApiLogger
+import com.runnect.runnect.util.NetworkSecurityUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,7 +67,7 @@ object RetrofitModule {
     fun provideOkHttpClient(
         logger: HttpLoggingInterceptor,
         @Auth authInterceptor: Interceptor
-    ): OkHttpClient = OkHttpClient.Builder()
+    ): OkHttpClient = NetworkSecurityUtil.createSecureOkHttpClient()
         .addInterceptor(logger)
         .addInterceptor(authInterceptor)
         .build()
@@ -78,7 +79,7 @@ object RetrofitModule {
         logger: HttpLoggingInterceptor,
         @Auth authInterceptor: Interceptor,
         responseInterceptor: ResponseInterceptor,
-    ): OkHttpClient = OkHttpClient.Builder()
+    ): OkHttpClient = NetworkSecurityUtil.createSecureOkHttpClient()
         .addInterceptor(logger)
         .addInterceptor(authInterceptor)
         .addInterceptor(responseInterceptor)
