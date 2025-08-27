@@ -28,8 +28,8 @@ android {
         applicationId "com.runnect.runnect"
         minSdk 28
         targetSdk 35
-        versionCode 24
-        versionName "2.1.0"
+        versionCode 25
+        versionName "2.1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "RUNNECT_DEV_URL", properties["RUNNECT_DEV_URL"]
