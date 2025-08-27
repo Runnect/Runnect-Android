@@ -109,18 +109,11 @@ class CourseMainFragment :
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
 
-        map.locationSource = locationSource
+        naverMap.locationSource = locationSource
 
         if (isLocationPermissionGranted()) {
             map.locationTrackingMode = LocationTrackingMode.Follow //위치추적 모드 Follow
         }
-
-        //네이버 맵 sdk에 위치 정보 제공
-        locationSource = FusedLocationSource(
-            this,
-            LOCATION_PERMISSION_REQUEST_CODE
-        )
-        naverMap.locationSource = locationSource
 
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
