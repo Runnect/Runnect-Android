@@ -15,6 +15,9 @@ plugins {
 
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
+    
+    // Add the Firebase Crashlytics Gradle plugin
+    id 'com.google.firebase.crashlytics'
 }
 
 Properties properties = new Properties()
@@ -199,6 +202,9 @@ dependencies {
 
     //firebase remote config - update dialog
     implementation 'com.google.firebase:firebase-config-ktx'
+    
+    // Firebase Crashlytics
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.2'
     implementation 'androidx.activity:activity-compose:1.9.0'
