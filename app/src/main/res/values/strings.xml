@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">Runnect</string>
+    
+    <!-- App Update Dialog -->
+    <string name="update_dialog_title">업데이트</string>
+    <string name="update_dialog_message">더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다.</string>
+    <string name="update_dialog_btn_text">업데이트</string>
+    <string name="default_version">0.0.0</string>
+    
+    <!-- Visitor Mode -->
+    <string name="visitor_mode_mypage_message">러넥트에 가입하고 나의 러닝 기록과\n스탬프를 확인해 보세요!</string>
+    <string name="visitor_mode_storage_message">러넥트에 가입하면 내가 그린 코스와\n스크랩 코스를 관리할 수 있어요!</string>
+    <string name="visitor_mode_signup_btn">가입하기</string>
 
     <string name="discover_title">코스 발견</string>
     <string name="discover_recommend_title">코스 추천</string>
