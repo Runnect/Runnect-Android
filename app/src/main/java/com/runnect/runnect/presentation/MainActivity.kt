@@ -2,10 +2,9 @@ package com.runnect.runnect.presentation
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.commit
+import androidx.core.net.toUri
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
@@ -13,10 +12,7 @@ import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
-import com.runnect.runnect.presentation.coursemain.CourseMainFragment
 import com.runnect.runnect.presentation.discover.DiscoverFragment
-import com.runnect.runnect.presentation.mypage.MyPageFragment
-import com.runnect.runnect.presentation.storage.StorageMainFragment
 import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
@@ -24,13 +20,13 @@ import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
 import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
 import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main) {
     private var isChangeToStorage: Boolean = false
     private var isChangeToDiscover: Boolean = false
     private var fragmentReplacementDirection: String? = null
+    private lateinit var viewPagerAdapter: MainPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,36 +49,56 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         fragmentReplacementDirection = intent.getStringExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION)
 
         when (fragmentReplacementDirection) {
-            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage =
-                true
-
+            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage = true
             "fromMyScrap", "fromCourseDetail" -> isChangeToDiscover = true
         }
     }
 
     private fun initView() {
-        val selectedItemId = when {
-            isChangeToStorage -> R.id.menu_main_storage.also { isChangeToStorage = false }
-            isChangeToDiscover -> R.id.menu_main_discover.also { isChangeToDiscover = false }
-            else -> R.id.menu_main_drawing
+        setupViewPager()
+        val selectedPosition = when {
+            isChangeToStorage -> 1.also { isChangeToStorage = false }
+            isChangeToDiscover -> 2.also { isChangeToDiscover = false }
+            else -> 0
         }
-        binding.btmNaviMain.menu.findItem(selectedItemId).isChecked = true
-        changeFragment(selectedItemId)
+        binding.vpMain.currentItem = selectedPosition
+        updateBottomNavigationSelection(selectedPosition)
+    }
+
+    private fun setupViewPager() {
+        viewPagerAdapter = MainPager(this)
+        binding.vpMain.apply {
+            adapter = viewPagerAdapter
+            isUserInputEnabled = false
+            offscreenPageLimit = 3
+        }
     }
 
     private fun changeFragment(menuItemId: Int) {
+        val position = getPositionFromMenuId(menuItemId)
         logClickEvent(menuItemId)
-        supportFragmentManager.commit {
-            replace(
-                R.id.fl_main, when (menuItemId) {
-                    R.id.menu_main_drawing -> CourseMainFragment()
-                    R.id.menu_main_storage -> StorageMainFragment()
-                    R.id.menu_main_discover -> DiscoverFragment()
-                    R.id.menu_main_my_page -> MyPageFragment()
-                    else -> throw IllegalArgumentException("${this@MainActivity::class.java.simpleName} Not found menu item id")
-                }
-            )
+        binding.vpMain.setCurrentItem(position, false)
+    }
+
+    private fun getPositionFromMenuId(menuItemId: Int): Int {
+        return when (menuItemId) {
+            R.id.menu_main_drawing -> 0
+            R.id.menu_main_storage -> 1
+            R.id.menu_main_discover -> 2
+            R.id.menu_main_my_page -> 3
+            else -> 0
         }
+    }
+
+    private fun updateBottomNavigationSelection(position: Int) {
+        val menuItemId = when (position) {
+            0 -> R.id.menu_main_drawing
+            1 -> R.id.menu_main_storage
+            2 -> R.id.menu_main_discover
+            3 -> R.id.menu_main_my_page
+            else -> R.id.menu_main_drawing
+        }
+        binding.btmNaviMain.menu.findItem(menuItemId).isChecked = true
     }
 
     private fun logClickEvent(menuItemId: Int) {
@@ -100,7 +116,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     private fun addListener() {
         binding.btmNaviMain.setOnItemSelectedListener {
             changeFragment(it.itemId)
-            Timber.tag("hu").d("fromDrawActivity when touch : $isChangeToStorage")
             true
         }
     }
@@ -114,54 +129,45 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun initRemoteConfig() {
-        val remoteConfig = Firebase.remoteConfig
-        val localAppVersion =
-            packageManager.getPackageInfo(packageName, 0).versionName //현재 설치된 앱의 버전 (versionName)
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600 //1시간마다 최신 config를 가져오도록 설정
-        }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.setDefaultsAsync( //remote config 기본값 설정
-            mapOf(
-                REMOTE_KEY_APP_VERSION to DEFAULT_VERSION
+        Firebase.remoteConfig.run {
+            val localAppVersion = packageManager.getPackageInfo(packageName, 0).versionName
+            val configSettings = remoteConfigSettings {
+                minimumFetchIntervalInSeconds = REMOTE_CONFIG_FETCH_INTERVAL_SECONDS
+            }
+            setConfigSettingsAsync(configSettings)
+            setDefaultsAsync( //remote config 기본값 설정
+                mapOf(REMOTE_KEY_APP_VERSION to getString(R.string.default_version))
             )
-        )
 
-        remoteConfig.fetchAndActivate().addOnCompleteListener {//remote confing에서 값 수신 및 활성화
-            if (it.isSuccessful) { // fetch and activate 성공 }
-                Timber.tag("remote_config").d("fetch and activate: Success")
-                val updateAppVersion = remoteConfig.getString(REMOTE_KEY_APP_VERSION)
-                Timber.tag("appVersion").d("local: $localAppVersion, remote: $updateAppVersion")
-                if (localAppVersion != updateAppVersion) {
-                    initUpdateDialog()
+            fetchAndActivate().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val updateAppVersion = getString(REMOTE_KEY_APP_VERSION)
+                    if (localAppVersion != updateAppVersion) {
+                        initUpdateDialog()
+                    }
                 }
-            } else {// fetch and activate 실패
-                Timber.tag("remote_config").d("fetch and activate: Fail")
             }
         }
     }
 
     private fun initUpdateDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(UPDATE_DIALOG_TITLE)
-            .setMessage(UPDATE_DIALOG_MESSAGE)
-            .setPositiveButton(UPDATE_DIALOG_BTN_TEXT) { _, _ -> loadPlayStore() }
-            .setCancelable(false)
-        builder.show()
+        AlertDialog.Builder(this).apply {
+            setTitle(R.string.update_dialog_title)
+            setMessage(R.string.update_dialog_message)
+            setPositiveButton(R.string.update_dialog_btn_text) { _, _ -> loadPlayStore() }
+            setCancelable(false)
+            show()
+        }
     }
 
     private fun loadPlayStore() {
         val uri = "market://details?id=$packageName"
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+        val intent = Intent(Intent.ACTION_VIEW, uri.toUri())
         startActivity(intent)
     }
 
     companion object {
-        const val UPDATE_DIALOG_TITLE = "업데이트"
-        const val UPDATE_DIALOG_MESSAGE = "더 좋아진 Runnect 앱을 사용하시기 위해서는 최신 버전으로 업데이트가 필요합니다."
-        const val UPDATE_DIALOG_BTN_TEXT = "업데이트"
-        const val DEFAULT_VERSION = "0.0.0"
-
+        const val REMOTE_CONFIG_FETCH_INTERVAL_SECONDS = 3600L
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
 
         var isVisitorMode = false
