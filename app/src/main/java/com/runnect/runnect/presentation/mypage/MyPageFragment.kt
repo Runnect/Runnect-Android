@@ -1,10 +1,9 @@
 package com.runnect.runnect.presentation.mypage
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -15,10 +14,8 @@ import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.talk.TalkApiClient
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingFragment
+import com.runnect.runnect.binding.BaseVisitorFragment
 import com.runnect.runnect.databinding.FragmentMyPageBinding
-import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
@@ -31,106 +28,63 @@ import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_RUNNING_RECORD
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOADED_COURSE
 import com.runnect.runnect.util.extension.getStampResId
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
-class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
+class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
     private val viewModel: MyPageViewModel by activityViewModels()
     private lateinit var resultEditNameLauncher: ActivityResultLauncher<Intent>
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (isVisitorMode) {
-            activateVisitorMode()
-        } else {
-            deactivateVisitorMode()
-        }
 
-    }
+    override val visitorContainer by lazy { binding.clVisitorMode }
+    override val contentViews by lazy { listOf(binding.constraintInside) }
 
-    private fun activateVisitorMode() {
-        with(binding) {
-            ivVisitorMode.isVisible = true
-            tvVisitorMode.isVisible = true
-            btnVisitorMode.isVisible = true
-            constraintInside.isVisible = false
-
-            btnVisitorMode.setOnClickListener {
-                val intent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(intent)
-                requireActivity().finish()
-            }
-        }
-    }
-
-    private fun deactivateVisitorMode() {
-        with(binding) {
-            ivVisitorMode.isVisible = false
-            tvVisitorMode.isVisible = false
-            btnVisitorMode.isVisible = false
-            constraintInside.isVisible = true
-
-            binding.vm = viewModel
-            binding.lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
-            viewModel.getUserInfo()
-            addListener()
-            addObserver()
-            setResultEditNameLauncher()
-        }
+    override fun onContentModeInit() {
+        binding.vm = viewModel
+        binding.lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
+        viewModel.getUserInfo()
+        addListener()
+        addObserver()
+        setResultEditNameLauncher()
     }
 
     private fun setResultEditNameLauncher() {
         resultEditNameLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    val name =
-                        result.data?.getStringExtra(EXTRA_NICK_NAME) ?: viewModel.nickName.value
+                    val name = result.data?.getStringExtra(EXTRA_NICK_NAME) ?: viewModel.nickName.value
                     viewModel.setNickName(name!!)
                 }
             }
     }
 
     private fun addListener() {
-        binding.ivMyPageEditFrame.setOnClickListener {
-            val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
-            intent.putExtra(EXTRA_NICK_NAME, "${viewModel.nickName.value}")
-            val stampResId = requireContext().getStampResId(
-                stampId = viewModel.stampId.value,
-                resNameParam = RES_NAME,
-                resType = RES_STAMP_TYPE,
-                packageName = requireContext().packageName
-            )
-            intent.putExtra(EXTRA_PROFILE, stampResId)
-            resultEditNameLauncher.launch(intent)
-        }
+        with(binding) {
+            ivMyPageEditFrame.setOnClickListener {
+                val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
+                intent.putExtra(EXTRA_NICK_NAME, "${viewModel.nickName.value}")
+                val stampResId = getStampResourceId()
+                intent.putExtra(EXTRA_PROFILE, stampResId)
+                resultEditNameLauncher.launch(intent)
+            }
 
-        binding.viewMyPageMainRewardFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_CLICK_GOAL_REWARD)
-            startActivity(Intent(requireContext(), MyRewardActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
-        }
-        binding.viewMyPageMainHistoryFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_CLICK_RUNNING_RECORD)
-            startActivity(Intent(requireContext(), MyHistoryActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
-        }
+            viewMyPageMainRewardFrame.setOnClickListener {
+                Analytics.logClickedItemEvent(EVENT_CLICK_GOAL_REWARD)
+                navigateTo<MyRewardActivity>()
+            }
+            viewMyPageMainHistoryFrame.setOnClickListener {
+                Analytics.logClickedItemEvent(EVENT_CLICK_RUNNING_RECORD)
+                navigateTo<MyHistoryActivity>()
+            }
 
-        binding.viewMyPageMainUploadFrame.setOnClickListener {
-            Analytics.logClickedItemEvent(EVENT_CLICK_UPLOADED_COURSE)
-            startActivity(Intent(requireContext(), MyUploadActivity::class.java))
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right, R.anim.slide_out_left
-            )
-        }
-        binding.viewMyPageMainSettingFrame.setOnClickListener {
-            moveToSettingFragment()
-        }
-        binding.viewMyPageMainKakaoChannelInquiryFrame.setOnClickListener {
-            inquiryKakao()
+            viewMyPageMainUploadFrame.setOnClickListener {
+                Analytics.logClickedItemEvent(EVENT_CLICK_UPLOADED_COURSE)
+                navigateTo<MyUploadActivity>()
+            }
+            viewMyPageMainSettingFrame.setOnClickListener {
+                moveToSettingFragment()
+            }
+            viewMyPageMainKakaoChannelInquiryFrame.setOnClickListener {
+                inquiryKakao()
+            }
         }
     }
 
@@ -149,30 +103,14 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
 
         viewModel.userInfoState.observe(viewLifecycleOwner) {
             when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> {
-                    binding.indeterminateBar.isVisible = true
-                    binding.ivMyPageEditFrame.isClickable = false
-                    binding.viewMyPageMainSettingFrame.isClickable = false
-                }
-
+                UiState.Empty -> setLoadingState(false)
+                UiState.Loading -> setLoadingState(true)
                 UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    val stampResId = requireContext().getStampResId(
-                        viewModel.stampId.value,
-                        RES_NAME,
-                        RES_STAMP_TYPE,
-                        requireContext().packageName
-                    )
+                    setLoadingState(false)
+                    val stampResId = getStampResourceId()
                     viewModel.setProfileImg(stampResId)
-                    binding.ivMyPageEditFrame.isClickable = true
-                    binding.viewMyPageMainSettingFrame.isClickable = true
                 }
-
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    Timber.tag(ContentValues.TAG).d("Failure : ${viewModel.errorMessage.value}")
-                }
+                UiState.Failure -> setLoadingState(false)
             }
         }
     }
@@ -180,6 +118,30 @@ class MyPageFragment : BindingFragment<FragmentMyPageBinding>(R.layout.fragment_
     private fun inquiryKakao() {
         val url = TalkApiClient.instance.channelChatUrl(BuildConfig.KAKAO_CHANNEL_ID)
         KakaoCustomTabsClient.openWithDefault(requireActivity(), url)
+    }
+
+    private fun getStampResourceId(): Int {
+        return requireContext().getStampResId(
+            stampId = viewModel.stampId.value,
+            resNameParam = RES_NAME,
+            resType = RES_STAMP_TYPE,
+            packageName = requireContext().packageName
+        )
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        with(binding) {
+            indeterminateBar.isVisible = isLoading
+            ivMyPageEditFrame.isClickable = !isLoading
+            viewMyPageMainSettingFrame.isClickable = !isLoading
+        }
+    }
+
+    private inline fun <reified T : Activity> navigateTo() {
+        startActivity(Intent(requireContext(), T::class.java))
+        requireActivity().overridePendingTransition(
+            R.anim.slide_in_right, R.anim.slide_out_left
+        )
     }
 
     companion object {
