@@ -1,68 +1,30 @@
 package com.runnect.runnect.presentation.storage
 
-import android.content.Intent
-import android.os.Bundle
-import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingFragment
+import com.runnect.runnect.binding.BaseVisitorFragment
 import com.runnect.runnect.databinding.FragmentStorageMainBinding
-import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SCRAP_COURSE
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class StorageMainFragment :
-    BindingFragment<FragmentStorageMainBinding>(R.layout.fragment_storage_main) {
+    BaseVisitorFragment<FragmentStorageMainBinding>(R.layout.fragment_storage_main) {
     val viewModel: StorageViewModel by viewModels()
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    
+    override val visitorContainer by lazy { binding.clVisitorMode }
+    override val contentViews by lazy { listOf(binding.storageTab, binding.tabUnderLine) }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (isVisitorMode) {
-            activateVisitorMode()
-        } else {
-            deactivateVisitorMode()
-        }
-    }
-
-    private fun activateVisitorMode() {
-        with(binding) {
-            ivVisitorMode.isVisible = true
-            tvVisitorMode.isVisible = true
-            btnVisitorMode.isVisible = true
-            storageTab.isVisible = false
-            tabUnderLine.isVisible = false
-
-            btnVisitorMode.setOnClickListener {
-                val intent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(intent)
-                requireActivity().finish()
-            }
-        }
-    }
-
-    private fun deactivateVisitorMode() {
-        with(binding) {
-            ivVisitorMode.isVisible = false
-            tvVisitorMode.isVisible = false
-            btnVisitorMode.isVisible = false
-            storageTab.isVisible = true
-            tabUnderLine.isVisible = true
-
-            binding.lifecycleOwner = requireActivity()
-            initView()
-            tabLayoutAction()
-        }
+    override fun onContentModeInit() {
+        binding.lifecycleOwner = requireActivity()
+        initView()
+        tabLayoutAction()
     }
 
     private fun initView() {
@@ -81,16 +43,16 @@ class StorageMainFragment :
                                 EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START
                             )
                             replace<StorageMyDrawFragment>(R.id.fl_main)
-                            Timber.tag("hu").d("내가 그린 코스로 이동하였음")
                         }
 
                         1 -> childFragmentManager.commit {
                             Analytics.logClickedItemEvent(EVENT_CLICK_SCRAP_COURSE)
                             replace<StorageScrapFragment>(R.id.fl_main)
-                            Timber.tag("hu").d("스크랩으로 이동하였음")
                         }
 
-                        else -> IllegalArgumentException("${this::class.java.simpleName} Not found menu item id")
+                        else -> childFragmentManager.commit {
+                            replace<StorageMyDrawFragment>(R.id.fl_main)
+                        }
                     }
                 }
 
