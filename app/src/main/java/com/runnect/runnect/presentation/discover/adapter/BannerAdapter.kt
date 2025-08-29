@@ -2,12 +2,9 @@ package com.runnect.runnect.presentation.discover.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverBannerBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
-import com.runnect.runnect.util.callback.diff.ItemDiffCallback
-import timber.log.Timber
 
 class BannerAdapter(
     private val banners: List<DiscoverBanner>,
@@ -26,7 +23,7 @@ class BannerAdapter(
         holder.onBind(banners[actualPosition])
     }
 
-    override fun getItemCount(): Int = Int.MAX_VALUE
+    override fun getItemCount(): Int = if (banners.isEmpty()) 0 else Int.MAX_VALUE
 
     class BannerViewHolder(
         private val binding: ItemDiscoverBannerBinding,
