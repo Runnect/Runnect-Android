@@ -1,6 +1,6 @@
 [versions]
 # SDK
-compileSdk = "35"
+compileSdk = "36"
 minSdk = "28"
 targetSdk = "35"
 
@@ -14,55 +14,54 @@ kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
 
 # AndroidX
-core-ktx = "1.9.0"
-appcompat = "1.5.1"
-constraintlayout = "2.1.4"
-activity-ktx = "1.6.1"
-activity-compose = "1.9.0"
-fragment-ktx = "1.5.5"
-lifecycle = "2.8.2"
-recyclerview = "1.3.0"
-viewpager2 = "1.0.0"
-swiperefreshlayout = "1.1.0"
+core-ktx = "1.18.0"
+appcompat = "1.7.1"
+constraintlayout = "2.2.1"
+activity-ktx = "1.13.0"
+activity-compose = "1.13.0"
+fragment-ktx = "1.8.9"
+lifecycle = "2.10.0"
+recyclerview = "1.4.0"
+viewpager2 = "1.1.0"
+swiperefreshlayout = "1.2.0"
 preference-ktx = "1.2.1"
-security-crypto = "1.1.0-alpha03"
+security-crypto = "1.1.0"
 
 # Compose
-compose-bom = "2023.03.00"
+compose-bom = "2026.03.00"
 
 # Material
-material = "1.8.0"
+material = "1.13.0"
 
 # Hilt
 hilt = "2.56.2"
 
 # Network
 retrofit = "2.9.0"
-okhttp-bom = "4.10.0"
-kotlinx-serialization-json = "1.4.1"
-retrofit2-kotlinx-serialization = "0.8.0"
-gson = "2.10.1"
+okhttp-bom = "4.12.0"
+kotlinx-serialization-json = "1.10.0"
+retrofit2-kotlinx-serialization = "1.0.0"
+gson = "2.13.2"
 
 # Coroutines
-coroutines = "1.6.4"
+coroutines = "1.10.2"
 
 # Image
 glide = "4.16.0"
-coil = "2.2.2"
+coil = "2.7.0"
 
 # Firebase
-firebase-bom = "31.2.3"
+firebase-bom = "33.14.0"
 firebase-crashlytics-gradle = "3.0.6"
-google-services = "4.3.15"
+google-services = "4.4.4"
 
 # Map
-naver-map = "3.22.1"
+naver-map = "3.23.2"
 play-services-location = "21.3.0"
 
 # Kakao
-kakao-sdk = "2.15.0"
-kakao-link = "2.9.0"
-kakao-login-legacy = "2.10.0"
+kakao-sdk = "2.23.3"
+kakao-story = "2.17.0"
 
 # Google
 play-services-auth = "20.4.1"
@@ -76,7 +75,7 @@ scalablelayout = "2.1.6"
 shimmer = "0.5.0"
 
 # Permission
-tedpermission = "3.3.0"
+tedpermission = "3.4.2"
 
 # Secrets
 secrets-gradle-plugin = "2.0.1"
@@ -86,8 +85,8 @@ foojay = "0.10.0"
 
 # Test
 junit = "4.13.2"
-androidx-junit = "1.1.5"
-espresso = "3.5.1"
+androidx-junit = "1.3.0"
+espresso = "3.7.0"
 
 [libraries]
 # AndroidX
@@ -159,8 +158,8 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 # Kakao
 kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao-sdk" }
 kakao-talk = { group = "com.kakao.sdk", name = "v2-talk", version.ref = "kakao-sdk" }
-kakao-story = { group = "com.kakao.sdk", name = "v2-story", version.ref = "kakao-sdk" }
-kakao-link = { group = "com.kakao.sdk", name = "v2-link", version.ref = "kakao-link" }
+kakao-story = { group = "com.kakao.sdk", name = "v2-story", version.ref = "kakao-story" }
+kakao-share = { group = "com.kakao.sdk", name = "v2-share", version.ref = "kakao-sdk" }
 kakao-navi = { group = "com.kakao.sdk", name = "v2-navi", version.ref = "kakao-sdk" }
 
 # Google
@@ -197,7 +196,7 @@ kakao = [
     "kakao-user",
     "kakao-talk",
     "kakao-story",
-    "kakao-link",
+    "kakao-share",
     "kakao-navi",
 ]
 compose = [
