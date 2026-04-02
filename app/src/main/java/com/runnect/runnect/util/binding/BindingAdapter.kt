@@ -3,7 +3,7 @@ package com.runnect.runnect.util.binding
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.BindingAdapter
-import coil.load
+import coil3.load
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 

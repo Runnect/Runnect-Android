@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import coil3.load
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.HistoryInfoDTO

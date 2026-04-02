@@ -118,6 +118,7 @@ dependencies {
     implementation libs.glide
     ksp libs.glide.ksp
     implementation libs.coil
+    implementation libs.coil.network.okhttp
 
     // Firebase
     implementation platform(libs.firebase.bom)

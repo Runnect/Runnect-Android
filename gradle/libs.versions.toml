@@ -48,7 +48,7 @@ coroutines = "1.10.2"
 
 # Image
 glide = "5.0.5"
-coil = "2.7.0"
+coil = "3.4.0"
 
 # Firebase
 firebase-bom = "33.14.0"
@@ -138,7 +138,8 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # Image
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-ksp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
-coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+coil = { group = "io.coil-kt.coil3", name = "coil-android", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 # Firebase (BOM 관리 - 개별 버전 불필요)
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
