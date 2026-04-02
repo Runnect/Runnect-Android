@@ -34,14 +34,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         
         Analytics.logClickedItemEvent(EVENT_VIEW_HOME)
         initRemoteConfig()
-        checkVisitorMode()
         checkIntentValue()
         initView()
         addListener()
-    }
-
-    private fun checkVisitorMode() {
-        // isVisitorMode is now managed by VisitorModeManager via Hilt
     }
 
     private fun checkIntentValue() {

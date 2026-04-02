@@ -95,17 +95,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         registerCallback()
-        collectScreenRefreshEvents()
-    }
-
-    private fun collectScreenRefreshEvents() {
-        viewLifeCycleScope.launch {
-            screenRefreshEventBus.events.collect { event ->
-                if (event is ScreenRefreshEvent.RefreshDiscoverCourses) {
-                    refreshDiscoverCourses()
-                }
-            }
-        }
     }
 
     private fun initView() {
@@ -319,6 +308,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         setupRecommendCourseNextPageStateObserver()
         setupRecommendCourseSortStateObserver()
         setupCourseScrapStateObserver()
+        collectScreenRefreshEvents()
+    }
+
+    private fun collectScreenRefreshEvents() {
+        viewLifeCycleScope.launch {
+            screenRefreshEventBus.events.collect { event ->
+                if (event is ScreenRefreshEvent.RefreshDiscoverCourses) {
+                    refreshDiscoverCourses()
+                }
+            }
+        }
     }
 
     private fun setupBannerGetStateObserver() {

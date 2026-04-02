@@ -50,17 +50,6 @@ class StorageScrapFragment :
         initAdapter()
         addListener()
         addObserver()
-        collectScreenRefreshEvents()
-    }
-
-    private fun collectScreenRefreshEvents() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            screenRefreshEventBus.events.collect { event ->
-                if (event is ScreenRefreshEvent.RefreshStorageScrap) {
-                    getMyScrapCourses()
-                }
-            }
-        }
     }
 
     fun getMyScrapCourses() {
@@ -121,6 +110,17 @@ class StorageScrapFragment :
         setupItemSizeObserver()
         setupMyScrapCourseGetStateObserver()
         setupCourseScrapStateObserver()
+        collectScreenRefreshEvents()
+    }
+
+    private fun collectScreenRefreshEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            screenRefreshEventBus.events.collect { event ->
+                if (event is ScreenRefreshEvent.RefreshStorageScrap) {
+                    getMyScrapCourses()
+                }
+            }
+        }
     }
 
     private fun setupCourseScrapStateObserver() {

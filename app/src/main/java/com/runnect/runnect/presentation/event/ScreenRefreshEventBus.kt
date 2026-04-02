@@ -13,7 +13,7 @@ sealed interface ScreenRefreshEvent {
 
 @Singleton
 class ScreenRefreshEventBus @Inject constructor() {
-    private val _events = MutableSharedFlow<ScreenRefreshEvent>()
+    private val _events = MutableSharedFlow<ScreenRefreshEvent>(replay = 1)
     val events: SharedFlow<ScreenRefreshEvent> = _events.asSharedFlow()
 
     suspend fun emit(event: ScreenRefreshEvent) {

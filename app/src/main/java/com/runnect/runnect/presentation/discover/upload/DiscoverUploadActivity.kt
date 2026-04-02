@@ -116,13 +116,13 @@ class DiscoverUploadActivity :
         showToast("업로드 완료!")
         binding.indeterminateBar.isVisible = false
 
+        lifecycleScope.launch {
+            screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshDiscoverCourses)
+        }
+
         Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(this)
-        }
-
-        lifecycleScope.launch {
-            screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshDiscoverCourses)
         }
         applyScreenExitAnimation()
     }
