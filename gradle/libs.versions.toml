@@ -47,7 +47,7 @@ gson = "2.13.2"
 coroutines = "1.10.2"
 
 # Image
-glide = "4.16.0"
+glide = "5.0.5"
 coil = "2.7.0"
 
 # Firebase

@@ -46,7 +46,7 @@ fun AppCompatButton.updateEditFinishButtonBackground(
 fun ImageView.setDiscoverItemImage(imageUrl: String?) {
     Glide.with(context)
         .load(imageUrl)
-        .thumbnail(0.3f)
+        .sizeMultiplier(0.3f)
         .format(DecodeFormat.PREFER_RGB_565)
         .into(this)
 }

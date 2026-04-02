@@ -17,7 +17,7 @@ class MyRewardAdapter :
             with(binding) {
                 Glide.with(itemView)
                     .load(data.img)
-                    .thumbnail(0.3f)
+                    .sizeMultiplier(0.3f)
                     .into(ivItemMyPageRewardCircleFrame)
                 tvItemMyPageRewardCondition.text = data.condition
             }

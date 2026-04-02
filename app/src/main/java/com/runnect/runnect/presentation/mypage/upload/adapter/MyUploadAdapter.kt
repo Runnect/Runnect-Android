@@ -66,7 +66,7 @@ class MyUploadAdapter(
 
                 Glide.with(itemView)
                     .load(data.img)
-                    .thumbnail(0.3f)
+                    .sizeMultiplier(0.3f)
                     .format(DecodeFormat.PREFER_RGB_565).into(ivMyPageUploadCourse)
 
                 tvMyPageUploadCourseTitle.text = data.title
