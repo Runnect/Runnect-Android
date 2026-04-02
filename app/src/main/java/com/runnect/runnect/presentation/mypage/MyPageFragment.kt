@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import coil3.load
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.talk.TalkApiClient
 import com.runnect.runnect.BuildConfig
@@ -21,13 +22,15 @@ import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
 import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
-import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_GOAL_REWARD
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_RUNNING_RECORD
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOADED_COURSE
 import com.runnect.runnect.util.extension.getStampResId
+import com.runnect.runnect.util.extension.repeatOnStarted
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
@@ -38,9 +41,8 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
     override val contentViews by lazy { listOf(binding.constraintInside) }
 
     override fun onContentModeInit() {
-        binding.vm = viewModel
         binding.lifecycleOwner = this@MyPageFragment.viewLifecycleOwner
-        viewModel.getUserInfo()
+        viewModel.intent(MyPageIntent.LoadUserInfo)
         addListener()
         addObserver()
         setResultEditNameLauncher()
@@ -50,8 +52,9 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
         resultEditNameLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    val name = result.data?.getStringExtra(EXTRA_NICK_NAME) ?: viewModel.nickName.value
-                    viewModel.setNickName(name!!)
+                    val name = result.data?.getStringExtra(EXTRA_NICK_NAME)
+                        ?: viewModel.currentState.nickname
+                    viewModel.intent(MyPageIntent.UpdateNickname(name))
                 }
             }
     }
@@ -60,7 +63,7 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
         with(binding) {
             ivMyPageEditFrame.setOnClickListener {
                 val intent = Intent(requireContext(), MyPageEditNameActivity::class.java)
-                intent.putExtra(EXTRA_NICK_NAME, "${viewModel.nickName.value}")
+                intent.putExtra(EXTRA_NICK_NAME, viewModel.currentState.nickname)
                 val stampResId = getStampResourceId()
                 intent.putExtra(EXTRA_PROFILE, stampResId)
                 resultEditNameLauncher.launch(intent)
@@ -89,7 +92,7 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
     }
 
     private fun moveToSettingFragment() {
-        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, viewModel.email.value) }
+        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, viewModel.currentState.email) }
         requireActivity().supportFragmentManager.commit {
             this.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace<MySettingFragment>(R.id.fl_main, args = bundle)
@@ -97,21 +100,31 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
     }
 
     private fun addObserver() {
-        viewModel.nickName.observe(viewLifecycleOwner) { nickName ->
-            binding.tvMyPageUserName.text = nickName.toString()
+        repeatOnStarted {
+            viewModel.state.collectLatest { state ->
+                bindState(state)
+            }
+        }
+    }
+
+    private fun bindState(state: MyPageUiState) {
+        setLoadingState(state.isLoading)
+
+        if (!state.isLoading && state.error == null) {
+            with(binding) {
+                tvMyPageUserName.text = state.nickname
+                tvMyPageUserLv.text = state.level
+                pbMyPageProgress.progress = state.levelPercent
+                tvMyPageProgressCurrent.text = state.levelPercent.toString()
+                ivMyPageProfile.load(state.profileImgResId)
+            }
+
+            val stampResId = getStampResourceId()
+            viewModel.intent(MyPageIntent.UpdateProfileImg(stampResId))
         }
 
-        viewModel.userInfoState.observe(viewLifecycleOwner) {
-            when (it) {
-                UiState.Empty -> setLoadingState(false)
-                UiState.Loading -> setLoadingState(true)
-                UiState.Success -> {
-                    setLoadingState(false)
-                    val stampResId = getStampResourceId()
-                    viewModel.setProfileImg(stampResId)
-                }
-                UiState.Failure -> setLoadingState(false)
-            }
+        state.error?.let {
+            context?.showSnackbar(anchorView = binding.root, message = it)
         }
     }
 
@@ -122,7 +135,7 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
 
     private fun getStampResourceId(): Int {
         return requireContext().getStampResId(
-            stampId = viewModel.stampId.value,
+            stampId = viewModel.currentState.stampId,
             resNameParam = RES_NAME,
             resType = RES_STAMP_TYPE,
             packageName = requireContext().packageName
