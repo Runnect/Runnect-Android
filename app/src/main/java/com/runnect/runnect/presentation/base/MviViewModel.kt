@@ -15,36 +15,36 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class MviViewModel<STATE, INTENT, EFFECT>(
-    initialState: STATE
+abstract class MviViewModel<State, Intent, Effect>(
+    initialState: State
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(initialState)
-    val state: StateFlow<STATE> = _state.asStateFlow()
+    val state: StateFlow<State> = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<EFFECT>()
-    val effect: SharedFlow<EFFECT> = _effect.asSharedFlow()
+    private val _effect = MutableSharedFlow<Effect>()
+    val effect: SharedFlow<Effect> = _effect.asSharedFlow()
 
-    val currentState: STATE get() = _state.value
+    val currentState: State get() = _state.value
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.tag(throwable::class.java.simpleName).e(throwable)
         handleException(throwable)
     }
 
-    fun intent(intent: INTENT) {
+    fun intent(intent: Intent) {
         viewModelScope.launch(exceptionHandler) {
             handleIntent(intent)
         }
     }
 
-    protected abstract suspend fun handleIntent(intent: INTENT)
+    protected abstract suspend fun handleIntent(intent: Intent)
 
-    protected fun reduce(reducer: STATE.() -> STATE) {
+    protected fun reduce(reducer: State.() -> State) {
         _state.value = currentState.reducer()
     }
 
-    protected fun postEffect(effect: EFFECT) {
+    protected fun postEffect(effect: Effect) {
         viewModelScope.launch {
             _effect.emit(effect)
         }
