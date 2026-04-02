@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import coil3.load
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.runnect.runnect.data.dto.HistoryInfoDTO
@@ -50,7 +50,8 @@ class MyHistoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: HistoryInfoDTO) {
             with(binding) {
-                Glide.with(itemView).load(data.img).thumbnail(0.3f)
+                Glide.with(itemView).load(data.img)
+                    .thumbnail(Glide.with(itemView).load(data.img).sizeMultiplier(0.3f))
                     .format(DecodeFormat.PREFER_RGB_565)
                     .into(ivMyPageHistoryCourse)
 

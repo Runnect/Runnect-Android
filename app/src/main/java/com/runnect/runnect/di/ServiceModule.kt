@@ -1,8 +1,8 @@
 package com.runnect.runnect.di
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.service.LoginService
 import com.runnect.runnect.data.service.ReverseGeocodingService

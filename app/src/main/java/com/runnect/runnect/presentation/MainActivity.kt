@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.net.toUri
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
