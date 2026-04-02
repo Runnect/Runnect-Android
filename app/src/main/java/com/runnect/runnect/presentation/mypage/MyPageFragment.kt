@@ -28,6 +28,7 @@ import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_RUNNING_RECORD
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_UPLOADED_COURSE
 import com.runnect.runnect.util.extension.getStampResId
 import com.runnect.runnect.util.extension.repeatOnStarted
+import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -109,7 +110,7 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
     private fun bindState(state: MyPageUiState) {
         setLoadingState(state.isLoading)
 
-        if (!state.isLoading) {
+        if (!state.isLoading && state.error == null) {
             with(binding) {
                 tvMyPageUserName.text = state.nickname
                 tvMyPageUserLv.text = state.level
@@ -120,6 +121,10 @@ class MyPageFragment : BaseVisitorFragment<FragmentMyPageBinding>(R.layout.fragm
 
             val stampResId = getStampResourceId()
             viewModel.intent(MyPageIntent.UpdateProfileImg(stampResId))
+        }
+
+        state.error?.let {
+            context?.showSnackbar(anchorView = binding.root, message = it)
         }
     }
 

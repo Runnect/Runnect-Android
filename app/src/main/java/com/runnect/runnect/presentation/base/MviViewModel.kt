@@ -13,10 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import timber.log.Timber
-import java.net.SocketException
-import java.net.UnknownHostException
 
 abstract class MviViewModel<STATE, INTENT, EFFECT>(
     initialState: STATE
@@ -70,11 +67,6 @@ abstract class MviViewModel<STATE, INTENT, EFFECT>(
     }
 
     protected open fun handleException(throwable: Throwable) {
-        when (throwable) {
-            is SocketException,
-            is HttpException,
-            is UnknownHostException -> Timber.e(throwable)
-            else -> Timber.e(throwable)
-        }
+        Timber.e(throwable)
     }
 }
