@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverRecommendBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 import timber.log.Timber
@@ -17,6 +16,7 @@ class DiscoverRecommendAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
+    private val isVisitorMode: () -> Boolean,
 ) : ListAdapter<DiscoverMultiViewItem.RecommendCourse,
         DiscoverRecommendAdapter.DiscoverRecommendViewHolder>(diffUtil) {
 
@@ -29,7 +29,8 @@ class DiscoverRecommendAdapter(
             ),
             onHeartButtonClick,
             onCourseItemClick,
-            handleVisitorMode
+            handleVisitorMode,
+            isVisitorMode
         )
     }
 
@@ -41,7 +42,8 @@ class DiscoverRecommendAdapter(
         private val binding: ItemDiscoverRecommendBinding,
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
-        private val handleVisitorMode: () -> Unit
+        private val handleVisitorMode: () -> Unit,
+        private val isVisitorMode: () -> Boolean
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverMultiViewItem.RecommendCourse) {
             with(binding) {
@@ -58,7 +60,7 @@ class DiscoverRecommendAdapter(
             course: DiscoverMultiViewItem.RecommendCourse
         ) {
             imageView.setOnClickListener { view ->
-                if (MainActivity.isVisitorMode) {
+                if (isVisitorMode()) {
                     handleVisitorMode.invoke()
                     return@setOnClickListener
                 }

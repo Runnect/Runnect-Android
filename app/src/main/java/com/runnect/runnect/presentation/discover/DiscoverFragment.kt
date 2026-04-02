@@ -18,8 +18,10 @@ import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentDiscoverBinding
 import com.runnect.runnect.domain.entity.DiscoverBanner
 import com.runnect.runnect.presentation.MainActivity
-import com.runnect.runnect.presentation.MainActivity.Companion.isVisitorMode
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.event.ScreenRefreshEvent
+import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.discover.adapter.BannerAdapter
 import com.runnect.runnect.presentation.discover.adapter.multiview.DiscoverMultiViewAdapter
@@ -28,7 +30,6 @@ import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.presentation.storage.StorageScrapFragment
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_DATE
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SCRAP
@@ -46,9 +47,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragment_discover) {
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
+    @Inject
+    lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
     private val viewModel: DiscoverViewModel by viewModels()
 
     private lateinit var bannerAdapter: BannerAdapter
@@ -57,7 +65,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private var bannerItemCount = 0
 
     private lateinit var multiViewAdapter: DiscoverMultiViewAdapter
-    private var isFromStorageScrap = StorageScrapFragment.isFromStorageScrap
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -88,6 +95,17 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
         addListener()
         addObserver()
         registerCallback()
+        collectScreenRefreshEvents()
+    }
+
+    private fun collectScreenRefreshEvents() {
+        viewLifeCycleScope.launch {
+            screenRefreshEventBus.events.collect { event ->
+                if (event is ScreenRefreshEvent.RefreshDiscoverCourses) {
+                    refreshDiscoverCourses()
+                }
+            }
+        }
     }
 
     private fun initView() {
@@ -106,6 +124,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
             handleVisitorMode = {
                 context?.let { showCourseScrapWarningToast(it) }
             },
+            isVisitorMode = { visitorModeManager.isVisitorMode },
             onSortButtonClick = { criteria ->
                 viewModel.sortRecommendCourses(criteria)
                 Analytics.logClickedItemEvent(returnEventName(criteria))
@@ -277,7 +296,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
 
     private fun navigateToCourseUploadScreen() {
         val context = context ?: return
-        if (isVisitorMode) {
+        if (visitorModeManager.isVisitorMode) {
             showCourseUploadWarningToast(context)
             return
         }
@@ -491,10 +510,7 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     }
 
     private fun checkFromStorageScrap() {
-        if (isFromStorageScrap) {
-            StorageScrapFragment.isFromStorageScrap = false
-            MainActivity.updateStorageScrapScreen()
-        }
+        // No longer needed — screen refresh is handled via ScreenRefreshEventBus
     }
 
     private fun registerRefreshLayoutScrollUpCallback() {
@@ -507,18 +523,6 @@ class DiscoverFragment : BindingFragment<FragmentDiscoverBinding>(R.layout.fragm
     private fun checkRefreshPossibleCondition(): Boolean {
         val layoutManager = binding.rvDiscoverMultiView.layoutManager as LinearLayoutManager
         return layoutManager.findFirstCompletelyVisibleItemPosition() > 0
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is MainActivity) {
-            MainActivity.discoverFragment = this
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MainActivity.discoverFragment = null
     }
 
     companion object {

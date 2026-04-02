@@ -11,6 +11,7 @@ import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import coil3.load
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -23,6 +24,9 @@ import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.event.ScreenRefreshEvent
+import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER_SEARCH
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
@@ -56,12 +60,20 @@ import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.mode.ScreenMode.EditMode
 import com.runnect.runnect.util.mode.ScreenMode.ReadOnlyMode
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
+    @Inject
+    lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
     private val viewModel: CourseDetailViewModel by viewModels()
-    private val isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
     private var isFromDeepLink: Boolean = false
 
     // 인텐트 부가 데이터
@@ -385,7 +397,9 @@ class CourseDetailActivity :
         }
 
         when (rootScreen) {
-            COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
+            COURSE_STORAGE_SCRAP -> lifecycleScope.launch {
+                screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshStorageScrap)
+            }
             COURSE_DISCOVER -> setActivityResult<MainActivity>()
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> setActivityResult<MyUploadActivity>()

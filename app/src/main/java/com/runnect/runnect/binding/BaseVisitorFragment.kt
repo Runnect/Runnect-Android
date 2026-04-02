@@ -8,20 +8,23 @@ import androidx.annotation.LayoutRes
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.runnect.runnect.R
-import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.presentation.login.LoginActivity
+import javax.inject.Inject
 
 abstract class BaseVisitorFragment<T : ViewDataBinding>(
     @LayoutRes private val layoutRes: Int
 ) : BindingFragment<T>(layoutRes) {
-    
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
     abstract val visitorContainer: View
     abstract val contentViews: List<View>
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        if (MainActivity.isVisitorMode) {
+
+        if (visitorModeManager.isVisitorMode) {
             showVisitorMode()
         } else {
             showContent()

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.runnect.runnect.databinding.ItemDiscoverMarathonBinding
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.util.callback.diff.ItemDiffCallback
 
@@ -16,6 +15,7 @@ class DiscoverMarathonAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
+    private val isVisitorMode: () -> Boolean,
 ) : ListAdapter<DiscoverMultiViewItem.MarathonCourse,
         DiscoverMarathonAdapter.DiscoverMarathonViewHolder>(diffUtil) {
 
@@ -28,7 +28,8 @@ class DiscoverMarathonAdapter(
             ),
             onHeartButtonClick,
             onCourseItemClick,
-            handleVisitorMode
+            handleVisitorMode,
+            isVisitorMode
         )
     }
 
@@ -41,6 +42,7 @@ class DiscoverMarathonAdapter(
         private val onHeartButtonClick: (Int, Boolean) -> Unit,
         private val onCourseItemClick: (Int) -> Unit,
         private val handleVisitorMode: () -> Unit,
+        private val isVisitorMode: () -> Boolean,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(course: DiscoverMultiViewItem.MarathonCourse) {
             with(binding) {
@@ -57,7 +59,7 @@ class DiscoverMarathonAdapter(
             course: DiscoverMultiViewItem.MarathonCourse
         ) {
             imageView.setOnClickListener { view ->
-                if (MainActivity.isVisitorMode) {
+                if (isVisitorMode()) {
                     handleVisitorMode.invoke()
                     return@setOnClickListener
                 }
