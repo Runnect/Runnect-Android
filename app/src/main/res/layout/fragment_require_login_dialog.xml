@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="34dp"
+            android:background="@drawable/radius_10_custom_alert_dialog"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/iv_require_login_dialog"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="44dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/finish_run"
+                app:layout_constraintDimensionRatio="203:121"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_require_login_dialog_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="19dp"
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="@string/dialog_visitor_mode_require_login_desc"
+                android:textColor="@color/G2"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_require_login_dialog" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_require_login_dialog_cancel"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/radius_10_m3_button"
+                android:fontFamily="@font/pretendard_semibold"
+                android:stateListAnimator="@null"
+                android:text="@string/dialog_visitor_mode_require_login_cancel"
+                android:textAlignment="center"
+                android:textColor="@color/M1"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_require_login_dialog_confirm"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_require_login_dialog_desc" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_require_login_dialog_confirm"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="13dp"
+                android:background="@drawable/radius_10_m1_button"
+                android:fontFamily="@font/pretendard_semibold"
+                android:stateListAnimator="@null"
+                android:text="@string/dialog_visitor_mode_require_login_confirm"
+                android:textColor="@color/W1"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/btn_require_login_dialog_cancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_require_login_dialog_cancel"
+                app:layout_constraintTop_toTopOf="@id/btn_require_login_dialog_cancel" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>
+
+
+

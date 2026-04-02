@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_draw"
+        android:icon="@drawable/menu_draw"
+        android:fontFamily="@font/pretendard_semibold"
+        android:title="코스 그리기" />
+
+    <item
+        android:fontFamily="@font/pretendard_semibold"
+        android:id="@+id/menu_storage"
+        android:icon="@drawable/menu_storage"
+        android:title="보관함" />
+
+    <item
+        android:fontFamily="@font/pretendard_semibold"
+        android:id="@+id/menu_detect"
+        android:icon="@drawable/menu_detect"
+        android:title="코스 발견" />
+
+    <item
+        android:fontFamily="@font/pretendard_semibold"
+        android:id="@+id/menu_my_page"
+        android:icon="@drawable/menu_mypage"
+        android:title="마이페이지" />
+</menu>

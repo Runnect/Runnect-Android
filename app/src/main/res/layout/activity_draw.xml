@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.runnect.runnect.presentation.draw.DrawViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.location_enroll.LocationEnrollFragment">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/custom_departure_info_window"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            android:src="@drawable/ic_info_window"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/custom_departure_marker"
+            app:layout_constraintEnd_toEndOf="@id/custom_departure_marker"
+            app:layout_constraintStart_toStartOf="@id/custom_departure_marker" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/custom_departure_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            android:src="@drawable/runnect_marker"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/frame_draw_guide"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="34dp"
+            android:background="@drawable/radius_30_white_view"
+            android:elevation="2dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imgBtn_back"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_guide_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="3dp"
+            android:outlineProvider="none"
+            android:src="@drawable/runnect_logo_circle"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/frame_draw_guide"
+            app:layout_constraintStart_toStartOf="@id/frame_draw_guide"
+            app:layout_constraintTop_toTopOf="@id/frame_draw_guide"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_draw_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:elevation="3dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:outlineProvider="none"
+            android:text="지도를 눌러 코스를 그려주세요"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/frame_draw_guide"
+            app:layout_constraintEnd_toEndOf="@id/frame_draw_guide"
+            app:layout_constraintStart_toEndOf="@id/iv_guide_logo"
+            app:layout_constraintTop_toTopOf="@id/frame_draw_guide"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/G3"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_drawing_captured"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:background="#00000000"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view_top_frame"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/white"
+            android:elevation="1dp"
+            android:outlineProvider="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="17dp"
+            android:background="@color/transparent_00"
+            android:elevation="2dp"
+            android:outlineProvider="none"
+            android:src="@drawable/backbutton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_departure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:elevation="2dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:outlineProvider="none"
+            android:text="@{model.searchResult.name}"
+            android:textColor="@color/G1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
+            app:layout_constraintStart_toEndOf="@id/imgBtn_back"
+            app:layout_constraintTop_toTopOf="@id/imgBtn_back"
+            tools:text="패스트파이브 을지로점" />
+
+        <TextView
+            android:id="@+id/tv_custom_departure_guide_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:outlineProvider="none"
+            android:text="@string/draw_custom_departure_guide_frame"
+            android:textColor="@color/G1"
+            android:textSize="17sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/view_top_frame"
+            app:layout_constraintEnd_toEndOf="@id/view_top_frame"
+            app:layout_constraintStart_toStartOf="@id/view_top_frame"
+            app:layout_constraintTop_toTopOf="@id/view_top_frame" />
+
+        <TextView
+            android:id="@+id/tv_guide"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/draw_custom_departure_tv_guide"
+            android:elevation="2dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:outlineProvider="none"
+            android:text="@string/draw_custom_departure_guide"
+            android:textAlignment="center"
+            android:textColor="@color/G2"
+            android:textSize="14sp"
+            app:layout_constraintDimensionRatio="390:32"
+            app:layout_constraintTop_toBottomOf="@id/view_top_frame" />
+
+
+        <FrameLayout
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_draw"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/radius_10_g3_button"
+            android:enabled="false"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/draw_next"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/frame_course_distance"
+            android:layout_width="82dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/radius_50_white_button"
+            android:elevation="1dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/btn_draw"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_course_distance_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:outlineProvider="none"
+            android:text="@{model.distanceSum.toString()}"
+            android:textColor="@color/G1"
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/frame_course_distance"
+            app:layout_constraintEnd_toStartOf="@id/tv_course_distance_km"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/frame_course_distance"
+            app:layout_constraintTop_toTopOf="@id/frame_course_distance"
+            tools:text="1.6" />
+
+
+        <TextView
+            android:id="@+id/tv_course_distance_km"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:elevation="1dp"
+            android:outlineProvider="none"
+            android:text="km"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/tv_course_distance_record"
+            app:layout_constraintEnd_toEndOf="@id/frame_course_distance"
+
+            app:layout_constraintStart_toEndOf="@id/tv_course_distance_record" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_markerBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="18dp"
+            android:backgroundTint="@color/W1"
+            android:enabled="false"
+            android:src="@drawable/backcourse_enable_false"
+            android:visibility="invisible"
+            app:backgroundTint="@color/W1"
+            app:fabCustomSize="48dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_draw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:rippleColor="@color/transparent_00"
+            app:tint="@null" />
+
+        <View
+            android:id="@+id/view_bottomSheet_frame"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="@drawable/top_radius_20_white"
+            android:elevation="2dp"
+            android:outlineProvider="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="22dp"
+            android:elevation="2dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:outlineProvider="none"
+            android:text="@{model.searchResult.name}"
+            android:textColor="@color/G1"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_place_address"
+            app:layout_constraintStart_toStartOf="@id/view_bottomSheet_frame"
+            app:layout_constraintTop_toTopOf="@id/view_bottomSheet_frame"
+            tools:text="패스트파이브 을지로점" />
+
+        <TextView
+            android:id="@+id/tv_place_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="18dp"
+            android:elevation="2dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:outlineProvider="none"
+            android:text="@{model.searchResult.fullAddress}"
+            android:textColor="@color/G2"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toTopOf="@id/btn_pre_start"
+            app:layout_constraintStart_toStartOf="@id/tv_place_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_place_name"
+            tools:text="서울특별시 중구 남대문로7길 16 한국빌딩" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_pre_start"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/radius_10_m1_button"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="@string/draw_set_departure"
+            android:textAlignment="center"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/view_bottomSheet_frame"
+            app:layout_constraintEnd_toEndOf="@id/view_bottomSheet_frame"
+            app:layout_constraintStart_toStartOf="@id/view_bottomSheet_frame" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

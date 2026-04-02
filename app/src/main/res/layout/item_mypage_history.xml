@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".presentation.mypage.history.MyHistoryActivity">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_my_page_history_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/my_page_history_frame_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="330:162"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_my_page_history_course"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="@id/iv_my_page_history_frame"
+            app:layout_constraintTop_toTopOf="@id/iv_my_page_history_frame"
+            app:strokeColor="@color/G6"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_my_page_history_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_course_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="22dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textColor="@color/G1"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/cv_my_page_history_course"
+            app:layout_constraintTop_toTopOf="@id/cv_my_page_history_course"
+            tools:text="석촌호수 한 바퀴" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:textColor="@color/G2"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_history_course_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_course_name"
+            tools:text="서울시 강동구" />
+
+
+        <View
+            android:id="@+id/divider_my_page_history_vertical1"
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="7dp"
+            android:background="@color/G2"
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_place"
+            app:layout_constraintStart_toEndOf="@id/tv_my_page_history_place"
+            app:layout_constraintTop_toTopOf="@id/tv_my_page_history_place" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:textColor="@color/G2"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical1"
+            app:layout_constraintTop_toTopOf="@id/tv_my_page_history_place"
+            tools:text="2022.12.28" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/divider_my_page_history_horizontal1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="9dp"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="@id/iv_my_page_history_frame"
+            app:layout_constraintStart_toStartOf="@id/iv_my_page_history_frame"
+            app:layout_constraintTop_toBottomOf="@id/cv_my_page_history_course"
+            app:srcCompat="@drawable/my_page_history_divider" />
+
+
+        <View
+            android:id="@+id/divider_my_page_history_vertical2"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/G4"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/tv_my_page_history_distance" />
+
+        <View
+            android:id="@+id/divider_my_page_history_vertical3"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/G4"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_time_data"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/view_2"
+            app:layout_constraintTop_toTopOf="@id/tv_my_page_history_time" />
+
+        <!--총 거리-->
+
+        <View
+            android:id="@+id/view_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/view_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_my_page_history_horizontal1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="@string/item_mypage_history_distance"
+            android:textColor="@color/G2"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_my_page_history_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/view_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/view_1"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_distance_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="6dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
+            app:layout_constraintEnd_toEndOf="@id/tv_my_page_history_distance"
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_history_distance"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_page_history_distance"
+            tools:text="4.01 km" />
+
+
+        <!--이동 시간-->
+        <View
+            android:id="@+id/view_2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/view_1"
+            app:layout_constraintEnd_toStartOf="@id/view_3"
+            app:layout_constraintStart_toEndOf="@id/view_1"
+            app:layout_constraintTop_toTopOf="@id/view_1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="@string/item_mypage_history_time"
+            android:textColor="@color/G2"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="@id/divider_my_page_history_vertical3"
+            app:layout_constraintStart_toEndOf="@id/divider_my_page_history_vertical2"
+            app:layout_constraintTop_toTopOf="@id/tv_my_page_history_distance" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_time_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_distance_data"
+            app:layout_constraintEnd_toEndOf="@id/tv_my_page_history_time"
+            app:layout_constraintHorizontal_bias="0.521"
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_history_time"
+            tools:text="0:27:36" />
+
+        <!--평균 페이스-->
+
+        <View
+            android:id="@+id/view_3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_00"
+            app:layout_constraintBottom_toBottomOf="@id/view_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view_2"
+            app:layout_constraintTop_toTopOf="@id/view_2" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_pace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_regular"
+            android:text="@string/item_mypage_history_pace"
+            android:textColor="@color/G2"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="@id/view_3"
+            app:layout_constraintStart_toStartOf="@id/view_3"
+            app:layout_constraintTop_toTopOf="@id/tv_my_page_history_time" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_my_page_history_pace_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textColor="@color/G1"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_page_history_time_data"
+            app:layout_constraintEnd_toEndOf="@id/tv_my_page_history_pace"
+            app:layout_constraintStart_toStartOf="@id/tv_my_page_history_pace"
+            tools:text="6’45”" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

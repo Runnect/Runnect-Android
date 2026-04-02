@@ -1,0 +1,152 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    id 'kotlin-parcelize'
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    id 'kotlin-kapt'
+    alias(libs.plugins.secrets.gradle.plugin)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+android {
+    namespace 'com.runnect.runnect'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        applicationId "com.runnect.runnect"
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+        versionCode libs.versions.versionCode.get().toInteger()
+        versionName libs.versions.versionName.get()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "RUNNECT_DEV_URL", properties["RUNNECT_DEV_URL"]
+        buildConfigField "String", "RUNNECT_NODE_URL", properties["RUNNECT_NODE_URL"]
+        buildConfigField "String", "RUNNECT_PROD_URL", properties["RUNNECT_PROD_URL"]
+        buildConfigField "String", "TMAP_BASE_URL", properties["TMAP_BASE_URL"]
+        buildConfigField "String", "TMAP_API_KEY", properties["TMAP_API_KEY"]
+        buildConfigField "String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"]
+        buildConfigField "String", "GOOGLE_CLIENT_ID", properties["GOOGLE_CLIENT_ID"]
+        buildConfigField "String", "REMOTE_KEY_APP_VERSION", properties["REMOTE_KEY_APP_VERSION"]
+        buildConfigField "String", "KAKAO_CHANNEL_ID", properties["KAKAO_CHANNEL_ID"]
+    }
+
+    signingConfigs {
+        release {
+            def localProperties = new Properties()
+            def localPropertiesFile = rootProject.file('local.properties')
+            if (localPropertiesFile.exists()) {
+                localProperties.load(new FileInputStream(localPropertiesFile))
+            }
+
+            keyAlias localProperties['KEY_ALIAS']
+            keyPassword localProperties['KEY_PASSWORD']
+            storeFile file('RunnectKeystore.jks')
+            storePassword localProperties['KEYSTORE_PASSWORD']
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
+        compose true
+        dataBinding true
+        viewBinding true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    // AndroidX
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.activity.ktx
+    implementation libs.androidx.fragment.ktx
+    implementation libs.bundles.lifecycle
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.viewpager2
+    implementation libs.androidx.swiperefreshlayout
+    implementation libs.androidx.preference.ktx
+    implementation libs.androidx.security.crypto.ktx
+
+    // Compose
+    implementation platform(libs.compose.bom)
+    implementation libs.bundles.compose
+    implementation libs.androidx.activity.compose
+    debugImplementation libs.bundles.compose.debug
+    androidTestImplementation platform(libs.compose.bom)
+    androidTestImplementation libs.compose.ui.test.junit4
+
+    // Material
+    implementation libs.material
+
+    // Hilt
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+
+    // Network
+    implementation platform(libs.okhttp.bom)
+    implementation libs.bundles.network
+
+    // Coroutines
+    implementation libs.kotlinx.coroutines.android
+
+    // Image
+    implementation libs.glide
+    ksp libs.glide.ksp
+    implementation libs.coil
+    implementation libs.coil.network.okhttp
+
+    // Firebase
+    implementation platform(libs.firebase.bom)
+    implementation libs.bundles.firebase
+
+    // Map
+    implementation libs.naver.map.sdk
+    implementation libs.play.services.location
+
+    // Kakao
+    implementation libs.bundles.kakao
+
+    // Google
+    implementation libs.play.services.auth
+
+    // Logging
+    implementation libs.timber
+
+    // UI
+    implementation libs.circleindicator
+    implementation libs.scalablelayout
+    implementation libs.shimmer
+
+    // Permission
+    implementation libs.tedpermission.normal
+
+    // Test
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+}

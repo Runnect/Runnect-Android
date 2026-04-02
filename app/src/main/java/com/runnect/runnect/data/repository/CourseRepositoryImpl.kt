@@ -1,0 +1,117 @@
+package com.runnect.runnect.data.repository
+
+import com.runnect.runnect.data.dto.request.RequestPatchMyDrawCourseTitle
+import com.runnect.runnect.data.dto.request.RequestPatchPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
+import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
+import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
+import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
+import com.runnect.runnect.data.network.mapToFlowResult
+import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
+import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
+import com.runnect.runnect.domain.entity.DiscoverSearchCourse
+import com.runnect.runnect.domain.entity.DiscoverUploadCourse
+import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
+import com.runnect.runnect.domain.entity.MyDrawCourseDetail
+import com.runnect.runnect.domain.entity.PostScrap
+import com.runnect.runnect.domain.entity.RecommendCoursePagingData
+import com.runnect.runnect.domain.repository.CourseRepository
+import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import javax.inject.Inject
+
+class CourseRepositoryImpl @Inject constructor(
+    private val remoteCourseDataSource: RemoteCourseDataSource
+) : CourseRepository {
+
+    override suspend fun getMarathonCourse(): Flow<Result<List<MarathonCourse>>> {
+        return remoteCourseDataSource.getMarathonCourse().mapToFlowResult {
+            it.toMarathonCourses()
+        }
+    }
+
+    override suspend fun getRecommendCourse(
+        pageNo: String,
+        sort: String
+    ): Flow<Result<RecommendCoursePagingData>> {
+        return remoteCourseDataSource.getRecommendCourse(
+            pageNo = pageNo,
+            sort = sort
+        ).mapToFlowResult {
+            RecommendCoursePagingData(it.isEnd, it.toRecommendCourses())
+        }
+    }
+
+    override suspend fun getCourseSearch(keyword: String): Flow<Result<List<DiscoverSearchCourse>>> =
+        remoteCourseDataSource.getCourseSearch(keyword = keyword).mapToFlowResult {
+            it.toDiscoverSearchCourses()
+        }
+
+    override suspend fun getCourseDetail(publicCourseId: Int): Flow<Result<CourseDetail>> =
+        remoteCourseDataSource.getCourseDetail(publicCourseId = publicCourseId).mapToFlowResult {
+            it.toCourseDetail()
+        }
+
+    override suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>> {
+        return remoteCourseDataSource.getMyCourseLoad().mapToFlowResult {
+            it.toUploadCourses()
+        }
+    }
+
+    override suspend fun getMyDrawDetail(courseId: Int): Flow<Result<MyDrawCourseDetail>> {
+        return remoteCourseDataSource.getMyDrawDetail(courseId = courseId).mapToFlowResult {
+            it.toMyDrawCourseDetail()
+        }
+    }
+
+    override suspend fun deleteMyDrawCourse(deleteCourseList: RequestPutMyDrawCourse): Flow<Result<Unit>> {
+        return remoteCourseDataSource.deleteMyDrawCourse(deleteCourseList = deleteCourseList).mapToFlowResult {}
+    }
+
+    override suspend fun postCourseScrap(
+        requestPostCourseScrap: RequestPostCourseScrap
+    ): Flow<Result<PostScrap>> {
+        return remoteCourseDataSource.postCourseScrap(requestPostCourseScrap = requestPostCourseScrap).mapToFlowResult {
+            it.toPostScrap()
+        }
+    }
+
+    override suspend fun postUploadMyCourse(requestPostPublicCourse: RequestPostPublicCourse): Flow<Result<Unit>> {
+        return remoteCourseDataSource.postUploadMyCourse(requestPostPublicCourse = requestPostPublicCourse).mapToFlowResult {}
+    }
+
+    override suspend fun patchMyDrawCourseTitle(
+        courseId: Int,
+        requestPatchMyDrawCourseTitle: RequestPatchMyDrawCourseTitle
+    ): Flow<Result<EditableMyDrawCourseDetail>> =
+        remoteCourseDataSource.patchMyDrawCourseTitle(courseId, requestPatchMyDrawCourseTitle).mapToFlowResult {
+            it.toEditableMyDrawCourseDetail()
+        }
+
+    override suspend fun patchPublicCourse(
+        publicCourseId: Int,
+        requestPatchPublicCourse: RequestPatchPublicCourse
+    ): Flow<Result<EditableCourseDetail>> =
+        remoteCourseDataSource.patchPublicCourse(
+            publicCourseId = publicCourseId,
+            requestPatchPublicCourse = requestPatchPublicCourse
+        ).mapToFlowResult {
+            it.toEditableCourseDetail()
+        }
+
+    override suspend fun postRecord(request: RequestPostRunningHistory): Flow<Result<Unit>> {
+        return remoteCourseDataSource.postRecord(request = request).mapToFlowResult {}
+    }
+
+    override suspend fun uploadCourse(
+        image: MultipartBody.Part,
+        data: RequestBody
+    ): Flow<Result<Int>> {
+        return remoteCourseDataSource.uploadCourse(image = image, data = data).mapToFlowResult {
+            it.id
+        }
+    }
+}

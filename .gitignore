@@ -6,6 +6,12 @@ build/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# Release Keystore
+RunnectKeystore.jks
+
+# google client id
+credentials.json
+
 # Log/OS Files
 *.log
 
@@ -123,7 +129,7 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
-
+.idea/Runnect-Android.iml
 # Legacy Eclipse project files
 .classpath
 .project
@@ -160,3 +166,7 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+
+#Login API KEY
+/app/src/main/res/values/kakao_strings.xml
+gradle/gradle-daemon-jvm.properties

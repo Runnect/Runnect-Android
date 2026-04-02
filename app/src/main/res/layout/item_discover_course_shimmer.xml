@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:id="@+id/layout_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:scale_base_height="154"
+            app:scale_base_width="162">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_item_discover_course_info_scrap_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/G4"
+                app:cardCornerRadius="5dp"
+                app:scale_height="114"
+                app:scale_width="162">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_item_discover_course_info_map_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <View
+                android:id="@+id/iv_item_discover_course_info_scrap_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@color/G4"
+                app:scale_height="16"
+                app:scale_top="121"
+                app:scale_width="21" />
+
+            <View
+                android:id="@+id/tv_item_discover_course_info_title_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/G4"
+                app:scale_height="16"
+                app:scale_top="121"
+                app:scale_width="100" />
+
+            <View
+                android:id="@+id/tv_item_discover_course_info_location_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/G4"
+                app:scale_height="14"
+                app:scale_top="140"
+                app:scale_width="64" />
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:id="@+id/layout_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:scale_base_height="154"
+            app:scale_base_width="162">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_item_discover_course_info_scrap_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/G4"
+                app:cardCornerRadius="5dp"
+                app:scale_height="114"
+                app:scale_width="162">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_item_discover_course_info_map_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <View
+                android:id="@+id/iv_item_discover_course_info_scrap_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@color/G4"
+                app:scale_height="16"
+                app:scale_top="121"
+                app:scale_width="21" />
+
+            <View
+                android:id="@+id/tv_item_discover_course_info_title_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/G4"
+                app:scale_height="16"
+                app:scale_top="121"
+                app:scale_width="100" />
+
+            <View
+                android:id="@+id/tv_item_discover_course_info_location_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/G4"
+                app:scale_height="14"
+                app:scale_top="140"
+                app:scale_width="64" />
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

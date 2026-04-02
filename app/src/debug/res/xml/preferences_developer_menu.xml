@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Runnect Developer Mode"
+        app:icon="@mipmap/ic_runnect_launcher_foreground"
+        app:iconSpaceReserved="false" />
+
+    <PreferenceCategory
+        android:title="사용자 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_key_access_token"
+            android:title="엑세스 토큰"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_key_refresh_token"
+            android:title="리프레시 토큰"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_key_share_tokens"
+            android:title="토큰 공유하기"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="서버 모드 설정"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:key="dev_pref_key_api_mode"
+            android:title="서버 모드 설정"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="서버 상태"
+        app:iconSpaceReserved="false">
+
+        <com.runnect.runnect.developer.presentation.custom.ServerStatusPreference
+            android:key="dev_pref_prod_server_status"
+            android:title="Prod 서버 상태"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/pref_server_status_layout" />
+
+        <com.runnect.runnect.developer.presentation.custom.ServerStatusPreference
+            android:key="dev_pref_test_server_status"
+            android:title="Test 서버 상태"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/pref_server_status_layout" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="디바이스 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_android_version"
+            android:title="안드로이드 버전"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="dev_pref_sdk_version"
+            android:title="SDK 버전"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="dev_pref_model_name"
+            android:title="모델 명"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="화면 정보"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="dev_pref_display_ratio"
+            android:title="화면 비율"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_display_density"
+            android:title="화면 밀도"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dev_pref_display_resource_bucket"
+            android:title="리소스 버킷"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>

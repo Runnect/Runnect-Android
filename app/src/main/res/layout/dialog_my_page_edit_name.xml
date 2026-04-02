@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.runnect.runnect.presentation.mypage.MyPageViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/const_my_page_dialog_frame"
+            android:layout_width="330dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="330:97"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/my_page_name_edit_dialog_radius">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_my_page_dialog_edit_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:fontFamily="@font/pretendard_semibold"
+                android:text="@string/my_page_dialog_edit_name"
+                android:textColor="@color/G1"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_my_page_dialog_edit_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:backgroundTint="@color/transparent_00"
+                android:hint="@string/my_page_dialog_edit_name_hint"
+                android:textSize="13sp"
+                android:fontFamily="@font/pretendard_regular"
+                android:textColorHint="@color/G2"
+                android:textColor="@color/G1"
+                android:gravity="top"
+                android:maxLength="7"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="0dp"
+                android:textCursorDrawable="@color/M1"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintStart_toStartOf="@id/tv_my_page_dialog_edit_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_my_page_dialog_edit_name" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="77dp"
+                android:layout_marginEnd="24dp"
+                android:background="@color/G3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

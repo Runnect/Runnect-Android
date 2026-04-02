@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.ssomai.android.scalablelayout.ScalableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:scale_base_height="102"
+        app:scale_base_width="80">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_item_my_page_reward_circle_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/reward_circle_frame"
+            app:scale_height="80"
+            app:scale_width="80" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_my_page_reward_condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:text="@string/item_mypage_reward_course_count"
+            android:textColor="@color/G1"
+            app:scale_height="14"
+            app:scale_textsize="12"
+            app:scale_top="88"
+            app:scale_width="80" />
+    </com.ssomai.android.scalablelayout.ScalableLayout>
+</layout>
