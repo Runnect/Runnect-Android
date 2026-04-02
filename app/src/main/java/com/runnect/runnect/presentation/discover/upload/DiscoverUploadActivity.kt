@@ -14,6 +14,8 @@ import com.runnect.runnect.databinding.ActivityDiscoverUploadBinding
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.discover.pick.DiscoverPickActivity
+import com.runnect.runnect.presentation.event.ScreenRefreshEvent
+import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_COURSE_UPLOAD
@@ -23,11 +25,17 @@ import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
+import javax.inject.Inject
 import timber.log.Timber
 
 @AndroidEntryPoint
 class DiscoverUploadActivity :
     BindingActivity<ActivityDiscoverUploadBinding>(R.layout.activity_discover_upload) {
+    @Inject
+    lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
     private val viewModel: DiscoverUploadViewModel by viewModels()
     private val uploadCourse: DiscoverUploadCourse? by lazy {
         intent.getCompatibleParcelableExtra(
@@ -108,12 +116,14 @@ class DiscoverUploadActivity :
         showToast("업로드 완료!")
         binding.indeterminateBar.isVisible = false
 
+        lifecycleScope.launch {
+            screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshDiscoverCourses)
+        }
+
         Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(this)
         }
-
-        MainActivity.updateCourseDiscoverScreen()
         applyScreenExitAnimation()
     }
 

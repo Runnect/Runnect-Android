@@ -44,6 +44,7 @@ import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.CustomDialogMakeCourseBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.analytics.Analytics
@@ -55,6 +56,7 @@ import com.runnect.runnect.util.extension.setActivityDialog
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -67,6 +69,9 @@ import java.math.RoundingMode
 @AndroidEntryPoint
 class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
     private lateinit var locationSource: FusedLocationSource
     private lateinit var currentLocation: LatLng
     private lateinit var fusedLocation: FusedLocationProviderClient // 현재 위치 반환 객체 변수
@@ -95,7 +100,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
 
     var isFirstInit: Boolean = true
 

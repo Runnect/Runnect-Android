@@ -1,12 +1,12 @@
 package com.runnect.runnect.presentation.storage
 
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
@@ -14,6 +14,8 @@ import com.runnect.runnect.domain.entity.MyScrapCourse
 import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.event.ScreenRefreshEvent
+import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
@@ -23,7 +25,9 @@ import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
 import com.runnect.runnect.util.callback.listener.OnScrapItemClick
 import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class StorageScrapFragment :
@@ -31,6 +35,9 @@ class StorageScrapFragment :
     OnHeartButtonClick,
     OnScrapItemClick,
     ItemCount {
+    @Inject
+    lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
     val viewModel: StorageViewModel by viewModels()
     private lateinit var storageScrapAdapter: StorageScrapAdapter
 
@@ -81,8 +88,6 @@ class StorageScrapFragment :
 
     private fun initGoToScrapButtonClickListener() {
         binding.btnStorageNoScrap.setOnClickListener {
-            isFromStorageScrap = true
-
             val intent = Intent(activity, MainActivity::class.java).apply {
                 putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromMyScrap")
             }
@@ -105,6 +110,17 @@ class StorageScrapFragment :
         setupItemSizeObserver()
         setupMyScrapCourseGetStateObserver()
         setupCourseScrapStateObserver()
+        collectScreenRefreshEvents()
+    }
+
+    private fun collectScreenRefreshEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            screenRefreshEventBus.events.collect { event ->
+                if (event is ScreenRefreshEvent.RefreshStorageScrap) {
+                    getMyScrapCourses()
+                }
+            }
+        }
     }
 
     private fun setupCourseScrapStateObserver() {
@@ -205,20 +221,7 @@ class StorageScrapFragment :
         )
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is MainActivity) {
-            MainActivity.storageScrapFragment = this
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MainActivity.storageScrapFragment = null
-    }
-
     companion object {
-        var isFromStorageScrap = false
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"

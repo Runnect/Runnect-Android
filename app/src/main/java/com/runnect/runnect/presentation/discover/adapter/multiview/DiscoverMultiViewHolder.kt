@@ -26,11 +26,12 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         private val binding: ItemDiscoverMultiviewMarathonBinding,
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
-        handleVisitorMode: () -> Unit
+        handleVisitorMode: () -> Unit,
+        isVisitorMode: () -> Boolean
     ) : DiscoverMultiViewHolder(binding) {
         val marathonAdapter by lazy {
             DiscoverMarathonAdapter(
-                onHeartButtonClick, onCourseItemClick, handleVisitorMode
+                onHeartButtonClick, onCourseItemClick, handleVisitorMode, isVisitorMode
             )
         }
 
@@ -69,13 +70,15 @@ sealed class DiscoverMultiViewHolder(binding: ViewDataBinding) :
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
+        isVisitorMode: () -> Boolean,
         private val onSortButtonClick: (String) -> Unit
     ) : DiscoverMultiViewHolder(binding) {
         val recommendAdapter by lazy {
             DiscoverRecommendAdapter(
                 onHeartButtonClick,
                 onCourseItemClick,
-                handleVisitorMode
+                handleVisitorMode,
+                isVisitorMode
             )
         }
 
