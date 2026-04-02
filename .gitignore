@@ -169,3 +169,4 @@ fabric.properties
 
 #Login API KEY
 /app/src/main/res/values/kakao_strings.xml
+gradle/gradle-daemon-jvm.properties

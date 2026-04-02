@@ -4,10 +4,14 @@ plugins {
 
     id 'kotlin-parcelize'
 
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.2.0'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'dagger.hilt.android.plugin'
 
-    // plugin for data binding, hilt
+    // plugin for ksp (Hilt, Glide)
+    id 'com.google.devtools.ksp'
+
+    // plugin for data binding
     id 'kotlin-kapt'
 
     // plugin for hiding keys used in manifest
@@ -66,10 +70,6 @@ android {
         buildConfig = true
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.4.3'
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -128,10 +128,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    ksp "com.google.dagger:hilt-compiler:$hilt_version"
     // Glide
-    implementation "com.github.bumptech.glide:glide:4.12.0"
-    kapt "com.github.bumptech.glide:compiler:4.12.0"
+    implementation "com.github.bumptech.glide:glide:4.16.0"
+    ksp "com.github.bumptech.glide:ksp:4.16.0"
     //fragment change
     implementation("androidx.fragment:fragment-ktx:1.5.5")
     //coil
