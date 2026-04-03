@@ -69,6 +69,15 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def timestamp = new Date().format('yyyyMMdd_HHmmss')
+            def versionName = variant.versionName
+            def ext = outputFileName.endsWith('.aab') ? 'aab' : 'apk'
+            outputFileName = "Runnect-${variant.buildType.name}-v${versionName}-${timestamp}.${ext}"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
