@@ -118,7 +118,7 @@ class DiscoverUploadActivity :
         Analytics.logEvent(
             EventName.ACTION_COURSE_UPLOAD_COMPLETE,
             Param.COURSE_ID to viewModel.id,
-            Param.DISTANCE_M to uploadCourse?.distance
+            Param.DISTANCE_M to uploadCourse?.distance?.toDoubleOrNull()
         )
         showToast("업로드 완료!")
         binding.indeterminateBar.isVisible = false

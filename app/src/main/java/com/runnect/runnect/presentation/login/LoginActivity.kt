@@ -112,7 +112,7 @@ class LoginActivity :
             Analytics.logEvent(
                 EventName.ACTION_LOGIN_FAIL,
                 Param.METHOD to method,
-                Param.ERROR_CODE to it
+                Param.ERROR_CODE to "LOGIN_FAIL"
             )
             showSnackbar(binding.root, it)
             Timber.tag(ContentValues.TAG).d("로그인 통신 실패: $it")

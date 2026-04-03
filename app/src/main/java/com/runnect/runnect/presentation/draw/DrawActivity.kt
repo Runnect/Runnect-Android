@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.draw
 
+import kotlin.math.roundToInt
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -494,10 +495,11 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
                     hideLoadingBar()
+                    val distanceM = ((viewModel.distanceSum.value ?: 0f) * 1000f).roundToInt()
                     Analytics.logEvent(
                         EventName.ACTION_COURSE_DRAWING_COMPLETE,
                         Param.COURSE_ID to viewModel.uploadCourseId,
-                        Param.DISTANCE_M to viewModel.distanceSum.value,
+                        Param.DISTANCE_M to distanceM,
                         Param.POINT_COUNT to touchList.size,
                         Param.DEPARTURE_NAME to viewModel.departureName
                     )
@@ -561,10 +563,11 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 dialog.dismiss()
             }
         }
+        val resultDistanceM = ((viewModel.distanceSum.value ?: 0f) * 1000f).roundToInt()
         Analytics.logEvent(
             EventName.VIEW_COURSE_COMPLETE_RESULT,
             Param.COURSE_ID to viewModel.uploadCourseId,
-            Param.DISTANCE_M to viewModel.distanceSum.value
+            Param.DISTANCE_M to resultDistanceM
         )
         dialog.show()
     }

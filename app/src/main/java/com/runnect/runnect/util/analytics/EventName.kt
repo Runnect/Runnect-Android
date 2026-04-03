@@ -2,9 +2,7 @@ package com.runnect.runnect.util.analytics
 
 object EventName {
 
-    // ========================================
     // App Start / Onboarding
-    // ========================================
 
     // App
     const val EVENT_VIEW_HOME = "view_home"
@@ -35,9 +33,7 @@ object EventName {
     const val EVENT_CLICK_JOIN_IN_STORAGE = "click_join_in_storage"
     const val EVENT_CLICK_JOIN_IN_MY_PAGE = "click_join_in_my_page"
 
-    // ========================================
     // Course Drawing
-    // ========================================
 
     const val EVENT_CLICK_COURSE_DRAWING = "click_course_drawing"
     const val EVENT_CLICK_CURRENT_LOCATE = "click_current_locate"
@@ -54,9 +50,7 @@ object EventName {
     const val ACTION_COURSE_DRAWING_START = "action_course_drawing_start"
     const val CLICK_SHARE_AFTER_COURSE_COMPLETE = "click_share_after_course_complete"
 
-    // ========================================
     // Running
-    // ========================================
 
     // Existing
     const val EVENT_CLICK_BACK_RUNNING_TRACKING = "click_back_running_tracking"
@@ -81,9 +75,7 @@ object EventName {
     const val CLICK_SHARE_RUN_RECORD = "click_share_run_record"
     const val CLICK_RUN_AGAIN = "click_run_again"
 
-    // ========================================
     // Course Discovery
-    // ========================================
 
     const val EVENT_CLICK_UPLOAD_BUTTON = "click_upload_button"
     const val EVENT_CLICK_DATE = "click_date_sort"
@@ -108,9 +100,7 @@ object EventName {
     const val CLICK_UNSCRAP = "click_unscrap"
     const val ACTION_COURSE_UPLOAD_COMPLETE = "action_course_upload_complete"
 
-    // ========================================
     // Storage
-    // ========================================
 
     const val EVENT_CLICK_MY_DRAW_STORAGE_COURSE_DRAWING_START =
         "click_my_storage_course_drawing_start"
@@ -126,18 +116,14 @@ object EventName {
     const val CLICK_MY_DRAW_COURSE = "click_my_draw_course"
     const val VIEW_MY_DRAW_DETAIL = "view_my_draw_detail"
 
-    // ========================================
     // Navigation Menu
-    // ========================================
 
     const val EVENT_CLICK_NAV_COURSE_DRAWING = "click_nav_course_drawing"
     const val EVENT_CLICK_NAV_COURSE_DISCOVERY = "click_nav_course_discovery"
     const val EVENT_CLICK_NAV_STORAGE = "click_nav_storage"
     const val EVENT_CLICK_NAV_MY_PAGE = "click_nav_my_page"
 
-    // ========================================
     // MyPage
-    // ========================================
 
     const val EVENT_CLICK_RUNNING_RECORD = "click_running_record"
     const val EVENT_CLICK_GOAL_REWARD = "click_goal_reward"
@@ -160,9 +146,7 @@ object EventName {
     const val EVENT_CLICK_COURSE_UPLOAD_IN_UPLOADED_COURSE =
         "click_course_upload_in_uploaded_course"
 
-    // ========================================
     // Settings / System
-    // ========================================
 
     const val EVENT_VIEW_SUCCESS_LOGOUT = "view_success_logout"
     const val EVENT_CLICK_TRY_LOGOUT = "click_try_logout"
@@ -172,9 +156,7 @@ object EventName {
     // Phase 2: System
     const val SYS_DEEPLINK_OPEN = "sys_deeplink_open"
 
-    // ========================================
     // Parameter Keys
-    // ========================================
 
     object Param {
         const val SOURCE = "source"

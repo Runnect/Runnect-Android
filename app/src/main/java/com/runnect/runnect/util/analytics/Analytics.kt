@@ -45,11 +45,11 @@ object Analytics {
                 for ((key, value) in params) {
                     when (value) {
                         is String -> putString(key, value)
-                        is Int -> putInt(key, value)
+                        is Int -> putLong(key, value.toLong())
                         is Long -> putLong(key, value)
-                        is Float -> putFloat(key, value)
+                        is Float -> putDouble(key, value.toDouble())
                         is Double -> putDouble(key, value)
-                        is Boolean -> putBoolean(key, value)
+                        is Boolean -> putLong(key, if (value) 1L else 0L)
                         null -> {}
                     }
                 }

@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.run
 
+import kotlin.math.roundToInt
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -98,10 +99,11 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         backButton()
 
         val runCourseData: CourseData? = intent.getParcelableExtra(EXTRA_COUNTDOWN_TO_RUN)
+        val targetDistanceM = runCourseData?.distance?.let { (it * 1000f).roundToInt() }
         Analytics.logEvent(
             EventName.ACTION_RUN_START,
             Param.COURSE_ID to runCourseData?.courseId,
-            Param.TARGET_DISTANCE_M to runCourseData?.distance
+            Param.TARGET_DISTANCE_M to targetDistanceM
         )
     }
 
@@ -173,7 +175,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
             Analytics.logEvent(
                 EventName.ACTION_RUN_ABANDON,
                 Param.COURSE_ID to courseId,
-                Param.DISTANCE_M to distanceSum
+                Param.DISTANCE_M to (distanceSum * 1000.0).roundToInt()
             )
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
@@ -184,7 +186,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         Analytics.logEvent(
             EventName.ACTION_RUN_ABANDON,
             Param.COURSE_ID to courseId,
-            Param.DISTANCE_M to distanceSum
+            Param.DISTANCE_M to (distanceSum * 1000.0).roundToInt()
         )
         stopTimer()
         finish()
@@ -341,7 +343,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
                 EventName.ACTION_RUN_COMPLETE,
                 Param.COURSE_ID to courseId,
                 Param.TOTAL_TIME_SEC to totalTimeSec,
-                Param.TOTAL_DISTANCE_M to distanceSum
+                Param.TOTAL_DISTANCE_M to (distanceSum * 1000.0).roundToInt()
             )
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
                 putExtra(
