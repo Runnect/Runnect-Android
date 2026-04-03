@@ -79,6 +79,11 @@ jobs:
               env:
                   KAKAO_CHANNEL_ID: ${{ secrets.KAKAO_CHANNEL_ID }}
               run: echo "KAKAO_CHANNEL_ID=\"$KAKAO_CHANNEL_ID\"" >> local.properties
+
+            - name: Access REMOTE_KEY_FORCE_UPDATE
+              env:
+                  REMOTE_KEY_FORCE_UPDATE: ${{ secrets.REMOTE_KEY_FORCE_UPDATE }}
+              run: echo "REMOTE_KEY_FORCE_UPDATE=\"$REMOTE_KEY_FORCE_UPDATE\"" >> local.properties
               
             - name: Add kakao_strings.xml
               env:

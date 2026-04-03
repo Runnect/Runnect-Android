@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
+import com.runnect.runnect.BuildConfig.REMOTE_KEY_FORCE_UPDATE
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
@@ -136,8 +137,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
             fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    val forceUpdate = getBoolean(REMOTE_KEY_FORCE_UPDATE)
                     val updateAppVersion = getString(REMOTE_KEY_APP_VERSION)
-                    if (localAppVersion != updateAppVersion) {
+                    if (forceUpdate && localAppVersion != updateAppVersion) {
                         initUpdateDialog()
                     }
                 }
