@@ -124,7 +124,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     override fun onStart() {
         super.onStart()
         // Timer 결과값을 받기 위해 브로드캐스트 리시버 등록
-        registerReceiver(timerReceiver, IntentFilter(TIMER_UPDATE_ACTION))
+        registerReceiver(timerReceiver, IntentFilter(TIMER_UPDATE_ACTION), RECEIVER_NOT_EXPORTED)
     }
 
     override fun onStop() {

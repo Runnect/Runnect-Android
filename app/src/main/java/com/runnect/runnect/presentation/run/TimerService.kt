@@ -73,6 +73,7 @@ class TimerService : Service() {
                         second = second
                     )
                 )
+                intent.setPackage(packageName)
                 sendBroadcast(intent)
 
                 // 알림의 내용 업데이트
