@@ -48,6 +48,7 @@ class StorageScrapFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        Analytics.logEvent(EventName.VIEW_STORAGE_SCRAP)
         getMyScrapCourses()
         initLayout()
         initAdapter()

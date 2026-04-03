@@ -71,6 +71,7 @@ class StorageMyDrawFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        Analytics.logEvent(EventName.VIEW_STORAGE_MY_DRAW)
         initLayout()
         initAdapter()
         getCourse()
