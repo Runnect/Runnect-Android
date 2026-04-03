@@ -1,10 +1,12 @@
 package com.runnect.runnect.presentation.ui.theme
 
-import androidx.compose.material3.Typography
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.runnect.runnect.R
 
@@ -20,65 +22,83 @@ val PretendardFontFamily = FontFamily(
     Font(R.font.pretendard_black, FontWeight.Black),
 )
 
-val RunnectTypography = Typography(
-    displayLarge = TextStyle(
+@Immutable
+data class RunnectTextStyles(
+    val bold28: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
+        fontSize = 28.dp.value.sp,
     ),
-    headlineLarge = TextStyle(
+    val bold22: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
+        fontSize = 22.dp.value.sp,
     ),
-    headlineMedium = TextStyle(
+    val bold20: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
+        fontSize = 20.dp.value.sp,
     ),
-    titleLarge = TextStyle(
+    val bold17: TextStyle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.dp.value.sp,
+    ),
+    val bold15: TextStyle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 15.dp.value.sp,
+    ),
+    val semiBold17: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 17.sp,
+        fontSize = 17.dp.value.sp,
     ),
-    titleMedium = TextStyle(
+    val semiBold15: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 15.sp,
+        fontSize = 15.dp.value.sp,
     ),
-    titleSmall = TextStyle(
+    val semiBold13: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 13.sp,
+        fontSize = 13.dp.value.sp,
     ),
-    bodyLarge = TextStyle(
-        fontFamily = PretendardFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontFamily = PretendardFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-    ),
-    bodySmall = TextStyle(
-        fontFamily = PretendardFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-    ),
-    labelLarge = TextStyle(
+    val medium15: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontSize = 15.dp.value.sp,
     ),
-    labelMedium = TextStyle(
+    val medium14: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontSize = 14.dp.value.sp,
     ),
-    labelSmall = TextStyle(
+    val medium13: TextStyle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
+        fontSize = 13.dp.value.sp,
+    ),
+    val medium12: TextStyle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.dp.value.sp,
+    ),
+    val regular16: TextStyle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.dp.value.sp,
+    ),
+    val regular14: TextStyle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.dp.value.sp,
+    ),
+    val regular12: TextStyle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.dp.value.sp,
     ),
 )
+
+val LocalRunnectTextStyles = staticCompositionLocalOf { RunnectTextStyles() }

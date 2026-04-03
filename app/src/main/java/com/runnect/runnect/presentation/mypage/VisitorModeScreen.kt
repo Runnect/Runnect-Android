@@ -17,20 +17,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.runnect.runnect.R
 import com.runnect.runnect.presentation.ui.theme.G2
 import com.runnect.runnect.presentation.ui.theme.M1
-import com.runnect.runnect.presentation.ui.theme.PretendardFontFamily
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.presentation.ui.theme.White
 
 @Composable
 fun VisitorModeScreen(
     onSignUpClick: () -> Unit
 ) {
+    val textStyle = RunnectTheme.textStyle
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,9 +43,7 @@ fun VisitorModeScreen(
         Spacer(modifier = Modifier.height(13.dp))
         Text(
             text = stringResource(R.string.visitor_mode_mypage_message),
-            fontFamily = PretendardFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 13.sp,
+            style = textStyle.medium13,
             color = G2,
             textAlign = TextAlign.Center,
             lineHeight = 18.sp
@@ -62,9 +60,7 @@ fun VisitorModeScreen(
         ) {
             Text(
                 text = stringResource(R.string.visitor_mode_signup_btn),
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp,
+                style = textStyle.semiBold15,
                 color = White
             )
         }

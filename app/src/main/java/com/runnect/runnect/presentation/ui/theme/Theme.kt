@@ -3,6 +3,8 @@ package com.runnect.runnect.presentation.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 
 private val RunnectColorScheme = lightColorScheme(
     primary = M1,
@@ -29,9 +31,19 @@ private val RunnectColorScheme = lightColorScheme(
 fun RunnectTheme(
     content: @Composable () -> Unit
 ) {
-    MaterialTheme(
-        colorScheme = RunnectColorScheme,
-        typography = RunnectTypography,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalRunnectTextStyles provides RunnectTextStyles()
+    ) {
+        MaterialTheme(
+            colorScheme = RunnectColorScheme,
+            content = content
+        )
+    }
+}
+
+object RunnectTheme {
+    val textStyle: RunnectTextStyles
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalRunnectTextStyles.current
 }

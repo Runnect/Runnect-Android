@@ -33,9 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.runnect.runnect.R
 import com.runnect.runnect.presentation.ui.theme.G1
@@ -44,7 +42,7 @@ import com.runnect.runnect.presentation.ui.theme.G3
 import com.runnect.runnect.presentation.ui.theme.G4
 import com.runnect.runnect.presentation.ui.theme.M1
 import com.runnect.runnect.presentation.ui.theme.M3
-import com.runnect.runnect.presentation.ui.theme.PretendardFontFamily
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 
 @Composable
 fun MyPageScreen(
@@ -112,6 +110,7 @@ fun MyPageScreen(
 
 @Composable
 private fun MyPageToolbar() {
+    val textStyle = RunnectTheme.textStyle
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,9 +120,7 @@ private fun MyPageToolbar() {
     ) {
         Text(
             text = stringResource(R.string.my_page_title),
-            fontFamily = PretendardFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
+            style = textStyle.bold20,
             color = G1
         )
     }
@@ -135,6 +132,7 @@ private fun ProfileSection(
     profileImgResId: Int,
     onEditClick: () -> Unit
 ) {
+    val textStyle = RunnectTheme.textStyle
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,9 +148,7 @@ private fun ProfileSection(
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = nickname,
-            fontFamily = PretendardFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 17.sp,
+            style = textStyle.bold17,
             color = M1
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -171,9 +167,7 @@ private fun ProfileSection(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = stringResource(R.string.my_page_edit),
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
+                style = textStyle.medium12,
                 color = M1
             )
         }
@@ -185,6 +179,7 @@ private fun LevelProgressSection(
     level: String,
     levelPercent: Int
 ) {
+    val textStyle = RunnectTheme.textStyle
     val clampedPercent = levelPercent.coerceIn(0, 100)
 
     Column(
@@ -196,16 +191,12 @@ private fun LevelProgressSection(
         Row {
             Text(
                 text = stringResource(R.string.my_page_lv_indicator),
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
+                style = textStyle.bold15,
                 color = G1
             )
             Text(
                 text = level,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
+                style = textStyle.bold15,
                 color = G1
             )
         }
@@ -226,16 +217,12 @@ private fun LevelProgressSection(
         ) {
             Text(
                 text = clampedPercent.toString(),
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 13.sp,
+                style = textStyle.semiBold13,
                 color = G1
             )
             Text(
                 text = stringResource(R.string.my_page_progress_max),
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 13.sp,
+                style = textStyle.semiBold13,
                 color = G2
             )
         }
@@ -281,6 +268,7 @@ private fun MenuItem(
     onClick: () -> Unit,
     showDivider: Boolean = true
 ) {
+    val textStyle = RunnectTheme.textStyle
     Column {
         Row(
             modifier = Modifier
@@ -297,9 +285,7 @@ private fun MenuItem(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = title,
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 15.sp,
+                style = textStyle.medium15,
                 color = G1
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -317,6 +303,7 @@ private fun MenuItem(
 
 @Composable
 private fun VersionSection() {
+    val textStyle = RunnectTheme.textStyle
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -327,16 +314,12 @@ private fun VersionSection() {
     ) {
         Text(
             text = stringResource(R.string.my_page_version_title),
-            fontFamily = PretendardFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 15.sp,
+            style = textStyle.medium15,
             color = G2
         )
         Text(
             text = stringResource(R.string.my_page_version),
-            fontFamily = PretendardFontFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
+            style = textStyle.regular14,
             color = G2
         )
     }
