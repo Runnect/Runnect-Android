@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
+import com.runnect.runnect.BuildConfig.REMOTE_KEY_FORCE_UPDATE
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
@@ -164,7 +165,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     companion object {
         const val REMOTE_CONFIG_FETCH_INTERVAL_SECONDS = 3600L
-        const val REMOTE_KEY_FORCE_UPDATE = "force_update"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }
