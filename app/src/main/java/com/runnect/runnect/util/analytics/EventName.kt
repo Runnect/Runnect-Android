@@ -118,10 +118,10 @@ object EventName {
 
     // Navigation Menu
 
-    const val EVENT_CLICK_NAV_COURSE_DRAWING = "click_nav_course_drawing"
-    const val EVENT_CLICK_NAV_COURSE_DISCOVERY = "click_nav_course_discovery"
-    const val EVENT_CLICK_NAV_STORAGE = "click_nav_storage"
-    const val EVENT_CLICK_NAV_MY_PAGE = "click_nav_my_page"
+    const val EVENT_CLICK_NAV_COURSE_DRAWING = "click_course_drawing_tab_bar"
+    const val EVENT_CLICK_NAV_COURSE_DISCOVERY = "click_course_discovery_tab_bar"
+    const val EVENT_CLICK_NAV_STORAGE = "click_storage_tab_bar"
+    const val EVENT_CLICK_NAV_MY_PAGE = "click_my_page_tab_bar"
 
     // MyPage
 
