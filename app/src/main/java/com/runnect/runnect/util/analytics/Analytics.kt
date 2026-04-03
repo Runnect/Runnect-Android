@@ -2,7 +2,6 @@ package com.runnect.runnect.util.analytics
 
 import android.content.Context
 import android.os.Bundle
-import android.util.StatsLog.logEvent
 import com.google.android.gms.common.wrappers.InstantApps
 import com.google.firebase.analytics.FirebaseAnalytics
 
@@ -16,7 +15,6 @@ object Analytics {
     fun initializeFirebaseAnalytics(context: Context) {
         firebaseAnalytics = FirebaseAnalytics.getInstance(context)
 
-        // 현재 앱이 인스턴트 앱인지를 확인하고, 그 여부에 따라 UserProperty 다르게 세팅
         if (InstantApps.isInstantApp(context)) {
             setUserProperty(ANALYTICS_USER_PROP, STATUS_INSTANT)
         } else {
@@ -37,4 +35,26 @@ object Analytics {
         firebaseAnalytics?.logEvent(eventName, bundle)
     }
 
+    fun logEvent(eventName: String, params: Bundle? = null) {
+        firebaseAnalytics?.logEvent(eventName, params)
+    }
+
+    fun logEvent(eventName: String, vararg params: Pair<String, Any?>) {
+        val bundle = if (params.isNotEmpty()) {
+            Bundle().apply {
+                for ((key, value) in params) {
+                    when (value) {
+                        is String -> putString(key, value)
+                        is Int -> putInt(key, value)
+                        is Long -> putLong(key, value)
+                        is Float -> putFloat(key, value)
+                        is Double -> putDouble(key, value)
+                        is Boolean -> putBoolean(key, value)
+                        null -> {}
+                    }
+                }
+            }
+        } else null
+        firebaseAnalytics?.logEvent(eventName, bundle)
+    }
 }

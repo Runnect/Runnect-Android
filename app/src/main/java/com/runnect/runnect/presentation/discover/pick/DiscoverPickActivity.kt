@@ -14,6 +14,8 @@ import com.runnect.runnect.presentation.discover.pick.adapter.DiscoverPickAdapte
 import com.runnect.runnect.presentation.discover.upload.DiscoverUploadActivity
 import com.runnect.runnect.presentation.search.SearchActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
@@ -30,6 +32,7 @@ class DiscoverPickActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        Analytics.logEvent(EventName.VIEW_DISCOVER_PICK)
 
         initLayout()
         addListener()

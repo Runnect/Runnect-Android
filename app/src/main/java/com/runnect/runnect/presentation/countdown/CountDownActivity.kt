@@ -12,6 +12,9 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCountDownBinding
 import com.runnect.runnect.presentation.run.RunActivity
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.extension.getCompatibleParcelableExtra
 import timber.log.Timber
 
@@ -20,6 +23,11 @@ class CountDownActivity: BindingActivity<ActivityCountDownBinding>(R.layout.acti
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Analytics.logEvent(
+            EventName.VIEW_COUNTDOWN,
+            Param.COURSE_ID to courseData?.courseId
+        )
 
         val intentToRun = Intent(this, RunActivity::class.java)
         val numList = arrayListOf(
@@ -32,6 +40,10 @@ class CountDownActivity: BindingActivity<ActivityCountDownBinding>(R.layout.acti
     }
 
     override fun onBackPressed() {
+        Analytics.logEvent(
+            EventName.CLICK_CANCEL_COUNTDOWN,
+            Param.COURSE_ID to courseData?.courseId
+        )
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }

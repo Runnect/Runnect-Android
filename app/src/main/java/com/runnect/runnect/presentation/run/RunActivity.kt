@@ -37,6 +37,9 @@ import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
 import com.runnect.runnect.presentation.run.TimerService.Companion.TIMER_UPDATE_ACTION
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.extension.round
 
 class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
@@ -93,6 +96,13 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         getCurrentLocation()
         showRecord()
         backButton()
+
+        val runCourseData: CourseData? = intent.getParcelableExtra(EXTRA_COUNTDOWN_TO_RUN)
+        Analytics.logEvent(
+            EventName.ACTION_RUN_START,
+            Param.COURSE_ID to runCourseData?.courseId,
+            Param.TARGET_DISTANCE_M to runCourseData?.distance
+        )
     }
 
     private fun initView() {
@@ -160,12 +170,22 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
     private fun backButton() {
         binding.imgBtnBack.setOnClickListener {
+            Analytics.logEvent(
+                EventName.ACTION_RUN_ABANDON,
+                Param.COURSE_ID to courseId,
+                Param.DISTANCE_M to distanceSum
+            )
             finish()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
     override fun onBackPressed() {
+        Analytics.logEvent(
+            EventName.ACTION_RUN_ABANDON,
+            Param.COURSE_ID to courseId,
+            Param.DISTANCE_M to distanceSum
+        )
         stopTimer()
         finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
@@ -316,6 +336,13 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private fun showRecord() {
         binding.btnRunFinish.setOnClickListener {
             stopTimer()
+            val totalTimeSec = ((timerData.hour ?: 0) * 3600) + ((timerData.minute ?: 0) * 60) + (timerData.second ?: 0)
+            Analytics.logEvent(
+                EventName.ACTION_RUN_COMPLETE,
+                Param.COURSE_ID to courseId,
+                Param.TOTAL_TIME_SEC to totalTimeSec,
+                Param.TOTAL_DISTANCE_M to distanceSum
+            )
             val intent = Intent(this@RunActivity, EndRunActivity::class.java).apply {
                 putExtra(
                     EXTRA_RUN_TO_ENDRUN,

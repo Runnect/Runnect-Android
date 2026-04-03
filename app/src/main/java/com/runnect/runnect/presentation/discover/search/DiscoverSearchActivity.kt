@@ -24,7 +24,9 @@ import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.adapter.DiscoverSearchAdapter
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_TRY_SEARCH_COURSE
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_SEARCH
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
@@ -173,6 +175,11 @@ class DiscoverSearchActivity :
                     dismissProgressBar()
                     showRecyclerView()
                     searchAdapter.submitList(state.data)
+                    Analytics.logEvent(
+                        EventName.ACTION_COURSE_SEARCH_EXECUTE,
+                        Param.KEYWORD to binding.etDiscoverSearchTitle.text.toString(),
+                        Param.RESULT_COUNT to (state.data?.size ?: 0)
+                    )
                 }
 
                 else -> {
