@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.draw
 
+import kotlin.math.roundToInt
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -49,6 +50,7 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -110,6 +112,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         binding.model = viewModel
         binding.lifecycleOwner = this
 
+        Analytics.logEvent(EventName.VIEW_COURSE_DRAWING)
         initMapView()
         getSearchIntent()
         addObserver()
@@ -492,6 +495,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
                     hideLoadingBar()
+                    val distanceM = ((viewModel.distanceSum.value ?: 0f) * 1000f).roundToInt()
+                    Analytics.logEvent(
+                        EventName.ACTION_COURSE_DRAWING_COMPLETE,
+                        Param.COURSE_ID to viewModel.uploadCourseId,
+                        Param.DISTANCE_M to distanceM,
+                        Param.POINT_COUNT to touchList.size,
+                        Param.DEPARTURE_NAME to viewModel.departureName
+                    )
                     notifyCreateFinish()
                 }
 
@@ -552,6 +563,12 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 dialog.dismiss()
             }
         }
+        val resultDistanceM = ((viewModel.distanceSum.value ?: 0f) * 1000f).roundToInt()
+        Analytics.logEvent(
+            EventName.VIEW_COURSE_COMPLETE_RESULT,
+            Param.COURSE_ID to viewModel.uploadCourseId,
+            Param.DISTANCE_M to resultDistanceM
+        )
         dialog.show()
     }
 

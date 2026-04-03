@@ -13,8 +13,10 @@ import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
@@ -106,12 +108,24 @@ class LoginActivity :
             }
         }
         viewModel.errorMessage.observe(this) {
+            val method = if (::socialLogin.isInitialized && socialLogin is GoogleLogin) "google" else "kakao"
+            Analytics.logEvent(
+                EventName.ACTION_LOGIN_FAIL,
+                Param.METHOD to method,
+                Param.ERROR_CODE to "LOGIN_FAIL"
+            )
             showSnackbar(binding.root, it)
             Timber.tag(ContentValues.TAG).d("로그인 통신 실패: $it")
         }
     }
 
     private fun handleSuccessfulLogin() {
+        val method = if (::socialLogin.isInitialized && socialLogin is GoogleLogin) "google" else "kakao"
+        Analytics.logEvent(
+            EventName.ACTION_LOGIN_SUCCESS,
+            Param.METHOD to method,
+            Param.IS_NEW_USER to false
+        )
         saveSignTokenInfo()
         moveToMain()
         Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
@@ -119,6 +133,12 @@ class LoginActivity :
     }
 
     private fun handleSuccessfulSignup() {
+        val method = if (::socialLogin.isInitialized && socialLogin is GoogleLogin) "google" else "kakao"
+        Analytics.logEvent(
+            EventName.ACTION_LOGIN_SUCCESS,
+            Param.METHOD to method,
+            Param.IS_NEW_USER to true
+        )
         saveSignTokenInfo()
         moveToGiveNickName()
     }

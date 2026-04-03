@@ -39,8 +39,10 @@ import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.scheme.SchemeActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SHARE
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_USER_PROFILE
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_DETAIL
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
@@ -187,6 +189,11 @@ class CourseDetailActivity :
     }
 
     private fun navigateToCountDownScreen() {
+        Analytics.logEvent(
+            EventName.CLICK_RUN_FROM_DETAIL,
+            Param.COURSE_ID to courseDetail.courseId,
+            Param.DISTANCE_M to courseDetail.distance
+        )
         Intent(
             this@CourseDetailActivity,
             CountDownActivity::class.java
@@ -545,6 +552,12 @@ class CourseDetailActivity :
                     val response = state.data
                     binding.tvCourseDetailScrapCount.text = response.scrapCount.toString()
                     binding.ivCourseDetailScrap.isSelected = response.scrapTF
+                    if (!response.scrapTF) {
+                        Analytics.logEvent(
+                            EventName.CLICK_UNSCRAP,
+                            Param.COURSE_ID to publicCourseId
+                        )
+                    }
                 }
 
                 is UiStateV2.Failure -> {

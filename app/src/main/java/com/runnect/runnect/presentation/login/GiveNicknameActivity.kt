@@ -11,6 +11,9 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityGiveNicknameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
@@ -24,6 +27,7 @@ class GiveNicknameActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        Analytics.logEvent(EventName.VIEW_GIVE_NICKNAME)
         addListener()
         addObserver()
     }
@@ -70,6 +74,10 @@ class GiveNicknameActivity :
     }
 
     private fun handleSuccessfulSignup() {
+        Analytics.logEvent(
+            EventName.ACTION_NICKNAME_COMPLETE,
+            Param.NICKNAME_LENGTH to (viewModel.nickName.value?.length ?: 0)
+        )
         saveSignTokenInfo()
         showToast("회원가입 되었습니다")
         binding.indeterminateBar.isVisible = false

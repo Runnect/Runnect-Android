@@ -18,6 +18,9 @@ import com.runnect.runnect.data.dto.HistoryInfoDTO
 import com.runnect.runnect.databinding.ActivityMyHistoryDetailBinding
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
@@ -51,6 +54,10 @@ class MyHistoryDetailActivity :
         val runningHistory: HistoryInfoDTO? =
             bundle?.getCompatibleSerializableExtra(HISTORY_BUNDLE_KEY)
         initRunningHistory(runningHistory)
+        Analytics.logEvent(
+            EventName.VIEW_MY_HISTORY_DETAIL,
+            Param.RECORD_ID to runningHistory?.id
+        )
         enterReadMode()
     }
 

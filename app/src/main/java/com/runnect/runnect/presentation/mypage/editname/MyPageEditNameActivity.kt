@@ -13,6 +13,9 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMyPageEditNameBinding
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +28,7 @@ class MyPageEditNameActivity :
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        Analytics.logEvent(EventName.VIEW_EDIT_PROFILE)
         initLayout()
         addListener()
         addObserver()
@@ -66,6 +70,10 @@ class MyPageEditNameActivity :
                 UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     binding.indeterminateBar.isVisible = false
+                    Analytics.logEvent(
+                        EventName.ACTION_EDIT_PROFILE_COMPLETE,
+                        Param.CHANGED_FIELDS to "nickname"
+                    )
                     setResult(
                         RESULT_OK,
                         Intent().putExtra(EXTRA_NICK_NAME, viewModel.nickName.value)

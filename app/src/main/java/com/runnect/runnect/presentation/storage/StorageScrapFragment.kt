@@ -19,6 +19,9 @@ import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
@@ -45,6 +48,7 @@ class StorageScrapFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        Analytics.logEvent(EventName.VIEW_STORAGE_SCRAP)
         getMyScrapCourses()
         initLayout()
         initAdapter()
@@ -177,6 +181,10 @@ class StorageScrapFragment :
                     val scrapCourses = state.data
                     updateEmptyView(scrapCourses.isEmpty(), scrapCourses.size)
                     storageScrapAdapter.submitList(scrapCourses)
+                    Analytics.logEvent(
+                        EventName.VIEW_STORAGE_SCRAP,
+                        Param.COURSE_COUNT to scrapCourses.size
+                    )
                 }
 
                 is UiStateV2.Failure -> {

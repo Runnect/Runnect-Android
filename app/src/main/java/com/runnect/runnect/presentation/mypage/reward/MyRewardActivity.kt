@@ -12,6 +12,8 @@ import com.runnect.runnect.data.dto.RewardStampDTO
 import com.runnect.runnect.databinding.ActivityMyRewardBinding
 import com.runnect.runnect.presentation.mypage.reward.adapter.MyRewardAdapter
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
 import com.runnect.runnect.util.extension.getStampResId
 import com.runnect.runnect.util.extension.navigateToPreviousScreenWithAnimation
@@ -44,6 +46,7 @@ class MyRewardActivity : BindingActivity<ActivityMyRewardBinding>(R.layout.activ
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        Analytics.logEvent(EventName.VIEW_MY_REWARD)
         viewModel.getStampList()
 
         initLayout()

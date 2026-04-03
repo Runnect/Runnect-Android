@@ -32,6 +32,9 @@ import com.runnect.runnect.util.custom.dialog.CommonDialogText
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.toolbar.CommonToolbarLayout
 import com.runnect.runnect.util.custom.toolbar.ToolbarMenu
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
@@ -60,6 +63,10 @@ class MyDrawDetailActivity :
         binding.lifecycleOwner = this
 
         initCourseIdExtra()
+        Analytics.logEvent(
+            EventName.VIEW_MY_DRAW_DETAIL,
+            Param.COURSE_ID to courseId
+        )
         getMyDrawDetail()
         addListener()
         addObserver()

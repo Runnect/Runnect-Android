@@ -25,7 +25,9 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.presentation.storage.adapter.StorageMyDrawAdapter
 import com.runnect.runnect.presentation.storage.mydrawdetail.MyDrawDetailActivity
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_MY_STORAGE_TRY_REMOVE
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.callback.ItemCount
 import com.runnect.runnect.util.callback.listener.OnMyDrawItemClick
 import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
@@ -69,6 +71,7 @@ class StorageMyDrawFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        Analytics.logEvent(EventName.VIEW_STORAGE_MY_DRAW)
         initLayout()
         initAdapter()
         getCourse()
@@ -248,6 +251,10 @@ class StorageMyDrawFragment :
                     hideLoadingBar()
                     showMyDrawResult()
                     updateAdapterData()
+                    Analytics.logEvent(
+                        EventName.VIEW_STORAGE_MY_DRAW,
+                        Param.COURSE_COUNT to viewModel.myDrawCourses.size
+                    )
                 }
 
                 UiState.Failure -> {
@@ -332,6 +339,10 @@ class StorageMyDrawFragment :
     override fun selectItem(id: Int, title: String): Boolean {
         return if (!isSelectAvailable) {
             viewModel.saveClickedCourseId(id)
+            Analytics.logEvent(
+                EventName.CLICK_MY_DRAW_COURSE,
+                Param.COURSE_ID to id
+            )
             Intent(context, MyDrawDetailActivity::class.java).apply {
                 putExtra(EXTRA_COURSE_ID, id)
                 resultLauncher.launch(this)
