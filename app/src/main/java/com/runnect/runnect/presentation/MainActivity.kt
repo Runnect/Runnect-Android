@@ -136,8 +136,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
             fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    val forceUpdate = getBoolean(REMOTE_KEY_FORCE_UPDATE)
                     val updateAppVersion = getString(REMOTE_KEY_APP_VERSION)
-                    if (localAppVersion != updateAppVersion) {
+                    if (forceUpdate && localAppVersion != updateAppVersion) {
                         initUpdateDialog()
                     }
                 }
@@ -163,6 +164,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     companion object {
         const val REMOTE_CONFIG_FETCH_INTERVAL_SECONDS = 3600L
+        const val REMOTE_KEY_FORCE_UPDATE = "force_update"
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }
