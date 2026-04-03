@@ -14,13 +14,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,34 +56,56 @@ fun MyPageScreen(
     onSettingClick: () -> Unit,
     onKakaoInquiryClick: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        MyPageToolbar()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-        if (state.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = G3)
+    LaunchedEffect(state.error) {
+        state.error?.let { snackbarHostState.showSnackbar(it) }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            MyPageToolbar()
+
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = G3)
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    ProfileSection(
+                        nickname = state.nickname,
+                        profileImgResId = state.profileImgResId,
+                        onEditClick = onEditProfileClick
+                    )
+                    LevelProgressSection(
+                        level = state.level,
+                        levelPercent = state.levelPercent
+                    )
+                    MenuSection(
+                        onHistoryClick = onHistoryClick,
+                        onRewardClick = onRewardClick,
+                        onUploadClick = onUploadClick,
+                        onSettingClick = onSettingClick,
+                        onKakaoInquiryClick = onKakaoInquiryClick
+                    )
+                    VersionSection()
+                }
             }
-        } else {
-            ProfileSection(
-                nickname = state.nickname,
-                profileImgResId = state.profileImgResId,
-                onEditClick = onEditProfileClick
-            )
-            LevelProgressSection(
-                level = state.level,
-                levelPercent = state.levelPercent
-            )
-            MenuSection(
-                onHistoryClick = onHistoryClick,
-                onRewardClick = onRewardClick,
-                onUploadClick = onUploadClick,
-                onSettingClick = onSettingClick,
-                onKakaoInquiryClick = onKakaoInquiryClick
-            )
-            VersionSection()
         }
     }
 }
@@ -156,6 +185,8 @@ private fun LevelProgressSection(
     level: String,
     levelPercent: Int
 ) {
+    val clampedPercent = levelPercent.coerceIn(0, 100)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,7 +211,7 @@ private fun LevelProgressSection(
         }
         Spacer(modifier = Modifier.height(6.dp))
         LinearProgressIndicator(
-            progress = { levelPercent / 100f },
+            progress = { clampedPercent / 100f },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(11.dp)
@@ -194,7 +225,7 @@ private fun LevelProgressSection(
             horizontalArrangement = Arrangement.End
         ) {
             Text(
-                text = levelPercent.toString(),
+                text = clampedPercent.toString(),
                 fontFamily = PretendardFontFamily,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 13.sp,
