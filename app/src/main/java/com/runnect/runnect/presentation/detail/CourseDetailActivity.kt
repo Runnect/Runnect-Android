@@ -409,7 +409,8 @@ class CourseDetailActivity :
             }
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> setActivityResult<MyUploadActivity>()
-            COURSE_DISCOVER, null -> {
+            COURSE_DISCOVER -> { /* finish()로 이전 MainActivity(코스 발견 탭)로 복귀 */ }
+            null -> {
                 navigateToMainScreen()
                 return
             }
