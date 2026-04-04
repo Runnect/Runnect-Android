@@ -80,7 +80,7 @@ android {
             def timestamp = new Date().format('yyyyMMdd_HHmmss')
             def versionName = variant.versionName
             def ext = outputFileName.endsWith('.aab') ? 'aab' : 'apk'
-            outputFileName = "Runnect-${variant.buildType.name}-v${versionName}-${timestamp}.${ext}"
+            outputFileName = "v${versionName}-${variant.buildType.name}-${timestamp}.${ext}"
         }
     }
 
@@ -92,6 +92,25 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+}
+
+tasks.register('renameReleaseBundle') {
+    def vName = libs.versions.versionName.get()
+    def bundlePath = layout.buildDirectory.dir("outputs/bundle/release")
+
+    doLast {
+        def timestamp = new Date().format('yyyyMMdd_HHmmss')
+        bundlePath.get().asFile.listFiles()?.findAll { it.name.endsWith('.aab') }?.each { aab ->
+            def newName = "v${vName}-release-${timestamp}.aab"
+            def newFile = new File(aab.parentFile, newName)
+            aab.renameTo(newFile)
+            println "AAB renamed: ${newFile.name}"
+        }
+    }
+}
+
+tasks.matching { it.name == 'bundleRelease' }.configureEach {
+    finalizedBy 'renameReleaseBundle'
 }
 
 dependencies {
