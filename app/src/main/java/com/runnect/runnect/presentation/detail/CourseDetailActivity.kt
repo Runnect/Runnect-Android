@@ -407,10 +407,12 @@ class CourseDetailActivity :
             COURSE_STORAGE_SCRAP -> lifecycleScope.launch {
                 screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshStorageScrap)
             }
-            COURSE_DISCOVER -> setActivityResult<MainActivity>()
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> setActivityResult<MyUploadActivity>()
-            null -> {}
+            COURSE_DISCOVER, null -> {
+                navigateToMainScreen()
+                return
+            }
         }
 
         finish()
