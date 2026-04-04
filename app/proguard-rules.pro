@@ -11,6 +11,18 @@
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
 
+# --- DTO ---
+# RetrofitV2/RetrofitFlow가 GsonConverterFactory를 사용하므로
+# Gson 리플렉션으로 직렬화되는 DTO 필드명 보존 필요
+-keepclassmembers class com.runnect.runnect.data.dto.** { <fields>; }
+
+# --- Retrofit + kotlin.Result ---
+# kotlin.Result는 inline class라 R8이 제네릭 타입 정보를 최적화함
+# Retrofit이 Call<Result<T>>의 타입 파라미터를 리플렉션으로 읽지 못해 CallAdapter 생성 실패
+# https://github.com/square/retrofit/issues/3880
+-keep class kotlin.Result { *; }
+-keepattributes Signature
+
 # --- Kakao SDK ---
 # 공식 문서: https://developers.kakao.com/docs/latest/en/android/getting-started#configure-for-shrinking-and-obfuscation-(optional)
 -keep class com.kakao.sdk.**.model.* { <fields>; }
