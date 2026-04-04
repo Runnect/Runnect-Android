@@ -79,7 +79,7 @@ class CourseDetailActivity :
     private var isFromDeepLink: Boolean = false
 
     // 인텐트 부가 데이터
-    private lateinit var rootScreen: CourseDetailRootScreen
+    private var rootScreen: CourseDetailRootScreen? = null
     private var publicCourseId: Int = -1
 
     // 서버통신으로 초기화 할 데이터
@@ -407,9 +407,12 @@ class CourseDetailActivity :
             COURSE_STORAGE_SCRAP -> lifecycleScope.launch {
                 screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshStorageScrap)
             }
-            COURSE_DISCOVER -> setActivityResult<MainActivity>()
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> setActivityResult<MyUploadActivity>()
+            COURSE_DISCOVER, null -> {
+                navigateToMainScreen()
+                return
+            }
         }
 
         finish()

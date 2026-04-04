@@ -69,6 +69,12 @@ android {
         }
     }
 
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
     applicationVariants.all { variant ->
         variant.outputs.all {
             def timestamp = new Date().format('yyyyMMdd_HHmmss')
