@@ -27,6 +27,10 @@ android {
         versionName libs.versions.versionName.get()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
         buildConfigField "String", "RUNNECT_DEV_URL", properties["RUNNECT_DEV_URL"]
         buildConfigField "String", "RUNNECT_NODE_URL", properties["RUNNECT_NODE_URL"]
         buildConfigField "String", "RUNNECT_PROD_URL", properties["RUNNECT_PROD_URL"]
