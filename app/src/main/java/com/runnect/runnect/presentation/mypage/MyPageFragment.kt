@@ -14,8 +14,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.talk.TalkApiClient
 import com.runnect.runnect.BuildConfig
@@ -25,7 +23,7 @@ import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.mypage.editname.MyPageEditNameActivity
 import com.runnect.runnect.presentation.mypage.history.MyHistoryActivity
 import com.runnect.runnect.presentation.mypage.reward.MyRewardActivity
-import com.runnect.runnect.presentation.mypage.setting.MySettingFragment
+import com.runnect.runnect.presentation.mypage.setting.MySettingActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
@@ -122,11 +120,11 @@ class MyPageFragment : Fragment() {
     }
 
     private fun moveToSettingFragment() {
-        val bundle = Bundle().apply { putString(ACCOUNT_INFO_TAG, viewModel.currentState.email) }
-        requireActivity().supportFragmentManager.commit {
-            setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            replace<MySettingFragment>(R.id.fl_main, args = bundle)
+        val intent = Intent(requireContext(), MySettingActivity::class.java).apply {
+            putExtra(ACCOUNT_INFO_TAG, viewModel.currentState.email)
         }
+        startActivity(intent)
+        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     private fun inquiryKakao() {
