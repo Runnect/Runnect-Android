@@ -16,6 +16,13 @@
 # (BaseResponse, ErrorResponse 등이 Gson과 Kotlin Serialization 양쪽에서 사용됨)
 -keepclassmembers class com.runnect.runnect.data.dto.** { <fields>; }
 
+# --- Retrofit + kotlin.Result ---
+# Retrofit이 리턴 타입의 제네릭 정보를 리플렉션으로 읽으므로 Signature 유지 필요
+# kotlin.Result는 inline class라 R8이 타입 정보를 최적화할 수 있음
+# https://github.com/square/retrofit/issues/3880
+-keep class kotlin.Result { *; }
+-keepattributes Signature
+
 # --- Kakao SDK ---
 # 공식 문서: https://developers.kakao.com/docs/latest/en/android/getting-started#configure-for-shrinking-and-obfuscation-(optional)
 -keep class com.kakao.sdk.**.model.* { <fields>; }
