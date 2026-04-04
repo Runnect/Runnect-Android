@@ -1,11 +1,8 @@
 package com.runnect.runnect.data.network.interceptor
 
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParseException
-import com.google.gson.JsonSyntaxException
-import com.runnect.runnect.data.dto.response.base.BaseResponse
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Response
@@ -18,14 +15,14 @@ import timber.log.Timber
  */
 class ResponseInterceptor : Interceptor {
 
-    private val gson = Gson()
+    private val json = Json { ignoreUnknownKeys = true }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
         if (!originalResponse.isSuccessful) return originalResponse
 
         val bodyString = originalResponse.peekBody(Long.MAX_VALUE).string()
-        val newResponseBodyString = jsonToBaseResponse(bodyString)?.let {
+        val newResponseBodyString = extractData(bodyString)?.let {
             it.toResponseBody("application/json".toMediaTypeOrNull())
         } ?: return originalResponse
 
@@ -42,26 +39,18 @@ class ResponseInterceptor : Interceptor {
             }
     }
 
-    private fun jsonToBaseResponse(body: String): String? {
+    private fun extractData(body: String): String? {
         return try {
-            val jsonElement: JsonElement = gson.fromJson(body, JsonElement::class.java)
-            if (!isBaseResponse(jsonElement.asJsonObject)) {
-                return null
-            }
-
-            val baseResponse = gson.fromJson(body, BaseResponse::class.java)
-            gson.toJson(baseResponse.data)
-        } catch (e: JsonSyntaxException) {
-            null // JSON 구문 분석 오류 발생 시 원래 형식을 반환
-        } catch (e: JsonParseException) {
-            null // JSON 파싱 오류 발생 시 원래 형식을 반환
+            val jsonObject = json.parseToJsonElement(body).jsonObject
+            if (!isBaseResponse(jsonObject)) return null
+            jsonObject["data"].toString()
         } catch (e: Exception) {
-            null // 기타 예외 발생 시 원래 형식을 반환
+            null
         }
     }
 
     private fun isBaseResponse(jsonObject: JsonObject): Boolean {
         val requiredFields = listOf("status", "success", "message", "data")
-        return requiredFields.all { jsonObject.has(it) }
+        return requiredFields.all { it in jsonObject }
     }
 }

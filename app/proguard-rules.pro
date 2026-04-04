@@ -11,14 +11,9 @@
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
 
-# --- DTO ---
-# Gson 리플렉션으로 역직렬화되는 DTO 클래스의 필드명 보존
-# (BaseResponse, ErrorResponse 등이 Gson과 Kotlin Serialization 양쪽에서 사용됨)
--keepclassmembers class com.runnect.runnect.data.dto.** { <fields>; }
-
 # --- Retrofit + kotlin.Result ---
-# Retrofit이 리턴 타입의 제네릭 정보를 리플렉션으로 읽으므로 Signature 유지 필요
-# kotlin.Result는 inline class라 R8이 타입 정보를 최적화할 수 있음
+# kotlin.Result는 inline class라 R8이 제네릭 타입 정보를 최적화함
+# Retrofit이 Call<Result<T>>의 타입 파라미터를 리플렉션으로 읽지 못해 CallAdapter 생성 실패
 # https://github.com/square/retrofit/issues/3880
 -keep class kotlin.Result { *; }
 -keepattributes Signature
