@@ -11,6 +11,11 @@
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
 
+# --- DTO ---
+# Gson 리플렉션으로 역직렬화되는 DTO 클래스의 필드명 보존
+# (BaseResponse, ErrorResponse 등이 Gson과 Kotlin Serialization 양쪽에서 사용됨)
+-keepclassmembers class com.runnect.runnect.data.dto.** { <fields>; }
+
 # --- Kakao SDK ---
 # 공식 문서: https://developers.kakao.com/docs/latest/en/android/getting-started#configure-for-shrinking-and-obfuscation-(optional)
 -keep class com.kakao.sdk.**.model.* { <fields>; }
