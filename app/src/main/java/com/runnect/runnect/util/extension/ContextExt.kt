@@ -31,7 +31,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.SlideDistanceProvider.GravityFlag
 import com.runnect.runnect.R
 import com.runnect.runnect.databinding.CustomDialogDeleteBinding
-import com.runnect.runnect.databinding.CustomDialogEditModeBinding
 import timber.log.Timber
 
 fun Context.setActivityDialog(
@@ -97,38 +96,6 @@ fun AlertDialog.setDialogButtonClickListener(
         }
     }
 }
-
-fun Context.setEditBottomSheet(binding: CustomDialogEditModeBinding): BottomSheetDialog {
-    val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
-    bottomSheetDialog.setContentView(binding.root)
-    return bottomSheetDialog
-}
-
-
-fun BottomSheetDialog.setEditBottomSheetClickListener(
-    binding: CustomDialogEditModeBinding,
-    listener: (which: LinearLayoutCompat) -> Unit
-) {
-    this.setOnShowListener {
-        binding.layoutEditFrame.setOnClickListener {
-            listener(binding.layoutEditFrame)
-            dismiss()
-        }
-        binding.layoutDeleteFrame.setOnClickListener {
-            listener(binding.layoutDeleteFrame)
-            dismiss()
-        }
-    }
-}
-
-
-fun BottomSheetDialog.handleEditTextValue(binding: CustomDialogEditModeBinding) {
-    this.setOnShowListener {
-        val editText = binding.layoutEditFrame
-        // Handle the editText as needed
-    }
-}
-
 
 fun Context.getStampResId(
     stampId: String?,

@@ -13,13 +13,10 @@
     <string name="visitor_mode_signup_btn">가입하기</string>
 
     <string name="discover_title">코스 발견</string>
-    <string name="discover_recommend_title">코스 추천</string>
-    <string name="discover_recommend_subtitle">새로운 코스를 발견해나가요</string>
     <string name="main_menu_drawing">코스 그리기</string>
     <string name="main_menu_storage">보관함</string>
     <string name="main_menu_discover">코스 발견</string>
     <string name="main_menu_my_page">마이페이지</string>
-    <string name="discover_plus">+</string>
     <string name="discover_pick_title">불러오기</string>
     <string name="discover_pick_finish">선택하기</string>
     <string name="discover_upload">코스 업로드</string>
@@ -29,9 +26,7 @@
     <string name="discover_upload_departure_title">출발지</string>
     <string name="discover_upload_desc_hint">코스에 대한 소개를 적어주세요.(난이도/풍경/지형)</string>
     <string name="discover_upload_finish">업로드하기</string>
-    <string name="discover_search_hint">출발지를 설정해주세요</string>
     <string name="discover_search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
-    <string name="course_detail_start">시작하기</string>
     <string name="course_detail_lv_indicator">Lv.</string>
     <string name="my_page_title">마이페이지</string>
     <string name="my_page_edit">수정하기</string>
@@ -40,14 +35,10 @@
     <string name="my_page_reward_title">목표 보상</string>
     <string name="my_page_history_title">러닝 기록</string>
     <string name="my_page_upload_title">업로드한 코스</string>
-    <string name="my_page_dialog_edit_name">닉네임 수정</string>
-    <string name="my_page_dialog_edit_name_hint">닉네임을 입력하세요</string>
     <string name="my_page_reward_desc">다양한 코스를 달리며 러닝 스탬프를 모아봐요</string>
     <string name="item_mypage_history_distance">총 거리</string>
-    <string name="item_mypage_history_distance_km">km</string>
     <string name="item_mypage_history_time">이동 시간</string>
     <string name="item_mypage_history_pace">평균 페이스</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="count_down_desc">잠시 후 러닝을 시작합니다</string>
     <string name="item_mypage_reward_course_count">코스 10개</string>
     <string name="draw_set_departure">출발지 설정하기</string>
@@ -62,12 +53,8 @@
     <string name="end_run_save_button">저장하기</string>
     <string name="my_draw_distance_unit">km</string>
     <string name="my_draw_start_run_button">시작하기</string>
-    <string name="scrap_detail_start_run_button">시작하기</string>
     <string name="search_set_departure_hint">출발지를 설정해주세요</string>
     <string name="search_no_result">검색결과가 없습니다\n검색어를 다시 확인해주세요</string>
-    <string name="dialog_finish_run_notify">수고하셨습니다! 러닝을 완료했어요!</string>
-    <string name="dialog_finish_run_see_record">기록 보러 가기</string>
-    <string name="dialog_make_course_notify">코스를 만들었어요!</string>
     <string name="dialog_make_course_go_to_storage">보관함 가기</string>
     <string name="dialog_make_course_immediately_run">바로 달리기</string>
     <string name="bottom_sheet_notify_finish_run">수고하셨습니다! 러닝을 완료했어요!</string>
@@ -77,21 +64,15 @@
     <string name="storage_main_page_title">보관함</string>
     <string name="storage_main_tap_my_draw">내가 그린 코스</string>
     <string name="storage_main_tab_scrap">스크랩 코스</string>
-    <string name="storage_my_draw_no_result">아직 내가 그린 코스가 없어요\n 직접 코스를 그려주세요</string>
     <string name="storage_my_draw_make_course">코스 그리기</string>
-    <string name="storage_scrap_no_result">아직 내가 스크랩한 코스가 없어요\n 코스를 스크랩해주세요</string>
     <string name="storage_scrap_make_scrap">스크랩하기</string>
-    <string name="item_info_start">출발</string>
     <string name="course_detail_start_run_button">시작하기</string>
     <string name="run_distance_title">총 거리</string>
     <string name="run_distance_unit">km</string>
     <string name="run_time_title">시간</string>
     <string name="run_finish_run_button">러닝 종료</string>
     <string name="run_description_current_location">current_location</string>
-    <string name="login_signIn_google">구글로 로그인</string>
-    <string name="login_signIn_kakao">카카오로 로그인</string>
     <string name="my_draw_edit">선택</string>
-    <string name="my_draw_delete">삭제하기</string>
 
     <string name="discover_upload_btn">업로드</string>
     <string name="discover_pick_draw_course">코스 그리기</string>
@@ -113,8 +94,6 @@
     <string name="my_page_upload">코스 업로드하기</string>
     <string name="upload_delete">삭제하기</string>
     <string name="history_edit_finish">완료</string>
-    <string name="dialog_edit">수정하기</string>
-    <string name="dialog_remove">삭제하기</string>
     <string name="my_setting_account_info">계정 정보</string>
     <string name="my_setting_report">문의 및 신고하기</string>
     <string name="my_setting_terms">이용약관</string>
