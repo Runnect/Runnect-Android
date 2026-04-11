@@ -1,11 +1,12 @@
 package com.runnect.runnect.data.network.calladapter.flow
 
-import com.google.gson.Gson
-import com.runnect.runnect.data.dto.response.base.ErrorResponse
 import com.runnect.runnect.domain.common.RunnectException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Callback
@@ -18,7 +19,7 @@ class FlowCallAdapter<T>(
     private val responseType: Type
 ) : CallAdapter<T, Flow<Result<T>>> {
 
-    private val gson = Gson()
+    private val json = Json { ignoreUnknownKeys = true }
     override fun responseType() = responseType
 
     // Retrofit의 Call을 Result<>로 변환
@@ -58,15 +59,18 @@ class FlowCallAdapter<T>(
         } ?: Result.failure(nullBodyException)
     }
 
-    // Response에서 오류를 파싱하여 RunnectException 객체를 생성
     private fun parseErrorResponse(response: Response<*>): RunnectException {
         val errorBodyString = response.errorBody()?.string()
-        val errorResponse = errorBodyString?.let {
-            gson.fromJson(it, ErrorResponse::class.java)
-        }
 
-        val errorMessage = errorResponse?.message ?: errorResponse?.error ?: ERROR_MSG_COMMON
-        return RunnectException(response.code(), errorMessage)
+        return runCatching {
+            val jsonObject = json.parseToJsonElement(errorBodyString.orEmpty()).jsonObject
+            val message = jsonObject["message"]?.jsonPrimitive?.content
+                ?: jsonObject["error"]?.jsonPrimitive?.content
+                ?: ERROR_MSG_COMMON
+            RunnectException(response.code(), message)
+        }.getOrElse {
+            RunnectException(response.code(), ERROR_MSG_COMMON)
+        }
     }
 
     companion object {

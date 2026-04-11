@@ -1,8 +1,10 @@
 package com.runnect.runnect.data.network.calladapter
 
-import com.google.gson.Gson
-import com.runnect.runnect.data.dto.response.base.ErrorResponse
 import com.runnect.runnect.domain.common.RunnectException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,7 +13,7 @@ import okio.Timeout
 
 class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
 
-    private val gson = Gson()
+    private val json = Json { ignoreUnknownKeys = true }
 
     override fun execute(): Response<Result<T>> {
         throw UnsupportedOperationException("ResultCall doesn't support execute")
@@ -46,23 +48,17 @@ class ResultCall<T>(private val call: Call<T>) : Call<Result<T>> {
     }
 
     private fun parseErrorResponse(response: Response<*>): RunnectException {
-        val errorJson = response.errorBody()?.string()
+        val errorString = response.errorBody()?.string()
 
         return runCatching {
-            val errorBody = gson.fromJson(errorJson, ErrorResponse::class.java)
-            val message = errorBody?.run {
-                message ?: error ?: ERROR_MSG_COMMON
-            }
-
-            RunnectException(
-                code = errorBody.status,
-                message = message
-            )
+            val jsonObject = json.parseToJsonElement(errorString.orEmpty()).jsonObject
+            val status = jsonObject["status"]?.jsonPrimitive?.int ?: response.code()
+            val message = jsonObject["message"]?.jsonPrimitive?.content
+                ?: jsonObject["error"]?.jsonPrimitive?.content
+                ?: ERROR_MSG_COMMON
+            RunnectException(code = status, message = message)
         }.getOrElse {
-            RunnectException(
-                code = response.code(),
-                message = ERROR_MSG_COMMON
-            )
+            RunnectException(code = response.code(), message = ERROR_MSG_COMMON)
         }
     }
 
