@@ -10,6 +10,7 @@ class DiscoverMultiViewAdapter(
     private val onHeartButtonClick: (Int, Boolean) -> Unit,
     private val onCourseItemClick: (Int) -> Unit,
     private val handleVisitorMode: () -> Unit,
+    private val isVisitorMode: () -> Boolean,
     private val onSortButtonClick: (String) -> Unit
 ) : RecyclerView.Adapter<DiscoverMultiViewHolder>() {
     private val multiViewHolderFactory by lazy { DiscoverMultiViewHolderFactory() }
@@ -24,6 +25,7 @@ class DiscoverMultiViewAdapter(
             onHeartButtonClick = onHeartButtonClick,
             onCourseItemClick = onCourseItemClick,
             handleVisitorMode = handleVisitorMode,
+            isVisitorMode = isVisitorMode,
             onSortButtonClick = onSortButtonClick
         )
     }

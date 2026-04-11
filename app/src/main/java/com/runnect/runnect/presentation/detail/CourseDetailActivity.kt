@@ -11,6 +11,7 @@ import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import coil3.load
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -23,6 +24,9 @@ import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.event.ScreenRefreshEvent
+import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER_SEARCH
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
@@ -35,8 +39,10 @@ import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.scheme.SchemeActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SHARE
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_USER_PROFILE
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.analytics.EventName.VIEW_COURSE_DETAIL
 import com.runnect.runnect.util.custom.dialog.CommonDialogFragment
 import com.runnect.runnect.util.custom.dialog.CommonDialogText
@@ -56,16 +62,24 @@ import com.runnect.runnect.util.extension.showWebBrowser
 import com.runnect.runnect.util.mode.ScreenMode.EditMode
 import com.runnect.runnect.util.mode.ScreenMode.ReadOnlyMode
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CourseDetailActivity :
     BindingActivity<ActivityCourseDetailBinding>(R.layout.activity_course_detail) {
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
+    @Inject
+    lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
     private val viewModel: CourseDetailViewModel by viewModels()
-    private val isVisitorMode: Boolean = MainActivity.isVisitorMode
+    private val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
     private var isFromDeepLink: Boolean = false
 
     // 인텐트 부가 데이터
-    private lateinit var rootScreen: CourseDetailRootScreen
+    private var rootScreen: CourseDetailRootScreen? = null
     private var publicCourseId: Int = -1
 
     // 서버통신으로 초기화 할 데이터
@@ -175,6 +189,11 @@ class CourseDetailActivity :
     }
 
     private fun navigateToCountDownScreen() {
+        Analytics.logEvent(
+            EventName.CLICK_RUN_FROM_DETAIL,
+            Param.COURSE_ID to courseDetail.courseId,
+            Param.DISTANCE_M to courseDetail.distance
+        )
         Intent(
             this@CourseDetailActivity,
             CountDownActivity::class.java
@@ -385,10 +404,16 @@ class CourseDetailActivity :
         }
 
         when (rootScreen) {
-            COURSE_STORAGE_SCRAP -> MainActivity.updateStorageScrapScreen()
-            COURSE_DISCOVER -> setActivityResult<MainActivity>()
+            COURSE_STORAGE_SCRAP -> lifecycleScope.launch {
+                screenRefreshEventBus.emit(ScreenRefreshEvent.RefreshStorageScrap)
+            }
             COURSE_DISCOVER_SEARCH -> setActivityResult<DiscoverSearchActivity>()
             MY_PAGE_UPLOAD_COURSE -> setActivityResult<MyUploadActivity>()
+            COURSE_DISCOVER -> { /* finish()로 이전 MainActivity(코스 발견 탭)로 복귀 */ }
+            null -> {
+                navigateToMainScreen()
+                return
+            }
         }
 
         finish()
@@ -531,6 +556,12 @@ class CourseDetailActivity :
                     val response = state.data
                     binding.tvCourseDetailScrapCount.text = response.scrapCount.toString()
                     binding.ivCourseDetailScrap.isSelected = response.scrapTF
+                    if (!response.scrapTF) {
+                        Analytics.logEvent(
+                            EventName.CLICK_UNSCRAP,
+                            Param.COURSE_ID to publicCourseId
+                        )
+                    }
                 }
 
                 is UiStateV2.Failure -> {

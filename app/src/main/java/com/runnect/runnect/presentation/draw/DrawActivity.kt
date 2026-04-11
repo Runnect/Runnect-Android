@@ -1,5 +1,6 @@
 package com.runnect.runnect.presentation.draw
 
+import kotlin.math.roundToInt
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -44,10 +45,12 @@ import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.CustomDialogMakeCourseBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -55,6 +58,7 @@ import com.runnect.runnect.util.extension.setActivityDialog
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -67,6 +71,9 @@ import java.math.RoundingMode
 @AndroidEntryPoint
 class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw),
     OnMapReadyCallback {
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
     private lateinit var locationSource: FusedLocationSource
     private lateinit var currentLocation: LatLng
     private lateinit var fusedLocation: FusedLocationProviderClient // 현재 위치 반환 객체 변수
@@ -95,7 +102,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
-    var isVisitorMode: Boolean = MainActivity.isVisitorMode
+    val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
 
     var isFirstInit: Boolean = true
 
@@ -105,6 +112,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         binding.model = viewModel
         binding.lifecycleOwner = this
 
+        Analytics.logEvent(EventName.VIEW_COURSE_DRAWING)
         initMapView()
         getSearchIntent()
         addObserver()
@@ -487,6 +495,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 UiState.Loading -> showLoadingBar()
                 UiState.Success -> {
                     hideLoadingBar()
+                    val distanceM = ((viewModel.distanceSum.value ?: 0f) * 1000f).roundToInt()
+                    Analytics.logEvent(
+                        EventName.ACTION_COURSE_DRAWING_COMPLETE,
+                        Param.COURSE_ID to viewModel.uploadCourseId,
+                        Param.DISTANCE_M to distanceM,
+                        Param.POINT_COUNT to touchList.size,
+                        Param.DEPARTURE_NAME to viewModel.departureName
+                    )
                     notifyCreateFinish()
                 }
 
@@ -547,6 +563,12 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 dialog.dismiss()
             }
         }
+        val resultDistanceM = ((viewModel.distanceSum.value ?: 0f) * 1000f).roundToInt()
+        Analytics.logEvent(
+            EventName.VIEW_COURSE_COMPLETE_RESULT,
+            Param.COURSE_ID to viewModel.uploadCourseId,
+            Param.DISTANCE_M to resultDistanceM
+        )
         dialog.show()
     }
 

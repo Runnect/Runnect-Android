@@ -39,20 +39,22 @@ class ApplicationClass : Application() {
         lateinit var appContext: Context
         const val API_MODE = "API_MODE"
 
-        fun getBaseUrl(): String {
-            return when {
-                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_PROD_URL
-                !::appContext.isInitialized -> BuildConfig.RUNNECT_PROD_URL
-                else -> {
-                    val mode = ApiMode.getCurrentApiMode(appContext)
-                    Timber.d("현재 서버: ${mode}")
-                    when (mode) {
-                        ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
-                        ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL
-                        else -> BuildConfig.RUNNECT_NODE_URL
-                    }
-                }
-            }
-        }
+        // TODO: dev/node 서버 복구 시 분기 복원
+//        fun getBaseUrl(): String {
+//            return when {
+//                !BuildConfig.DEBUG -> BuildConfig.RUNNECT_PROD_URL
+//                !::appContext.isInitialized -> BuildConfig.RUNNECT_PROD_URL
+//                else -> {
+//                    val mode = ApiMode.getCurrentApiMode(appContext)
+//                    Timber.d("현재 서버: ${mode}")
+//                    when (mode) {
+//                        ApiMode.JAVA -> BuildConfig.RUNNECT_PROD_URL
+//                        ApiMode.TEST -> BuildConfig.RUNNECT_DEV_URL
+//                        else -> BuildConfig.RUNNECT_NODE_URL
+//                    }
+//                }
+//            }
+//        }
+        fun getBaseUrl(): String = BuildConfig.RUNNECT_PROD_URL
     }
 }

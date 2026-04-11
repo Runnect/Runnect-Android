@@ -27,6 +27,10 @@ android {
         versionName libs.versions.versionName.get()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
         buildConfigField "String", "RUNNECT_DEV_URL", properties["RUNNECT_DEV_URL"]
         buildConfigField "String", "RUNNECT_NODE_URL", properties["RUNNECT_NODE_URL"]
         buildConfigField "String", "RUNNECT_PROD_URL", properties["RUNNECT_PROD_URL"]
@@ -35,6 +39,7 @@ android {
         buildConfigField "String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"]
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["GOOGLE_CLIENT_ID"]
         buildConfigField "String", "REMOTE_KEY_APP_VERSION", properties["REMOTE_KEY_APP_VERSION"]
+        buildConfigField "String", "REMOTE_KEY_FORCE_UPDATE", properties["REMOTE_KEY_FORCE_UPDATE"]
         buildConfigField "String", "KAKAO_CHANNEL_ID", properties["KAKAO_CHANNEL_ID"]
     }
 
@@ -62,9 +67,25 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def timestamp = new Date().format('yyyyMMdd_HHmmss')
+            def versionName = variant.versionName
+            def ext = outputFileName.endsWith('.aab') ? 'aab' : 'apk'
+            outputFileName = "v${versionName}-${variant.buildType.name}-${timestamp}.${ext}"
         }
     }
 
@@ -76,6 +97,25 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+}
+
+tasks.register('renameReleaseBundle') {
+    def vName = libs.versions.versionName.get()
+    def bundlePath = layout.buildDirectory.dir("outputs/bundle/release")
+
+    doLast {
+        def timestamp = new Date().format('yyyyMMdd_HHmmss')
+        bundlePath.get().asFile.listFiles()?.findAll { it.name.endsWith('.aab') }?.each { aab ->
+            def newName = "v${vName}-release-${timestamp}.aab"
+            def newFile = new File(aab.parentFile, newName)
+            aab.renameTo(newFile)
+            println "AAB renamed: ${newFile.name}"
+        }
+    }
+}
+
+tasks.matching { it.name == 'bundleRelease' }.configureEach {
+    finalizedBy 'renameReleaseBundle'
 }
 
 dependencies {
@@ -118,6 +158,7 @@ dependencies {
     implementation libs.glide
     ksp libs.glide.ksp
     implementation libs.coil
+    implementation libs.coil.compose
     implementation libs.coil.network.okhttp
 
     // Firebase

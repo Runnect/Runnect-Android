@@ -19,8 +19,10 @@ import com.runnect.runnect.databinding.ActivityEndRunBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_BACK_RUNNING_TRACKING
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_STORE_RUNNING_TRACKING
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.custom.toast.RunnectToast
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.round
@@ -60,6 +62,15 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
         backBtn()
         editTextController()
         getIntentValue()
+
+        val totalTimeSec = ((runToEndRunData.timerHour ?: 0) * 3600) + ((runToEndRunData.timerMinute ?: 0) * 60) + (runToEndRunData.timerSecond ?: 0)
+        Analytics.logEvent(
+            EventName.VIEW_END_RUN,
+            Param.COURSE_ID to runToEndRunData.courseId,
+            Param.TOTAL_DISTANCE_M to runToEndRunData.totalDistance,
+            Param.TOTAL_TIME_SEC to totalTimeSec
+        )
+
         setTimerViewModelValue()
         transferMinuteForCalcPace()
         setPaceViewModelValue()
@@ -157,6 +168,10 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
     private fun saveRecord() {
         binding.btnEndRunSave.setOnClickListener {
             Analytics.logClickedItemEvent(EVENT_CLICK_STORE_RUNNING_TRACKING)
+            Analytics.logEvent(
+                EventName.CLICK_SAVE_RUN_RECORD,
+                Param.COURSE_ID to viewModel.courseId.value
+            )
             viewModel.postRecord(
                 RequestPostRunningHistory(
                     courseId = viewModel.courseId.value!!,

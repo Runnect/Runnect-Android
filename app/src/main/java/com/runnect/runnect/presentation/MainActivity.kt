@@ -9,20 +9,22 @@ import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.runnect.runnect.BuildConfig.REMOTE_KEY_APP_VERSION
+import com.runnect.runnect.BuildConfig.REMOTE_KEY_FORCE_UPDATE
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
-import com.runnect.runnect.presentation.discover.DiscoverFragment
-import com.runnect.runnect.presentation.storage.StorageScrapFragment
+import com.runnect.runnect.presentation.event.VisitorModeManager
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
-import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
-import com.runnect.runnect.util.preference.StatusType.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main) {
+    @Inject
+    lateinit var visitorModeManager: VisitorModeManager
+
     private var isChangeToStorage: Boolean = false
     private var isChangeToDiscover: Boolean = false
     private var fragmentReplacementDirection: String? = null
@@ -33,16 +35,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         
         Analytics.logClickedItemEvent(EVENT_VIEW_HOME)
         initRemoteConfig()
-        checkVisitorMode()
         checkIntentValue()
         initView()
         addListener()
-    }
-
-    private fun checkVisitorMode() {
-        val accessToken = this.getAccessToken()
-        val loginStatus = LoginStatus.getLoginStatus(accessToken)
-        isVisitorMode = loginStatus == LoginStatus.VISITOR
     }
 
     private fun checkIntentValue() {
@@ -102,12 +97,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun logClickEvent(menuItemId: Int) {
+        val isVisitor = visitorModeManager.isVisitorMode
         with(EventName) {
             when (menuItemId) {
-                R.id.menu_main_drawing -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DRAWING else EVENT_CLICK_NAV_COURSE_DRAWING
-                R.id.menu_main_storage -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_STORAGE else EVENT_CLICK_NAV_STORAGE
-                R.id.menu_main_discover -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_COURSE_DISCOVERY else EVENT_CLICK_NAV_COURSE_DISCOVERY
-                R.id.menu_main_my_page -> if (isVisitorMode) EVENT_CLICK_JOIN_IN_MY_PAGE else EVENT_CLICK_NAV_MY_PAGE
+                R.id.menu_main_drawing -> if (isVisitor) EVENT_CLICK_JOIN_IN_COURSE_DRAWING else EVENT_CLICK_NAV_COURSE_DRAWING
+                R.id.menu_main_storage -> if (isVisitor) EVENT_CLICK_JOIN_IN_STORAGE else EVENT_CLICK_NAV_STORAGE
+                R.id.menu_main_discover -> if (isVisitor) EVENT_CLICK_JOIN_IN_COURSE_DISCOVERY else EVENT_CLICK_NAV_COURSE_DISCOVERY
+                R.id.menu_main_my_page -> if (isVisitor) EVENT_CLICK_JOIN_IN_MY_PAGE else EVENT_CLICK_NAV_MY_PAGE
                 else -> ""
             }.let(Analytics::logClickedItemEvent)
         }
@@ -141,8 +137,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
             fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    val forceUpdate = getBoolean(REMOTE_KEY_FORCE_UPDATE)
                     val updateAppVersion = getString(REMOTE_KEY_APP_VERSION)
-                    if (localAppVersion != updateAppVersion) {
+                    if (forceUpdate && localAppVersion != updateAppVersion) {
                         initUpdateDialog()
                     }
                 }
@@ -169,17 +166,5 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     companion object {
         const val REMOTE_CONFIG_FETCH_INTERVAL_SECONDS = 3600L
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-
-        var isVisitorMode = false
-        var discoverFragment: DiscoverFragment? = null
-        var storageScrapFragment: StorageScrapFragment? = null
-
-        fun updateCourseDiscoverScreen() {
-            discoverFragment?.refreshDiscoverCourses()
-        }
-
-        fun updateStorageScrapScreen() {
-            storageScrapFragment?.getMyScrapCourses()
-        }
     }
 }

@@ -5,8 +5,8 @@ minSdk = "28"
 targetSdk = "35"
 
 # App
-versionCode = "28"
-versionName = "2.2.0"
+versionCode = "30"
+versionName = "2.2.1"
 
 # Gradle plugins
 agp = "8.13.2"
@@ -138,6 +138,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-ksp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
 coil = { group = "io.coil-kt.coil3", name = "coil-android", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 # Firebase (BOM 관리 - 개별 버전 불필요)

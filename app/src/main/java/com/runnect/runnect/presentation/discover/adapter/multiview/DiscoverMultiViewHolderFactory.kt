@@ -16,6 +16,7 @@ class DiscoverMultiViewHolderFactory {
         onHeartButtonClick: (Int, Boolean) -> Unit,
         onCourseItemClick: (Int) -> Unit,
         handleVisitorMode: () -> Unit,
+        isVisitorMode: () -> Boolean,
         onSortButtonClick: (String) -> Unit
     ): DiscoverMultiViewHolder {
         when (viewType) {
@@ -24,7 +25,8 @@ class DiscoverMultiViewHolderFactory {
                     binding = parent.getViewDataBinding(layoutRes = R.layout.item_discover_multiview_marathon),
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
-                    handleVisitorMode = handleVisitorMode
+                    handleVisitorMode = handleVisitorMode,
+                    isVisitorMode = isVisitorMode
                 )
                 marathonCourseAdapter = viewHolder.marathonAdapter
                 return viewHolder
@@ -36,6 +38,7 @@ class DiscoverMultiViewHolderFactory {
                     onHeartButtonClick = onHeartButtonClick,
                     onCourseItemClick = onCourseItemClick,
                     handleVisitorMode = handleVisitorMode,
+                    isVisitorMode = isVisitorMode,
                     onSortButtonClick = onSortButtonClick
                 )
                 recommendCourseAdapter = viewHolder.recommendAdapter

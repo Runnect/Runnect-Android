@@ -4,10 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="vm"
-            type="com.runnect.runnect.presentation.mypage.MyPageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -130,7 +126,6 @@
                 android:layout_width="63dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="23dp"
-                setLocalImageByResourceId="@{vm.profileImgResId}"
                 app:layout_constraintBottom_toBottomOf="@id/view_my_page_profile_frame"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="@id/view_my_page_profile_frame"
@@ -142,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/pretendard_bold"
-                android:text="@{vm.nickName}"
+                tools:text="닉네임"
                 android:textColor="@color/M1"
                 android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_my_page_profile"
@@ -217,13 +212,12 @@
                     android:height="22dp"
                     android:fontFamily="@font/pretendard_bold"
                     android:gravity="center"
-                    android:text="@{vm.level}"
+                    tools:text="3"
                     android:textColor="@color/G1"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_my_page_user_lv_indicator"
                     app:layout_constraintStart_toEndOf="@id/tv_my_page_user_lv_indicator"
-                    app:layout_constraintTop_toTopOf="@id/tv_my_page_user_lv_indicator"
-                    tools:text="3" />
+                    app:layout_constraintTop_toTopOf="@id/tv_my_page_user_lv_indicator" />
 
                 <ProgressBar
                     android:id="@+id/pb_my_page_progress"
@@ -233,7 +227,7 @@
                     android:layout_marginHorizontal="22dp"
                     android:layout_marginTop="6dp"
                     android:max="100"
-                    android:progress="@{vm.levelPercent}"
+                    tools:progress="50"
                     android:progressDrawable="@drawable/progressbar_custom"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -245,13 +239,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="1dp"
                     android:fontFamily="@font/pretendard_semibold"
-                    android:text="@{vm.levelPercent.toString()}"
+                    tools:text="50"
                     android:textColor="@color/G1"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_my_page_progress_max"
                     app:layout_constraintEnd_toStartOf="@id/tv_my_page_progress_max"
-                    app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max"
-                    tools:text="50" />
+                    app:layout_constraintTop_toTopOf="@id/tv_my_page_progress_max" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_my_page_progress_max"

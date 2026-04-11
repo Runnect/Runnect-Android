@@ -11,6 +11,9 @@ import com.runnect.runnect.application.PreferenceManager
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.login.LoginActivity
 import com.runnect.runnect.presentation.storage.mydrawdetail.MyDrawDetailActivity
+import com.runnect.runnect.util.analytics.Analytics
+import com.runnect.runnect.util.analytics.EventName
+import com.runnect.runnect.util.analytics.EventName.Param
 import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink.KEY_PRIVATE_COURSE_ID
 import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink.KEY_PUBLIC_COURSE_ID
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,6 +45,17 @@ class SchemeActivity : AppCompatActivity() {
                 if (link != null) {
                     val publicCourseId = getCourseId(link, KEY_PUBLIC_COURSE_ID)
                     val privateCourseId = getCourseId(link, KEY_PRIVATE_COURSE_ID)
+
+                    val targetScreen = when {
+                        publicCourseId != null -> "CourseDetail"
+                        privateCourseId != null -> "MyDrawDetail"
+                        else -> "unknown"
+                    }
+                    Analytics.logEvent(
+                        EventName.SYS_DEEPLINK_OPEN,
+                        Param.DEEPLINK_URL to link.toString(),
+                        Param.TARGET_SCREEN to targetScreen
+                    )
 
                     when {
                         publicCourseId != null -> navigateToCourseDetail<CourseDetailActivity>(

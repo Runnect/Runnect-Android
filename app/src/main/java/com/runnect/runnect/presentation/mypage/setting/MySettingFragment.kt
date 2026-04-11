@@ -12,7 +12,6 @@ import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.databinding.FragmentMySettingBinding
-import com.runnect.runnect.presentation.mypage.MyPageFragment
 import com.runnect.runnect.presentation.mypage.setting.accountinfo.MySettingAccountInfoFragment
 import com.runnect.runnect.util.extension.showWebBrowser
 
@@ -57,10 +56,8 @@ class MySettingFragment : BindingFragment<FragmentMySettingBinding>(R.layout.fra
     }
 
     private fun navigateToMyPageFragment() {
-        parentFragmentManager.commit {
-            setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-            replace<MyPageFragment>(R.id.fl_main)
-        }
+        requireActivity().finish()
+        requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun moveToMySettingAccountInfo() {

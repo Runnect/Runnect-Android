@@ -19,9 +19,7 @@ class MainPager(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragm
             when (position) {
                 0 -> CourseMainFragment()
                 1 -> StorageMainFragment()
-                2 -> DiscoverFragment().apply {
-                    MainActivity.discoverFragment = this
-                }
+                2 -> DiscoverFragment()
 
                 3 -> MyPageFragment()
                 else -> CourseMainFragment()
