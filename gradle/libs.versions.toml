@@ -5,7 +5,7 @@ minSdk = "28"
 targetSdk = "35"
 
 # App
-versionCode = "31"
+versionCode = "32"
 versionName = "2.3.0"
 
 # Gradle plugins
