@@ -13,7 +13,6 @@ import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.extension.collectResult
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.acos
@@ -85,6 +84,7 @@ class DrawViewModel @Inject constructor(
     }
 
     fun uploadCourse() {
+        _drawState.value = UiState.Loading
         launchWithHandler {
             courseRepository.uploadCourse(
                 image = _image.value!!.toFormData(),
@@ -95,9 +95,7 @@ class DrawViewModel @Inject constructor(
                     departureAddress = departureAddress,
                     departureName = departureName
                 ).toRequestBody()
-            ).onStart {
-                _drawState.value = UiState.Loading
-            }.collectResult(
+            ).collectResult(
                 onSuccess = {
                     uploadCourseId = it
                     _drawState.value = UiState.Success
