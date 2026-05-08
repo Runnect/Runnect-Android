@@ -45,7 +45,8 @@ class TimerService : Service() {
         if (player == null) {
             player = MediaPlayer.create(this@TimerService, R.raw.start_run)
             player?.setOnCompletionListener { mediaPlayer ->
-                mediaPlayer.release() // 재생이 끝나면 MediaPlayer 객체를 해제합니다.
+                mediaPlayer.release()
+                player = null
             }
         }
         player?.start()
