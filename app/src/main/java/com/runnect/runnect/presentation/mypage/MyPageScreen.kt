@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.runnect.runnect.R
@@ -305,6 +306,12 @@ private fun MenuItem(
 
 @Composable
 private fun VersionSection() {
+    val context = LocalContext.current
+    val versionName = remember {
+        runCatching {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
+        }.getOrDefault("")
+    }
     val textStyle = RunnectTheme.textStyle
     Row(
         modifier = Modifier
@@ -320,7 +327,7 @@ private fun VersionSection() {
             color = G2
         )
         Text(
-            text = stringResource(R.string.my_page_version),
+            text = "v. $versionName",
             style = textStyle.regular14,
             color = G2
         )
