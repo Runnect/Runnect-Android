@@ -209,6 +209,8 @@ private fun LevelProgressSection(
                 .clip(RoundedCornerShape(5.dp)),
             color = M1,
             trackColor = G4,
+            drawStopIndicator = {},
+            gapSize = 0.dp,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row(
