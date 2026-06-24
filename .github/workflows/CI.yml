@@ -5,8 +5,7 @@ on:
         branches: [ develop ]
 
     pull_request:
-        branches: [ develop ]
-    
+
 defaults:
     run:
         shell: bash
@@ -99,5 +98,8 @@ jobs:
             -   name: Change gradlew permissions
                 run: chmod +x ./gradlew
 
-            -   name: Build 
+            -   name: Run unit tests
+                run: ./gradlew testDebugUnitTest --stacktrace
+
+            -   name: Build
                 run: ./gradlew assembleDebug --stacktrace
