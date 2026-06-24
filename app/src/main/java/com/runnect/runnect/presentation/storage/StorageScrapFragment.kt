@@ -1,119 +1,109 @@
 package com.runnect.runnect.presentation.storage
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
+import android.view.ViewGroup
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingFragment
 import com.runnect.runnect.domain.entity.MyScrapCourse
-import com.runnect.runnect.databinding.FragmentStorageScrapBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
+import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.event.ScreenRefreshEvent
 import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
-import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.state.UiStateV2
-import com.runnect.runnect.presentation.storage.adapter.StorageScrapAdapter
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.Param
-import com.runnect.runnect.util.custom.deco.GridSpacingItemDecoration
-import com.runnect.runnect.util.callback.ItemCount
-import com.runnect.runnect.util.callback.listener.OnHeartButtonClick
-import com.runnect.runnect.util.callback.listener.OnScrapItemClick
-import com.runnect.runnect.util.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class StorageScrapFragment :
-    BindingFragment<FragmentStorageScrapBinding>(R.layout.fragment_storage_scrap),
-    OnHeartButtonClick,
-    OnScrapItemClick,
-    ItemCount {
+class StorageScrapFragment : Fragment() {
     @Inject
     lateinit var screenRefreshEventBus: ScreenRefreshEventBus
 
-    val viewModel: StorageViewModel by viewModels()
-    private lateinit var storageScrapAdapter: StorageScrapAdapter
+    private val viewModel: StorageViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                RunnectTheme {
+                    val getState by viewModel.myScrapCourseGetState.observeAsState()
+                    val scrapState by viewModel.courseScrapState.observeAsState()
+
+                    var courses by remember { mutableStateOf(emptyList<MyScrapCourse>()) }
+                    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+                    LaunchedEffect(getState) {
+                        when (val current = getState) {
+                            is UiStateV2.Success -> {
+                                courses = current.data
+                                Analytics.logEvent(
+                                    EventName.VIEW_STORAGE_SCRAP,
+                                    Param.COURSE_COUNT to current.data.size
+                                )
+                            }
+
+                            is UiStateV2.Failure -> errorMessage = current.msg
+                            else -> Unit
+                        }
+                    }
+
+                    LaunchedEffect(scrapState) {
+                        when (val current = scrapState) {
+                            is UiStateV2.Success -> {
+                                courses = courses.filterNot {
+                                    it.publicCourseId.toLong() == current.data.publicCourseId
+                                }
+                            }
+
+                            is UiStateV2.Failure -> errorMessage = current.msg
+                            else -> Unit
+                        }
+                    }
+
+                    StorageScrapScreen(
+                        state = StorageScrapUiState(
+                            courses = courses,
+                            isLoading = getState is UiStateV2.Loading,
+                            errorMessage = errorMessage
+                        ),
+                        onRefresh = { viewModel.getMyScrapCourses() },
+                        onScrapItemClick = { course -> navigateToCourseDetail(course) },
+                        onHeartClick = { course ->
+                            viewModel.postCourseScrap(id = course.publicCourseId, scrapTF = false)
+                        },
+                        onGoToScrapClick = { navigateToDiscover() }
+                    )
+                }
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.lifecycleOwner = viewLifecycleOwner
-
         Analytics.logEvent(EventName.VIEW_STORAGE_SCRAP)
-        getMyScrapCourses()
-        initLayout()
-        initAdapter()
-        addListener()
-        addObserver()
-    }
-
-    fun getMyScrapCourses() {
         viewModel.getMyScrapCourses()
-    }
-
-    private fun initLayout() {
-        binding.rvStorageScrap.apply {
-            val context = context ?: return
-            layoutManager = GridLayoutManager(context, 2)
-            addItemDecoration(
-                GridSpacingItemDecoration(
-                    context = context,
-                    spanCount = 2,
-                    horizontalSpaceSize = 6,
-                    topSpaceSize = 20
-                )
-            )
-        }
-    }
-
-    private fun initAdapter() {
-        storageScrapAdapter = StorageScrapAdapter(
-            onScrapItemClick = this,
-            onHeartButtonClick = this,
-            itemCount = this
-        ).apply {
-            binding.rvStorageScrap.adapter = this
-        }
-    }
-
-    private fun addListener() {
-        initGoToScrapButtonClickListener()
-        initRefreshLayoutListener()
-    }
-
-    private fun initGoToScrapButtonClickListener() {
-        binding.btnStorageNoScrap.setOnClickListener {
-            val intent = Intent(activity, MainActivity::class.java).apply {
-                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromMyScrap")
-            }
-            startActivity(intent)
-            requireActivity().overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
-        }
-    }
-
-    private fun initRefreshLayoutListener() {
-        binding.refreshLayout.setOnRefreshListener {
-            getMyScrapCourses()
-            binding.refreshLayout.isRefreshing = false
-        }
-    }
-
-    private fun addObserver() {
-        setupItemSizeObserver()
-        setupMyScrapCourseGetStateObserver()
-        setupCourseScrapStateObserver()
         collectScreenRefreshEvents()
     }
 
@@ -121,107 +111,28 @@ class StorageScrapFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             screenRefreshEventBus.events.collect { event ->
                 if (event is ScreenRefreshEvent.RefreshStorageScrap) {
-                    getMyScrapCourses()
+                    viewModel.getMyScrapCourses()
                 }
             }
         }
     }
 
-    private fun setupCourseScrapStateObserver() {
-        viewModel.courseScrapState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStateV2.Loading -> {
-                    showLoadingProgressBar()
-                }
-
-                is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
-                    storageScrapAdapter.removeCourseItem()
-                }
-
-                is UiStateV2.Failure -> {
-                    dismissLoadingProgressBar()
-                    context?.showSnackbar(
-                        anchorView = binding.root,
-                        message = state.msg
-                    )
-                }
-
-                else -> {}
-            }
+    private fun navigateToCourseDetail(course: MyScrapCourse) {
+        val intent = Intent(activity, CourseDetailActivity::class.java).apply {
+            putExtra(EXTRA_PUBLIC_COURSE_ID, course.publicCourseId)
+            putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_STORAGE_SCRAP)
         }
+        startActivity(intent)
+        requireActivity().overridePendingTransition(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
     }
 
-    private fun setupItemSizeObserver() {
-        viewModel.itemSize.observe(viewLifecycleOwner) { itemSize ->
-            val isEmpty = (itemSize == 0)
-            updateEmptyView(isEmpty, itemSize)
+    private fun navigateToDiscover() {
+        val intent = Intent(activity, MainActivity::class.java).apply {
+            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromMyScrap")
         }
-    }
-
-    private fun updateEmptyView(isEmpty: Boolean, itemSize: Int) {
-        binding.apply {
-            clMyDrawNoScrap.isVisible = isEmpty
-            rvStorageScrap.isVisible = !isEmpty
-            tvStorageScrapCount.isVisible = !isEmpty
-            tvStorageScrapCount.text = if (!isEmpty) "총 코스 ${itemSize}개" else ""
-        }
-    }
-
-    private fun setupMyScrapCourseGetStateObserver() {
-        viewModel.myScrapCourseGetState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiStateV2.Loading -> {
-                    showLoadingProgressBar()
-                }
-
-                is UiStateV2.Success -> {
-                    dismissLoadingProgressBar()
-
-                    val scrapCourses = state.data
-                    updateEmptyView(scrapCourses.isEmpty(), scrapCourses.size)
-                    storageScrapAdapter.submitList(scrapCourses)
-                    Analytics.logEvent(
-                        EventName.VIEW_STORAGE_SCRAP,
-                        Param.COURSE_COUNT to scrapCourses.size
-                    )
-                }
-
-                is UiStateV2.Failure -> {
-                    dismissLoadingProgressBar()
-                    context?.showSnackbar(
-                        anchorView = binding.root,
-                        message = state.msg
-                    )
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun showLoadingProgressBar() {
-        binding.pbStorageScrapLoading.isVisible = true
-    }
-
-    private fun dismissLoadingProgressBar() {
-        binding.pbStorageScrapLoading.isVisible = false
-    }
-
-    override fun calcItemSize(itemCount: Int) {
-        viewModel.itemSize.value = itemCount
-    }
-
-    override fun scrapCourse(id: Int, scrapTF: Boolean) {
-        viewModel.postCourseScrap(id, scrapTF)
-    }
-
-    override fun selectItem(item: MyScrapCourse) {
-        Timber.tag(ContentValues.TAG).d("코스 아이디 : ${item.publicCourseId}")
-
-        val intent = Intent(activity, CourseDetailActivity::class.java)
-        intent.putExtra(EXTRA_PUBLIC_COURSE_ID, item.publicCourseId)
-        intent.putExtra(EXTRA_ROOT_SCREEN, CourseDetailRootScreen.COURSE_STORAGE_SCRAP)
         startActivity(intent)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
