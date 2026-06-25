@@ -63,11 +63,15 @@ fun StorageScrapScreen(
     onScrapItemClick: (MyScrapCourse) -> Unit,
     onHeartClick: (MyScrapCourse) -> Unit,
     onGoToScrapClick: () -> Unit,
+    onErrorShown: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(state.errorMessage) {
-        state.errorMessage?.let { snackbarHostState.showSnackbar(it) }
+        state.errorMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            onErrorShown()
+        }
     }
 
     Scaffold(
@@ -80,7 +84,7 @@ fun StorageScrapScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (state.courses.isEmpty()) {
+            if (!state.isLoading && state.courses.isEmpty()) {
                 EmptyScrapView(onGoToScrapClick = onGoToScrapClick)
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {

@@ -93,7 +93,8 @@ class StorageScrapFragment : Fragment() {
                         onHeartClick = { course ->
                             viewModel.postCourseScrap(id = course.publicCourseId, scrapTF = false)
                         },
-                        onGoToScrapClick = { navigateToDiscover() }
+                        onGoToScrapClick = { navigateToDiscover() },
+                        onErrorShown = { errorMessage = null }
                     )
                 }
             }
