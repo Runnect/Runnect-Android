@@ -6,6 +6,11 @@ on:
 
     pull_request:
 
+permissions:
+    contents: read
+    checks: write
+    pull-requests: write
+
 defaults:
     run:
         shell: bash
@@ -100,6 +105,14 @@ jobs:
 
             -   name: Run unit tests
                 run: ./gradlew testDebugUnitTest --stacktrace
+
+            -   name: Publish unit test results
+                if: always()
+                uses: dorny/test-reporter@v1
+                with:
+                    name: Unit Test Results
+                    path: app/build/test-results/testDebugUnitTest/*.xml
+                    reporter: java-junit
 
             -   name: Build
                 run: ./gradlew assembleDebug --stacktrace
@@ -204,6 +217,14 @@ jobs:
                     arch: x86_64
                     profile: pixel_6
                     script: ./gradlew connectedDebugAndroidTest --stacktrace
+
+            -   name: Publish Compose UI test results
+                if: always()
+                uses: dorny/test-reporter@v1
+                with:
+                    name: Compose UI Test Results
+                    path: app/build/outputs/androidTest-results/connected/**/*.xml
+                    reporter: java-junit
 
             -   name: Upload instrumented test results
                 if: always()
