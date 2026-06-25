@@ -107,13 +107,21 @@ jobs:
             -   name: Run unit tests
                 run: ./gradlew testDebugUnitTest --stacktrace
 
-            -   name: Publish unit test results
-                if: always()
-                uses: dorny/test-reporter@v3
-                with:
-                    name: Unit Test Results
-                    path: app/build/test-results/testDebugUnitTest/*.xml
-                    reporter: java-junit
+            -   name: Comment unit test results on PR
+                if: always() && github.event_name == 'pull_request'
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    MARKER="<!-- unit-test-report -->"
+                    BODY="$MARKER"$'\n'"$(python3 .github/scripts/post_test_report.py 'Unit Test Results' 'app/build/test-results/testDebugUnitTest/*.xml')"
+                    existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+                    if [ -n "$existing_id" ]; then
+                        gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
+                    else
+                        gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                    fi
 
             -   name: Build
                 run: ./gradlew assembleDebug --stacktrace
@@ -219,13 +227,21 @@ jobs:
                     profile: pixel_6
                     script: ./gradlew connectedDebugAndroidTest --stacktrace
 
-            -   name: Publish Compose UI test results
-                if: always()
-                uses: dorny/test-reporter@v3
-                with:
-                    name: Compose UI Test Results
-                    path: app/build/outputs/androidTest-results/connected/**/*.xml
-                    reporter: java-junit
+            -   name: Comment Compose UI test results on PR
+                if: always() && github.event_name == 'pull_request'
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    MARKER="<!-- compose-ui-test-report -->"
+                    BODY="$MARKER"$'\n'"$(python3 .github/scripts/post_test_report.py 'Compose UI Test Results' 'app/build/outputs/androidTest-results/connected/**/*.xml')"
+                    existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+                    if [ -n "$existing_id" ]; then
+                        gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
+                    else
+                        gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                    fi
 
             -   name: Upload instrumented test results
                 if: always()
