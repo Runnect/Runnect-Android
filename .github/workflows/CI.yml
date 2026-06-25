@@ -109,7 +109,7 @@ jobs:
 
             -   name: Publish unit test results
                 if: always()
-                uses: dorny/test-reporter@v1
+                uses: dorny/test-reporter@v3
                 with:
                     name: Unit Test Results
                     path: app/build/test-results/testDebugUnitTest/*.xml
@@ -221,7 +221,7 @@ jobs:
 
             -   name: Publish Compose UI test results
                 if: always()
-                uses: dorny/test-reporter@v1
+                uses: dorny/test-reporter@v3
                 with:
                     name: Compose UI Test Results
                     path: app/build/outputs/androidTest-results/connected/**/*.xml
