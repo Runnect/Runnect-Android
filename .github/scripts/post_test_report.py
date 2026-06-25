@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
-"""Parse JUnit XML test results and print a markdown report to stdout."""
+"""Parse JUnit XML test results and print a markdown report to stdout.
+
+Each test line gets a stable anchor (<a id="t-{hash}">) so that other
+documents (e.g. the PR description's verification matrix) can link
+directly to a specific test's latest result.
+"""
 import glob
+import hashlib
 import sys
 import xml.etree.ElementTree as ET
+
+
+def anchor_id(classname: str, case_name: str) -> str:
+    digest = hashlib.md5(f"{classname}::{case_name}".encode()).hexdigest()[:10]
+    return f"t-{digest}"
 
 
 def main() -> None:
@@ -34,7 +45,10 @@ def main() -> None:
             else:
                 status = "✅"
                 passed += 1
-            by_class.setdefault(classname, []).append(f"- {status} {case_name}")
+            aid = anchor_id(classname, case_name)
+            by_class.setdefault(classname, []).append(
+                f'- <a id="{aid}"></a>{status} {case_name}'
+            )
 
     total = passed + failed + skipped
     badge = "✅" if failed == 0 else "❌"
