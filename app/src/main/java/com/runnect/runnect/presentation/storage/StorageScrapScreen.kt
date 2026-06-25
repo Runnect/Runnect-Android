@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.runnect.runnect.R
 import com.runnect.runnect.domain.entity.MyScrapCourse
+import com.runnect.runnect.domain.entity.PostScrap
+import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.ui.theme.G1
 import com.runnect.runnect.presentation.ui.theme.G2
 import com.runnect.runnect.presentation.ui.theme.G4
@@ -53,7 +55,20 @@ data class StorageScrapUiState(
     val courses: List<MyScrapCourse> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null
-)
+) {
+    companion object {
+        fun from(
+            getState: UiStateV2<List<MyScrapCourse>>?,
+            scrapState: UiStateV2<PostScrap>?,
+            courses: List<MyScrapCourse>,
+            errorMessage: String?,
+        ) = StorageScrapUiState(
+            courses = courses,
+            isLoading = getState is UiStateV2.Loading || scrapState is UiStateV2.Loading,
+            errorMessage = errorMessage
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

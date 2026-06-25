@@ -83,10 +83,10 @@ class StorageScrapFragment : Fragment() {
                     }
 
                     StorageScrapScreen(
-                        state = StorageScrapUiState(
+                        state = StorageScrapUiState.from(
+                            getState = getState,
+                            scrapState = scrapState,
                             courses = courses,
-                            isLoading = getState is UiStateV2.Loading ||
-                                scrapState is UiStateV2.Loading,
                             errorMessage = errorMessage
                         ),
                         onRefresh = { viewModel.getMyScrapCourses() },

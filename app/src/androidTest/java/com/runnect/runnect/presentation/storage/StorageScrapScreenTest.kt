@@ -1,6 +1,8 @@
 package com.runnect.runnect.presentation.storage
 
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasProgressBarRangeInfo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -83,6 +85,25 @@ class StorageScrapScreenTest {
         }
 
         composeTestRule.onNodeWithText("아직 스크랩한 코스가 없어요", substring = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `isLoading이_true이면_로딩_인디케이터가_보인다`() {
+        composeTestRule.setContent {
+            RunnectTheme {
+                StorageScrapScreen(
+                    state = StorageScrapUiState(courses = listOf(course("코스")), isLoading = true),
+                    onRefresh = {},
+                    onScrapItemClick = {},
+                    onHeartClick = {},
+                    onGoToScrapClick = {},
+                    onErrorShown = {}
+                )
+            }
+        }
+
+        composeTestRule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate))
             .assertIsDisplayed()
     }
 }
