@@ -277,13 +277,7 @@ jobs:
                     target: google_apis
                     arch: x86_64
                     profile: pixel_6
-                    script: |
-                        if [ -z "$TEST_PACKAGES" ]; then
-                            ./gradlew connectedDebugAndroidTest --stacktrace
-                        else
-                            ARGS=$(echo "$TEST_PACKAGES" | tr ' ' '\n' | grep -v '^$' | sed 's/$/.*/;s/^/--tests /' | tr '\n' ' ')
-                            ./gradlew connectedDebugAndroidTest $ARGS --stacktrace
-                        fi
+                    script: bash .github/scripts/run_android_tests.sh
 
             -   name: Comment Compose UI test failures on PR
                 if: always() && github.event_name == 'pull_request'
