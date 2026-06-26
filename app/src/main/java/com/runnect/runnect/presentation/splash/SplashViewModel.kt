@@ -19,7 +19,7 @@ class SplashViewModel @Inject constructor() : ViewModel() {
     private val _isReady = MutableStateFlow(false)
     val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
 
-    private val _navigateEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    private val _navigateEvent = MutableSharedFlow<Unit>(replay = 1)
     val navigateEvent: SharedFlow<Unit> = _navigateEvent.asSharedFlow()
 
     init {
