@@ -1,61 +1,42 @@
 package com.runnect.runnect.presentation.mypage.editname
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.runnect.runnect.R
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
 import com.runnect.runnect.domain.repository.UserRepository
-import com.runnect.runnect.presentation.base.BaseViewModel
-import com.runnect.runnect.presentation.state.UiState
-import com.runnect.runnect.util.extension.collectResult
+import com.runnect.runnect.presentation.base.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageEditNameViewModel @Inject constructor(
     private val userRepository: UserRepository
-) : BaseViewModel() {
-    val nickName = MutableLiveData<String>()
+) : MviViewModel<EditNameUiState, EditNameIntent, EditNameEffect>(EditNameUiState()) {
 
-    private val _uiState = MutableLiveData<UiState>()
-    val uiState: LiveData<UiState>
-        get() = _uiState
-
-    val profileImgResId: MutableLiveData<Int> = MutableLiveData<Int>(R.drawable.user_profile_basic)
-
-    val statusCode: LiveData<Int>
-        get() = _statusCode
-    private val _statusCode = MutableLiveData<Int>()
-
-    fun setNickName(nickName: String) {
-        this.nickName.value = nickName
+    override suspend fun handleIntent(intent: EditNameIntent) {
+        when (intent) {
+            is EditNameIntent.Init -> reduce {
+                copy(nickname = intent.nickname, profileImgResId = intent.profileImgResId)
+            }
+            is EditNameIntent.UpdateNickname -> reduce { copy(nickname = intent.name) }
+            is EditNameIntent.Submit -> submitNickname()
+        }
     }
 
-    fun setProfileImg(profileImgResId: Int) {
-        this.profileImgResId.value = profileImgResId
-    }
-
-    fun updateNickName() = launchWithHandler {
-        val requestPatchNickName = RequestPatchNickName(
-            nickname = nickName.value.toString()
+    private fun submitNickname() {
+        collectFlow(
+            flow = {
+                userRepository.updateNickName(
+                    RequestPatchNickName(nickname = currentState.nickname)
+                )
+            },
+            onLoading = { reduce { copy(isLoading = true) } },
+            onSuccess = {
+                reduce { copy(isLoading = false) }
+                postEffect(EditNameEffect.NavigateSuccess(currentState.nickname))
+            },
+            onFailure = {
+                reduce { copy(isLoading = false) }
+                postEffect(EditNameEffect.ShowDuplicateError)
+            }
         )
-
-        userRepository.updateNickName(requestPatchNickName)
-            .onStart {
-                _uiState.value = UiState.Loading
-            }.collectResult(
-                onSuccess = {
-                    _uiState.value = UiState.Success
-                },
-                onFailure = {
-                    _uiState.value = UiState.Failure
-                    _statusCode.value = REDUNDANT_NICKNAME_ERROR
-                }
-            )
-    }
-
-    companion object {
-        const val REDUNDANT_NICKNAME_ERROR = 400
     }
 }
