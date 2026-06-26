@@ -88,6 +88,7 @@ androidx-junit = "1.3.0"
 espresso = "3.7.0"
 mockk = "1.13.13"
 turbine = "1.2.0"
+androidx-core-testing = "2.2.0"
 
 [libraries]
 # AndroidX
@@ -112,6 +113,7 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
@@ -185,6 +187,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidx-core-testing" }
 
 [bundles]
 firebase = [
@@ -208,6 +211,7 @@ compose = [
     "compose-ui-graphics",
     "compose-ui-tooling-preview",
     "compose-material3",
+    "compose-runtime-livedata",
 ]
 compose-debug = [
     "compose-ui-tooling",

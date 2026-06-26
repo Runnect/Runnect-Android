@@ -5,8 +5,13 @@ on:
         branches: [ develop ]
 
     pull_request:
-        branches: [ develop ]
-    
+
+permissions:
+    contents: read
+    actions: read
+    checks: write
+    pull-requests: write
+
 defaults:
     run:
         shell: bash
@@ -20,10 +25,10 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@v4
 
-            -   name: set up JDK 17
+            -   name: set up JDK 21
                 uses: actions/setup-java@v4
                 with:
-                    java-version: 17
+                    java-version: 21
                     distribution: temurin
                     cache: gradle
 
@@ -99,5 +104,158 @@ jobs:
             -   name: Change gradlew permissions
                 run: chmod +x ./gradlew
 
-            -   name: Build 
+            -   name: Run unit tests
+                run: ./gradlew testDebugUnitTest --stacktrace
+
+            -   name: Comment unit test failures on PR
+                if: always() && github.event_name == 'pull_request'
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    MARKER="<!-- unit-test-report -->"
+                    REPORT="$(python3 .github/scripts/post_test_report.py 'Unit Test Results' 'app/build/test-results/testDebugUnitTest/*.xml')"
+                    existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+                    if [ -n "$REPORT" ]; then
+                        BODY="$MARKER"$'\n'"$REPORT"
+                        if [ -n "$existing_id" ]; then
+                            gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
+                        else
+                            gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                        fi
+                    elif [ -n "$existing_id" ]; then
+                        gh api "repos/$REPO/issues/comments/$existing_id" -X DELETE
+                    fi
+
+            -   name: Build
                 run: ./gradlew assembleDebug --stacktrace
+
+    android-test:
+        name: Run Compose UI Tests
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: set up JDK 21
+                uses: actions/setup-java@v4
+                with:
+                    java-version: 21
+                    distribution: temurin
+                    cache: gradle
+
+            - name: Write compile time google-services.json file
+              env:
+                  GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+              run: echo $GOOGLE_SERVICES_JSON > app/google-services.json
+
+            - name: Touch local properties
+              run: touch local.properties
+
+            - name: Access NAVER_CLIENT_ID
+              env:
+                  NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+              run: echo "NAVER_CLIENT_ID = \"$NAVER_CLIENT_ID\"" >> local.properties
+
+            - name: Access RUNNECT_NODE_URL
+              env:
+                  RUNNECT_NODE_URL: ${{ secrets.RUNNECT_NODE_URL }}
+              run: echo "RUNNECT_NODE_URL=\"$RUNNECT_NODE_URL\"" >> local.properties
+
+            - name: Access RUNNECT_DEV_URL
+              env:
+                RUNNECT_DEV_URL: ${{ secrets.RUNNECT_DEV_URL }}
+              run: echo "RUNNECT_DEV_URL=\"$RUNNECT_DEV_URL\"" >> local.properties
+
+            - name: Access RUNNECT_PROD_URL
+              env:
+                RUNNECT_PROD_URL: ${{ secrets.RUNNECT_PROD_URL }}
+              run: echo "RUNNECT_PROD_URL=\"$RUNNECT_PROD_URL\"" >> local.properties
+
+            - name: Access TMAP_BASE_URL
+              env:
+                  TMAP_BASE_URL: ${{ secrets.TMAP_BASE_URL }}
+              run: echo "TMAP_BASE_URL=\"$TMAP_BASE_URL\"" >> local.properties
+
+            - name: Access TMAP_API_KEY
+              env:
+                  TMAP_API_KEY: ${{ secrets.TMAP_API_KEY }}
+              run: echo "TMAP_API_KEY=\"$TMAP_API_KEY\"" >> local.properties
+
+            - name: Access GOOGLE_CLIENT_ID
+              env:
+                  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+              run: echo "GOOGLE_CLIENT_ID=\"$GOOGLE_CLIENT_ID\"" >> local.properties
+
+            - name: Access REMOTE_KEY_APP_VERSION
+              env:
+                  REMOTE_KEY_APP_VERSION: ${{ secrets.REMOTE_KEY_APP_VERSION }}
+              run: echo "REMOTE_KEY_APP_VERSION=\"$REMOTE_KEY_APP_VERSION\"" >> local.properties
+
+            - name: Access KAKAO_CHANNEL_ID
+              env:
+                  KAKAO_CHANNEL_ID: ${{ secrets.KAKAO_CHANNEL_ID }}
+              run: echo "KAKAO_CHANNEL_ID=\"$KAKAO_CHANNEL_ID\"" >> local.properties
+
+            - name: Access REMOTE_KEY_FORCE_UPDATE
+              env:
+                  REMOTE_KEY_FORCE_UPDATE: ${{ secrets.REMOTE_KEY_FORCE_UPDATE }}
+              run: echo "REMOTE_KEY_FORCE_UPDATE=\"$REMOTE_KEY_FORCE_UPDATE\"" >> local.properties
+
+            - name: Add kakao_strings.xml
+              env:
+                  KAKAO_NATIVE_APP_KEY: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
+                  KAKAO_REDIRECTION_SCHEME: ${{ secrets.KAKAO_REDIRECTION_SCHEME }}
+              run: |
+                  echo '<?xml version="1.0" encoding="utf-8"?>' > app/src/main/res/values/kakao_strings.xml
+                  echo '<resources>' >> app/src/main/res/values/kakao_strings.xml
+                  echo '    <string name="kakao_native_app_key">$KAKAO_NATIVE_APP_KEY</string>' >> app/src/main/res/values/kakao_strings.xml
+                  echo '    <string name="kakao_redirection_scheme">$KAKAO_REDIRECTION_SCHEME</string>' >> app/src/main/res/values/kakao_strings.xml
+                  echo '</resources>' >> app/src/main/res/values/kakao_strings.xml
+
+            -   name: Change gradlew permissions
+                run: chmod +x ./gradlew
+
+            -   name: Enable KVM group perms
+                run: |
+                    echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+                    sudo udevadm control --reload-rules
+                    sudo udevadm trigger --name-match=kvm
+
+            -   name: Run Compose UI tests on emulator
+                uses: reactivecircus/android-emulator-runner@v2
+                with:
+                    api-level: 34
+                    target: google_apis
+                    arch: x86_64
+                    profile: pixel_6
+                    script: ./gradlew connectedDebugAndroidTest --stacktrace
+
+            -   name: Comment Compose UI test failures on PR
+                if: always() && github.event_name == 'pull_request'
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    MARKER="<!-- compose-ui-test-report -->"
+                    REPORT="$(python3 .github/scripts/post_test_report.py 'Compose UI Test Results' 'app/build/outputs/androidTest-results/connected/**/*.xml')"
+                    existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+                    if [ -n "$REPORT" ]; then
+                        BODY="$MARKER"$'\n'"$REPORT"
+                        if [ -n "$existing_id" ]; then
+                            gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
+                        else
+                            gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                        fi
+                    elif [ -n "$existing_id" ]; then
+                        gh api "repos/$REPO/issues/comments/$existing_id" -X DELETE
+                    fi
+
+            -   name: Upload instrumented test results
+                if: always()
+                uses: actions/upload-artifact@v4
+                with:
+                    name: android-test-results
+                    path: app/build/outputs/androidTest-results/connected/**
