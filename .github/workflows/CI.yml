@@ -104,8 +104,34 @@ jobs:
             -   name: Change gradlew permissions
                 run: chmod +x ./gradlew
 
+            -   name: Detect changed test packages
+                id: packages
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    if [ "${{ github.event_name }}" = "pull_request" ]; then
+                        PKGS=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate \
+                            --jq '.[].filename' \
+                            | grep -E "^app/src/(main|test|androidTest)/java/.+\.kt$" \
+                            | sed 's|app/src/[^/]*/java/||;s|/[^/]*\.kt$||;s|/|.|g' \
+                            | sort -u \
+                            | tr '\n' ' ')
+                        echo "packages=$PKGS" >> "$GITHUB_OUTPUT"
+                    else
+                        echo "packages=" >> "$GITHUB_OUTPUT"
+                    fi
+
             -   name: Run unit tests
-                run: ./gradlew testDebugUnitTest --stacktrace
+                run: |
+                    PKGS="${{ steps.packages.outputs.packages }}"
+                    if [ -z "$PKGS" ]; then
+                        ./gradlew testDebugUnitTest --stacktrace
+                    else
+                        ARGS=$(echo "$PKGS" | tr ' ' '\n' | grep -v '^$' | sed 's/$/.*/;s/^/--tests /' | tr '\n' ' ')
+                        ./gradlew testDebugUnitTest $ARGS --stacktrace
+                    fi
 
             -   name: Comment unit test failures on PR
                 if: always() && github.event_name == 'pull_request'
@@ -217,6 +243,25 @@ jobs:
             -   name: Change gradlew permissions
                 run: chmod +x ./gradlew
 
+            -   name: Detect changed test packages
+                id: packages
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    if [ "${{ github.event_name }}" = "pull_request" ]; then
+                        PKGS=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate \
+                            --jq '.[].filename' \
+                            | grep -E "^app/src/(main|test|androidTest)/java/.+\.kt$" \
+                            | sed 's|app/src/[^/]*/java/||;s|/[^/]*\.kt$||;s|/|.|g' \
+                            | sort -u \
+                            | tr '\n' ' ')
+                        echo "packages=$PKGS" >> "$GITHUB_OUTPUT"
+                    else
+                        echo "packages=" >> "$GITHUB_OUTPUT"
+                    fi
+
             -   name: Enable KVM group perms
                 run: |
                     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -225,12 +270,14 @@ jobs:
 
             -   name: Run Compose UI tests on emulator
                 uses: reactivecircus/android-emulator-runner@v2
+                env:
+                    TEST_PACKAGES: ${{ steps.packages.outputs.packages }}
                 with:
                     api-level: 34
                     target: google_apis
                     arch: x86_64
                     profile: pixel_6
-                    script: ./gradlew connectedDebugAndroidTest --stacktrace
+                    script: bash .github/scripts/run_android_tests.sh
 
             -   name: Comment Compose UI test failures on PR
                 if: always() && github.event_name == 'pull_request'

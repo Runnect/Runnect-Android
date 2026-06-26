@@ -2,35 +2,41 @@ package com.runnect.runnect.presentation.splash
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.runnect.runnect.R
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.runnect.runnect.presentation.login.LoginActivity
-import com.runnect.runnect.presentation.scheme.SchemeActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
-    private val handler = Handler(Looper.getMainLooper())
+    private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition { false }
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
-        navigateToLoginScreen()
-    }
+        enableEdgeToEdge()
 
-    private fun navigateToLoginScreen() {
-        handler.postDelayed({
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
-            finish()
-        }, DELAY_TIME)
-    }
+        setContent {
+            SplashScreen()
+        }
 
-    companion object {
-        private const val DELAY_TIME = 1000L
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateEvent.collect {
+                    startActivity(Intent(this@SplashActivity, LoginActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    })
+                    finish()
+                }
+            }
+        }
     }
 }

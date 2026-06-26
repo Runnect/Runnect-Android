@@ -26,6 +26,7 @@ viewpager2 = "1.1.0"
 swiperefreshlayout = "1.2.0"
 preference-ktx = "1.2.1"
 security-crypto = "1.1.0"
+splashscreen = "1.0.1"
 
 # Compose
 compose-bom = "2026.03.01"
@@ -106,6 +107,7 @@ androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", vers
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preference-ktx" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "security-crypto" }
+androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
 # Compose
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }

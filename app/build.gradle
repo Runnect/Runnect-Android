@@ -137,6 +137,7 @@ dependencies {
     implementation libs.androidx.swiperefreshlayout
     implementation libs.androidx.preference.ktx
     implementation libs.androidx.security.crypto.ktx
+    implementation libs.androidx.splashscreen
 
     // Compose
     implementation platform(libs.compose.bom)
