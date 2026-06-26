@@ -30,8 +30,7 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+        <item name="windowSplashScreenBackground">@color/M1</item>
         <item name="postSplashScreenTheme">@style/Theme.Runnect</item>
     </style>
 
