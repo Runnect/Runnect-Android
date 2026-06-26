@@ -66,6 +66,8 @@
     <string name="storage_main_tab_scrap">스크랩 코스</string>
     <string name="storage_my_draw_make_course">코스 그리기</string>
     <string name="storage_scrap_make_scrap">스크랩하기</string>
+    <string name="storage_total_course_count">총 코스 %1$d개</string>
+    <string name="storage_scrap_empty_guide">아직 스크랩한 코스가 없어요\n 코스를 스크랩 해주세요</string>
     <string name="course_detail_start_run_button">시작하기</string>
     <string name="run_distance_title">총 거리</string>
     <string name="run_distance_unit">km</string>

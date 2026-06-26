@@ -99,6 +99,12 @@ android {
     }
 }
 
+tasks.withType(Test).configureEach {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
 tasks.register('renameReleaseBundle') {
     def vName = libs.versions.versionName.get()
     def bundlePath = layout.buildDirectory.dir("outputs/bundle/release")
@@ -191,6 +197,7 @@ dependencies {
     testImplementation libs.mockk
     testImplementation libs.turbine
     testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.androidx.core.testing
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 }
