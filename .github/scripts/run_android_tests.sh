@@ -5,6 +5,9 @@ PKGS="${TEST_PACKAGES:-}"
 if [ -z "$PKGS" ]; then
     ./gradlew connectedDebugAndroidTest --stacktrace
 else
-    ARGS=$(echo "$PKGS" | tr ' ' '\n' | grep -v '^$' | sed 's/$/.*/;s/^/--tests /' | tr '\n' ' ')
-    ./gradlew connectedDebugAndroidTest $ARGS --stacktrace
+    # connectedDebugAndroidTest uses runner args for filtering, not --tests
+    PKG_FILTER=$(echo "$PKGS" | tr ' ' '\n' | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
+    ./gradlew connectedDebugAndroidTest \
+        -Pandroid.testInstrumentationRunnerArguments.package="$PKG_FILTER" \
+        --stacktrace
 fi
