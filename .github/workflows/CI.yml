@@ -106,9 +106,14 @@ jobs:
 
             -   name: Detect changed test packages
                 id: packages
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
                 run: |
                     if [ "${{ github.event_name }}" = "pull_request" ]; then
-                        PKGS=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+                        PKGS=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate \
+                            --jq '.[].filename' \
                             | grep -E "^app/src/(main|test|androidTest)/java/.+\.kt$" \
                             | sed 's|app/src/[^/]*/java/||;s|/[^/]*\.kt$||;s|/|.|g' \
                             | sort -u \
@@ -240,9 +245,14 @@ jobs:
 
             -   name: Detect changed test packages
                 id: packages
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
                 run: |
                     if [ "${{ github.event_name }}" = "pull_request" ]; then
-                        PKGS=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+                        PKGS=$(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate \
+                            --jq '.[].filename' \
                             | grep -E "^app/src/(main|test|androidTest)/java/.+\.kt$" \
                             | sed 's|app/src/[^/]*/java/||;s|/[^/]*\.kt$||;s|/|.|g' \
                             | sort -u \
