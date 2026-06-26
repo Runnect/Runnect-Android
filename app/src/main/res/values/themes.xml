@@ -29,10 +29,10 @@
         <item name="editTextStyle">@style/Widget.Runnect.EditText</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowBackground">@drawable/splash</item>
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.Runnect</item>
     </style>
 
     <!-- 신고하기 BottomSheet 테마 -->
