@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -34,6 +35,7 @@ import com.runnect.runnect.R
 import com.runnect.runnect.presentation.ui.theme.G1
 import com.runnect.runnect.presentation.ui.theme.G3
 import com.runnect.runnect.presentation.ui.theme.M1
+import com.runnect.runnect.presentation.ui.theme.M2
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 
 @Composable
@@ -45,7 +47,7 @@ fun MyPageEditNameScreen(
 ) {
     val focusManager = LocalFocusManager.current
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         Column(modifier = Modifier.fillMaxSize()) {
             EditNameToolbar(
                 onBackClick = onBackClick,
@@ -146,10 +148,10 @@ private fun NicknameTextField(
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { onDone() }),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = M1,
-            unfocusedBorderColor = G3,
+            focusedBorderColor = M2,
+            unfocusedBorderColor = M2,
             cursorColor = M1,
         ),
     )
