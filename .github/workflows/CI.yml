@@ -107,7 +107,7 @@ jobs:
             -   name: Run unit tests
                 run: ./gradlew testDebugUnitTest --stacktrace
 
-            -   name: Comment unit test results on PR
+            -   name: Comment unit test failures on PR
                 if: always() && github.event_name == 'pull_request'
                 env:
                     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -115,12 +115,17 @@ jobs:
                     PR_NUMBER: ${{ github.event.pull_request.number }}
                 run: |
                     MARKER="<!-- unit-test-report -->"
-                    BODY="$MARKER"$'\n'"$(python3 .github/scripts/post_test_report.py 'Unit Test Results' 'app/build/test-results/testDebugUnitTest/*.xml')"
+                    REPORT="$(python3 .github/scripts/post_test_report.py 'Unit Test Results' 'app/build/test-results/testDebugUnitTest/*.xml')"
                     existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
-                    if [ -n "$existing_id" ]; then
-                        gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
-                    else
-                        gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                    if [ -n "$REPORT" ]; then
+                        BODY="$MARKER"$'\n'"$REPORT"
+                        if [ -n "$existing_id" ]; then
+                            gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
+                        else
+                            gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                        fi
+                    elif [ -n "$existing_id" ]; then
+                        gh api "repos/$REPO/issues/comments/$existing_id" -X DELETE
                     fi
 
             -   name: Build
@@ -227,7 +232,7 @@ jobs:
                     profile: pixel_6
                     script: ./gradlew connectedDebugAndroidTest --stacktrace
 
-            -   name: Comment Compose UI test results on PR
+            -   name: Comment Compose UI test failures on PR
                 if: always() && github.event_name == 'pull_request'
                 env:
                     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -235,12 +240,17 @@ jobs:
                     PR_NUMBER: ${{ github.event.pull_request.number }}
                 run: |
                     MARKER="<!-- compose-ui-test-report -->"
-                    BODY="$MARKER"$'\n'"$(python3 .github/scripts/post_test_report.py 'Compose UI Test Results' 'app/build/outputs/androidTest-results/connected/**/*.xml')"
+                    REPORT="$(python3 .github/scripts/post_test_report.py 'Compose UI Test Results' 'app/build/outputs/androidTest-results/connected/**/*.xml')"
                     existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
-                    if [ -n "$existing_id" ]; then
-                        gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
-                    else
-                        gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                    if [ -n "$REPORT" ]; then
+                        BODY="$MARKER"$'\n'"$REPORT"
+                        if [ -n "$existing_id" ]; then
+                            gh api "repos/$REPO/issues/comments/$existing_id" -X PATCH -f body="$BODY"
+                        else
+                            gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+                        fi
+                    elif [ -n "$existing_id" ]; then
+                        gh api "repos/$REPO/issues/comments/$existing_id" -X DELETE
                     fi
 
             -   name: Upload instrumented test results
