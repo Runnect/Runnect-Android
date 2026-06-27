@@ -52,7 +52,7 @@ fun MyPageEditNameScreen(
             EditNameToolbar(
                 onBackClick = onBackClick,
                 onSubmitClick = onSubmitClick,
-                submitEnabled = state.nickname.isNotEmpty(),
+                submitEnabled = state.nickname.isNotEmpty() && !state.isLoading,
             )
             Column(
                 modifier = Modifier
@@ -71,6 +71,7 @@ fun MyPageEditNameScreen(
                     value = state.nickname,
                     onValueChange = onNicknameChange,
                     onDone = { focusManager.clearFocus() },
+                    enabled = !state.isLoading,
                 )
             }
         }
@@ -100,7 +101,7 @@ private fun EditNameToolbar(
     ) {
         Image(
             painter = painterResource(R.drawable.all_back_arrow),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.my_page_edit_name_back),
             modifier = Modifier
                 .size(24.dp)
                 .clickable(onClick = onBackClick),
@@ -128,6 +129,7 @@ private fun NicknameTextField(
     value: String,
     onValueChange: (String) -> Unit,
     onDone: () -> Unit,
+    enabled: Boolean = true,
 ) {
     val textStyle = RunnectTheme.textStyle
     // OutlinedTextField enforces a 56dp minimum height (M3 internal contentPadding),
@@ -139,6 +141,7 @@ private fun NicknameTextField(
         modifier = Modifier
             .fillMaxWidth()
             .height(44.dp),
+        enabled = enabled,
         textStyle = textStyle.semiBold15.copy(textAlign = TextAlign.Center, color = G1),
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

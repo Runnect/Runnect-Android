@@ -2,6 +2,7 @@ package com.runnect.runnect.presentation.mypage.editname
 
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
+import com.runnect.runnect.domain.common.RunnectException
 import com.runnect.runnect.domain.repository.UserRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -107,7 +108,7 @@ class MyPageEditNameViewModelTest {
         runTest(testDispatcher) {
             coEvery { userRepository.updateNickName(any()) } returns flow {
                 delay(1)
-                throw RuntimeException("닉네임 중복")
+                throw RunnectException(code = 400, message = "닉네임 중복")
             }
 
             turbineScope {

@@ -1,10 +1,13 @@
 package com.runnect.runnect.presentation.mypage.editname
 
 import com.runnect.runnect.data.dto.request.RequestPatchNickName
+import com.runnect.runnect.domain.common.getCode
 import com.runnect.runnect.domain.repository.UserRepository
 import com.runnect.runnect.presentation.base.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+
+private const val HTTP_DUPLICATE_NICKNAME = 400
 
 @HiltViewModel
 class MyPageEditNameViewModel @Inject constructor(
@@ -33,9 +36,11 @@ class MyPageEditNameViewModel @Inject constructor(
                 reduce { copy(isLoading = false) }
                 postEffect(EditNameEffect.NavigateSuccess(currentState.nickname))
             },
-            onFailure = {
+            onFailure = { throwable ->
                 reduce { copy(isLoading = false) }
-                postEffect(EditNameEffect.ShowDuplicateError)
+                if (throwable.getCode() == HTTP_DUPLICATE_NICKNAME) {
+                    postEffect(EditNameEffect.ShowDuplicateError)
+                }
             }
         )
     }

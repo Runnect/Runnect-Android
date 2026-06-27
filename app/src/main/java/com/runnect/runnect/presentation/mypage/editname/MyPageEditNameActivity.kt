@@ -29,9 +29,11 @@ class MyPageEditNameActivity : AppCompatActivity() {
         enableEdgeToEdge()
         Analytics.logEvent(EventName.VIEW_EDIT_PROFILE)
 
-        val nickname = intent.getStringExtra(EXTRA_NICK_NAME) ?: ""
-        val profileImgResId = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
-        viewModel.intent(EditNameIntent.Init(nickname, profileImgResId))
+        if (savedInstanceState == null) {
+            val nickname = intent.getStringExtra(EXTRA_NICK_NAME) ?: ""
+            val profileImgResId = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
+            viewModel.intent(EditNameIntent.Init(nickname, profileImgResId))
+        }
 
         setContent {
             RunnectTheme {
@@ -41,6 +43,7 @@ class MyPageEditNameActivity : AppCompatActivity() {
                     onBackClick = {
                         setResult(RESULT_CANCELED)
                         finish()
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     },
                     onNicknameChange = { viewModel.intent(EditNameIntent.UpdateNickname(it)) },
                     onSubmitClick = { viewModel.intent(EditNameIntent.Submit) },
