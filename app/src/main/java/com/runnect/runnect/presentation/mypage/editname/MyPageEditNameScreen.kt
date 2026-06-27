@@ -1,6 +1,7 @@
 package com.runnect.runnect.presentation.mypage.editname
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -130,29 +130,37 @@ private fun NicknameTextField(
     onDone: () -> Unit,
 ) {
     val textStyle = RunnectTheme.textStyle
-    OutlinedTextField(
+    // OutlinedTextField enforces a 56dp minimum height (M3 internal contentPadding),
+    // which clips text inside the 44dp height the XML version used.
+    // BasicTextField + decorationBox gives identical layout to the original AppCompatEditText.
+    BasicTextField(
         value = value,
         onValueChange = { if (it.length <= 7) onValueChange(it) },
         modifier = Modifier
             .fillMaxWidth()
             .height(44.dp),
         textStyle = textStyle.semiBold15.copy(textAlign = TextAlign.Center, color = G1),
-        placeholder = {
-            Text(
-                text = stringResource(R.string.my_page_edit_name_guide),
-                style = textStyle.semiBold15.copy(textAlign = TextAlign.Center),
-                color = G3,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        },
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { onDone() }),
-        shape = RoundedCornerShape(10.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = M2,
-            unfocusedBorderColor = M2,
-            cursorColor = M1,
-        ),
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(width = 1.dp, color = M2, shape = RoundedCornerShape(10.dp))
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (value.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.my_page_edit_name_guide),
+                        style = textStyle.semiBold15.copy(textAlign = TextAlign.Center),
+                        color = G3,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                innerTextField()
+            }
+        },
     )
 }
