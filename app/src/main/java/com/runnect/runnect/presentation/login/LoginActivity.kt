@@ -1,23 +1,23 @@
 package com.runnect.runnect.presentation.login
 
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.databinding.ActivityLoginBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_VISITOR
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_SOCIAL_LOGIN
 import com.runnect.runnect.util.analytics.EventName.Param
-import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.preference.AuthUtil.getAccessToken
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
@@ -26,8 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginActivity :
-    BindingActivity<ActivityLoginBinding>(R.layout.activity_login) {
+class LoginActivity : AppCompatActivity() {
     private lateinit var socialLogin: SocialLogin
     private lateinit var googleLogin: GoogleLogin
     private lateinit var kakaoLogin: KakaoLogin
@@ -67,27 +66,31 @@ class LoginActivity :
             viewModel = viewModel
         )
         addObserver()
-        addListener()
-    }
+        setContent {
+            val loginState by viewModel.loginState.observeAsState(UiState.Empty)
+            val errorMessage by viewModel.errorMessage.observeAsState()
 
-    private fun addListener() {
-        val ctx: Context = this
-        with(binding) {
-            cvGoogleLogin.setOnClickListener {
-                socialLogin = googleLogin
-                socialLogin.signIn()
-            }
-            cvKakaoLogin.setOnClickListener {
-                socialLogin = kakaoLogin
-                socialLogin.signIn()
-            }
-            btnVisitorMode.setOnClickListener {
-                Analytics.logClickedItemEvent(EVENT_CLICK_VISITOR)
-                ctx.saveToken(
-                    accessToken = LoginStatus.VISITOR.value,
-                    refreshToken = LoginStatus.VISITOR.value
+            RunnectTheme {
+                LoginScreen(
+                    state = LoginUiState.from(loginState, errorMessage),
+                    onGoogleLoginClick = {
+                        socialLogin = googleLogin
+                        socialLogin.signIn()
+                    },
+                    onKakaoLoginClick = {
+                        socialLogin = kakaoLogin
+                        socialLogin.signIn()
+                    },
+                    onVisitorModeClick = {
+                        Analytics.logClickedItemEvent(EVENT_CLICK_VISITOR)
+                        saveToken(
+                            accessToken = LoginStatus.VISITOR.value,
+                            refreshToken = LoginStatus.VISITOR.value
+                        )
+                        moveToMain()
+                    },
+                    onErrorShown = viewModel::clearErrorMessage
                 )
-                moveToMain()
             }
         }
     }
@@ -96,7 +99,6 @@ class LoginActivity :
     private fun addObserver() {
         viewModel.loginState.observe(this) { state ->
             when (state) {
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
                 UiState.Success -> {
                     when (viewModel.loginResult.value?.type) {
                         "Login" -> handleSuccessfulLogin()
@@ -104,17 +106,17 @@ class LoginActivity :
                     }
                 }
 
-                else -> binding.indeterminateBar.isVisible = false
+                else -> Unit
             }
         }
         viewModel.errorMessage.observe(this) {
+            if (it == null) return@observe
             val method = if (::socialLogin.isInitialized && socialLogin is GoogleLogin) "google" else "kakao"
             Analytics.logEvent(
                 EventName.ACTION_LOGIN_FAIL,
                 Param.METHOD to method,
                 Param.ERROR_CODE to "LOGIN_FAIL"
             )
-            showSnackbar(binding.root, it)
             Timber.tag(ContentValues.TAG).d("로그인 통신 실패: $it")
         }
     }
@@ -129,7 +131,6 @@ class LoginActivity :
         saveSignTokenInfo()
         moveToMain()
         Toast.makeText(this@LoginActivity, MESSAGE_LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
-        binding.indeterminateBar.isVisible = false
     }
 
     private fun handleSuccessfulSignup() {

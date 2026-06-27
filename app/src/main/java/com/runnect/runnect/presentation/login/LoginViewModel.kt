@@ -19,7 +19,7 @@ class LoginViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val loginResult = MutableLiveData<LoginDTO>()
-    val errorMessage = MutableLiveData<String>()
+    val errorMessage = MutableLiveData<String?>()
 
     private val _loginState = MutableLiveData<UiState>(UiState.Empty)
     val loginState: LiveData<UiState>
@@ -45,5 +45,9 @@ class LoginViewModel @Inject constructor(
                     _loginState.value = UiState.Failure
                 }
             )
+    }
+
+    fun clearErrorMessage() {
+        errorMessage.value = null
     }
 }
