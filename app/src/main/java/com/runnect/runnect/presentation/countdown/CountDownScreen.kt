@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,6 +28,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.runnect.runnect.R
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.presentation.ui.theme.White
@@ -61,14 +65,21 @@ fun CountDownRoute(
     modifier: Modifier = Modifier,
 ) {
     var currentCount by remember { mutableIntStateOf(CountDownStateMachine.INITIAL_COUNT) }
+    var isFinished by remember { mutableStateOf(false) }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
 
-    LaunchedEffect(currentCount) {
-        delay(CountDownStateMachine.TICK_MILLIS)
-        val nextCount = CountDownStateMachine.nextCount(currentCount)
-        if (nextCount == null) {
-            onFinished()
-        } else {
-            currentCount = nextCount
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            while (!isFinished) {
+                delay(CountDownStateMachine.TICK_MILLIS)
+                val nextCount = CountDownStateMachine.nextCount(currentCount)
+                if (nextCount == null) {
+                    isFinished = true
+                    onFinished()
+                } else {
+                    currentCount = nextCount
+                }
+            }
         }
     }
 
