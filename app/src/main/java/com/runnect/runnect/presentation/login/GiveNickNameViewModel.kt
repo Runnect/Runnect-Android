@@ -24,6 +24,10 @@ class GiveNickNameViewModel @Inject constructor(
         get() = _statusCode
     private val _statusCode = MutableLiveData<Int>()
 
+    fun updateNickNameInput(nickName: String) {
+        this.nickName.value = nickName
+    }
+
     fun updateNickName() = launchWithHandler {
         val requestPatchNickName = RequestPatchNickName(nickName.value.toString())
 
