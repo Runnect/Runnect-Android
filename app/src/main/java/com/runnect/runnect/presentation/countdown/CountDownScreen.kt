@@ -1,11 +1,8 @@
 package com.runnect.runnect.presentation.countdown
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -35,6 +32,8 @@ import com.runnect.runnect.R
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.presentation.ui.theme.White
 import kotlinx.coroutines.delay
+import kotlin.math.PI
+import kotlin.math.cos
 
 object CountDownScreenTestTags {
     const val BACKGROUND = "count_down_background"
@@ -56,6 +55,15 @@ object CountDownStateMachine {
         2 -> R.drawable.anim_num2
         1 -> R.drawable.anim_num1
         else -> error("Unsupported countdown number: $count")
+    }
+}
+
+object CountDownAnimationSpec {
+    const val INITIAL_SCALE = 0.4f
+    const val TARGET_SCALE = 1f
+
+    val AccelerateDecelerateEasing = Easing { fraction ->
+        (cos((fraction + 1f) * PI).toFloat() / 2f) + 0.5f
     }
 }
 
@@ -94,19 +102,18 @@ fun CountDownContent(
     count: Int,
     modifier: Modifier = Modifier,
 ) {
-    val scale by rememberInfiniteTransition(label = "countDownScale")
-        .animateFloat(
-            initialValue = 0.4f,
-            targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = CountDownStateMachine.TICK_MILLIS.toInt(),
-                    easing = FastOutSlowInEasing
-                ),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "countDownNumberScale"
+    val scale = remember { Animatable(CountDownAnimationSpec.INITIAL_SCALE) }
+
+    LaunchedEffect(count) {
+        scale.snapTo(CountDownAnimationSpec.INITIAL_SCALE)
+        scale.animateTo(
+            targetValue = CountDownAnimationSpec.TARGET_SCALE,
+            animationSpec = tween(
+                durationMillis = CountDownStateMachine.TICK_MILLIS.toInt(),
+                easing = CountDownAnimationSpec.AccelerateDecelerateEasing
+            )
         )
+    }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -126,7 +133,7 @@ fun CountDownContent(
                 .align(Alignment.BottomCenter)
                 .offset(y = (-350).dp)
                 .size(width = 88.dp, height = 117.dp)
-                .scale(scale)
+                .scale(scale.value)
                 .testTag(CountDownScreenTestTags.NUMBER)
         )
         Text(

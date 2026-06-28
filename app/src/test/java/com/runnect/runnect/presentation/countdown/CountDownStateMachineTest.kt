@@ -25,4 +25,10 @@ class CountDownStateMachineTest {
         assertEquals(R.drawable.anim_num2, CountDownStateMachine.numberDrawableRes(2))
         assertEquals(R.drawable.anim_num1, CountDownStateMachine.numberDrawableRes(1))
     }
+
+    @Test
+    fun `카운트다운 숫자 애니메이션은 기존 XML scale 범위를 유지한다`() {
+        assertEquals(0.4f, CountDownAnimationSpec.INITIAL_SCALE)
+        assertEquals(1f, CountDownAnimationSpec.TARGET_SCALE)
+    }
 }
