@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -132,7 +131,6 @@ fun CountDownContent(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .offset(y = (-350).dp)
-                .size(width = 88.dp, height = 117.dp)
                 .scale(scale.value)
                 .testTag(CountDownScreenTestTags.NUMBER)
         )
