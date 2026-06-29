@@ -2,9 +2,11 @@ package com.runnect.runnect.presentation.countdown
 
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
+import androidx.test.platform.app.InstrumentationRegistry
+import com.runnect.runnect.R
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -17,6 +19,8 @@ class CountDownScreenTest {
 
     @Test
     fun 카운트다운_배경_숫자_안내문구가_노출된다() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+
         composeTestRule.setContent {
             RunnectTheme {
                 CountDownContent(count = 3)
@@ -27,7 +31,9 @@ class CountDownScreenTest {
         composeTestRule.onNodeWithTag(CountDownScreenTestTags.NUMBER)
             .assertIsDisplayed()
             .assertContentDescriptionEquals("3")
-        composeTestRule.onNodeWithText("잠시 후 러닝을 시작합니다").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(CountDownScreenTestTags.DESCRIPTION)
+            .assertIsDisplayed()
+            .assertTextEquals(context.getString(R.string.count_down_desc))
     }
 
     @Test
