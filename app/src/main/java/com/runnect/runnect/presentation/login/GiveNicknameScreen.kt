@@ -101,6 +101,7 @@ fun GiveNicknameScreen(
             Spacer(modifier = Modifier.height(48.dp))
             NicknameTextField(
                 nickName = state.nickName,
+                isEditable = !state.isLoading,
                 onNickNameChange = onNickNameChange,
                 onDone = { focusManager.clearFocus() }
             )
@@ -151,14 +152,18 @@ private fun GiveNicknameTitle() {
 @Composable
 private fun NicknameTextField(
     nickName: String,
+    isEditable: Boolean,
     onNickNameChange: (String) -> Unit,
     onDone: () -> Unit,
 ) {
     BasicTextField(
         value = nickName,
         onValueChange = { nextValue ->
-            if (nextValue.length <= NICKNAME_MAX_LENGTH) onNickNameChange(nextValue)
+            if (isEditable) {
+                onNickNameChange(nextValue.take(NICKNAME_MAX_LENGTH))
+            }
         },
+        enabled = isEditable,
         modifier = Modifier.testTag(GiveNicknameScreenTestTags.NICKNAME_INPUT),
         singleLine = true,
         textStyle = RunnectTheme.textStyle.medium15.copy(

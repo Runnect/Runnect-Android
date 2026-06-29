@@ -75,6 +75,45 @@ class GiveNicknameScreenTest {
     }
 
     @Test
+    fun 닉네임을_최대_길이보다_길게_입력하면_잘라서_콜백이_호출된다() {
+        val inputs = mutableListOf<String>()
+
+        composeTestRule.setContent {
+            RunnectTheme {
+                GiveNicknameScreen(
+                    state = GiveNicknameUiState(),
+                    onNickNameChange = { inputs.add(it) },
+                    onStartClick = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(GiveNicknameScreenTestTags.NICKNAME_INPUT)
+            .performTextInput("러너러너러너러너")
+
+        assertEquals("러너러너러너러", inputs.last())
+    }
+
+    @Test
+    fun 로딩_상태면_닉네임_입력은_비활성화된다() {
+        composeTestRule.setContent {
+            RunnectTheme {
+                GiveNicknameScreen(
+                    state = GiveNicknameUiState.from(
+                        nickName = "러너",
+                        uiState = com.runnect.runnect.presentation.state.UiState.Loading
+                    ),
+                    onNickNameChange = {},
+                    onStartClick = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(GiveNicknameScreenTestTags.NICKNAME_INPUT)
+            .assertIsNotEnabled()
+    }
+
+    @Test
     fun 시작하기_버튼을_누르면_콜백이_호출된다() {
         var clickedCount = 0
 
