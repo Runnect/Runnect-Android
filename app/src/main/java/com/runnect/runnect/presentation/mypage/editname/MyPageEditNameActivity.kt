@@ -1,124 +1,84 @@
 package com.runnect.runnect.presentation.mypage.editname
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.databinding.ActivityMyPageEditNameBinding
-import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.Param
-import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MyPageEditNameActivity :
-    BindingActivity<ActivityMyPageEditNameBinding>(R.layout.activity_my_page_edit_name) {
+class MyPageEditNameActivity : AppCompatActivity() {
     private val viewModel: MyPageEditNameViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.vm = viewModel
-        binding.lifecycleOwner = this
+        enableEdgeToEdge()
         Analytics.logEvent(EventName.VIEW_EDIT_PROFILE)
-        initLayout()
-        addListener()
-        addObserver()
-    }
 
-    private fun initLayout() {
-        val nickName = intent.getStringExtra(EXTRA_NICK_NAME)
-        val profileImgResId = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
-        viewModel.setNickName(nickName = nickName!!)
-        viewModel.setProfileImg(profileImgResId = profileImgResId)
-    }
-
-    private fun addListener() {
-        binding.ivMyPageEditNameBack.setOnClickListener {
-            setResult(RESULT_CANCELED)
-            finish()
+        if (savedInstanceState == null) {
+            val nickname = intent.getStringExtra(EXTRA_NICK_NAME) ?: ""
+            val profileImgResId = intent.getIntExtra(EXTRA_PROFILE, R.drawable.user_profile_basic)
+            viewModel.intent(EditNameIntent.Init(nickname, profileImgResId))
         }
 
-        binding.tvMyPageEditNameFinish.setOnClickListener {
-            viewModel.updateNickName()
-        }
-
-        binding.etMyPageEditName.setOnEditorActionListener(object :
-            TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard(binding.etMyPageEditName)
-                    return true
-                }
-                return false
+        setContent {
+            RunnectTheme {
+                val state by viewModel.state.collectAsState()
+                MyPageEditNameScreen(
+                    state = state,
+                    onBackClick = {
+                        setResult(RESULT_CANCELED)
+                        finish()
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    },
+                    onNicknameChange = { viewModel.intent(EditNameIntent.UpdateNickname(it)) },
+                    onSubmitClick = { viewModel.intent(EditNameIntent.Submit) },
+                )
             }
-        })
-    }
+        }
 
-    private fun addObserver() {
-        viewModel.uiState.observe(this) {
-            when (it) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> binding.indeterminateBar.isVisible = true
-                UiState.Success -> {
-                    binding.indeterminateBar.isVisible = false
-                    Analytics.logEvent(
-                        EventName.ACTION_EDIT_PROFILE_COMPLETE,
-                        Param.CHANGED_FIELDS to "nickname"
-                    )
-                    setResult(
-                        RESULT_OK,
-                        Intent().putExtra(EXTRA_NICK_NAME, viewModel.nickName.value)
-                    )
-                    finish()
-                }
-
-                UiState.Failure -> {
-                    binding.indeterminateBar.isVisible = false
-                    if (viewModel.statusCode.value == 400) {
-                        showToast(getString(R.string.my_page_edit_name_redundant_warning))
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is EditNameEffect.NavigateSuccess -> {
+                            Analytics.logEvent(
+                                EventName.ACTION_EDIT_PROFILE_COMPLETE,
+                                Param.CHANGED_FIELDS to "nickname"
+                            )
+                            setResult(
+                                RESULT_OK,
+                                Intent().putExtra(EXTRA_NICK_NAME, effect.newNickname)
+                            )
+                            finish()
+                        }
+                        EditNameEffect.ShowDuplicateError -> {
+                            showToast(getString(R.string.my_page_edit_name_redundant_warning))
+                        }
                     }
                 }
             }
         }
-        viewModel.nickName.observe(this) {
-            with(binding.tvMyPageEditNameFinish) {
-                if (it.isNullOrEmpty()) {
-                    isActivated = false
-                    isClickable = false
-                } else {
-                    isActivated = true
-                    isClickable = true
-                }
-            }
-        }
     }
 
-    //키보드 밖 터치 시, 키보드 내림
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val focusView = currentFocus
-        if (focusView != null) {
-            val rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-            val x = ev!!.x.toInt()
-            val y = ev.y.toInt()
-            if (!rect.contains(x, y)) {
-                hideKeyboard(focusView)
-            }
-        }
-        return super.dispatchTouchEvent(ev)
-    }
-
+    @Deprecated("Use onBackPressedDispatcher")
     override fun onBackPressed() {
-        finish()
+        @Suppress("DEPRECATION")
+        super.onBackPressed()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
