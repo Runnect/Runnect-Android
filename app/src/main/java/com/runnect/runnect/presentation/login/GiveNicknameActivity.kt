@@ -1,40 +1,46 @@
 package com.runnect.runnect.presentation.login
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
-import android.view.MotionEvent
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import com.runnect.runnect.R
-import com.runnect.runnect.binding.BindingActivity
-import com.runnect.runnect.databinding.ActivityGiveNicknameBinding
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.state.UiState
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.Param
-import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.preference.AuthUtil.saveToken
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GiveNicknameActivity :
-    BindingActivity<ActivityGiveNicknameBinding>(R.layout.activity_give_nickname) {
+class GiveNicknameActivity : AppCompatActivity() {
     private val viewModel: GiveNickNameViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.vm = viewModel
-        binding.lifecycleOwner = this
         Analytics.logEvent(EventName.VIEW_GIVE_NICKNAME)
-        addListener()
         addObserver()
-    }
 
-    private fun addListener() {
-        binding.tvGiveNicknameFinish.setOnClickListener {
-            viewModel.updateNickName()
+        setContent {
+            val nickName by viewModel.nickName.observeAsState("")
+            val uiState by viewModel.uiState.observeAsState(UiState.Empty)
+
+            RunnectTheme {
+                GiveNicknameScreen(
+                    state = GiveNicknameUiState.from(
+                        nickName = nickName,
+                        uiState = uiState
+                    ),
+                    onNickNameChange = viewModel::updateNickNameInput,
+                    onStartClick = viewModel::updateNickName
+                )
+            }
         }
     }
 
@@ -46,27 +52,10 @@ class GiveNicknameActivity :
     }
 
     private fun addObserver() {
-        viewModel.nickName.observe(this) {
-            with(binding.tvGiveNicknameFinish) {
-                if (it.isNullOrEmpty()) {
-                    isActivated = false
-                    isClickable = false
-                } else {
-                    isActivated = true
-                    isClickable = true
-                }
-            }
-        }
         viewModel.uiState.observe(this) { state ->
             when (state) {
-                UiState.Empty -> binding.indeterminateBar.isVisible = false
-                UiState.Loading -> {
-                    with(binding) {
-                        indeterminateBar.isVisible = true
-                        tvGiveNicknameFinish.isClickable = false
-                    }
-                }
-
+                UiState.Empty,
+                UiState.Loading -> Unit
                 UiState.Success -> handleSuccessfulSignup()
                 UiState.Failure -> handleUnSuccessfulSignup()
             }
@@ -80,7 +69,6 @@ class GiveNicknameActivity :
         )
         saveSignTokenInfo()
         showToast("회원가입 되었습니다")
-        binding.indeterminateBar.isVisible = false
         moveToMain()
     }
 
@@ -93,27 +81,9 @@ class GiveNicknameActivity :
     }
 
     private fun handleUnSuccessfulSignup() {
-        binding.indeterminateBar.isVisible = false
         if (viewModel.statusCode.value == 400) {
             showToast(getString(R.string.my_page_edit_name_redundant_warning))
         }
-        binding.tvGiveNicknameFinish.isClickable = true
-    }
-
-    //키보드 밖 터치 시, 키보드 내림
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val focusView = currentFocus
-        if (focusView != null) {
-            val rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-            val x = ev!!.x.toInt()
-            val y = ev.y.toInt()
-            if (!rect.contains(x, y)) {
-                hideKeyboard(focusView)
-            }
-        }
-        return super.dispatchTouchEvent(ev)
     }
 
 }
-
