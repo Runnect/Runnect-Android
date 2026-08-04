@@ -1,8 +1,6 @@
 package com.runnect.runnect.di
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.runnect.runnect.data.service.BannerService
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.service.LoginService
 import com.runnect.runnect.data.service.ReverseGeocodingService
@@ -46,5 +44,6 @@ object ServiceModule {
 
     @Singleton
     @Provides
-    fun provideFirebaseFirestore(): FirebaseFirestore = Firebase.firestore
+    fun providePBannerService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
+        retrofitV2.create(BannerService::class.java)
 }
