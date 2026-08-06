@@ -154,22 +154,59 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_run_finish"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/radius_10_m1_button"
+        <TextView
+            android:id="@+id/tv_paused_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_paused_pill"
             android:fontFamily="@font/pretendard_semibold"
-            android:text="@string/run_finish_run_button"
-            android:textAlignment="center"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="7dp"
+            android:text="@string/run_paused_label"
             android:textColor="@color/W1"
-            android:textSize="15sp"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_run_top_frame"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/layout_run_action_dock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
 
+            <ImageButton
+                android:id="@+id/btn_run_stop"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="18dp"
+                android:background="@drawable/circle_ghost_button"
+                android:contentDescription="@string/run_description_stop"
+                android:elevation="4dp"
+                android:outlineProvider="none"
+                android:src="@drawable/ic_run_stop"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/btn_run_pause_resume"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/circle_m1_button"
+                android:contentDescription="@string/run_description_pause"
+                android:elevation="4dp"
+                android:outlineProvider="none"
+                android:src="@drawable/ic_run_pause" />
+
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_currentLocation"
@@ -182,7 +219,7 @@
             android:src="@drawable/currentlocation"
             app:backgroundTint="@color/white"
             app:fabCustomSize="48dp"
-            app:layout_constraintBottom_toTopOf="@id/btn_run_finish"
+            app:layout_constraintBottom_toTopOf="@id/layout_run_action_dock"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@null" />
 
