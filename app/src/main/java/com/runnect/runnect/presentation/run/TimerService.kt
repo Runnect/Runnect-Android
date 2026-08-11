@@ -36,8 +36,8 @@ class TimerService : Service() {
     // 서비스 시작 시 호출
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         notifyStartRun()
-        startTimer()
         initNotification()
+        startTimer()
         return START_STICKY
     }
 
