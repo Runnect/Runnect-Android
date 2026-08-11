@@ -2,7 +2,6 @@ package com.runnect.runnect.presentation.storage.mydrawdetail
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -12,8 +11,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.dynamiclinks.DynamicLink
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -35,7 +32,7 @@ import com.runnect.runnect.util.custom.toolbar.ToolbarMenu
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.Param
-import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink
+import com.runnect.runnect.util.link.RunnectShareLink
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.hideKeyboard
@@ -44,7 +41,6 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
@@ -56,7 +52,7 @@ class MyDrawDetailActivity :
     private val touchList = arrayListOf<LatLng>()
     private val selectList = arrayListOf<Int>()
     private var courseId = -1
-    private var isFromDynamicLink = false
+    private var isFromAppLink = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,9 +70,9 @@ class MyDrawDetailActivity :
     }
 
     private fun initCourseIdExtra() {
-        val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
+        val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_APP_LINK, -1)
         if (idFromLink != -1) {
-            isFromDynamicLink = true
+            isFromAppLink = true
             courseId = idFromLink
             return
         }
@@ -283,7 +279,7 @@ class MyDrawDetailActivity :
     }
 
     private fun initBackButtonClickListener() {
-        if (isFromDynamicLink) {
+        if (isFromAppLink) {
             navigateToMainScreen()
             return
         }
@@ -292,7 +288,7 @@ class MyDrawDetailActivity :
     }
 
     private fun addRightMenu() {
-        if (isFromDynamicLink) {
+        if (isFromAppLink) {
             if (myDrawCourseDetail.isNowUser) {
                 addShareEditDeleteMenu()
             }
@@ -334,43 +330,12 @@ class MyDrawDetailActivity :
     }
 
     private fun initShareButtonClickListener() {
-        createDynamicLink(
-            title = viewModel.courseTitle,
-            imgUrl = myDrawCourseDetail.imgUrl
-        )
-    }
-
-    private fun createDynamicLink(title: String, imgUrl: String) {
-        val link = "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PRIVATE_COURSE_ID}=${courseId}"
-        FirebaseDynamicLinks.getInstance().createDynamicLink()
-            .setLink(Uri.parse(link))
-            .setDomainUriPrefix(RunnectDynamicLink.BASE_URL)
-            .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-            .setIosParameters(
-                DynamicLink.IosParameters.Builder(RunnectDynamicLink.IOS_BUNDLE_ID).build()
-            )
-            .setSocialMetaTagParameters(
-                DynamicLink.SocialMetaTagParameters.Builder()
-                    .setTitle(title)
-                    .setImageUrl(Uri.parse(imgUrl))
-                    .build()
-            )
-            .buildShortDynamicLink()
-            .addOnSuccessListener { result ->
-                Timber.d("shortLink: ${result.shortLink}")
-                shareDynamicLink(result.shortLink.toString())
-            }
-            .addOnFailureListener { t ->
-                Timber.e("sendDynamicLink fail: ${t.message}")
-            }
-    }
-
-    private fun shareDynamicLink(shortLink: String) {
+        val url = "${RunnectShareLink.BASE_URL}?${RunnectShareLink.KEY_PRIVATE_COURSE_ID}=$courseId"
         val intent = Intent(Intent.ACTION_SEND).apply {
-            type = RunnectDynamicLink.SEND_INTENT_MIME_TYPE
-            putExtra(Intent.EXTRA_TEXT, shortLink)
+            type = RunnectShareLink.SEND_INTENT_MIME_TYPE
+            putExtra(Intent.EXTRA_TEXT, url)
         }
-        startActivity(Intent.createChooser(intent, RunnectDynamicLink.INTENT_CHOOSER_TITLE))
+        startActivity(Intent.createChooser(intent, RunnectShareLink.INTENT_CHOOSER_TITLE))
     }
 
     private fun createTitleEditBottomSheet(): BottomSheetDialog {

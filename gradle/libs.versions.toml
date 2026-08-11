@@ -150,7 +150,6 @@ coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp"
 # Firebase (BOM 관리 - 개별 버전 불필요)
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx" }
-firebase-dynamic-links-ktx = { group = "com.google.firebase", name = "firebase-dynamic-links-ktx" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx" }
@@ -194,7 +193,6 @@ androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", v
 [bundles]
 firebase = [
     "firebase-common-ktx",
-    "firebase-dynamic-links-ktx",
     "firebase-database-ktx",
     "firebase-firestore-ktx",
     "firebase-storage-ktx",

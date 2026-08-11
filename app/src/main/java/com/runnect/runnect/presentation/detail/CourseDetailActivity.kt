@@ -3,7 +3,6 @@ package com.runnect.runnect.presentation.detail
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -13,8 +12,6 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import coil3.load
-import com.google.firebase.dynamiclinks.DynamicLink
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.naver.maps.geometry.LatLng
 import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
@@ -50,7 +47,7 @@ import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.custom.popup.PopupItem
 import com.runnect.runnect.util.custom.popup.RunnectPopupMenu
 import com.runnect.runnect.util.custom.toast.RunnectToast
-import com.runnect.runnect.util.dynamiclink.RunnectDynamicLink
+import com.runnect.runnect.util.link.RunnectShareLink
 import com.runnect.runnect.util.extension.applyScreenEnterAnimation
 import com.runnect.runnect.util.extension.applyScreenExitAnimation
 import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
@@ -112,7 +109,7 @@ class CourseDetailActivity :
     }
 
     private fun initCourseIdExtra() {
-        val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_DYNAMIC_LINK, -1)
+        val idFromLink = intent.getIntExtra(SchemeActivity.EXTRA_FROM_APP_LINK, -1)
         if (idFromLink != -1) {
             isFromDeepLink = true
             publicCourseId = idFromLink
@@ -230,49 +227,17 @@ class CourseDetailActivity :
 
     private fun initShareButtonClickListener() {
         binding.btnShare.setOnClickListener {
-            sendFirebaseDynamicLink(
-                title = courseDetail.title,
-                desc = courseDetail.description,
-                image = courseDetail.image
-            )
+            shareLink("${RunnectShareLink.BASE_URL}?${RunnectShareLink.KEY_PUBLIC_COURSE_ID}=$publicCourseId")
             Analytics.logClickedItemEvent(EVENT_CLICK_SHARE)
         }
     }
 
-    private fun sendFirebaseDynamicLink(title: String, desc: String, image: String) {
-        val link =
-            "${RunnectDynamicLink.BASE_URL}/?${RunnectDynamicLink.KEY_PUBLIC_COURSE_ID}=$publicCourseId"
-
-        FirebaseDynamicLinks.getInstance().createDynamicLink()
-            .setLink(Uri.parse(link))
-            .setDomainUriPrefix(RunnectDynamicLink.BASE_URL)
-            .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-            .setIosParameters(
-                DynamicLink.IosParameters.Builder(RunnectDynamicLink.IOS_BUNDLE_ID).build()
-            )
-            .setSocialMetaTagParameters(
-                DynamicLink.SocialMetaTagParameters.Builder()
-                    .setTitle(title)
-                    .setDescription(desc)
-                    .setImageUrl(Uri.parse(image))
-                    .build()
-            )
-            .buildShortDynamicLink()
-            .addOnSuccessListener { result ->
-                val shortLink = result.shortLink
-                shareLink(shortLink.toString())
-            }
-            .addOnFailureListener {
-                it.printStackTrace()
-            }
-    }
-
     private fun shareLink(url: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
-            type = RunnectDynamicLink.SEND_INTENT_MIME_TYPE
+            type = RunnectShareLink.SEND_INTENT_MIME_TYPE
             putExtra(Intent.EXTRA_TEXT, url)
         }
-        startActivity(Intent.createChooser(intent, RunnectDynamicLink.INTENT_CHOOSER_TITLE))
+        startActivity(Intent.createChooser(intent, RunnectShareLink.INTENT_CHOOSER_TITLE))
     }
 
     private fun initShowMoreButtonClickListener() {
