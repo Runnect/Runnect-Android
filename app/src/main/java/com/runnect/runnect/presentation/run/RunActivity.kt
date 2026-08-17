@@ -97,6 +97,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         getCurrentLocation()
         showRecord()
         backButton()
+        setUpPauseResume()
 
         val runCourseData: CourseData? = intent.getParcelableExtra(EXTRA_COUNTDOWN_TO_RUN)
         val targetDistanceM = runCourseData?.distance?.let { (it * 1000f).roundToInt() }
@@ -131,6 +132,30 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private fun stopTimer() {
         timerService?.stopTimer()
         stopService(serviceIntent) //서비스 객체 제거
+    }
+
+    private fun setUpPauseResume() {
+        binding.btnRunPauseResume.setOnClickListener {
+            val isPaused = viewModel.isPaused.value ?: false
+            if (isPaused) {
+                timerService?.resumeTimer()
+            } else {
+                timerService?.pauseTimer()
+            }
+            viewModel.isPaused.value = !isPaused
+            updatePauseResumeUI(!isPaused)
+        }
+    }
+
+    private fun updatePauseResumeUI(isPaused: Boolean) {
+        binding.btnRunPauseResume.apply {
+            setImageResource(if (isPaused) R.drawable.ic_run_resume else R.drawable.ic_run_pause)
+            contentDescription = getString(
+                if (isPaused) R.string.run_description_resume else R.string.run_description_pause
+            )
+        }
+        binding.btnRunStop.visibility = if (isPaused) View.VISIBLE else View.GONE
+        binding.tvPausedLabel.visibility = if (isPaused) View.VISIBLE else View.GONE
     }
 
     override fun onStart() {
@@ -336,7 +361,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     }
 
     private fun showRecord() {
-        binding.btnRunFinish.setOnClickListener {
+        binding.btnRunStop.setOnClickListener {
             stopTimer()
             val totalTimeSec = ((timerData.hour ?: 0) * 3600) + ((timerData.minute ?: 0) * 60) + (timerData.second ?: 0)
             Analytics.logEvent(

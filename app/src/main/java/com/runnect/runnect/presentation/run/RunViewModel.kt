@@ -9,4 +9,5 @@ class RunViewModel : ViewModel() {
     val dataFrom = MutableLiveData<String>()
     var courseId = MutableLiveData<Int>()
     var publicCourseId = MutableLiveData<Int?>()
+    val isPaused = MutableLiveData(false)
 }

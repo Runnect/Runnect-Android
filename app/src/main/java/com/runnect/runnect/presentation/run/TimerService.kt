@@ -36,8 +36,8 @@ class TimerService : Service() {
     // 서비스 시작 시 호출
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         notifyStartRun()
-        startTimer()
         initNotification()
+        startTimer()
         return START_STICKY
     }
 
@@ -88,6 +88,19 @@ class TimerService : Service() {
 
     fun stopTimer() {
         timer?.cancel()
+    }
+
+    // 일시정지: 타이머만 멈추고 누적된 time은 유지한다 (resumeTimer에서 이어서 증가)
+    fun pauseTimer() {
+        timer?.cancel()
+        notificationBuilder.setContentText("일시정지 중")
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(NOTI_ID, notificationBuilder.build())
+    }
+
+    // 재개: 기존 time 값에 이어서 타이머를 다시 시작한다
+    fun resumeTimer() {
+        startTimer()
     }
 
     override fun onBind(intent: Intent?): IBinder {
