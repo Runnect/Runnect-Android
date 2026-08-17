@@ -275,6 +275,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     android:fontFamily="@font/pretendard_regular"
                     android:lineHeight="24dp"
                     android:maxLength="150"
@@ -285,6 +286,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/view_course_detail_line"
                     tools:text="석촌 호수 한 바퀴 뛰는 코스에요! 평탄한 길과 느린 페이스,난이도 하 코스입니다! 롯데월드 야경 감상 하면서 뛰기에 좋은 야간 코스에요! 석촌 호수 한 바퀴 뛰는 코스에요! 평탄한 길과 느린 페이스, 난이도 하 코스입니다! 롯데월드 야경 감상 하면서 뛰기에 좋은 야간 코스에요!" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/compose_course_detail_ranking"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_course_detail_desc" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 

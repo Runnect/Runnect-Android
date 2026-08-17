@@ -9,6 +9,9 @@ import android.view.View
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import coil3.load
@@ -32,9 +35,11 @@ import com.runnect.runnect.presentation.discover.DiscoverFragment.Companion.EXTR
 import com.runnect.runnect.presentation.discover.model.EditableDiscoverCourse
 import com.runnect.runnect.presentation.discover.search.DiscoverSearchActivity
 import com.runnect.runnect.presentation.mypage.upload.MyUploadActivity
+import com.runnect.runnect.presentation.detail.ranking.RecordRankingSection
 import com.runnect.runnect.presentation.profile.ProfileActivity
 import com.runnect.runnect.presentation.scheme.SchemeActivity
 import com.runnect.runnect.presentation.state.UiStateV2
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_CLICK_SHARE
@@ -92,10 +97,32 @@ class CourseDetailActivity :
 
         initCourseIdExtra()
         initRootScreenExtra()
+        initRankingComposeView()
         getCourseDetail()
         addListener()
         addObserver()
         registerBackPressedCallback()
+    }
+
+    private fun initRankingComposeView() {
+        binding.composeCourseDetailRanking.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                RunnectTheme {
+                    val rankingState by viewModel.courseRankingState.observeAsState()
+                    val myRankingState by viewModel.myCourseRankingState.observeAsState()
+
+                    val ranking = (rankingState as? UiStateV2.Success)?.data
+                    val myRanking = (myRankingState as? UiStateV2.Success)?.data
+
+                    RecordRankingSection(
+                        ranking = ranking,
+                        myRanking = myRanking,
+                        onUserClick = { userId -> navigateToUserProfile(userId) },
+                    )
+                }
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -131,6 +158,13 @@ class CourseDetailActivity :
 
     private fun getCourseDetail() {
         viewModel.getCourseDetail(publicCourseId)
+    }
+
+    private fun getCourseRanking() {
+        viewModel.getCourseRanking(publicCourseId)
+        if (!isVisitorMode) {
+            viewModel.getMyCourseRanking(publicCourseId)
+        }
     }
 
     private fun addListener() {
@@ -220,7 +254,7 @@ class CourseDetailActivity :
     private fun initUserInfoClickListener() {
         binding.constCourseDetailUserInfo.setOnClickListener {
             if (courseDetail.userId != -1) {
-                navigateToUserProfile()
+                navigateToUserProfile(courseDetail.userId)
             }
         }
     }
@@ -407,9 +441,9 @@ class CourseDetailActivity :
         applyScreenExitAnimation()
     }
 
-    private fun navigateToUserProfile() {
+    private fun navigateToUserProfile(userId: Int) {
         Intent(this@CourseDetailActivity, ProfileActivity::class.java).apply {
-            putExtra(EXTRA_COURSE_USER_ID, courseDetail.userId)
+            putExtra(EXTRA_COURSE_USER_ID, userId)
             addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(this)
         }
@@ -436,6 +470,8 @@ class CourseDetailActivity :
 
                     initDepartureLatLng()
                     initConnectedSpots()
+
+                    getCourseRanking()
                 }
 
                 is UiStateV2.Failure -> {

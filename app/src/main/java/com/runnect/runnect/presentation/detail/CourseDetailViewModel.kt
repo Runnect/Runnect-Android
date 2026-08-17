@@ -9,7 +9,9 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.CourseRanking
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.MyCourseRanking
 import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
@@ -41,6 +43,14 @@ class CourseDetailViewModel @Inject constructor(
     private val _courseScrapState = MutableLiveData<UiStateV2<PostScrap>>()
     val courseScrapState: LiveData<UiStateV2<PostScrap>>
         get() = _courseScrapState
+
+    private val _courseRankingState = MutableLiveData<UiStateV2<CourseRanking>>()
+    val courseRankingState: LiveData<UiStateV2<CourseRanking>>
+        get() = _courseRankingState
+
+    private val _myCourseRankingState = MutableLiveData<UiStateV2<MyCourseRanking>>()
+    val myCourseRankingState: LiveData<UiStateV2<MyCourseRanking>>
+        get() = _myCourseRankingState
 
     // 사용자가 수정할 수 있는 부분 (제목, 내용)
     val _title = MutableLiveData<String>()
@@ -140,7 +150,32 @@ class CourseDetailViewModel @Inject constructor(
             )
     }
 
+    fun getCourseRanking(courseId: Int) = launchWithHandler {
+        courseRepository.getCourseRanking(courseId = courseId, limit = RANKING_LIST_LIMIT)
+            .collectResult(
+                onSuccess = {
+                    _courseRankingState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _courseRankingState.value = UiStateV2.Failure(it.toLog())
+                }
+            )
+    }
+
+    fun getMyCourseRanking(courseId: Int) = launchWithHandler {
+        courseRepository.getMyCourseRanking(courseId = courseId)
+            .collectResult(
+                onSuccess = {
+                    _myCourseRankingState.value = UiStateV2.Success(it)
+                },
+                onFailure = {
+                    _myCourseRankingState.value = UiStateV2.Failure(it.toLog())
+                }
+            )
+    }
+
     companion object {
         private const val CODE_AUTHORIZATION_ERROR = 401
+        private const val RANKING_LIST_LIMIT = 20
     }
 }

@@ -7,10 +7,12 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
+import com.runnect.runnect.data.dto.response.ResponseGetCourseRanking
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverSearch
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverUploadCourse
+import com.runnect.runnect.data.dto.response.ResponseGetMyCourseRanking
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetMyDrawDetail
 import com.runnect.runnect.data.dto.response.ResponseGetMyScrapCourse
@@ -48,6 +50,17 @@ interface CourseService {
 
     @GET("/api/public-course/marathon")
     suspend fun getMarathonCourse(): Result<ResponseGetDiscoverMarathon>
+
+    @GET("/api/course/{courseId}/ranking")
+    suspend fun getCourseRanking(
+        @Path("courseId") courseId: Int,
+        @Query("limit") limit: Int,
+    ): Result<ResponseGetCourseRanking>
+
+    @GET("/api/course/{courseId}/ranking/me")
+    suspend fun getMyCourseRanking(
+        @Path("courseId") courseId: Int,
+    ): Result<ResponseGetMyCourseRanking>
 
     @GET("/api/public-course")
     suspend fun getRecommendCourse(
