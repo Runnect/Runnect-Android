@@ -86,14 +86,15 @@
             android:name=".presentation.scheme.SchemeActivity"
             android:exported="true">
 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="rnnt.page.link"
+                    android:host="runnect-ios.web.app"
+                    android:pathPrefix="/share"
                     android:scheme="https" />
             </intent-filter>
 

@@ -1,8 +1,7 @@
-package com.runnect.runnect.util.dynamiclink
+package com.runnect.runnect.util.link
 
-object RunnectDynamicLink {
-    const val BASE_URL = "https://rnnt.page.link"
-    const val IOS_BUNDLE_ID = "com.runnect.Runnect-iOS"
+object RunnectShareLink {
+    const val BASE_URL = "https://runnect-ios.web.app/share"
     const val SEND_INTENT_MIME_TYPE = "text/plain"
     const val INTENT_CHOOSER_TITLE = "Share Link"
     const val KEY_PUBLIC_COURSE_ID = "courseId"
