@@ -22,11 +22,13 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.databinding.ActivityCourseDetailBinding
 import com.runnect.runnect.domain.entity.CourseDetail
 import com.runnect.runnect.domain.entity.EditableCourseDetail
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.event.ScreenRefreshEvent
 import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
 import com.runnect.runnect.presentation.event.VisitorModeManager
+import com.runnect.runnect.presentation.navigation.MainTab
+import com.runnect.runnect.presentation.navigation.NavigationMode
+import com.runnect.runnect.presentation.navigation.Navigator
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_DISCOVER_SEARCH
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen.COURSE_STORAGE_SCRAP
@@ -75,6 +77,9 @@ class CourseDetailActivity :
 
     @Inject
     lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
+    @Inject
+    lateinit var navigator: Navigator
 
     private val viewModel: CourseDetailViewModel by viewModels()
     private val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
@@ -433,11 +438,7 @@ class CourseDetailActivity :
     }
 
     private fun navigateToMainScreen() {
-        Intent(this@CourseDetailActivity, MainActivity::class.java).apply {
-            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, EXTRA_FROM_COURSE_DETAIL)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(this)
-        }
+        navigator.navigateToMain(this, MainTab.DISCOVER, NavigationMode.NEW_TASK_CLEAR_TASK)
         applyScreenExitAnimation()
     }
 
@@ -625,8 +626,6 @@ class CourseDetailActivity :
         private const val EXTRA_ROOT_SCREEN = "rootScreen"
         private const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         private const val EXTRA_COURSE_DATA = "CourseData"
-        private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        private const val EXTRA_FROM_COURSE_DETAIL = "fromCourseDetail"
         private const val EXTRA_COURSE_USER_ID = "courseUserId"
 
         private const val TAG_MY_UPLOAD_COURSE_DELETE_DIALOG = "MY_UPLOAD_COURSE_DELETE_DIALOG"
