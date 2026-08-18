@@ -65,35 +65,14 @@
             app:layout_constraintStart_toEndOf="@id/iv_total_distance"
             app:layout_constraintTop_toTopOf="@id/iv_total_distance" />
 
-        <TextView
-            android:id="@+id/tv_total_distance_content"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_run_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:elevation="11dp"
-            android:fontFamily="@font/pretendard_bold"
-            android:outlineProvider="none"
-            android:text="@{model.distanceSum.toString()}"
-            android:textColor="@color/G1"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@id/tv_total_distance_unit"
             app:layout_constraintStart_toStartOf="@id/iv_total_distance"
-            app:layout_constraintTop_toBottomOf="@id/iv_total_distance"
-            tools:text="1.6" />
-
-        <TextView
-            android:id="@+id/tv_total_distance_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:elevation="11dp"
-            android:fontFamily="@font/pretendard_medium"
-            android:outlineProvider="none"
-            android:text="@string/run_distance_unit"
-            android:textColor="@color/G2"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_content"
-            app:layout_constraintStart_toEndOf="@id/tv_total_distance_content" />
+            app:layout_constraintTop_toBottomOf="@id/iv_total_distance" />
 
         <ImageView
             android:id="@+id/iv_time"
@@ -130,7 +109,7 @@
             android:outlineProvider="none"
             android:textColor="@color/G1"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_total_distance_unit"
+            app:layout_constraintBottom_toBottomOf="@id/compose_run_distance"
             app:layout_constraintStart_toStartOf="@id/iv_time"
             tools:text="00:00:00" />
 
