@@ -9,7 +9,9 @@ import com.runnect.runnect.data.dto.request.RequestPostCourseScrap
 import com.runnect.runnect.data.dto.response.ResponseDeleteUploadCourse
 import com.runnect.runnect.domain.common.toLog
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.CourseRanking
 import com.runnect.runnect.domain.entity.EditableCourseDetail
+import com.runnect.runnect.domain.entity.MyCourseRanking
 import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.UserRepository
@@ -42,6 +44,14 @@ class CourseDetailViewModel @Inject constructor(
     val courseScrapState: LiveData<UiStateV2<PostScrap>>
         get() = _courseScrapState
 
+    private val _courseRankingState = MutableLiveData<UiStateV2<CourseRanking>>()
+    val courseRankingState: LiveData<UiStateV2<CourseRanking>>
+        get() = _courseRankingState
+
+    private val _myCourseRankingState = MutableLiveData<UiStateV2<MyCourseRanking>>()
+    val myCourseRankingState: LiveData<UiStateV2<MyCourseRanking>>
+        get() = _myCourseRankingState
+
     // 사용자가 수정할 수 있는 부분 (제목, 내용)
     val _title = MutableLiveData<String>()
     val title: String get() = _title.value ?: ""
@@ -57,6 +67,11 @@ class CourseDetailViewModel @Inject constructor(
     val currentScreenMode get() = _currentScreenMode
 
     private var savedCourseDetail = EditableCourseDetail("", "")
+
+    // CourseDetailActivity가 FLAG_ACTIVITY_REORDER_TO_FRONT로 재사용될 때(ProfileActivity 등)
+    // onNewIntent로 다른 courseId가 들어올 수 있다. 이전 courseId 요청이 늦게 응답으로 돌아와
+    // 최신 courseId의 결과를 덮어쓰지 않도록, 응답을 반영하기 전에 여전히 최신 요청인지 확인한다.
+    private var latestRankingCourseId: Int? = null
 
     fun updateCourseDetailEditText(course: EditableCourseDetail) {
         _title.value = course.title
@@ -140,7 +155,46 @@ class CourseDetailViewModel @Inject constructor(
             )
     }
 
+    fun getCourseRanking(courseId: Int) = launchWithHandler {
+        latestRankingCourseId = courseId
+        _courseRankingState.value = UiStateV2.Loading
+
+        courseRepository.getCourseRanking(courseId = courseId, limit = RANKING_LIST_LIMIT)
+            .collectResult(
+                onSuccess = {
+                    if (latestRankingCourseId == courseId) {
+                        _courseRankingState.value = UiStateV2.Success(it)
+                    }
+                },
+                onFailure = {
+                    if (latestRankingCourseId == courseId) {
+                        _courseRankingState.value = UiStateV2.Failure(it.toLog())
+                    }
+                }
+            )
+    }
+
+    fun getMyCourseRanking(courseId: Int) = launchWithHandler {
+        latestRankingCourseId = courseId
+        _myCourseRankingState.value = UiStateV2.Loading
+
+        courseRepository.getMyCourseRanking(courseId = courseId)
+            .collectResult(
+                onSuccess = {
+                    if (latestRankingCourseId == courseId) {
+                        _myCourseRankingState.value = UiStateV2.Success(it)
+                    }
+                },
+                onFailure = {
+                    if (latestRankingCourseId == courseId) {
+                        _myCourseRankingState.value = UiStateV2.Failure(it.toLog())
+                    }
+                }
+            )
+    }
+
     companion object {
         private const val CODE_AUTHORIZATION_ERROR = 401
+        private const val RANKING_LIST_LIMIT = 10
     }
 }

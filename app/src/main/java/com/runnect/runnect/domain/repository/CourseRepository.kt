@@ -7,11 +7,13 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.CourseRanking
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
+import com.runnect.runnect.domain.entity.MyCourseRanking
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
@@ -31,6 +33,10 @@ interface CourseRepository {
     suspend fun getCourseSearch(keyword: String): Flow<Result<List<DiscoverSearchCourse>>>
 
     suspend fun getCourseDetail(publicCourseId: Int): Flow<Result<CourseDetail>>
+
+    suspend fun getCourseRanking(courseId: Int, limit: Int): Flow<Result<CourseRanking>>
+
+    suspend fun getMyCourseRanking(courseId: Int): Flow<Result<MyCourseRanking>>
 
     suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>>
 

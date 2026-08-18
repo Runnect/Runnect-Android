@@ -9,11 +9,13 @@ import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.network.mapToFlowResult
 import com.runnect.runnect.data.source.remote.RemoteCourseDataSource
 import com.runnect.runnect.domain.entity.CourseDetail
+import com.runnect.runnect.domain.entity.CourseRanking
 import com.runnect.runnect.domain.entity.DiscoverMultiViewItem.MarathonCourse
 import com.runnect.runnect.domain.entity.DiscoverSearchCourse
 import com.runnect.runnect.domain.entity.DiscoverUploadCourse
 import com.runnect.runnect.domain.entity.EditableCourseDetail
 import com.runnect.runnect.domain.entity.EditableMyDrawCourseDetail
+import com.runnect.runnect.domain.entity.MyCourseRanking
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.domain.entity.PostScrap
 import com.runnect.runnect.domain.entity.RecommendCoursePagingData
@@ -53,6 +55,16 @@ class CourseRepositoryImpl @Inject constructor(
     override suspend fun getCourseDetail(publicCourseId: Int): Flow<Result<CourseDetail>> =
         remoteCourseDataSource.getCourseDetail(publicCourseId = publicCourseId).mapToFlowResult {
             it.toCourseDetail()
+        }
+
+    override suspend fun getCourseRanking(courseId: Int, limit: Int): Flow<Result<CourseRanking>> =
+        remoteCourseDataSource.getCourseRanking(courseId = courseId, limit = limit).mapToFlowResult {
+            it.toCourseRanking()
+        }
+
+    override suspend fun getMyCourseRanking(courseId: Int): Flow<Result<MyCourseRanking>> =
+        remoteCourseDataSource.getMyCourseRanking(courseId = courseId).mapToFlowResult {
+            it.toMyCourseRanking()
         }
 
     override suspend fun getMyCourseLoad(): Flow<Result<List<DiscoverUploadCourse>>> {

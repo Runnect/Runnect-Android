@@ -7,8 +7,10 @@ import com.runnect.runnect.data.dto.request.RequestPostPublicCourse
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.data.dto.request.RequestPutMyDrawCourse
 import com.runnect.runnect.data.dto.response.ResponseGetCourseDetail
+import com.runnect.runnect.data.dto.response.ResponseGetCourseRanking
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverMarathon
 import com.runnect.runnect.data.dto.response.ResponseGetDiscoverRecommend
+import com.runnect.runnect.data.dto.response.ResponseGetMyCourseRanking
 import com.runnect.runnect.data.dto.response.ResponsePatchMyDrawCourseTitle
 import com.runnect.runnect.data.dto.response.ResponsePatchPublicCourse
 import com.runnect.runnect.data.dto.response.ResponsePostScrap
@@ -36,6 +38,12 @@ class RemoteCourseDataSource @Inject constructor(
 
     suspend fun getCourseDetail(publicCourseId: Int): Result<ResponseGetCourseDetail> =
         courseService.getCourseDetail(publicCourseId)
+
+    suspend fun getCourseRanking(courseId: Int, limit: Int): Result<ResponseGetCourseRanking> =
+        courseService.getCourseRanking(courseId, limit)
+
+    suspend fun getMyCourseRanking(courseId: Int): Result<ResponseGetMyCourseRanking> =
+        courseService.getMyCourseRanking(courseId)
 
     suspend fun getMyCourseLoad() = courseService.getMyCourseLoad()
 
