@@ -18,11 +18,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.runnect.runnect.R
 import com.runnect.runnect.domain.entity.MyScrapCourse
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.detail.CourseDetailActivity
 import com.runnect.runnect.presentation.detail.CourseDetailRootScreen
 import com.runnect.runnect.presentation.event.ScreenRefreshEvent
 import com.runnect.runnect.presentation.event.ScreenRefreshEventBus
+import com.runnect.runnect.presentation.navigation.MainTab
+import com.runnect.runnect.presentation.navigation.Navigator
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
@@ -36,6 +37,9 @@ import javax.inject.Inject
 class StorageScrapFragment : Fragment() {
     @Inject
     lateinit var screenRefreshEventBus: ScreenRefreshEventBus
+
+    @Inject
+    lateinit var navigator: Navigator
 
     private val viewModel: StorageViewModel by viewModels()
 
@@ -132,10 +136,7 @@ class StorageScrapFragment : Fragment() {
     }
 
     private fun navigateToDiscover() {
-        val intent = Intent(activity, MainActivity::class.java).apply {
-            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromMyScrap")
-        }
-        startActivity(intent)
+        navigator.navigateToMain(requireContext(), MainTab.DISCOVER)
         requireActivity().overridePendingTransition(
             R.anim.slide_in_right,
             R.anim.slide_out_left
@@ -143,7 +144,6 @@ class StorageScrapFragment : Fragment() {
     }
 
     companion object {
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_PUBLIC_COURSE_ID = "publicCourseId"
         const val EXTRA_ROOT_SCREEN = "rootScreen"
     }
