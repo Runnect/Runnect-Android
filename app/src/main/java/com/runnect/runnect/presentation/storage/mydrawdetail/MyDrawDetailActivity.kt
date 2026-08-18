@@ -21,6 +21,9 @@ import com.runnect.runnect.databinding.LayoutCommonToolbarBinding
 import com.runnect.runnect.domain.entity.MyDrawCourseDetail
 import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
+import com.runnect.runnect.presentation.navigation.MainTab
+import com.runnect.runnect.presentation.navigation.NavigationMode
+import com.runnect.runnect.presentation.navigation.Navigator
 import com.runnect.runnect.presentation.scheme.SchemeActivity
 import com.runnect.runnect.presentation.state.UiStateV2
 import com.runnect.runnect.presentation.storage.StorageMyDrawFragment
@@ -41,11 +44,15 @@ import com.runnect.runnect.util.extension.showSnackbar
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.extension.showWebBrowser
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyDrawDetailActivity :
     BindingActivity<ActivityMyDrawDetailBinding>(R.layout.activity_my_draw_detail),
     CommonToolbarLayout {
+    @Inject
+    lateinit var navigator: Navigator
+
     val viewModel: MyDrawDetailViewModel by viewModels()
     private lateinit var myDrawCourseDetail: MyDrawCourseDetail
     private lateinit var departureLatLng: LatLng
@@ -203,7 +210,7 @@ class MyDrawDetailActivity :
             departure = course.departureName,
             distance = course.distance,
             image = course.imgUrl,
-            dataFrom = EXTRA_FROM_MY_DRAW_DETAIL
+            dataFrom = DATA_FROM_MY_DRAW_DETAIL
         )
     }
 
@@ -211,11 +218,7 @@ class MyDrawDetailActivity :
         viewModel.courseDeleteState.observe(this) { state ->
             when (state) {
                 is UiStateV2.Success -> {
-                    Intent(this@MyDrawDetailActivity, MainActivity::class.java).apply {
-                        putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, EXTRA_DELETE_MY_DRAW_COURSE)
-                    }.apply {
-                        startActivity(this)
-                    }
+                    navigator.navigateToMain(this@MyDrawDetailActivity, MainTab.STORAGE)
                     navigateToPreviousScreenWithAnimation()
                 }
 
@@ -389,14 +392,7 @@ class MyDrawDetailActivity :
     }
 
     private fun navigateToMainScreen() {
-        Intent(this, MainActivity::class.java).apply {
-            putExtra(
-                EXTRA_FRAGMENT_REPLACEMENT_DIRECTION,
-                EXTRA_FROM_MY_DRAW_DETAIL
-            )
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(this)
-        }
+        navigator.navigateToMain(this, MainTab.STORAGE, NavigationMode.NEW_TASK_CLEAR_TASK)
         applyScreenExitAnimation()
     }
 
@@ -411,9 +407,9 @@ class MyDrawDetailActivity :
         private const val REPORT_URL =
             "https://docs.google.com/forms/d/e/1FAIpQLSek2rkClKfGaz1zwTEHX3Oojbq_pbF3ifPYMYezBU0_pe-_Tg/viewform"
         private const val TAG_MY_DRAW_COURSE_DELETE_DIALOG = "MY_DRAW_COURSE_DELETE_DIALOG"
-        private const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
-        private const val EXTRA_FROM_MY_DRAW_DETAIL = "fromMyDrawDetail"
-        private const val EXTRA_DELETE_MY_DRAW_COURSE = "fromDeleteMyDrawDetail"
+
+        /** Intent extra 키가 아니라 CourseData.dataFrom에 실리는 데이터 마커 문자열. */
+        private const val DATA_FROM_MY_DRAW_DETAIL = "fromMyDrawDetail"
         private const val EXTRA_COURSE_DATA = "CourseData"
     }
 }

@@ -14,9 +14,12 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.databinding.ActivityMainBinding
 import com.runnect.runnect.presentation.event.VisitorModeManager
+import com.runnect.runnect.presentation.navigation.EXTRA_MAIN_TAB
+import com.runnect.runnect.presentation.navigation.MainTab
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.EVENT_VIEW_HOME
+import com.runnect.runnect.util.extension.getCompatibleSerializableExtra
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,39 +28,44 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     @Inject
     lateinit var visitorModeManager: VisitorModeManager
 
-    private var isChangeToStorage: Boolean = false
-    private var isChangeToDiscover: Boolean = false
-    private var fragmentReplacementDirection: String? = null
     private lateinit var viewPagerAdapter: MainPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         Analytics.logClickedItemEvent(EVENT_VIEW_HOME)
         initRemoteConfig()
-        checkIntentValue()
-        initView()
+        initView(resolveLandingTab(intent))
         addListener()
     }
 
-    private fun checkIntentValue() {
-        fragmentReplacementDirection = intent.getStringExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION)
-
-        when (fragmentReplacementDirection) {
-            "fromDrawCourse", "fromDeleteMyDrawDetail", "fromMyDrawDetail" -> isChangeToStorage = true
-            "fromMyScrap", "fromCourseDetail" -> isChangeToDiscover = true
-        }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        applyLandingTab(resolveLandingTab(intent))
     }
 
-    private fun initView() {
+    private fun resolveLandingTab(intent: Intent): MainTab? =
+        intent.getCompatibleSerializableExtra<MainTab>(EXTRA_MAIN_TAB)
+
+    private fun initView(landingTab: MainTab?) {
         setupViewPager()
-        val selectedPosition = when {
-            isChangeToStorage -> 1.also { isChangeToStorage = false }
-            isChangeToDiscover -> 2.also { isChangeToDiscover = false }
-            else -> 0
-        }
+        val selectedPosition = landingTab?.toPagerPosition() ?: 0
         binding.vpMain.currentItem = selectedPosition
         updateBottomNavigationSelection(selectedPosition)
+    }
+
+    private fun applyLandingTab(landingTab: MainTab?) {
+        val position = landingTab?.toPagerPosition() ?: return
+        binding.vpMain.currentItem = position
+        updateBottomNavigationSelection(position)
+    }
+
+    private fun MainTab.toPagerPosition(): Int = when (this) {
+        MainTab.DRAWING -> 0
+        MainTab.STORAGE -> 1
+        MainTab.DISCOVER -> 2
+        MainTab.MY_PAGE -> 3
     }
 
     private fun setupViewPager() {
@@ -165,6 +173,5 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     companion object {
         const val REMOTE_CONFIG_FETCH_INTERVAL_SECONDS = 3600L
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
     }
 }
