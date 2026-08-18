@@ -43,9 +43,11 @@ import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.CustomDialogMakeCourseBinding
-import com.runnect.runnect.presentation.MainActivity
 import com.runnect.runnect.presentation.countdown.CountDownActivity
 import com.runnect.runnect.presentation.event.VisitorModeManager
+import com.runnect.runnect.presentation.navigation.MainTab
+import com.runnect.runnect.presentation.navigation.NavigationMode
+import com.runnect.runnect.presentation.navigation.Navigator
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.DepartureSetMode
 import com.runnect.runnect.util.analytics.Analytics
@@ -73,6 +75,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     OnMapReadyCallback {
     @Inject
     lateinit var visitorModeManager: VisitorModeManager
+
+    @Inject
+    lateinit var navigator: Navigator
 
     private lateinit var locationSource: FusedLocationSource
     private lateinit var currentLocation: LatLng
@@ -555,11 +560,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
 
             btnStorage.setOnClickListener {
                 Analytics.logClickedItemEvent(EventName.EVENT_CLICK_STORED_AFTER_COURSE_COMPLETE)
-                val intent = Intent(this@DrawActivity, MainActivity::class.java).apply {
-                    putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, "fromDrawCourse")
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                }
-                startActivity(intent)
+                navigator.navigateToMain(this@DrawActivity, MainTab.STORAGE, NavigationMode.CLEAR_TOP)
                 dialog.dismiss()
             }
         }
@@ -860,7 +861,6 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         const val LEAST_CONDITION_CREATE_PATH = 2
         const val EXTRA_SEARCH_RESULT = "searchResult"
         const val EXTRA_COURSE_DATA = "CourseData"
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
         const val NOTIFY_LIMIT_MARKER_NUM = "마커는 20개까지 생성 가능합니다"
 
