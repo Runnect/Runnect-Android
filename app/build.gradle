@@ -103,6 +103,9 @@ tasks.withType(Test).configureEach {
     testLogging {
         events "passed", "skipped", "failed"
     }
+    filter {
+        failOnNoMatchingTests = false
+    }
 }
 
 tasks.register('renameReleaseBundle') {
