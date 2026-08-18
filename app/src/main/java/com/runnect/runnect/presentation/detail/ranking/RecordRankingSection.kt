@@ -46,8 +46,8 @@ private val Bronze = Color(0xFFB0703B)
 
 /**
  * 코스 상세 화면에 추가되는 기록 랭킹 섹션.
- * ranking이 null이거나 entries가 비어 있으면(로딩 중이거나 완주자가 없으면) 아무것도 그리지 않는다 —
- * 배지/섹션 노출 여부를 데이터 유무로만 결정해서 화면 쪽에 별도 분기를 두지 않기 위함.
+ * ranking이 null이면(아직 응답 오기 전) 아무것도 그리지 않아 로딩 중 깜빡임을 피한다.
+ * 응답이 왔는데 완주자가 0명이면 섹션은 그대로 두고 목록 대신 빈 상태 안내를 보여준다.
  */
 @Composable
 fun RecordRankingSection(
@@ -56,9 +56,10 @@ fun RecordRankingSection(
     onUserClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (ranking == null || ranking.entries.isEmpty()) return
+    if (ranking == null) return
 
     Column(modifier = modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(20.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,25 +85,47 @@ fun RecordRankingSection(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            ranking.entries.forEach { entry ->
-                RankingRow(entry, onClick = { onUserClick(entry.userId) })
-            }
+            if (ranking.entries.isEmpty()) {
+                EmptyRankingState()
+            } else {
+                ranking.entries.forEach { entry ->
+                    RankingRow(entry, onClick = { onUserClick(entry.userId) })
+                }
 
-            if (myRanking != null && myRanking.hasRecord) {
-                Spacer(modifier = Modifier.height(6.dp))
-                MyRankingRow(myRanking, onClick = { onUserClick(myRanking.userId) })
+                if (myRanking != null && myRanking.hasRecord) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    MyRankingRow(myRanking, onClick = { onUserClick(myRanking.userId) })
+                }
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "기록 갱신 시 랭킹이 즉시 반영돼요",
-                fontFamily = PretendardFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 10.5.sp,
-                color = G2,
-                modifier = Modifier.fillMaxWidth(),
-            )
         }
+    }
+}
+
+@Composable
+private fun EmptyRankingState() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = "🏁", fontSize = 26.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "아직 완주 기록이 없어요",
+            fontFamily = PretendardFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 13.5.sp,
+            color = G1,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "가장 먼저 완주하고 1위에 도전해보세요",
+            fontFamily = PretendardFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 12.sp,
+            color = G2,
+        )
     }
 }
 
@@ -272,6 +295,18 @@ private fun RecordRankingSectionPreview() {
                 time = "14:52",
                 pace = "6'28\"/km",
             ),
+            onUserClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RecordRankingSectionEmptyPreview() {
+    RunnectTheme {
+        RecordRankingSection(
+            ranking = CourseRanking(totalCount = 0, entries = emptyList()),
+            myRanking = null,
             onUserClick = {},
         )
     }

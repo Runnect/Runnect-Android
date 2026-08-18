@@ -59,7 +59,7 @@ class CourseDetailViewModelTest {
                 CourseRankingEntry(2, 2, "런너B", 101, "11:47", "5'07\"/km"),
             )
         )
-        coEvery { courseRepository.getCourseRanking(courseId = 1, limit = 20) } returns flow {
+        coEvery { courseRepository.getCourseRanking(courseId = 1, limit = 10) } returns flow {
             delay(1)
             emit(Result.success(ranking))
         }
@@ -72,7 +72,7 @@ class CourseDetailViewModelTest {
 
     @Test
     fun `getCourseRanking 실패 시 Failure 상태로 갱신된다`() = runTest(testDispatcher) {
-        coEvery { courseRepository.getCourseRanking(courseId = 1, limit = 20) } returns flow {
+        coEvery { courseRepository.getCourseRanking(courseId = 1, limit = 10) } returns flow {
             delay(1)
             emit(Result.failure(RuntimeException("네트워크 오류")))
         }

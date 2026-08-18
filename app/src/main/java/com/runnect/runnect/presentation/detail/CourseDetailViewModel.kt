@@ -176,6 +176,6 @@ class CourseDetailViewModel @Inject constructor(
 
     companion object {
         private const val CODE_AUTHORIZATION_ERROR = 401
-        private const val RANKING_LIST_LIMIT = 20
+        private const val RANKING_LIST_LIMIT = 10
     }
 }
