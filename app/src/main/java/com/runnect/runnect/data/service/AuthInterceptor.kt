@@ -109,6 +109,7 @@ class AuthInterceptor @Inject constructor(
         chain: Interceptor.Chain
     ): Response {
         Timber.e("New Refresh Token Failure: ${refreshTokenResponse.code}")
+        refreshTokenResponse.close()
         context.saveToken(
             accessToken = LoginStatus.EXPIRED.value,
             refreshToken = LoginStatus.EXPIRED.value
