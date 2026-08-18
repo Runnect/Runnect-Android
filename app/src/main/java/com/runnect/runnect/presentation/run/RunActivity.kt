@@ -98,6 +98,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
         initView()
         initDistanceComposeView()
+        initPaceComposeView()
         initTimerService()
         getCurrentLocation()
         showRecord()
@@ -140,6 +141,18 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         }
     }
 
+    private fun initPaceComposeView() {
+        binding.composeRunPace.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                RunnectTheme {
+                    val paceSecPerKm by viewModel.currentPaceSecPerKm.observeAsState(null)
+                    RunPaceStat(paceSecPerKm = paceSecPerKm)
+                }
+            }
+        }
+    }
+
     private fun initTimerService() {
         serviceIntent = Intent(this, TimerService::class.java)
         startService(serviceIntent)
@@ -156,6 +169,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
             val isPaused = viewModel.isPaused.value ?: false
             if (isPaused) {
                 timerService?.resumeTimer()
+                viewModel.onManualResume()
             } else {
                 timerService?.pauseTimer()
             }
@@ -197,6 +211,12 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
                 timerData.second
             )
             updateTimerUI(timerUI)
+
+            if (viewModel.shouldAutoPause()) {
+                timerService?.pauseTimer()
+                viewModel.isPaused.value = true
+                updatePauseResumeUI(true)
+            }
         }
     }
 

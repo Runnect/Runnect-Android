@@ -74,4 +74,81 @@ class RunViewModelTest {
 
         assertEquals(0.0, viewModel.traveledDistanceKm.value)
     }
+
+    @Test
+    fun `충분히 움직이지 않으면 페이스는 null이다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+
+        assertEquals(null, viewModel.currentPaceSecPerKm.value)
+    }
+
+    @Test
+    fun `최근 구간 이동 거리와 시간으로 페이스가 계산된다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+        // 페이스 샘플은 두 번째 위치 업데이트부터 기록되므로, 최소 2개 샘플을 쌓기 위해 3번 갱신한다.
+        viewModel.onLocationUpdated(LatLng(37.5667, 126.9780), now + 5_000)
+        viewModel.onLocationUpdated(LatLng(37.5669, 126.9780), now + 10_000)
+
+        val pace = viewModel.currentPaceSecPerKm.value
+        assertTrue("페이스가 계산되어야 한다: $pace", pace != null && pace > 0)
+    }
+
+    @Test
+    fun `일시정지 중에는 페이스가 갱신되지 않는다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+        viewModel.isPaused.value = true
+
+        viewModel.onLocationUpdated(LatLng(37.5675, 126.9780), now + 10_000)
+
+        assertEquals(null, viewModel.currentPaceSecPerKm.value)
+    }
+
+    @Test
+    fun `무활동 시간이 임계값을 넘으면 자동 일시정지가 필요하다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+
+        assertTrue(viewModel.shouldAutoPause(now + 60_000))
+    }
+
+    @Test
+    fun `무활동 시간이 임계값 미만이면 자동 일시정지가 필요없다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+
+        assertEquals(false, viewModel.shouldAutoPause(now + 30_000))
+    }
+
+    @Test
+    fun `이미 일시정지 상태면 자동 일시정지를 다시 트리거하지 않는다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+        viewModel.isPaused.value = true
+
+        assertEquals(false, viewModel.shouldAutoPause(now + 60_000))
+    }
+
+    @Test
+    fun `수동 재개 직후에는 무활동 타이머가 초기화되어 바로 자동 일시정지되지 않는다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+
+        viewModel.onManualResume(now + 60_000)
+
+        assertEquals(false, viewModel.shouldAutoPause(now + 60_000 + 30_000))
+    }
+
+    @Test
+    fun `움직임이 감지되면 무활동 타이머가 갱신된다`() {
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
+        // 임계값(5m) 이상 이동 -> 무활동 타이머 갱신
+        viewModel.onLocationUpdated(LatLng(37.56655, 126.9780), now + 30_000)
+
+        assertEquals(false, viewModel.shouldAutoPause(now + 30_000 + 59_000))
+        assertTrue(viewModel.shouldAutoPause(now + 30_000 + 60_000))
+    }
 }

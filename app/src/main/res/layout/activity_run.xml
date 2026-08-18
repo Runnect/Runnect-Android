@@ -18,7 +18,7 @@
         <View
             android:id="@+id/view_run_top_frame"
             android:layout_width="match_parent"
-            android:layout_height="126dp"
+            android:layout_height="152dp"
             android:background="@drawable/bottom_right_radius_40_white"
             android:elevation="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -112,6 +112,15 @@
             app:layout_constraintBottom_toBottomOf="@id/compose_run_distance"
             app:layout_constraintStart_toStartOf="@id/iv_time"
             tools:text="00:00:00" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_run_pace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:elevation="11dp"
+            app:layout_constraintStart_toStartOf="@id/iv_total_distance"
+            app:layout_constraintTop_toBottomOf="@id/compose_run_distance" />
 
         <ImageView
             android:id="@+id/iv_top_star"
