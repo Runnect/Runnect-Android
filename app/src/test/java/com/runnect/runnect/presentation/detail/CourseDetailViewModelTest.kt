@@ -84,6 +84,34 @@ class CourseDetailViewModelTest {
     }
 
     @Test
+    fun `이전 코스의 늦은 응답이 나중에 요청한 코스의 랭킹을 덮어쓰지 않는다`() = runTest(testDispatcher) {
+        val rankingForCourse1 = CourseRanking(
+            totalCount = 1,
+            entries = listOf(CourseRankingEntry(1, 1, "코스1런너", 100, "10:00", "5'00\"/km"))
+        )
+        val rankingForCourse2 = CourseRanking(
+            totalCount = 1,
+            entries = listOf(CourseRankingEntry(1, 2, "코스2런너", 200, "20:00", "8'00\"/km"))
+        )
+        // CourseDetailActivity가 FLAG_ACTIVITY_REORDER_TO_FRONT로 재사용될 때(ProfileActivity 등)
+        // 이전 코스(1)의 요청이 늦게 응답할 수 있는 상황을 재현: 코스1은 느리게, 코스2는 빠르게 응답.
+        coEvery { courseRepository.getCourseRanking(courseId = 1, limit = 10) } returns flow {
+            delay(100)
+            emit(Result.success(rankingForCourse1))
+        }
+        coEvery { courseRepository.getCourseRanking(courseId = 2, limit = 10) } returns flow {
+            delay(1)
+            emit(Result.success(rankingForCourse2))
+        }
+
+        viewModel.getCourseRanking(1)
+        viewModel.getCourseRanking(2)
+        advanceUntilIdle()
+
+        assertEquals(UiStateV2.Success(rankingForCourse2), viewModel.courseRankingState.value)
+    }
+
+    @Test
     fun `getMyCourseRanking 성공 시 내 랭킹 상태가 갱신된다`() = runTest(testDispatcher) {
         val myRanking = MyCourseRanking(
             hasRecord = true,

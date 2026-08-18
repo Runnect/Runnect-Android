@@ -68,6 +68,11 @@ class CourseDetailViewModel @Inject constructor(
 
     private var savedCourseDetail = EditableCourseDetail("", "")
 
+    // CourseDetailActivity가 FLAG_ACTIVITY_REORDER_TO_FRONT로 재사용될 때(ProfileActivity 등)
+    // onNewIntent로 다른 courseId가 들어올 수 있다. 이전 courseId 요청이 늦게 응답으로 돌아와
+    // 최신 courseId의 결과를 덮어쓰지 않도록, 응답을 반영하기 전에 여전히 최신 요청인지 확인한다.
+    private var latestRankingCourseId: Int? = null
+
     fun updateCourseDetailEditText(course: EditableCourseDetail) {
         _title.value = course.title
         _description.value = course.description
@@ -151,25 +156,39 @@ class CourseDetailViewModel @Inject constructor(
     }
 
     fun getCourseRanking(courseId: Int) = launchWithHandler {
+        latestRankingCourseId = courseId
+        _courseRankingState.value = UiStateV2.Loading
+
         courseRepository.getCourseRanking(courseId = courseId, limit = RANKING_LIST_LIMIT)
             .collectResult(
                 onSuccess = {
-                    _courseRankingState.value = UiStateV2.Success(it)
+                    if (latestRankingCourseId == courseId) {
+                        _courseRankingState.value = UiStateV2.Success(it)
+                    }
                 },
                 onFailure = {
-                    _courseRankingState.value = UiStateV2.Failure(it.toLog())
+                    if (latestRankingCourseId == courseId) {
+                        _courseRankingState.value = UiStateV2.Failure(it.toLog())
+                    }
                 }
             )
     }
 
     fun getMyCourseRanking(courseId: Int) = launchWithHandler {
+        latestRankingCourseId = courseId
+        _myCourseRankingState.value = UiStateV2.Loading
+
         courseRepository.getMyCourseRanking(courseId = courseId)
             .collectResult(
                 onSuccess = {
-                    _myCourseRankingState.value = UiStateV2.Success(it)
+                    if (latestRankingCourseId == courseId) {
+                        _myCourseRankingState.value = UiStateV2.Success(it)
+                    }
                 },
                 onFailure = {
-                    _myCourseRankingState.value = UiStateV2.Failure(it.toLog())
+                    if (latestRankingCourseId == courseId) {
+                        _myCourseRankingState.value = UiStateV2.Failure(it.toLog())
+                    }
                 }
             )
     }
