@@ -16,7 +16,10 @@ import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.RunToEndRunData
 import com.runnect.runnect.data.dto.request.RequestPostRunningHistory
 import com.runnect.runnect.databinding.ActivityEndRunBinding
-import com.runnect.runnect.presentation.MainActivity
+import com.runnect.runnect.presentation.navigation.MainTab
+import com.runnect.runnect.presentation.navigation.NavigationMode
+import com.runnect.runnect.presentation.navigation.Navigator
+import com.runnect.runnect.presentation.navigation.mapDataFromToMainTab
 import com.runnect.runnect.presentation.state.UiState
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
@@ -29,10 +32,14 @@ import com.runnect.runnect.util.extension.round
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.SimpleDateFormat
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_end_run) {
+    @Inject
+    lateinit var navigator: Navigator
+
     val viewModel: EndRunViewModel by viewModels()
     val currentTime: Long = System.currentTimeMillis()
 
@@ -82,13 +89,17 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
     private fun backBtn() {
         binding.imgBtnBack.setOnClickListener {
             Analytics.logClickedItemEvent(EVENT_CLICK_BACK_RUNNING_TRACKING)
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, viewModel.dataFrom.value)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            }
-            startActivity(intent)
+            navigateToMain()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
+    }
+
+    private fun navigateToMain() {
+        navigator.navigateToMain(
+            this,
+            mapDataFromToMainTab(viewModel.dataFrom.value),
+            NavigationMode.CLEAR_TOP
+        )
     }
 
     private fun editTextController() {
@@ -181,10 +192,7 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
                     pace = "0:$paceMinute:$paceSecond" //평균 페이스 표기법에서는 '시간'을 안 쓰지만 서버에서 요구하는 형식에 맞춰주기 위해 앞에 "0:"을 붙어야 함
                 )
             )
-            val intent = Intent(this, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            }
-            startActivity(intent)
+            navigator.navigateToMain(this, mode = NavigationMode.CLEAR_TOP)
         }
     }
 
@@ -227,11 +235,7 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
 
 
     override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra(EXTRA_FRAGMENT_REPLACEMENT_DIRECTION, viewModel.dataFrom.value)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
-        startActivity(intent)
+        navigateToMain()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
@@ -253,7 +257,6 @@ class EndRunActivity: BindingActivity<ActivityEndRunBinding>(R.layout.activity_e
     companion object {
         const val MAX_TITLE_LENGTH = 20
         const val MESSAGE_MAX_TITLE_LENGTH = "최대 20자까지 입력 가능합니다"
-        const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
     }
 }
