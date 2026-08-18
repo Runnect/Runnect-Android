@@ -32,16 +32,22 @@ class RunViewModel : ViewModel() {
      */
     fun onLocationUpdated(newLocation: LatLng, now: Long = System.currentTimeMillis()) {
         val previous = lastLocation
-        lastLocation = newLocation
 
         if (previous == null) {
+            lastLocation = newLocation
             lastMovementAtMillis = now // 무활동 타이머 시작 기준점 (러닝 시작 시점)
             return
         }
-        if (isPaused.value == true) return
+        if (isPaused.value == true) {
+            lastLocation = newLocation
+            return
+        }
 
         val deltaM = previous.distanceTo(newLocation)
+        // 튐으로 판정해 거부한 좌표는 lastLocation을 갱신하지 않는다 — 다음 정상 좌표와의
+        // 거리가 튄 좌표 기준으로 잘못 계산되는 것을 막기 위해.
         if (deltaM > MAX_PLAUSIBLE_JUMP_M) return
+        lastLocation = newLocation
 
         if (deltaM >= MOVEMENT_THRESHOLD_M) {
             lastMovementAtMillis = now

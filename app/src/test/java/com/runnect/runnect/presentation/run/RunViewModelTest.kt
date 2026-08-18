@@ -76,6 +76,25 @@ class RunViewModelTest {
     }
 
     @Test
+    fun `거부된 튐 좌표는 기준점으로 남지 않고 다음 정상 이동은 튐 이전 위치 기준으로 계산된다`() {
+        val baseLat = 37.5665
+        val now = 0L
+        viewModel.onLocationUpdated(LatLng(baseLat, 126.9780), now) // 기준점
+        // 약 122m 튐 - 거부됨. 이 좌표가 lastLocation으로 남으면 이후 정상 이동까지 잘못 거부/누적된다.
+        viewModel.onLocationUpdated(LatLng(baseLat + 0.0011, 126.9780), now + 1_000)
+        // 튐 이전 기준점(baseLat)으로부터 약 44m - 정상 이동이면 누적되어야 한다.
+        viewModel.onLocationUpdated(LatLng(baseLat + 0.0004, 126.9780), now + 2_000)
+        // 직전 정상 위치로부터 약 44m 추가 이동
+        viewModel.onLocationUpdated(LatLng(baseLat + 0.0008, 126.9780), now + 3_000)
+
+        val distanceKm = viewModel.traveledDistanceKm.value ?: 0.0
+        assertTrue(
+            "튐 좌표가 기준점으로 남으면 이후 정상 이동(총 약 89m)이 누락된다: $distanceKm",
+            distanceKm >= 0.1
+        )
+    }
+
+    @Test
     fun `충분히 움직이지 않으면 페이스는 null이다`() {
         val now = 0L
         viewModel.onLocationUpdated(LatLng(37.5665, 126.9780), now)
