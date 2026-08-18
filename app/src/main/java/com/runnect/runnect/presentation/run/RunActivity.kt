@@ -15,6 +15,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -38,6 +41,7 @@ import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
 import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
 import com.runnect.runnect.presentation.run.TimerService.Companion.TIMER_UPDATE_ACTION
+import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
 import com.runnect.runnect.util.analytics.EventName.Param
@@ -93,6 +97,8 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         binding.lifecycleOwner = this
 
         initView()
+        initDistanceComposeView()
+        initPaceComposeView()
         initTimerService()
         getCurrentLocation()
         showRecord()
@@ -123,6 +129,30 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         )
     }
 
+    private fun initDistanceComposeView() {
+        binding.composeRunDistance.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                RunnectTheme {
+                    val distanceKm by viewModel.traveledDistanceKm.observeAsState(0.0)
+                    RunDistanceStat(distanceKm = distanceKm)
+                }
+            }
+        }
+    }
+
+    private fun initPaceComposeView() {
+        binding.composeRunPace.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                RunnectTheme {
+                    val paceSecPerKm by viewModel.currentPaceSecPerKm.observeAsState(null)
+                    RunPaceStat(paceSecPerKm = paceSecPerKm)
+                }
+            }
+        }
+    }
+
     private fun initTimerService() {
         serviceIntent = Intent(this, TimerService::class.java)
         startService(serviceIntent)
@@ -139,6 +169,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
             val isPaused = viewModel.isPaused.value ?: false
             if (isPaused) {
                 timerService?.resumeTimer()
+                viewModel.onManualResume()
             } else {
                 timerService?.pauseTimer()
             }
@@ -180,6 +211,12 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
                 timerData.second
             )
             updateTimerUI(timerUI)
+
+            if (viewModel.shouldAutoPause()) {
+                timerService?.pauseTimer()
+                viewModel.isPaused.value = true
+                updatePauseResumeUI(true)
+            }
         }
     }
 
@@ -239,6 +276,7 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private fun addCurrentLocationChangeListener(map: NaverMap) {
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
+            viewModel.onLocationUpdated(currentLocation)
             map.locationOverlay.run { //현재 위치 마커
                 isVisible = true //현재 위치 마커 가시성(default = false)
                 position = LatLng(currentLocation.latitude, currentLocation.longitude)
