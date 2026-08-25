@@ -107,7 +107,13 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
-    private var markerQuotaBalance: Int = 0
+
+    /**
+     * null: 서버 조회가 아직 끝나지 않은 상태(진짜 0과 구분해야 함).
+     * 이 값이 null인 동안은 마커 배치를 막아, 잔량 조회가 끝나기 전에 "재화가
+     * 부족하다"고 잘못 판단해 팝업을 띄우는 일이 없게 한다.
+     */
+    private var markerQuotaBalance: Int? = null
     val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
 
     var isFirstInit: Boolean = true
@@ -497,16 +503,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             binding.tvMarkerQuotaBalance.text = balance.toString()
         }
 
-        viewModel.markerQuotaConsumeState.observe(this) {
-            when (it) {
-                UiState.Success -> viewModel.uploadCourse()
-                UiState.Failure -> {
-                    hideLoadingBar()
-                    showToast(NOTIFY_MARKER_QUOTA_INSUFFICIENT)
-                    showMarkerQuotaEmptyBottomSheet()
-                }
-
-                else -> Unit
+        // drawState(UiState)의 Failure는 업로드 실패/잔량 부족 둘 다에서 발생하는데,
+        // loading bar 숨김은 이미 observeDrawState()가 처리한다. 여기서는 "잔량
+        // 부족이라 실패했다"는 사실만 별도 이벤트로 받아 팝업을 띄운다.
+        viewModel.markerQuotaInsufficientEvent.observe(this) { isInsufficient ->
+            if (isInsufficient) {
+                showToast(NOTIFY_MARKER_QUOTA_INSUFFICIENT)
+                showMarkerQuotaEmptyBottomSheet()
+                viewModel.consumeMarkerQuotaInsufficientEventHandled()
             }
         }
 
@@ -554,13 +558,15 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     }
 
     private fun decrementMarkerQuotaBalance() {
-        markerQuotaBalance--
-        binding.tvMarkerQuotaBalance.text = markerQuotaBalance.toString()
+        val updated = (markerQuotaBalance ?: 0) - 1
+        markerQuotaBalance = updated
+        binding.tvMarkerQuotaBalance.text = updated.toString()
     }
 
     private fun incrementMarkerQuotaBalance() {
-        markerQuotaBalance++
-        binding.tvMarkerQuotaBalance.text = markerQuotaBalance.toString()
+        val updated = (markerQuotaBalance ?: 0) + 1
+        markerQuotaBalance = updated
+        binding.tvMarkerQuotaBalance.text = updated.toString()
     }
 
     private fun showLoadingBar() {
@@ -747,8 +753,14 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             if (!isMarkerAvailable) return@setOnMapClickListener
             viewModel.isBtnAvailable.value = true
 
+            val balance = markerQuotaBalance
+            if (balance == null) {
+                showToast(NOTIFY_MARKER_QUOTA_LOADING)
+                return@setOnMapClickListener
+            }
+
             if (touchList.size < MAX_MARKER_NUM) {
-                if (markerQuotaBalance > 0) {
+                if (balance > 0) {
                     addCoordsToTouchList(coord)
                     setRouteMarker(coord)
                     generateRouteLine(coord)
@@ -893,7 +905,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             ) //Uri -> RequestBody
             setViewModelValue(calcDistanceList)
             showLoadingBar()
-            viewModel.consumeMarkerQuota(touchList.size)
+            viewModel.saveCourse(touchList.size)
         }
     }
 
@@ -954,6 +966,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
         const val NOTIFY_LIMIT_MARKER_NUM = "마커는 20개까지 생성 가능합니다"
         const val NOTIFY_MARKER_QUOTA_INSUFFICIENT = "마커 재화가 부족합니다. 광고를 보고 채워주세요"
+        const val NOTIFY_MARKER_QUOTA_LOADING = "마커 정보를 불러오는 중이에요. 잠시 후 다시 시도해주세요"
         const val NOTIFY_MARKER_QUOTA_CHARGED = "마커가 충전되었습니다"
         const val NOTIFY_AD_NOT_READY = "광고를 불러오는 중입니다. 잠시 후 다시 시도해주세요"
 
