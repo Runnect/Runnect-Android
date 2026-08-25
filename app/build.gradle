@@ -41,6 +41,7 @@ android {
         buildConfigField "String", "REMOTE_KEY_APP_VERSION", properties["REMOTE_KEY_APP_VERSION"]
         buildConfigField "String", "REMOTE_KEY_FORCE_UPDATE", properties["REMOTE_KEY_FORCE_UPDATE"]
         buildConfigField "String", "KAKAO_CHANNEL_ID", properties["KAKAO_CHANNEL_ID"]
+        buildConfigField "String", "ADMOB_REWARDED_AD_UNIT_ID", properties["ADMOB_REWARDED_AD_UNIT_ID"]
     }
 
     signingConfigs {
@@ -184,6 +185,7 @@ dependencies {
 
     // Google
     implementation libs.play.services.auth
+    implementation libs.play.services.ads
 
     // Logging
     implementation libs.timber

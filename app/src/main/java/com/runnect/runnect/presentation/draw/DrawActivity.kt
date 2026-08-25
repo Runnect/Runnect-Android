@@ -41,6 +41,7 @@ import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.SearchResultEntity
 import com.runnect.runnect.data.dto.UploadLatLng
 import com.runnect.runnect.databinding.ActivityDrawBinding
+import com.runnect.runnect.databinding.BottomsheetMarkerQuotaEmptyBinding
 import com.runnect.runnect.databinding.BottomsheetRequireCourseNameBinding
 import com.runnect.runnect.databinding.CustomDialogMakeCourseBinding
 import com.runnect.runnect.presentation.MainActivity
@@ -55,6 +56,7 @@ import com.runnect.runnect.util.custom.dialog.RequireLoginDialogFragment
 import com.runnect.runnect.util.extension.PermissionUtil
 import com.runnect.runnect.util.extension.hideKeyboard
 import com.runnect.runnect.util.extension.setActivityDialog
+import com.runnect.runnect.util.ad.RewardedAdManager
 import com.runnect.runnect.util.extension.showToast
 import com.runnect.runnect.util.multipart.ContentUriRequestBody
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,6 +75,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     OnMapReadyCallback {
     @Inject
     lateinit var visitorModeManager: VisitorModeManager
+
+    @Inject
+    lateinit var rewardedAdManager: RewardedAdManager
 
     private lateinit var locationSource: FusedLocationSource
     private lateinit var currentLocation: LatLng
@@ -102,6 +107,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     private var distanceSum: Float = 0.0f
     private var sumList = mutableListOf<Double>()
     private var isMarkerAvailable: Boolean = false
+    private var markerQuotaBalance: Int = 0
     val isVisitorMode: Boolean get() = visitorModeManager.isVisitorMode
 
     var isFirstInit: Boolean = true
@@ -118,6 +124,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         addObserver()
         backButton()
         courseFinish()
+        viewModel.fetchMarkerQuota()
+        rewardedAdManager.load(this)
+        setupMarkerQuotaChargeButton()
     }
 
     private fun getSearchIntent() {
@@ -406,6 +415,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             frameCourseDistance.isVisible = true
             tvCourseDistanceRecord.isVisible = true
             tvCourseDistanceKm.isVisible = true
+            frameMarkerQuota.isVisible = true
         }
     }
 
@@ -438,6 +448,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
     private fun addObserver() {
         observeIsBtnAvailable()
         observeDrawState()
+        observeMarkerQuota()
 
         viewModel.reverseGeocodingResult.observe(this) {
             val buildingName = viewModel.reverseGeocodingResult.value!!.buildingName
@@ -478,6 +489,78 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 deactivateMarkerBackBtn()
             }
         }
+    }
+
+    private fun observeMarkerQuota() {
+        viewModel.markerQuotaBalance.observe(this) { balance ->
+            markerQuotaBalance = balance
+            binding.tvMarkerQuotaBalance.text = balance.toString()
+        }
+
+        viewModel.markerQuotaConsumeState.observe(this) {
+            when (it) {
+                UiState.Success -> viewModel.uploadCourse()
+                UiState.Failure -> {
+                    hideLoadingBar()
+                    showToast(NOTIFY_MARKER_QUOTA_INSUFFICIENT)
+                    showMarkerQuotaEmptyBottomSheet()
+                }
+
+                else -> Unit
+            }
+        }
+
+        viewModel.markerRewardGrantState.observe(this) {
+            if (it == UiState.Success) {
+                showToast(NOTIFY_MARKER_QUOTA_CHARGED)
+            }
+        }
+    }
+
+    private fun setupMarkerQuotaChargeButton() {
+        binding.btnMarkerQuotaCharge.setOnClickListener {
+            watchRewardedAdForMarkerQuota()
+        }
+    }
+
+    private fun watchRewardedAdForMarkerQuota() {
+        rewardedAdManager.show(
+            activity = this,
+            onUserEarnedReward = { rewardTransactionId ->
+                viewModel.grantMarkerRewardFromAd(rewardTransactionId)
+            },
+            onNotReady = {
+                showToast(NOTIFY_AD_NOT_READY)
+            }
+        )
+    }
+
+    /**
+     * 마커 잔량이 0인데 지도를 탭했을 때 뜨는 팝업.
+     */
+    private fun showMarkerQuotaEmptyBottomSheet() {
+        val bottomSheetBinding = BottomsheetMarkerQuotaEmptyBinding.inflate(layoutInflater)
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+        bottomSheetBinding.btnMarkerQuotaWatchAd.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            watchRewardedAdForMarkerQuota()
+        }
+        bottomSheetBinding.tvMarkerQuotaClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
+    }
+
+    private fun decrementMarkerQuotaBalance() {
+        markerQuotaBalance--
+        binding.tvMarkerQuotaBalance.text = markerQuotaBalance.toString()
+    }
+
+    private fun incrementMarkerQuotaBalance() {
+        markerQuotaBalance++
+        binding.tvMarkerQuotaBalance.text = markerQuotaBalance.toString()
     }
 
     private fun showLoadingBar() {
@@ -665,10 +748,15 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
             viewModel.isBtnAvailable.value = true
 
             if (touchList.size < MAX_MARKER_NUM) {
-                addCoordsToTouchList(coord)
-                setRouteMarker(coord)
-                generateRouteLine(coord)
-                calcDistance()
+                if (markerQuotaBalance > 0) {
+                    addCoordsToTouchList(coord)
+                    setRouteMarker(coord)
+                    generateRouteLine(coord)
+                    calcDistance()
+                    decrementMarkerQuotaBalance()
+                } else {
+                    showMarkerQuotaEmptyBottomSheet()
+                }
             } else {
                 Toast.makeText(this, NOTIFY_LIMIT_MARKER_NUM, Toast.LENGTH_SHORT).show()
             }
@@ -729,6 +817,7 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         touchList.removeAt(touchList.lastIndex)
         markerList.last().map = null
         markerList.removeAt(markerList.lastIndex)
+        incrementMarkerQuotaBalance()
     }
 
     private fun updateRouteLineData() {
@@ -803,7 +892,8 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
                 )
             ) //Uri -> RequestBody
             setViewModelValue(calcDistanceList)
-            viewModel.uploadCourse()
+            showLoadingBar()
+            viewModel.consumeMarkerQuota(touchList.size)
         }
     }
 
@@ -863,6 +953,9 @@ class DrawActivity : BindingActivity<ActivityDrawBinding>(R.layout.activity_draw
         const val EXTRA_FRAGMENT_REPLACEMENT_DIRECTION = "fragmentReplacementDirection"
         const val CUSTOM_DEPARTURE = "내가 설정한 출발지"
         const val NOTIFY_LIMIT_MARKER_NUM = "마커는 20개까지 생성 가능합니다"
+        const val NOTIFY_MARKER_QUOTA_INSUFFICIENT = "마커 재화가 부족합니다. 광고를 보고 채워주세요"
+        const val NOTIFY_MARKER_QUOTA_CHARGED = "마커가 충전되었습니다"
+        const val NOTIFY_AD_NOT_READY = "광고를 불러오는 중입니다. 잠시 후 다시 시도해주세요"
 
         const val ERROR_COURSE_NULL = "Error: Course data is incomplete"
     }

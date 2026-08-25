@@ -3,6 +3,7 @@ package com.runnect.runnect.application
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.gms.ads.MobileAds
 import com.kakao.sdk.common.KakaoSdk
 import com.runnect.runnect.BuildConfig
 import com.runnect.runnect.R
@@ -24,6 +25,7 @@ class ApplicationClass : Application() {
         KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
         initApiMode()
         initAnalytics()
+        MobileAds.initialize(this)
     }
 
     private fun initApiMode() {

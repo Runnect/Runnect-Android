@@ -3,6 +3,7 @@ package com.runnect.runnect.di
 import com.runnect.runnect.data.service.BannerService
 import com.runnect.runnect.data.service.CourseService
 import com.runnect.runnect.data.service.LoginService
+import com.runnect.runnect.data.service.MarkerQuotaService
 import com.runnect.runnect.data.service.ReverseGeocodingService
 import com.runnect.runnect.data.service.SearchService
 import com.runnect.runnect.data.service.UserService
@@ -46,4 +47,9 @@ object ServiceModule {
     @Provides
     fun providePBannerService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
         retrofitV2.create(BannerService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideMarkerQuotaService(@RetrofitModule.RetrofitV2 retrofitV2: Retrofit) =
+        retrofitV2.create(MarkerQuotaService::class.java)
 }

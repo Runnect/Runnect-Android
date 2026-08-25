@@ -65,6 +65,7 @@ kakao-sdk = "2.23.3"
 
 # Google
 play-services-auth = "20.4.1"
+play-services-ads = "23.6.0"
 
 # Logging
 timber = "5.0.1"
@@ -169,6 +170,7 @@ kakao-navi = { group = "com.kakao.sdk", name = "v2-navi", version.ref = "kakao-s
 
 # Google
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "play-services-ads" }
 
 # Logging
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

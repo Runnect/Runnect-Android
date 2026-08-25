@@ -133,6 +133,11 @@
             android:name="com.naver.maps.map.NCP_KEY_ID"
             android:value="${NAVER_CLIENT_ID}" />
 
+        <!-- 개발용 Google 공식 테스트 App ID. 실제 배포 전 본인 AdMob 계정의 App ID로 교체 필요 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${ADMOB_APP_ID}" />
+
         <activity
             android:name=".presentation.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
