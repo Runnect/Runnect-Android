@@ -190,6 +190,59 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <LinearLayout
+            android:id="@+id/frame_marker_quota"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/radius_50_white_button"
+            android:elevation="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="6dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_top_frame"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_marker_quota" />
+
+            <TextView
+                android:id="@+id/tv_marker_quota_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:fontFamily="@font/pretendard_bold"
+                android:textColor="@color/G1"
+                android:textSize="14sp"
+                tools:text="12" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="10dp"
+                android:background="@color/G4" />
+
+            <FrameLayout
+                android:id="@+id/btn_marker_quota_charge"
+                android:layout_width="34dp"
+                android:layout_height="34dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_m1_button"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_marker_quota_charge" />
+            </FrameLayout>
+        </LinearLayout>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_draw"
             android:layout_width="0dp"

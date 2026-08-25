@@ -8,6 +8,7 @@ import com.runnect.runnect.domain.repository.BannerRepository
 import com.runnect.runnect.domain.repository.CourseRepository
 import com.runnect.runnect.domain.repository.DepartureSearchRepository
 import com.runnect.runnect.domain.repository.LoginRepository
+import com.runnect.runnect.domain.repository.MarkerQuotaRepository
 import com.runnect.runnect.domain.repository.ReverseGeocodingRepository
 import com.runnect.runnect.domain.repository.StorageRepository
 import com.runnect.runnect.domain.repository.UserRepository
@@ -47,4 +48,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository
+
+    @Singleton
+    @Binds
+    fun bindMarkerQuotaRepository(markerQuotaRepositoryImpl: MarkerQuotaRepositoryImpl): MarkerQuotaRepository
 }

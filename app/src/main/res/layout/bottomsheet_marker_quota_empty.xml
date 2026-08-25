@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/top_radius_20_white"
+        android:backgroundTint="@color/transparent_00"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:context=".DrawActivity">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_drag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_drag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/frame_marker_quota_empty_icon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/circle_m3_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_drag">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_marker_quota" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_marker_quota_empty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/pretendard_bold"
+            android:text="마커를 모두 사용했어요"
+            android:textColor="@color/G1"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@id/frame_marker_quota_empty_icon"
+            app:layout_constraintTop_toBottomOf="@id/frame_marker_quota_empty_icon" />
+
+        <TextView
+            android:id="@+id/tv_marker_quota_empty_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/pretendard_regular"
+            android:lineSpacingExtra="4dp"
+            android:text="영상 광고를 보면 마커 5개를 더 받을 수 있어요"
+            android:textColor="@color/G2"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/frame_marker_quota_empty_icon"
+            app:layout_constraintTop_toBottomOf="@id/tv_marker_quota_empty_title" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_marker_quota_watch_ad"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/radius_10_m1_button"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:gravity="center"
+            android:outlineProvider="none"
+            android:text="광고 보고 마커 받기"
+            android:textColor="@color/W1"
+            android:textSize="15sp"
+            app:drawableStartCompat="@drawable/ic_play_filled"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_marker_quota_empty_body" />
+
+        <TextView
+            android:id="@+id/tv_marker_quota_close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:gravity="center"
+            android:text="닫기"
+            android:textColor="@color/G2"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_marker_quota_watch_ad" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
