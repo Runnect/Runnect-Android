@@ -6,6 +6,11 @@
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- 러닝 화면 GPS 시뮬레이터(RunDebugTools)용. debug 빌드에만 포함된다. -->
+    <uses-permission
+        android:name="android.permission.ACCESS_MOCK_LOCATION"
+        tools:ignore="MockLocation,ProtectedPermissions" />
+
     <application
         android:name=".application.ApplicationClass"
         android:allowBackup="false"
