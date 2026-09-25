@@ -144,7 +144,7 @@ object RunDebugTools {
         }
         Log.i(
             "RunSimState",
-            "distKm=${state.distanceKm} pace=${state.paceSecPerKm?.toInt()} alert=$alert " +
+            "distKm=${state.distanceKm} distM=${state.distanceM.toInt()} pace=${state.paceSecPerKm?.toInt()} alert=$alert " +
                 "paused=${state.isPaused} sim=${retained?.isRunning == true}"
         )
     }
@@ -165,20 +165,28 @@ object RunDebugTools {
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            PanelText(
-                text = if (isExpanded) "GPS 시뮬 ▾" else "GPS 시뮬 ▸",
-                color = Color(0xFF9C9AFD),
-                modifier = Modifier.clickable { isExpanded = !isExpanded },
-            )
-            PanelText(
-                text = buildString {
-                    append(if (simulator.isRunning) "● " else "○ ")
-                    append(simulator.speed.label)
-                    if (simulator.offRouteM > 0) append(" · 이탈")
-                    if (simulator.isHalted) append(" · 멈춤")
-                },
-                color = Color(0xFFC1C1C1),
-            )
+            // 제목과 상태 줄 전체를 눌러 펼치기/접기 — 작은 글자만 누르게 하면 터치가 잘 안 먹는다.
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { isExpanded = !isExpanded }
+                    .padding(vertical = 2.dp),
+                verticalArrangement = Arrangement.spacedBy(3.dp),
+            ) {
+                PanelText(
+                    text = if (isExpanded) "GPS 시뮬 ▾ 접기" else "GPS 시뮬 ▸",
+                    color = Color(0xFF9C9AFD),
+                )
+                PanelText(
+                    text = buildString {
+                        append(if (simulator.isRunning) "● " else "○ ")
+                        append(simulator.speed.label)
+                        if (simulator.offRouteM > 0) append(" · 이탈")
+                        if (simulator.isHalted) append(" · 멈춤")
+                    },
+                    color = Color(0xFFC1C1C1),
+                )
+            }
             if (!isExpanded) return@Column
 
             PanelButton(if (simulator.isRunning) "■ 시뮬 정지" else "▶ 시뮬 시작", Color(0xFF444444)) {

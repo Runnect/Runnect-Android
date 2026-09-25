@@ -38,7 +38,10 @@ latest_state() { "$ADB" logcat -d -s RunSimState:I | grep RunSimState | tail -1 
 state_field() { latest_state | tr ' ' '\n' | grep "^$1=" | cut -d= -f2; }
 last_vibration() { "$ADB" shell dumpsys vibrator_manager | grep "$PKG" | awk '{print $1, $2}' | sort | tail -1; }
 last_vibration_ms() { "$ADB" shell dumpsys vibrator_manager | grep "$PKG" | sort | tail -1 | sed -E 's/.*duration: *([0-9]+)ms.*/\1/'; }
-has_alert_notification() { "$ADB" shell dumpsys notification --noredact | grep -q "channel=run_alert"; }
+# 현재 떠 있는 알림만 본다 — dumpsys에는 지워진 알림 보관함(mArchive)과 시스템 자동 그룹 요약(AUTOGROUP_SUMMARY)도 섞여 나온다.
+has_alert_notification() {
+    "$ADB" shell dumpsys notification --noredact | sed '/mArchive=/,$d' | grep "channel=run_alert" | grep -vq "AUTOGROUP_SUMMARY"
+}
 shot() { "$ADB" shell screencap -p /sdcard/tc.png && "$ADB" pull -q /sdcard/tc.png "$OUT/$1.png"; }
 
 start_recording() { # screenrecord는 최대 180초라 구간별로 나눠 녹화한다
@@ -159,13 +162,13 @@ expect_never  20 "paused=true"  TC-14 "재개 후 달리는 동안 다시 자동
 start_recording
 REQUIRE_FOREGROUND=0
 "$ADB" shell input keyevent KEYCODE_HOME; sleep 2
-DIST_BEFORE=$(state_field distKm)
+DIST_BEFORE=$(state_field distM) # 화면 표시값(0.1km 단위)은 15초 이동량(약 40m)을 못 보여줘서 미터로 비교
 sleep 15
-DIST_AFTER=$(state_field distKm)
-if awk "BEGIN{exit !($DIST_AFTER > $DIST_BEFORE)}"; then
-    record TC-15 "백그라운드에서도 거리가 계속 쌓임" PASS "${DIST_BEFORE}km → ${DIST_AFTER}km"
+DIST_AFTER=$(state_field distM)
+if [ "$DIST_AFTER" -gt $((DIST_BEFORE + 20)) ]; then
+    record TC-15 "백그라운드에서도 거리가 계속 쌓임" PASS "${DIST_BEFORE}m → ${DIST_AFTER}m"
 else
-    record TC-15 "백그라운드에서도 거리가 계속 쌓임" FAIL "${DIST_BEFORE}km → ${DIST_AFTER}km"
+    record TC-15 "백그라운드에서도 거리가 계속 쌓임" FAIL "${DIST_BEFORE}m → ${DIST_AFTER}m"
 fi
 
 # 이탈 알림 60초 쿨다운이 끝난 뒤에 백그라운드 이탈을 검증한다
@@ -186,15 +189,15 @@ if has_alert_notification; then record TC-20 "알림 해제 시 상단 알림도
 else record TC-20 "알림 해제 시 상단 알림도 제거" PASS "run_alert 알림 없음"; fi
 
 # ── 앱으로 복귀: 기록이 그대로 이어지는지 ──
-DIST_BG=$(state_field distKm)
+DIST_BG=$(state_field distM)
 "$ADB" shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 3
 REQUIRE_FOREGROUND=1
-DIST_FG=$(state_field distKm)
+DIST_FG=$(state_field distM)
 if "$ADB" shell dumpsys activity activities | grep -m1 topResumedActivity | grep -q "run.RunActivity" &&
-    awk "BEGIN{exit !($DIST_FG >= $DIST_BG)}"; then
-    record TC-21 "앱으로 돌아오면 러닝 화면과 기록이 그대로 이어짐" PASS "${DIST_BG}km → ${DIST_FG}km"
+    [ "$DIST_FG" -ge "$DIST_BG" ]; then
+    record TC-21 "앱으로 돌아오면 러닝 화면과 기록이 그대로 이어짐" PASS "${DIST_BG}m → ${DIST_FG}m"
 else
-    record TC-21 "앱으로 돌아오면 러닝 화면과 기록이 그대로 이어짐" FAIL "${DIST_BG}km → ${DIST_FG}km"
+    record TC-21 "앱으로 돌아오면 러닝 화면과 기록이 그대로 이어짐" FAIL "${DIST_BG}m → ${DIST_FG}m"
 fi
 
 sim stop
