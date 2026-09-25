@@ -434,5 +434,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
         const val EXTRA_COUNTDOWN_TO_RUN = "CountToRunData"
+        const val EXTRA_TARGET_PACE_SEC_PER_KM = "TargetPaceSecPerKm"
     }
 }

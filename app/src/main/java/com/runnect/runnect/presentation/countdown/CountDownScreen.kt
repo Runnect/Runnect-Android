@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,8 +72,9 @@ fun CountDownRoute(
     onFinished: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var currentCount by remember { mutableIntStateOf(CountDownStateMachine.INITIAL_COUNT) }
-    var isFinished by remember { mutableStateOf(false) }
+    // 화면 회전 시 카운트다운이 3부터 다시 시작하지 않도록 저장한다.
+    var currentCount by rememberSaveable { mutableIntStateOf(CountDownStateMachine.INITIAL_COUNT) }
+    var isFinished by rememberSaveable { mutableStateOf(false) }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     LaunchedEffect(lifecycle) {
