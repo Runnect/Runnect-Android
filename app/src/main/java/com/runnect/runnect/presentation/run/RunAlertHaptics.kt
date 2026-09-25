@@ -38,7 +38,7 @@ class RunAlertHaptics(context: Context, initialAlert: RunAlert?) {
 
         /** 알림이 없던 상태에서 새로 떴거나 다른 종류로 바뀌었을 때만 진동 패턴을 반환한다. */
         fun patternFor(previous: RunAlert?, current: RunAlert?): LongArray? {
-            if (current == null || (previous != null && previous::class == current::class)) return null
+            if (current == null || !current.isNewComparedTo(previous)) return null
             return when (current) {
                 is RunAlert.OffRoute -> OFF_ROUTE_PATTERN
                 is RunAlert.PaceDrop -> PACE_DROP_PATTERN

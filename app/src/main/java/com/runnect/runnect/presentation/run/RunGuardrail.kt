@@ -8,6 +8,12 @@ import kotlin.math.sqrt
 sealed interface RunAlert {
     data class OffRoute(val distanceM: Int) : RunAlert
     data class PaceDrop(val targetSecPerKm: Double, val currentSecPerKm: Double) : RunAlert
+
+    /**
+     * 사용자에게 다시 알려야 하는 "새 알림"인지. 알림이 없다가 생겼거나 종류가 바뀌었을 때만 true이고,
+     * 같은 종류에서 값(이탈 거리, 현재 페이스)만 갱신된 경우는 false — 진동/상단 알림이 매초 반복되지 않게 한다.
+     */
+    fun isNewComparedTo(previous: RunAlert?): Boolean = previous == null || previous::class != this::class
 }
 
 object RouteGeometry {

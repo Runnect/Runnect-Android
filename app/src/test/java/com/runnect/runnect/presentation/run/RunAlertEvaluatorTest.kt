@@ -124,4 +124,16 @@ class RunAlertEvaluatorTest {
     fun `경로가 비어 있으면 거리를 계산하지 않는다`() {
         assertNull(RouteGeometry.distanceToPathM(LatLng(37.5665, 126.9780), emptyList()))
     }
+
+    @Test
+    fun `같은 종류에서 값만 바뀐 알림은 새 알림이 아니다`() {
+        assertEquals(false, RunAlert.OffRoute(55).isNewComparedTo(RunAlert.OffRoute(40)))
+        assertEquals(false, RunAlert.PaceDrop(300.0, 410.0).isNewComparedTo(RunAlert.PaceDrop(300.0, 400.0)))
+    }
+
+    @Test
+    fun `없다가 생기거나 종류가 바뀐 알림은 새 알림이다`() {
+        assertEquals(true, RunAlert.OffRoute(40).isNewComparedTo(null))
+        assertEquals(true, RunAlert.OffRoute(40).isNewComparedTo(RunAlert.PaceDrop(300.0, 400.0)))
+    }
 }
