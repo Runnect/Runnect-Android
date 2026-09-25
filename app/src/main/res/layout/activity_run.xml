@@ -15,12 +15,14 @@
         android:layout_height="match_parent"
         tools:context=".views.location_enroll.LocationEnrollFragment">
 
+        <!-- 상단 정보 패널 배경. 높이는 안의 러닝 정보(compose_run_stats)에 맞춰진다. -->
         <View
             android:id="@+id/view_run_top_frame"
             android:layout_width="match_parent"
-            android:layout_height="152dp"
+            android:layout_height="0dp"
             android:background="@drawable/bottom_right_radius_40_white"
             android:elevation="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/compose_run_stats"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,105 +37,32 @@
             android:elevation="11dp"
             android:outlineProvider="none"
             android:src="@drawable/backbutton"
-            app:layout_constraintStart_toStartOf="@id/view_run_top_frame"
-            app:layout_constraintTop_toTopOf="@id/view_run_top_frame" />
-
-        <ImageView
-            android:id="@+id/iv_total_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24.23dp"
-            android:layout_marginTop="15dp"
-            android:elevation="12dp"
-            android:outlineProvider="none"
-            android:src="@drawable/icn_distance"
-            app:layout_constraintStart_toEndOf="@id/imgBtn_back"
-            app:layout_constraintTop_toTopOf="@id/view_run_top_frame" />
-
-        <TextView
-            android:id="@+id/tv_total_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:elevation="12dp"
-            android:fontFamily="@font/pretendard_medium"
-            android:outlineProvider="none"
-            android:text="@string/run_distance_title"
-            android:textColor="@color/G2"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_total_distance"
-            app:layout_constraintStart_toEndOf="@id/iv_total_distance"
-            app:layout_constraintTop_toTopOf="@id/iv_total_distance" />
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/compose_run_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:elevation="11dp"
-            app:layout_constraintStart_toStartOf="@id/iv_total_distance"
-            app:layout_constraintTop_toBottomOf="@id/iv_total_distance" />
-
-        <ImageView
-            android:id="@+id/iv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            android:elevation="11dp"
-            android:outlineProvider="none"
-            android:src="@drawable/icn_time"
-            app:layout_constraintStart_toEndOf="@id/tv_total_distance"
-            app:layout_constraintTop_toTopOf="@id/view_run_top_frame" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:elevation="11dp"
-            android:fontFamily="@font/pretendard_medium"
-            android:outlineProvider="none"
-            android:text="@string/run_time_title"
-            android:textColor="@color/G2"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_time"
-            app:layout_constraintStart_toEndOf="@id/iv_time"
-            app:layout_constraintTop_toTopOf="@id/iv_time" />
-
-        <TextView
-            android:id="@+id/tv_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="11dp"
-            android:fontFamily="@font/pretendard_bold"
-            android:outlineProvider="none"
-            android:textColor="@color/G1"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@id/compose_run_distance"
-            app:layout_constraintStart_toStartOf="@id/iv_time"
-            tools:text="00:00:00" />
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/compose_run_pace"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:elevation="11dp"
-            app:layout_constraintStart_toStartOf="@id/iv_total_distance"
-            app:layout_constraintTop_toBottomOf="@id/compose_run_distance" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_top_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="20dp"
             android:elevation="11dp"
             android:outlineProvider="none"
             android:src="@drawable/star_top_radius"
-            app:layout_constraintBottom_toBottomOf="@id/view_run_top_frame"
-            app:layout_constraintEnd_toEndOf="@id/view_run_top_frame" />
+            app:layout_constraintBottom_toBottomOf="@id/imgBtn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imgBtn_back" />
 
+        <!-- 거리 / 시간 / 페이스(+목표 페이스). 하단 여백까지 포함해 패널 배경 높이를 결정한다. -->
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_run_stats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:elevation="11dp"
+            android:paddingBottom="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgBtn_back" />
 
         <FrameLayout
             android:id="@+id/mapView"
@@ -159,6 +88,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_run_top_frame"
             tools:visibility="visible" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_run_alert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_run_top_frame" />
 
         <LinearLayout
             android:id="@+id/layout_run_action_dock"

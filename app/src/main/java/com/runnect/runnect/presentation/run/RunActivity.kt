@@ -1,11 +1,9 @@
 package com.runnect.runnect.presentation.run
 
 import kotlin.math.roundToInt
-import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.graphics.Color
 import android.graphics.PointF
@@ -15,8 +13,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -36,11 +38,8 @@ import com.runnect.runnect.R
 import com.runnect.runnect.binding.BindingActivity
 import com.runnect.runnect.data.dto.CourseData
 import com.runnect.runnect.data.dto.RunToEndRunData
-import com.runnect.runnect.data.dto.TimerData
 import com.runnect.runnect.databinding.ActivityRunBinding
 import com.runnect.runnect.presentation.endrun.EndRunActivity
-import com.runnect.runnect.presentation.run.TimerService.Companion.EXTRA_TIMER_VALUE
-import com.runnect.runnect.presentation.run.TimerService.Companion.TIMER_UPDATE_ACTION
 import com.runnect.runnect.presentation.ui.theme.RunnectTheme
 import com.runnect.runnect.util.analytics.Analytics
 import com.runnect.runnect.util.analytics.EventName
@@ -71,7 +70,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
     private val viewModel: RunViewModel by viewModels()
 
-    lateinit var timerData: TimerData
     private var timerService: TimerService? = null
     private var isServiceBound = false
     lateinit var serviceIntent: Intent
@@ -80,8 +78,9 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         //서비스가 연결되었을 때 호출
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as TimerService.LocalBinder
-            timerService = binder.getService()
+            timerService = binder.getService().also { it.setUiVisible(isUiStarted) }
             isServiceBound = true
+            observeRunState()
         }
 
         //서비스 연결이 끊어졌을 때 호출
@@ -97,14 +96,16 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         binding.lifecycleOwner = this
 
         initView()
-        initDistanceComposeView()
-        initPaceComposeView()
+        initStatsComposeView()
+        initAlertComposeView()
         initTimerService()
         getCurrentLocation()
         showRecord()
         backButton()
         setUpPauseResume()
 
+        // 러닝 시작 이벤트는 처음 한 번만 — 화면 회전 등으로 재생성될 때는 다시 기록하지 않는다.
+        if (savedInstanceState != null) return
         val runCourseData: CourseData? = intent.getParcelableExtra(EXTRA_COUNTDOWN_TO_RUN)
         val targetDistanceM = runCourseData?.distance?.let { (it * 1000f).roundToInt() }
         Analytics.logEvent(
@@ -129,53 +130,64 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         )
     }
 
-    private fun initDistanceComposeView() {
-        binding.composeRunDistance.apply {
+    private fun initStatsComposeView() {
+        binding.composeRunStats.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 RunnectTheme {
-                    val distanceKm by viewModel.traveledDistanceKm.observeAsState(0.0)
-                    RunDistanceStat(distanceKm = distanceKm)
+                    val state by viewModel.trackingState.collectAsStateWithLifecycle()
+                    RunStatsPanel(state = state)
                 }
             }
         }
     }
 
-    private fun initPaceComposeView() {
-        binding.composeRunPace.apply {
+    private fun initAlertComposeView() {
+        // 진동은 러닝 서비스가 울린다(백그라운드에서도 울려야 하므로). 화면은 배너만 그린다.
+        binding.composeRunAlert.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 RunnectTheme {
-                    val paceSecPerKm by viewModel.currentPaceSecPerKm.observeAsState(null)
-                    RunPaceStat(paceSecPerKm = paceSecPerKm)
+                    val state by viewModel.trackingState.collectAsStateWithLifecycle()
+                    RunAlertBanner(alert = state.alert)
                 }
             }
         }
     }
 
     private fun initTimerService() {
-        serviceIntent = Intent(this, TimerService::class.java)
+        // 서비스는 재생성 시 다시 start돼도 기존 타이머를 유지한다(TimerService.onStartCommand). 알림에서 러닝 화면을
+        // 다시 열 때 필요한 코스 정보를 넘기기 위해 이 화면의 extras를 함께 전달한다.
+        serviceIntent = Intent(this, TimerService::class.java).putExtras(intent)
         startService(serviceIntent)
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
     }
 
+    /** 러닝 서비스의 상태를 화면에 반영한다. 화면이 재생성돼도 다시 바인딩하면 같은 상태를 이어받는다. */
+    private fun observeRunState() {
+        val service = timerService ?: return
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                service.state.collect { state ->
+                    viewModel.render(state)
+                    updatePauseResumeUI(state.isPaused)
+                }
+            }
+        }
+    }
+
     private fun stopTimer() {
-        timerService?.stopTimer()
+        timerService?.stopRun()
         stopService(serviceIntent) //서비스 객체 제거
     }
 
     private fun setUpPauseResume() {
-        binding.btnRunPauseResume.setOnClickListener {
-            val isPaused = viewModel.isPaused.value ?: false
-            if (isPaused) {
-                timerService?.resumeTimer()
-                viewModel.onManualResume()
-            } else {
-                timerService?.pauseTimer()
-            }
-            viewModel.isPaused.value = !isPaused
-            updatePauseResumeUI(!isPaused)
-        }
+        binding.btnRunPauseResume.setOnClickListener { togglePauseResume() }
+    }
+
+    private fun togglePauseResume() {
+        val service = timerService ?: return
+        if (service.state.value.isPaused) service.resume() else service.pause()
     }
 
     private fun updatePauseResumeUI(isPaused: Boolean) {
@@ -189,39 +201,19 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         binding.tvPausedLabel.visibility = if (isPaused) View.VISIBLE else View.GONE
     }
 
+    // 러닝 화면이 보이는 동안엔 알림을 화면 배너로, 안 보이면(백그라운드/화면 꺼짐) 상단 알림으로 띄우도록 서비스에 알린다.
+    private var isUiStarted = false
+
     override fun onStart() {
         super.onStart()
-        // Timer 결과값을 받기 위해 브로드캐스트 리시버 등록
-        registerReceiver(timerReceiver, IntentFilter(TIMER_UPDATE_ACTION), RECEIVER_NOT_EXPORTED)
+        isUiStarted = true
+        timerService?.setUiVisible(true)
     }
 
     override fun onStop() {
         super.onStop()
-        // 브로드캐스트 리시버 등록 해제
-        unregisterReceiver(timerReceiver)
-    }
-
-    private val timerReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) { //앱 나가니까 반영 안 되고 다시 들어오면 반영돼있음.
-            timerData = intent.getParcelableExtra(EXTRA_TIMER_VALUE)!!
-            val timerUI = String.format(
-                "%02d:%02d:%02d",
-                timerData.hour,
-                timerData.minute,
-                timerData.second
-            )
-            updateTimerUI(timerUI)
-
-            if (viewModel.shouldAutoPause()) {
-                timerService?.pauseTimer()
-                viewModel.isPaused.value = true
-                updatePauseResumeUI(true)
-            }
-        }
-    }
-
-    private fun updateTimerUI(timerValue: String) {
-        binding.tvTimer.text = timerValue
+        isUiStarted = false
+        timerService?.setUiVisible(false)
     }
 
     override fun onDestroy() {
@@ -229,7 +221,8 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         if (isServiceBound) {
             unbindService(connection)
         }
-        stopTimer()
+        // 화면 회전 등으로 재생성되는 경우엔 타이머 서비스를 살려둬야 기록이 이어진다. 러닝을 끝내고 나갈 때만 종료한다.
+        if (isFinishing) stopTimer()
     }
 
     private fun backButton() {
@@ -276,7 +269,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
     private fun addCurrentLocationChangeListener(map: NaverMap) {
         naverMap.addOnLocationChangeListener { location ->
             currentLocation = LatLng(location.latitude, location.longitude)
-            viewModel.onLocationUpdated(currentLocation)
             map.locationOverlay.run { //현재 위치 마커
                 isVisible = true //현재 위치 마커 가시성(default = false)
                 position = LatLng(currentLocation.latitude, currentLocation.longitude)
@@ -334,6 +326,9 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         distanceSum = courseData.distance?.toDouble()?.round(1) ?: 0.0
 
         viewModel.distanceSum.value = distanceSum
+        // 이탈 판정 경로와 목표 페이스는 러닝 서비스가 같은 extras에서 읽는다(TimerService.onStartCommand).
+        // debug 빌드에서만 GPS 시뮬레이터 패널을 띄운다.
+        RunDebugTools.attach(this, listOf(startLatLng) + touchList) { timerService }
     }
 
     private fun createDepartureMarker() {
@@ -400,8 +395,9 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
 
     private fun showRecord() {
         binding.btnRunStop.setOnClickListener {
+            val elapsedSec = timerService?.state?.value?.elapsedSec ?: 0
             stopTimer()
-            val totalTimeSec = ((timerData.hour ?: 0) * 3600) + ((timerData.minute ?: 0) * 60) + (timerData.second ?: 0)
+            val totalTimeSec = elapsedSec
             Analytics.logEvent(
                 EventName.ACTION_RUN_COMPLETE,
                 Param.COURSE_ID to courseId,
@@ -417,9 +413,9 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
                         totalDistance = distanceSum,
                         captureUri = captureUri,
                         departure = departure,
-                        timerHour = timerData.hour,
-                        timerMinute = timerData.minute,
-                        timerSecond = timerData.second,
+                        timerHour = elapsedSec / 3600,
+                        timerMinute = (elapsedSec % 3600) / 60,
+                        timerSecond = elapsedSec % 60,
                         dataFrom = dataFrom
                     )
                 )
@@ -434,5 +430,6 @@ class RunActivity : BindingActivity<ActivityRunBinding>(R.layout.activity_run),
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val EXTRA_RUN_TO_ENDRUN = "RunToEndRunData"
         const val EXTRA_COUNTDOWN_TO_RUN = "CountToRunData"
+        const val EXTRA_TARGET_PACE_SEC_PER_KM = "TargetPaceSecPerKm"
     }
 }
