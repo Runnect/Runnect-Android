@@ -19,7 +19,7 @@ class RunStatsPanelTest {
 
     @Test
     fun 거리_시간_페이스가_각_칸에_표시된다() {
-        setPanel(RunTrackingState(elapsedSec = 3_725, distanceKm = 1.2, paceSecPerKm = 334.0))
+        setPanel(RunTrackingState(elapsedSec = 3_725, distanceM = 1_200.0, paceSecPerKm = 334.0))
 
         composeTestRule.onNodeWithTag(RunStatsPanelTestTags.DISTANCE).assertTextEquals("1.2")
         composeTestRule.onNodeWithTag(RunStatsPanelTestTags.TIME).assertTextEquals("01:02:05")

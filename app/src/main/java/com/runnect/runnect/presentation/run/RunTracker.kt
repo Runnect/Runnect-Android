@@ -10,12 +10,15 @@ import kotlinx.coroutines.flow.update
 /** 러닝 화면에 그리는 한 시점의 러닝 상태. */
 data class RunTrackingState(
     val elapsedSec: Int = 0,
-    val distanceKm: Double = 0.0, // 실시간 GPS 기반 이동 거리. 코스 목표 거리(고정값)와는 별개.
+    val distanceM: Double = 0.0, // 실시간 GPS 기반 이동 거리. 코스 목표 거리(고정값)와는 별개.
     val paceSecPerKm: Double? = null, // 최근 PACE_WINDOW 구간 기준. 충분히 움직이지 않았으면 null.
     val targetPaceSecPerKm: Double? = null,
     val alert: RunAlert? = null,
     val isPaused: Boolean = false,
-)
+) {
+    /** 화면 표시용(소수 첫째 자리). */
+    val distanceKm: Double get() = (distanceM / 1000).round(1)
+}
 
 /**
  * 러닝 한 번의 진행 상태(시간, 거리, 페이스, 자동 일시정지, 코스 이탈/페이스 저하 알림)를 계산한다.
@@ -101,7 +104,7 @@ class RunTracker {
             targetPaceSecPerKm = _state.value.targetPaceSecPerKm,
         )
         _state.update {
-            it.copy(distanceKm = (traveledDistanceM / 1000).round(1), paceSecPerKm = pace, alert = alert)
+            it.copy(distanceM = traveledDistanceM, paceSecPerKm = pace, alert = alert)
         }
     }
 
