@@ -77,6 +77,15 @@
     <string name="run_description_pause">일시정지</string>
     <string name="run_description_resume">재개</string>
     <string name="run_description_stop">러닝 종료</string>
+    <string name="run_pace_title">페이스</string>
+    <string name="run_pace_target">목표 %1$s</string>
+    <string name="run_pace_target_none">목표 없음</string>
+    <string name="run_pace_unit">/km</string>
+    <string name="run_alert_channel_name">러닝 중 알림</string>
+    <string name="run_alert_off_route_title">코스에서 벗어났어요</string>
+    <string name="run_alert_off_route_desc">약 %1$dm · 코스로 돌아오면 알림이 사라져요</string>
+    <string name="run_alert_pace_drop_title">목표 페이스보다 느려지고 있어요</string>
+    <string name="run_alert_pace_drop_desc">목표 %1$s · 현재 %2$s</string>
     <string name="target_pace_title">이번 러닝, 목표 페이스를 정할까요?</string>
     <string name="target_pace_subtitle">목표보다 느려지면 러닝 중에 알려드려요. 선택하지 않아도 러닝은 그대로 진행돼요</string>
     <string name="target_pace_none">설정 안 함</string>
