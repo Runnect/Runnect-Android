@@ -81,6 +81,7 @@ class RunTracker {
             if (consecutiveJumpCount >= MAX_CONSECUTIVE_JUMPS) {
                 lastLocation = newLocation
                 movementAnchor = newLocation
+                recentSamples.clear() // 옮기기 전 위치가 페이스 구간에 섞이면 비현실적인 페이스(1km 3초 등)가 나온다
                 consecutiveJumpCount = 0
             }
             return
@@ -126,7 +127,8 @@ class RunTracker {
     /** 수동/자동 일시정지. 떠 있던 알림을 내리고 연속 판정을 처음부터 다시 시작하게 한다. */
     fun pause() {
         alertEvaluator.reset()
-        _state.update { it.copy(isPaused = true, alert = null) }
+        recentSamples.clear() // 재개 후 페이스에 정지 중 이동분이 섞이지 않게 구간을 새로 시작한다
+        _state.update { it.copy(isPaused = true, alert = null) } // 페이스 표시는 정지 직전 값을 그대로 둔다
     }
 
     /** 재개 — 무활동 타이머를 재개 시점 기준으로 초기화해서 재개 직후 바로 자동 일시정지되지 않게 한다. */

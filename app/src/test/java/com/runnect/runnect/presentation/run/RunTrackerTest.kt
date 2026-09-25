@@ -289,4 +289,27 @@ class RunTrackerTest {
         tracker.setTargetPace(null)
         assertEquals(null, tracker.state.value.targetPaceSecPerKm)
     }
+
+    @Test
+    fun `기준점을 옮긴 직후에는 옮기기 전 위치가 페이스 계산에 섞이지 않는다`() {
+        tracker.onLocationUpdated(LatLng(37.5000, 126.9000), 0L) // 멀리 떨어진 부정확한 첫 측위
+        repeat(8) { i ->
+            tracker.onLocationUpdated(LatLng(37.5665, 126.9780 + 0.0000318 * i), (i + 1) * 1_000L) // 약 2.8m/s
+        }
+
+        val pace = requireNotNull(tracker.state.value.paceSecPerKm)
+        assertTrue("5'57\" 근처여야 한다: $pace", pace in 300.0..420.0)
+    }
+
+    @Test
+    fun `재개 직후 페이스에는 일시정지 중 이동분이 섞이지 않는다`() {
+        repeat(6) { i -> tracker.onLocationUpdated(LatLng(37.5665, 126.9780 + 0.0000318 * i), i * 1_000L) }
+        tracker.pause()
+        tracker.onLocationUpdated(LatLng(37.5665, 126.9790), 7_000L) // 정지 중 약 60m 이동
+        tracker.resume(8_000L)
+        repeat(4) { i -> tracker.onLocationUpdated(LatLng(37.5665, 126.9790 + 0.0000318 * (i + 1)), 9_000L + i * 1_000L) }
+
+        val pace = requireNotNull(tracker.state.value.paceSecPerKm)
+        assertTrue("정지 중 이동이 섞이면 비정상적으로 빨라진다: $pace", pace in 300.0..420.0)
+    }
 }
