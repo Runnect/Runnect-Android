@@ -113,7 +113,7 @@ fi
 start_recording
 
 # 준비: 출발점에서 보통 속도, 목표 페이스 없음, 코스 위
-sim resume; sim rewind; scenario normal
+sim resume; sim target --ei sec 0; sim rewind; scenario normal
 sleep 5 # 가짜 위치로 기준점이 옮겨질 시간
 
 # ── 포그라운드: 정상 주행 / 페이스 ──
@@ -133,7 +133,7 @@ sleep 2; expect_vibrated_since "$VIB" 400 700 TC-06 "페이스 저하 알림 시
 
 scenario pace_recover
 expect_within 25 "alert=NONE" TC-07 "페이스를 회복하면 페이스 저하 알림 사라짐"
-scenario normal
+sim target --ei sec 0; scenario normal
 
 # ── 포그라운드: 코스 이탈 ──
 scenario short_detour      # 6초만 벗어났다 돌아옴 — 이탈 상태가 8초를 못 채움

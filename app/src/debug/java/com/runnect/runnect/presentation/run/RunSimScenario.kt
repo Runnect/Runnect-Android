@@ -15,21 +15,21 @@ enum class RunSimScenario(
     val expectation: String,
     private val setUp: (GpsRouteSimulator, RunController?, CoroutineScope) -> Unit,
 ) {
-    NORMAL("normal", "정상 주행", "거리·페이스 표시, 알림 없음 (목표 없음, 5'57\")", { sim, run, _ ->
-        run?.setTargetPace(null)
+    // 정상 주행은 사용자가 고른 목표 페이스를 건드리지 않는다(목표를 바꾸는 시나리오는 안내 문구에 명시).
+    NORMAL("normal", "정상 주행", "코스 위 5'57\" 주행, 이탈 알림 없음 (목표 페이스는 그대로)", { sim, _, _ ->
         sim.offRouteM = 0.0
         sim.isHalted = false
         sim.speed = GpsRouteSimulator.Speed.NORMAL
     }),
-    FASTER_THAN_TARGET("faster", "목표보다 빠르게", "알림 없음 (목표 5'30\", 실제 4'46\")", { sim, run, _ ->
+    FASTER_THAN_TARGET("faster", "목표보다 빠르게", "목표를 5'30\"로 바꿔요 · 실제 4'46\" → 알림 없음", { sim, run, _ ->
         run?.setTargetPace(330.0)
         sim.speed = GpsRouteSimulator.Speed.FAST
     }),
-    SLIGHTLY_SLOWER("slightly_slower", "목표보다 조금 느리게", "알림 없음 (목표 5'30\", 실제 5'57\" · 20% 미만)", { sim, run, _ ->
+    SLIGHTLY_SLOWER("slightly_slower", "목표보다 조금 느리게", "목표를 5'30\"로 바꿔요 · 실제 5'57\"(20% 미만 느림) → 알림 없음", { sim, run, _ ->
         run?.setTargetPace(330.0)
         sim.speed = GpsRouteSimulator.Speed.NORMAL
     }),
-    PACE_DROP("pace_drop", "페이스 저하", "약 20초 뒤 노란 배너 + 긴 진동 1번 (목표 5'00\", 실제 7'35\")", { sim, run, _ ->
+    PACE_DROP("pace_drop", "페이스 저하", "목표를 5'00\"로 바꿔요 · 실제 7'35\" → 약 20초 뒤 노란 배너 + 긴 진동 1번", { sim, run, _ ->
         run?.setTargetPace(300.0)
         sim.speed = GpsRouteSimulator.Speed.SLOW
     }),
